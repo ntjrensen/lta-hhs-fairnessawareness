@@ -1,0 +1,13 @@
+/*-- scss:defaults --*/
+$hhs-color-green: #9EA700;
+$hhs-color-blue: #00B2CD;
+
+/*-- scss:rules --*/
+h1 {
+  color: $hhs-color-green;
+}
+
+h2#toc-title, .quarto-other-links h2 {
+  color: $hhs-color-green;
+}
+

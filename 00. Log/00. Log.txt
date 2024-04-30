@@ -1,0 +1,96 @@
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Log.txt ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## R code voor lectoraat LTA De Haagse Hogeschool
+## Copyright 2024 De HHs
+## Web Page: http://www.hhs.nl
+## Contact: Theo Bakker (t.c.bakker@hhs.nl)
+## Verspreiding buiten De HHs: Nee
+##
+## Doel: Aanpassingen in het project bijhouden
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Geschiedenis:
+## 28-04-2024: TB: Aanmaak bestand
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## TODO / WERKVOORRAAD ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[ ] Modellen
+  [ ] 3 extra modellen: 
+    [ ] mgcv = general additive model 
+    [ ] svm = support vector machine 
+    [ ] boost_tree_xgboost
+    [ ] op basis van https://rpubs.com/mikek25/tidymodels_churn
+    [ ] parallel processing toevoegen
+  [ ] https://forum.posit.co/t/error-in-tidymodels-tune-grid-function-call/54150
+  [ ] Het finale model kunnen kiezen op basis van de beste hyperparameters
+    [x] hoogste auc bepalen
+  [ ] Meerdere opleidingen erdoorheen kunnen halen: opleidingsinformatie configureerbaar maken
+    [ ] dfOpleidingen gebruiken voor het ophalen van basisinformatie
+    [ ] params zetten en dan met behulp van 
+      [ ] rmarkdown::render("document.qmd", params = list(titel = "Nieuwe Titel")) (ChatGPT)
+  [ ] Elk model aan of uit kunnen zetten...
+
+[ ] Variabelen
+  [ ] Titel bepalen door params
+  [ ] Ondertitel bepalen door params
+
+[ ] Project
+  [ ] Index vereenvoudigen door met includes te werken voor de R code
+
+[ ] Teksten
+  
+[ ] Tables
+  
+[ ] Plots  
+  [ ] De VIP plot kan een stuk beter: kleuren en met aantallen als labels  
+
+[ ] Output
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## OPGELOST ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[x] Warning: `validation_split()` was deprecated in rsample 1.2.0. ℹ Please use `initial_validation_split()` instead.
+
+[x] Modellen
+  [x] rf: uitzoeken hoe we mtry en min_n bepalen
+  [-] Grouped model (op basis van vooropleiding met of zonder cijfer)
+  
+[x] Variabelen
+  [x] Eindexamencijfer toevoegen
+  [x] Reistijd toevoegen 
+  [x] Impute missing values voor SES > als stap in de pipeline uitgeprobeerd, maar geeft problemen
+  [x] Verwijder hoog gecorreleerde plots >> geeft problemen en kan alleen met glmnet/lr; voorlopig niet
+  [x] https://stackoverflow.com/questions/69074437/verify-model-assumptions-with-tidymodels
+
+[x] Modellen
+  [-] In de split rekening houden met Collegejaren: het laatste jaar moet eigenlijk de validatieset zijn
+  [-] predict; zie https://www.tidymodels.org/start/recipes/
+  [x] uitval na 2 jaar kunnen instellen
+  
+[x] Teksten
+  [x] tekst van de conclusies automatisch genereren
+  [x] Sensitivity en 1-Specificity toelichten
+  [x] beter of slechter teksten automatisch genereren
+  [-] Kleurtje voor de conclusies
+  [x] Meer duiding bij samenstelling van de groepen > one table?
+  [x] Bij een basemodel lager dan 50% andere tekst.
+
+[x] Tables
+  [x] Naast N ook % bij TRUE/FALSE
+  [x] TRUE/FALSE vervangen door Ja/Nee
+  [x] Sorteer volgorde skp in lijn met profielen van havo/vwo en mbo
+
+[x] Plots  
+
+[x] Output/Layout
+  [x] Ipv Table of Contents: Inhoudsopgave
+    [x] Links naar pagina's van het lectoraat
+  [x] Logo's van HHs en GIL
+  [-] Standaardtekst over LTA met copyright
+  [-] Output naar een aparte folder
+
