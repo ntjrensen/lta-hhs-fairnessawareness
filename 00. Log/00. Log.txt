@@ -23,23 +23,21 @@
     [ ] mgcv = general additive model 
     [ ] svm = support vector machine 
     [ ] boost_tree_xgboost
+  [ ] Algehele opzet wat meer configureerbaar?
     [ ] op basis van https://rpubs.com/mikek25/tidymodels_churn
     [ ] parallel processing toevoegen
   [ ] https://forum.posit.co/t/error-in-tidymodels-tune-grid-function-call/54150
+  
   [ ] Het finale model kunnen kiezen op basis van de beste hyperparameters
-    [x] hoogste auc bepalen
-  [ ] Meerdere opleidingen erdoorheen kunnen halen: opleidingsinformatie configureerbaar maken
-    [ ] dfOpleidingen gebruiken voor het ophalen van basisinformatie
-    [ ] params zetten en dan met behulp van 
-      [ ] rmarkdown::render("document.qmd", params = list(titel = "Nieuwe Titel")) (ChatGPT)
-  [ ] Elk model aan of uit kunnen zetten...
+    [x] Hoogste auc bepalen
+    [ ] Wisselen van tekst als het model anders is (voorbeeldopleiding hiervoor vinden)
+  
+  [ ] Meerdere opleidingen
+    [ ] Elk model aan of uit kunnen zetten...
 
 [ ] Variabelen
-  [ ] Titel bepalen door params
-  [ ] Ondertitel bepalen door params
 
 [ ] Project
-  [ ] Index vereenvoudigen door met includes te werken voor de R code
 
 [ ] Teksten
   
@@ -66,6 +64,9 @@
   [x] Impute missing values voor SES > als stap in de pipeline uitgeprobeerd, maar geeft problemen
   [x] Verwijder hoog gecorreleerde plots >> geeft problemen en kan alleen met glmnet/lr; voorlopig niet
   [x] https://stackoverflow.com/questions/69074437/verify-model-assumptions-with-tidymodels
+  [x] Titel bepalen door params
+  [x] Ondertitel bepalen door params
+  [x] Op basis van soort uitval ook de html outputfile aanpassen
 
 [x] Modellen
   [-] In de split rekening houden met Collegejaren: het laatste jaar moet eigenlijk de validatieset zijn
@@ -94,3 +95,13 @@
   [-] Standaardtekst over LTA met copyright
   [-] Output naar een aparte folder
 
+[x] Project
+  [x] Index vereenvoudigen door met includes te werken voor de R code
+  [x] Includes voor delen van de index
+
+[x] Meerdere opleidingen
+  [x] dfOpleidingen gebruiken voor het ophalen van basisinformatie
+      [x] params zetten en dan met behulp van 
+        [x] rmarkdown::render("document.qmd", params = list(titel = "Nieuwe Titel")) (ChatGPT) >
+        eigen functie gevonden en die toegepast;
+        [-] eventueel met post render iets doen: https://github.com/quarto-dev/quarto-cli/discussions/5261

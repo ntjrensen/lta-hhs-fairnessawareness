@@ -1,31 +1,18 @@
 ---
 title: "Prognosemodel - `r params$uitval`"
 subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm`"
-lang: nl
-language: 
-  other-links-title: "Meer informatie"
+
+## Auteur en datum
 author: "`r params$author`, De HHs"
 date: last-modified
-format:
-  html:
-    smooth-scroll: true
-    link-external-icon: true
-    code-fold: true
-    code-summary: "Toon code"
-    toc: true
-    toc-title: Inhoudsopgave
-    number-sections: true
-    html-math-method: katex
-    theme: 
-    - lumen
-    - "01. Includes/scss/lta.scss"
-    self-contained: true
-    other-links:
-      - text: "Over het lectoraat Learning Technology & Analytics"
-        href: https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics
-      - text: "Over het onderzoeksprogramma 'No Fairness without Awareness'"
-        href: https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness
-        
+
+## Versie
+versie: 1.0
+
+## Format en output
+output-file: "lta-hhs-tidymodels-uitval.html"
+
+## Parameters        
 params:
   uitval: "Uitval na 1 jaar"
   faculteit: "GVS"
@@ -38,81 +25,8 @@ params:
 
 ```{r setup, include = FALSE}
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 0. LAAD LTABASE PACKAGE + DEFAULT DATABASES ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 0.1 Standaard packages die direct nodig zijn ####
-
-## Installeer here, cli en icecream indien nodig
-for (i in c("here", "cli", "icecream")) {
-  if(!requireNamespace(i, quietly = TRUE)) {
-    install.packages(i)
-  }
-}
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 0.2 ltabase package in (installeer indien nodig) ####
-
-source("99. Functies & Libraries/Inladen_ltabase.R")
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 0.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
-
-## Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
-ltabase::load_lta_datasets(message = TRUE)
-
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1. BASISVARIABELEN / PADEN ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-# Als LTA_ROOT, LTA_DATA of LTA_BOARD niet bestaan, dan wordt de omgeving opnieuw ingesteld
-ltabase::set_lta_sys_env()
-
-## Bepaal de netwerkdirectory
-Network_directory <- ltabase::get_lta_network_directory()
-
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2. SETUP ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-## Stel de debug opties in: icecream package settings
-ltabase::set_icecream_options()
-icecream::ic_disable()
-
-## 0.0 Laad extra bibliotheken
-
-## Laad bibliotheken
-library(tidymodels)  # voor machine learning
-library(vip)         # voor variable importance plots
-
-## Extra bibliotheken
-library(forcats)     # om factor variabelen te bewerken
-library(performance) # voor performance metingen op lr modellen
-library(dlookr)      # om data te inspecteren
-library(gtsummary)   # voor beschrijvende summary tabellen
-library(cli)         # voor cli teksten
-
-## Geef de voorkeur bij conflicten aan het tidymodels package
-tidymodels_prefer(quiet = TRUE)
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.1 Functies ####
-
-source("99. Functies & Libraries/Rapport_functies.R")
-
-## Bepaal de standaard instelingen van gtsummary
-list("style_number-arg:big.mark" = ".",
-     "style_number-arg:decimal.mark" = ",") |> 
-  set_gtsummary_theme()
-invisible(theme_gtsummary_compact())
-
-## Bepaal de volgorde van een aantal levels
-Get_Levels()
+## Sluit het _Setup.R bestand in
+source("_Setup.R")
 
 ## Config
 sUitval_model <- params$uitval
@@ -128,23 +42,9 @@ Set_Current_opleiding_vars(current_opleiding, debug = T)
 
 # Inleiding
 
-## Het nut van prognosemodellen
+<!-- H01: Inleiding -->
 
-Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om de uitval te verminderen of te voorkomen. Voor het lectoraat is het van belang dat we in vervolg hierop kunnen analyseren of er sprake is van bias in de data in relatie tot uitval en er mogelijk sprake is van een gebrek aan kansengelijkheid. Een prognosemodel is dus de opmaat naar een fairness analyse. Zie voor een verdere toelichting het onderzoeksprogramma '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
-
-## Toelichting op de methode
-
-Voor de ontwikkeling van prognosemodellen gebruiken we de aanpak van [Tidymodels](https://www.tidymodels.org/). Tidymodels is een framework voor het bouwen van een prognosemodel. Hiermee verzekeren we ons van een systematische, herhaalbare en schaalbare aanpak voor het bouwen van prognosemodellen.
-
-## Toelichting op de data
-
-De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verrijkt door het lectoraat Learning Technology & Analytics. De data bevat informatie over de inschrijvingen van studenten in het eerste jaar van de opleiding:
-
-1.  *Demografische kenmerken*: geslacht, leeftijd, reistijd en SES totaalscore.
-2.  *Vooropleidingskenmerken*: toelaatgevende vooropleiding, studiekeuzeprofiel, gemiddeld eindcijfer in de vooropleiding en eventuele deelname aan het Navitas programma.
-3.  *Aanmeldingskenmerken*: aansluiting (direct na diploma, tussenjaar, switch), dag van aanmelding, aantal parallelle studies aan De HHs en collegejaar.
-
-We toetsen in deze analyse *`r sUitval_model`*, voortaan Uitval genoemd. Uitval is gedefinieerd als het niet meer ingeschreven staan in de opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt niet als uitval.
+{{< include "01. Includes/qmdfiles/_Inleiding.qmd" >}}
 
 # Voorbereidingen
 
@@ -164,26 +64,8 @@ dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
     studyform = toupper(opleidingsvorm),
     range = "eerstejaars")
 
-## Pas lLevels aan, zodat deze goed gesorteerd worden
-lLevels_skp <-
-  intersect(
-    lLevels_skp,
-    unique(
-      dfOpleiding_inschrijvingen_base$VOP_Studiekeuzeprofiel_LTA_afkorting
-    )
-  )
-lLevels_aansluiting <-
-  intersect(
-    lLevels_aansluiting,
-    unique(dfOpleiding_inschrijvingen_base$INS_Aansluiting_LTA)
-  )
-lLevels_vop <-
-  intersect(
-    lLevels_vop,
-    unique(
-      dfOpleiding_inschrijvingen_base$VOP_Toelaatgevende_vooropleiding_soort
-    )
-  )
+## Herschik de levels
+Set_Levels(dfOpleiding_inschrijvingen_base)
 
 dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>  
   
@@ -215,7 +97,7 @@ dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>
 
 ## Selecteer en inspecteer de data
 
-We selecteren eerst de relevante variabelen. We verwijderen daarbij variabelen die maar 1 waarde hebben. We bekijken de variabelen in een samenvatting in relatie tot de Uitval. Daarnaast bekijken we de kwaliteit van de data op missende waarden. 
+We selecteren eerst de relevante variabelen. We verwijderen daarbij variabelen die maar 1 waarde hebben. We bekijken de variabelen in een samenvatting in relatie tot de Uitval. Daarnaast bekijken we de kwaliteit van de data op missende waarden.
 
 ```{r}
 
@@ -261,6 +143,9 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen_base |>
   
   arrange(Collegejaar, ID)
 
+## Verwijder de basis dataset
+rm(dfOpleiding_inschrijvingen_base)
+
 ## Maak een samenvatting van de data
 dfSummary <- dfOpleiding_inschrijvingen |>
   
@@ -283,6 +168,8 @@ dfSummary <- dfOpleiding_inschrijvingen |>
     digits = all_continuous() ~ 2,
     missing = "no"
   ) |> 
+  
+  ## Richt de vormgeving van de table in
   modify_header(all_stat_cols() ~ "**{level}**, N={n} ({style_percent(p)}%)") |> 
   add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
         test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE)) |> 
@@ -900,7 +787,61 @@ lTop45_vif <- dfTop_vif |>
 
 ```
 
-
--   **Het beste prognosemodel blijkt een random forest model te zijn.** Van de twee prognosemodellen die we hebben ontwikkeld om `r tolower(sUitval_model)` te voorspellen, lineaire regressie en random forrest, had het random forrest model de hoogste mate van accuraatheid. 
+-   **Het beste prognosemodel blijkt een random forest model te zijn.** Van de twee prognosemodellen die we hebben ontwikkeld om `r tolower(sUitval_model)` te voorspellen, lineaire regressie en random forrest, had het random forrest model de hoogste mate van accuraatheid.
 -   **De mate van accuraatheid van het model is `r sAccuracy_mate` (`r Last_fit_Accuracy`%).** Het model scoort in de huidige opbouw `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van een 'base-model' (`r Base_Model_Accuracy`%). Een base-model neemt de grootste klasse van de gemiddelde `r tolower(sUitval_model)` van de afgelopen jaren als basis: `r Avg_Uitval`% `r sUitval`. Een prognosemodel moet minimaal beter presteren dan een base-model om waarde toe te voegen. Dit is dus vrijwel altijd meer dan de 50% lijn van de AUC/ROC curve.
 -   **Het model toont wel aan dat de herkomst van studenten sterker is gecorreleerd met `r tolower(sUitval_model)` dan eerdere prestaties of vooropleiding.** De Variable Importance Factor (VIF) laat namelijk zien dat de variabelen `r lTop3_vif` de 3 belangrijkste variabelen zijn voor het voorspellen van `r tolower(sUitval_model)`, gevolgd door `r lTop45_vif`.
+
+```{r, echo = FALSE}
+
+## Ruim specifieke objecten weer op
+rm(
+  
+  ## Dataset
+  dfOpleiding_inschrijvingen,
+  dfSummary,
+  dfUitval_test,
+  dfUitval_train,
+  dfUitval_validation,
+  splits,
+  
+  ## Tekst objecten
+  top_models,
+  dfTop_vif,
+  lTop3_vif,
+  lTop45_vif,
+  
+  ## Modelspecifieke objecten
+  
+  ## Logistische regressie
+  lr_auc,
+  lr_auc_highest,
+  lr_auc_highest_value,
+  lr_auc_highest_value,
+  lr_best,
+  lr_mod,
+  lr_plot,
+  lr_recipe,
+  lr_res,
+  lr_workflow,
+  
+  ## Random Forest
+  rf_auc,
+  rf_auc_highest,
+  rf_auc_highest_value,
+  rf_best,
+  rf_mod,
+  rf_recipe,
+  rf_res,
+  rf_workflow,
+  
+  ## Laatste model
+  last_rf_fit,
+  last_rf_mod,
+  last_rf_workflow
+  
+)
+
+## Collect garbage
+invisible(gc())
+  
+```

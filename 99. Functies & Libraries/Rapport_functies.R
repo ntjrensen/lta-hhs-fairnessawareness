@@ -252,6 +252,37 @@ Get_Levels <- function() {
   
 }
 
+## Pas levels aan, zodat deze goed gesorteerd worden
+Sort_Levels <- function(levels, df, var) {
+  lLevels <- intersect(levels, 
+                       unique(df[[var]])
+                       )
+  return(lLevels)
+}
+
+## Functie om de levels van een variabele te bepalen
+Set_Levels <- function(df = dfOpleiding_inschrijvingen_base) {
+  
+  lLevels_skp <<-
+    Sort_Levels(
+      lLevels_skp,
+      df,
+      "VOP_Studiekeuzeprofiel_LTA_afkorting"
+    )
+  
+  lLevels_aansluiting <<-
+    Sort_Levels(lLevels_aansluiting,
+                df,
+                "INS_Aansluiting_LTA")
+  
+  lLevels_vop <<-
+    Sort_Levels(
+      lLevels_vop,
+      df,
+      "VOP_Toelaatgevende_vooropleiding_soort"
+    )
+}
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 4. CLI FUNCTIES ####
