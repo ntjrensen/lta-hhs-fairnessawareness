@@ -78,6 +78,7 @@ if(bSetup_executed == F) {
   library(dlookr)      # om data te inspecteren
   library(gtsummary)   # voor beschrijvende summary tabellen
   library(cli)         # voor cli teksten
+  library(glue)        # voor string interpolatie
   
   ## Geef de voorkeur bij conflicten aan het tidymodels package
   tidymodels_prefer(quiet = TRUE)

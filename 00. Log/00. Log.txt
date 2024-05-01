@@ -18,6 +18,9 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[ ] Bugs
+  [ ] 
+
 [ ] Modellen
   [ ] 3 extra modellen: 
     [ ] mgcv = general additive model 
@@ -28,29 +31,15 @@
     [ ] parallel processing toevoegen
   [ ] https://forum.posit.co/t/error-in-tidymodels-tune-grid-function-call/54150
   
-  [ ] Het finale model kunnen kiezen op basis van de beste hyperparameters
-    [x] Hoogste auc bepalen
-    [ ] Wisselen van tekst als het model anders is (voorbeeldopleiding hiervoor vinden)
-  
-  [ ] Meerdere opleidingen
-    [ ] Elk model aan of uit kunnen zetten...
-
-[ ] Variabelen
-
-[ ] Project
-
-[ ] Teksten
-  
-[ ] Tables
-  
-[ ] Plots  
-  [ ] De VIP plot kan een stuk beter: kleuren en met aantallen als labels  
-
 [ ] Output
+  [ ] Een algemene footer met copyright
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## OPGELOST ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[x] Plots  
+  [x] De VIP plot kan een stuk beter: kleuren en met aantallen als labels  
 
 [x] Warning: `validation_split()` was deprecated in rsample 1.2.0. ℹ Please use `initial_validation_split()` instead.
 
@@ -58,6 +47,15 @@
   [x] rf: uitzoeken hoe we mtry en min_n bepalen
   [-] Grouped model (op basis van vooropleiding met of zonder cijfer)
   
+  [x] Het finale model kunnen kiezen op basis van de beste hyperparameters
+    [x] Hoogste auc bepalen
+    [x] Wisselen van tekst als het model anders is (voorbeeldopleiding hiervoor vinden)
+  
+  [x] Opties
+    [x] Elk model aan of uit kunnen zetten
+    [x] Aan het eind van een model de resultaten in een df zetten 
+    [x] Dit df gebruiken voor teksten
+    [x] Rekening houden met de teksten
 [x] Variabelen
   [x] Eindexamencijfer toevoegen
   [x] Reistijd toevoegen 

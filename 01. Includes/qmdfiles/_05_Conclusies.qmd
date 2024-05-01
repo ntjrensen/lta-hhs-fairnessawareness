@@ -1,0 +1,103 @@
+---
+format: html
+---
+
+# Conclusies
+
+```{r, echo = FALSE}
+#| code-fold: false
+
+## Bepaal de accuraatheid van het model, het gemiddelde uitvalpercentage en het base-model
+Last_fit_Accuracy   <- last_rf_fit |>
+  collect_metrics() |>
+  filter(.metric == "accuracy") |>
+  pull(.estimate) |>
+  round(4) * 100
+Avg_Uitval          <- round(mean(dfOpleiding_inschrijvingen$Uitval == "TRUE") * 100, 2) 
+Base_Model_Accuracy <- round(100 - Avg_Uitval, 2)
+nAccuracy_verschil  <- 1 - abs(Last_fit_Accuracy/Base_Model_Accuracy)
+
+if(Avg_Uitval < 50) {
+  Base_Model_Accuracy <- round(100 - Avg_Uitval, 2)
+  sUitval <- "viel uit"
+} else {
+  Base_Model_Accuracy <- Avg_Uitval
+  sUitval <- "viel niet uit"
+}
+
+## Functies
+Get_Accuracy_vergelijking <-
+  function(Last_fit_Accuracy, Base_Model_Accuracy) {
+    if (Last_fit_Accuracy == Base_Model_Accuracy) {
+      "even goed als"
+    } else if (Last_fit_Accuracy > Base_Model_Accuracy) {
+      "beter"
+    } else {
+      "slechter"
+    }
+  }
+  
+Get_Accuracy_mate <- function(Last_fit_Accuracy) {
+  if (Last_fit_Accuracy > 95) {
+    "zeer hoog"
+  } else if (Last_fit_Accuracy > 90) {
+    "hoog"
+  } else if (Last_fit_Accuracy > 80) {
+    "vrij hoog"
+  } else if (Last_fit_Accuracy > 70) {
+    "gemiddeld"
+  } else if (Last_fit_Accuracy > 60) {
+    "vrij laag"
+  } else {
+    "laag"
+  }
+}
+  
+Get_Accuracy_verschil <- function(nAccuracy_verschil) {
+  if (nAccuracy_verschil < 0.05) {
+    "iets"
+  } else if (nAccuracy_verschil < 0.10) {
+    "wat"
+  } else if (nAccuracy_verschil < 0.20) {
+    "een stuk"
+  } else {
+    "veel"
+  }
+}
+
+Special_Paste  <- function(vec) sub(",\\s+([^,]+)$", " en \\1", toString(vec))
+Print_Variable <- function(variable) paste0("`", variable, "`")
+
+## Bepaal een aantal teksten
+sAccuracy_vergelijking <- Get_Accuracy_vergelijking(Last_fit_Accuracy, Base_Model_Accuracy)
+sAccuracy_mate         <- Get_Accuracy_mate(Last_fit_Accuracy)
+sAccuracy_verschil     <- Get_Accuracy_verschil(nAccuracy_verschil)
+
+## Bepaal de top 3 en top 5 variabelen op basis van de VIF
+dfTop_vif   <- last_rf_fit |> 
+  extract_fit_parsnip() |> 
+  vip::vi() |> 
+  arrange(desc(Importance)) 
+
+lTop3_vif <- dfTop_vif |>
+  slice(1:3) |>
+  pull(Variable) |>
+  ## Pas de variabelen aan zodat ze tussen backticks staan
+  Print_Variable() |>
+  ## Maak er een zin van
+  Special_Paste()  
+
+lTop45_vif <- dfTop_vif |>
+  ## Regel 4 en 5
+  slice(4:5) |>
+  pull(Variable) |>
+  ## Pas de variabelen aan zodat ze tussen backticks staan
+  Print_Variable() |>
+  ## Maak er een zin van
+  Special_Paste()
+
+```
+
+-   **Het beste prognosemodel blijkt een random forest model te zijn.** Van de twee prognosemodellen die we hebben ontwikkeld om `r tolower(sUitval_model)` te voorspellen, lineaire regressie en random forrest, had het random forrest model de hoogste mate van accuraatheid.
+-   **De mate van accuraatheid van het model is `r sAccuracy_mate` (`r Last_fit_Accuracy`%).** Het model scoort in de huidige opbouw `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van een 'base-model' (`r Base_Model_Accuracy`%). Een base-model neemt de grootste klasse van de gemiddelde `r tolower(sUitval_model)` van de afgelopen jaren als basis: `r Avg_Uitval`% `r sUitval`. Een prognosemodel moet minimaal beter presteren dan een base-model om waarde toe te voegen. Dit is dus vrijwel altijd meer dan de 50% lijn van de AUC/ROC curve.
+-   **Het model toont wel aan dat de herkomst van studenten sterker is gecorreleerd met `r tolower(sUitval_model)` dan eerdere prestaties of vooropleiding.** De Variable Importance Factor (VIF) laat namelijk zien dat de variabelen `r lTop3_vif` de 3 belangrijkste variabelen zijn voor het voorspellen van `r tolower(sUitval_model)`, gevolgd door `r lTop45_vif`.

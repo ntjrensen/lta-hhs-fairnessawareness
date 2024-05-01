@@ -71,128 +71,6 @@ tidymodels_prefer(quiet = TRUE)
 ltabase::load_lta_datasets(message = TRUE)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.5 Extra functies
-
-## Functie om de lange naam van de opleidingsvorm te bepalen
-Get_Opleidingsvorm_lang <- function(opleidingsvorm) {
-  if (opleidingsvorm == "VT") {
-    return("voltijd")
-  } else if (opleidingsvorm == "DT") {
-    return("deeltijd")
-  } else if (opleidingsvorm == "DU") {
-    return("duaal")
-  } else {
-    return("onbekend")
-  }
-}
-
-## Functie om een quarto bestand te renderen en te verplaatsen
-Quarto_Render_Move <- function(input,
-                               output_file = NULL,
-                               output_dir = NULL,
-                               ...) {
-  
-  # Haal alle informatie op over de output van de quarto file
-  x <- quarto::quarto_inspect(input)
-  output_format <- names(x$formats)
-  output <- x$formats[[output_format]]$pandoc$`output-file`
-  if (is.null(output_file)) {
-    output_file <- output
-  }
-  input_dir <- dirname(input)
-  if (is.null(output_dir)) {
-    output_dir <- input_dir
-  }
-  output_path_from <- file.path(input_dir, output)
-  output_path_to <- file.path(output_dir, output_file)
-  
-  # Render het qmd input-bestand naar de input_dir
-  quarto::quarto_render(input = input, ... = ...)
-  
-  # Als de output_dir verschilt van de input_dir, kopieer het gerenderde bestand
-  ## daarheen en verwijder het originele bestand
-  if (input_dir != output_dir) {
-    # Try to make the folder if it doesn't yet exist
-    if (!dir.exists(output_dir)) {
-      dir.create(output_dir)
-    }
-    
-    # Verplaats nu de uitvoer naar de output_dir en verwijder de originele uitvoer
-    file.copy(from = output_path_from,
-              to = output_path_to,
-              overwrite = TRUE)
-    file.remove(output_path_from)
-    
-    # Als de output_dir hetzelfde is als de input_dir, maar het gerenderde bestand
-    # een andere naam heeft dan het invoerbestand, hernoem het dan
-  } else if (output_file != output) {
-    file.rename(from = output_path_from, to = output_path_to)
-  }
-  
-}
-
-## Functie om bestanden te kopieren naar de output directory van de repo buiten dit project
-Copy_Reports <- function(remove_orgials = F, debug = F) {
-  
-  ## Bepaal de output directory van de repo buiten dit project
-  sOutput_directory <- file.path(Get_Rootdirectory(),
-                                 "00 LTA Git/Git HHs/LTA_Reports/lta-hhs-studiesucces-models")
-  
-  ## Maak een filelist van de .html bestanden in de output directory
-  file_list <- list.files(
-    "10. Output",
-    pattern = "*.html",
-    full.names = TRUE,
-    recursive = TRUE
-  )
-  
-  if(debug) {
-    cli::cli_h1("File list:")
-    cli::cli_bullets(file_list)
-  }
-  
-  ## Kopieer de .html bestanden van de output directory naar de output directory van de repo buiten dit project
-  if(!dir.exists(sOutput_directory)) {
-    dir.create(sOutput_directory)
-  }
-  
-  ## Als er bestanden zijn, kopieer deze dan
-  if(length(file_list) > 0) {
-    
-    ## Kopieer de .html bestanden van de output directory 
-    ## naar de output directory van de repo buiten dit project
-    for(f in file_list) {
-      
-      ## Maak een output directory voor de bestanden: repo + faculteit
-      .output_dir <- file.path(sOutput_directory,
-                               file.path(dirname(f)) |> basename())
-      
-      if(!dir.exists(.output_dir)) {
-        dir.create(.output_dir)
-      }
-      
-      file.copy(
-        from = f,
-        to = .output_dir,
-        overwrite = TRUE,
-        recursive = FALSE,
-        copy.mode = TRUE
-      )
-    }
-    
-    cli::cli_alert("De bestanden zijn gekopieerd")
-    
-  } else {
-    cli::cli_alert("Er zijn geen bestanden om te kopiëren")
-  }
-  
-  if(remove_orgials) {
-    file.remove(file_list)
-    cli::cli_alert("De originele bestanden zijn verwijderd")
-  }
-}
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.5 Laad extra functies ####
 
 source("99. Functies & Libraries/Rapport_functies.R")
@@ -277,5 +155,6 @@ for(i in dfRender$INS_Opleiding) {
 bRemove_originals <- FALSE
 
 ## Kopieer de gerenderde bestanden naar de output directory van de repo buiten dit project
+## Verwijder de originele bestanden indien bRemove_originals = TRUE
 Copy_Reports(remove_orgials = bRemove_originals)
 
