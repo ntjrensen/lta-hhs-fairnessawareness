@@ -188,7 +188,46 @@ Mutate_Uitval <- function(df, model = "Uitval na 1 jaar") {
           SUC_Uitval = coalesce(SUC_Uitval, F)
         ) 
     )
-  }
+  } 
+  
+}
+
+## Functie om de Succes variabele te maken
+Mutate_Succes <- function(df, model = "Uitval na 1 jaar") {
+  
+  if (model == "Uitval na 1 jaar") {
+    return(
+      df |>
+        mutate(
+          SUC_Succes = ifelse(SUC_Uitval_aantal_jaar_LTA == 1, T, F),
+          SUC_Succes = coalesce(SUC_Succes, F)
+        ) 
+    )
+  } else if (model == "Uitval na 2 jaar") {
+    return(
+      df |>
+        mutate(
+          SUC_Succes = ifelse(SUC_Uitval_aantal_jaar_LTA == 1:2, T, F),
+          SUC_Succes = coalesce(SUC_Succes, F)
+        ) 
+    )
+  } else if (model == "Uitval na 3 jaar") {
+    return(
+      df |>
+        mutate(
+          SUC_Succes = ifelse(SUC_Uitval_aantal_jaar_LTA == 1:3, T, F),
+          SUC_Succes = coalesce(SUC_Succes, F)
+        ) 
+    )
+  } else if (model == "Alle uitval"){
+    return(
+      df |>
+        mutate(
+          SUC_Succes = ifelse(SUC_Uitval_aantal_jaar_LTA > 0, T, F),
+          SUC_Succes = coalesce(SUC_Succes, F)
+        ) 
+    )
+  } 
   
 }
 

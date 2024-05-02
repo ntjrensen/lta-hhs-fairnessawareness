@@ -85,25 +85,52 @@ source("99. Functies & Libraries/Rapport_functies.R")
 ## 2.0 Bepaal de selectie ####
 
 dfRender <- dfOpleidingen |>
-  dplyr::filter(INS_Opleiding %in% c("HBO-V", "SW"),
-                INS_Opleidingsvorm %in% c("VT"))
+  mutate(INS_Opleiding_en_Opleidingsvorm = paste(INS_Opleiding, INS_Opleidingsvorm, sep = "_")) |>
+  dplyr::filter(
+    INS_Opleiding_en_Opleidingsvorm %in% c(
+      # "HBO-V_VT", 
+      # "HBO-V_DT",
+      # "CMD_VT", 
+      # "IPO_VT", 
+      # "MT_VT", 
+      # "SW_VT", 
+      "ORM_DT",
+      "ORM_VT"#,
+      #"AC_VT"
+      ) 
+  ) |> 
+  dplyr::select(INS_Opleiding_en_Opleidingsvorm, 
+                INS_Faculteit,
+                INS_Opleiding,
+                INS_Opleidingsvorm,
+                everything())
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 2.1 Loop over opleidingen en render de output ####
 
 lUitval <-  c("Uitval na 1 jaar", "Alle uitval")
 
-for(i in dfRender$INS_Opleiding) {
+for(i in 1:nrow(dfRender)) {
+  
+  ## Bepaal de opleiding en opleidingsvorm
+  .opleiding      <- dfRender$INS_Opleiding[i] 
+  .opleidingsvorm <- dfRender$INS_Opleidingsvorm[i]
+  
+  cli::cli_alert_info(
+    paste(
+      "Render de output voor de opleiding:",
+      .opleiding,
+      "en opleidingsvorm:",
+      .opleidingsvorm
+    )
+  )
   
   for (j in lUitval) {
   
-    ## Bepaal de opleidingsvorm
-    .opleidingsvorm <- dfRender$INS_Opleidingsvorm[dfRender$INS_Opleiding == i]
-    
     ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
-    current_render_opleiding <- Get_Current_opleiding(opleiding = i,
+    current_render_opleiding <- Get_Current_opleiding(opleiding = .opleiding,
                                                       opleidingsvorm = .opleidingsvorm)
-    
+
     ## Bepaal de output file:
     ## faculteit-opleiding-opleidingsvorm-uitval.html
     .uitval <- janitor::make_clean_names(j)
@@ -122,7 +149,7 @@ for(i in dfRender$INS_Opleiding) {
     )
     
     ## Bepaal de output directory
-    .output_dir <- file.path("10. Output", 
+    .output_dir <- file.path("10. Output",
                              tolower(current_render_opleiding$INS_Faculteit))
     
     ## Bepaal de parameters voor de quarto file

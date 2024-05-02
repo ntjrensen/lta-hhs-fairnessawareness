@@ -79,6 +79,11 @@ if(bSetup_executed == F) {
   library(gtsummary)   # voor beschrijvende summary tabellen
   library(cli)         # voor cli teksten
   library(glue)        # voor string interpolatie
+  library(probably)    # voor probabilistische modellen
+  library(discrim)     # discriminant analysis
+  library(klaR)        # voor classificatie en visualisatie
+  library(betacal)     # voor beta calibration
+  library(doParallel)  # voor parallel processing
   
   ## Geef de voorkeur bij conflicten aan het tidymodels package
   tidymodels_prefer(quiet = TRUE)
@@ -87,6 +92,11 @@ if(bSetup_executed == F) {
   ## 1.5 Laad extra functies
   
   source("99. Functies & Libraries/Rapport_functies.R")
+  
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 1.6 Bepaal de voorkeur voor de thema's
+  
+  theme_set(theme_minimal())
   
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

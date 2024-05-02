@@ -27,6 +27,8 @@ format:
     
     ## Output instellingen
     self-contained: true
+    standalone: true
+    embed-resources: true
     
     ## Links rechterzijde
     toc: true

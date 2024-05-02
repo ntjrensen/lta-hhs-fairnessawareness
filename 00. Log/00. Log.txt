@@ -18,26 +18,67 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-[ ] Bugs
-  [ ] 
+[ ] Andere opleidingen proberen
+  [ ] ITD: CMD
+  [ ] TIS: IPO
+  [ ] GVS: BT/MT
+  [ ] SWE: SW
+  [ ] BRV: OR DT
+  [ ] BFM: AC
+  "ORM_DT
+      [select_inspect_data]    
+      [ ] te weinig observaties ondervangen
+        [ ] voeg per opleiding het aantal eerstejaars toe en unieke collegejaren.
+        [ ] als dit te weinig observaties of jaren zijn, dan next
+
+  [ ] Plot
+    [ ] de beste plot in de auc tonen: If performance is about the same, 
+    we’d prefer to choose a higher penalty value. zie https://www.tidymodels.org/start/case-study/
 
 [ ] Modellen
-  [ ] 3 extra modellen: 
-    [ ] mgcv = general additive model 
-    [ ] svm = support vector machine 
-    [ ] boost_tree_xgboost
-  [ ] Algehele opzet wat meer configureerbaar?
-    [ ] op basis van https://rpubs.com/mikek25/tidymodels_churn
-    [ ] parallel processing toevoegen
-  [ ] https://forum.posit.co/t/error-in-tidymodels-tune-grid-function-call/54150
+  [ ] Diplomarendement
   
-[ ] Output
-  [ ] Een algemene footer met copyright
+[ ] Teksten
+  [ ] Beste model fits zoals op https://rpubs.com/mikek25/tidymodels_churn
+  [ ] Teksten voor conclusies herzien
+  
+  [ ] Een workflow set uitproberen:
+    [ ] https://workflowsets.tidymodels.org/
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## OPGELOST ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[-] 3 extra modellen: 
+    [-] mgcv = general additive model 
+    [-] svm = support vector machine 
+    [-] boost_tree_xgboost
+    [-] decision tree
+  
+[-] Structuur/herhaalbaarheid
+  [-] Algehele opzet wat meer configureerbaar?
+    [-] op basis van https://rpubs.com/mikek25/tidymodels_churn
+    [-] parallel processing toevoegen
+  [-] https://forum.posit.co/t/error-in-tidymodels-tune-grid-function-call/54150
+  
+[x] Waarschijnlijk werkt de final fit niet goed bij lr
+[x] Dubbele studie > omkatten naar Ja / Nee
+
+[x] Corplot voor hoge correlaties  
+  
+
+[x] Meer variabelen?
+    [x] Bij HDT: RNK_Rangnummer
+    [x] BUI_Internationale_student_tf
+    [x] > GIS - is dit mijn variabele of die van OKC?
+    [x] SES_Deelscore_arbeid
+    [-] SES_Deelscore_opleiding
+    [x] SES_Deelscore_welvaart
+    [x] VOP_Gemiddeld_cijfer_cijferlijst
+    
+[x] Teksten
+  [x] Conclusies ook configureren
+  
 [x] Plots  
   [x] De VIP plot kan een stuk beter: kleuren en met aantallen als labels  
 
@@ -56,6 +97,7 @@
     [x] Aan het eind van een model de resultaten in een df zetten 
     [x] Dit df gebruiken voor teksten
     [x] Rekening houden met de teksten
+
 [x] Variabelen
   [x] Eindexamencijfer toevoegen
   [x] Reistijd toevoegen 
@@ -92,6 +134,7 @@
   [x] Logo's van HHs en GIL
   [-] Standaardtekst over LTA met copyright
   [-] Output naar een aparte folder
+  [x] Een algemene footer met copyright
 
 [x] Project
   [x] Index vereenvoudigen door met includes te werken voor de R code
