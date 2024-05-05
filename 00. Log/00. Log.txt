@@ -18,26 +18,26 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[ ] Warnings
+  [x] Levels aanpassen aan wat er in de dataset set
+
+[ ] Modellen
+  [ ] Diplomarendement
+  [x] Uitval met en zonder prop
+    [x] SUC_P_aantal_jaar
+  [ ] Aan het begin een klein staatje van het aantal uitval per jaar.
+  
 [ ] Andere opleidingen proberen
-  [ ] ITD: CMD
-  [ ] TIS: IPO
-  [ ] GVS: BT/MT
-  [ ] SWE: SW
-  [ ] BRV: OR DT
-  [ ] BFM: AC
-  "ORM_DT
+  [ ] ORM_DT
       [select_inspect_data]    
       [ ] te weinig observaties ondervangen
         [ ] voeg per opleiding het aantal eerstejaars toe en unieke collegejaren.
         [ ] als dit te weinig observaties of jaren zijn, dan next
 
-  [ ] Plot
-    [ ] de beste plot in de auc tonen: If performance is about the same, 
-    we’d prefer to choose a higher penalty value. zie https://www.tidymodels.org/start/case-study/
+[ ] Plot
+  [ ] de beste plot in de auc tonen: If performance is about the same, 
+  we’d prefer to choose a higher penalty value. zie https://www.tidymodels.org/start/case-study/
 
-[ ] Modellen
-  [ ] Diplomarendement
-  
 [ ] Teksten
   [ ] Beste model fits zoals op https://rpubs.com/mikek25/tidymodels_churn
   [ ] Teksten voor conclusies herzien
@@ -48,6 +48,26 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## OPGELOST ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[x] Extra variabelen
+  [x] Wiskundecijfer -    VOP_Cijfer_SE_proxy_wiskunde
+  [x] Natuurkundecijfer - VOP_Cijfer_schoolexamen_natuurkunde
+  [x] Nederlands -        VOP_Cijfer_schoolexamen_Nederlands
+  [x] Engels -            VOP_Cijfer_schoolexamen_Engels
+  [x] Wel of geen cijfer
+    [x] Wiskunde_Ja_Nee
+    [x] Natuurkunde_Ja_Nee
+    [x] Cijfer Ja_Nee
+    [x] Engels_Ja_Nee
+    [x] Nederlands_Ja_Nee
+
+[x] Andere opleidingen proberen
+  [x] ITD: CMD
+  [x] TIS: IPO
+  [x] GVS: BT/MT
+  [x] SWE: SW
+  [x] BRV: OR DT
+  [x] BFM: AC
 
 [-] 3 extra modellen: 
     [-] mgcv = general additive model 

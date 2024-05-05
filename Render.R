@@ -159,7 +159,10 @@ for(i in 1:nrow(dfRender)) {
       opleidingsnaam           = current_render_opleiding$INS_Opleidingsnaam_huidig,
       opleiding                = current_render_opleiding$INS_Opleiding,
       opleidingsvorm           = Get_Opleidingsvorm_lang(current_render_opleiding$INS_Opleidingsvorm),
-      opleidingsvorm_afkorting = current_render_opleiding$INS_Opleidingsvorm
+      opleidingsvorm_afkorting = current_render_opleiding$INS_Opleidingsvorm,
+      selectie                 = ifelse(current_render_opleiding$INS_Opleiding == "HDT", 
+                                        TRUE, 
+                                        FALSE)
     )
     
     ## Render de quarto file en verplaats deze naar de output directory

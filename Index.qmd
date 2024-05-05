@@ -1,56 +1,80 @@
 ---
-title: "Prognosemodel - `r params$uitval`"
-subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm`"
+title: "Prognosemodel - `r params$uitval` `r ifelse(params$propedeusediploma == 'Nvt', '', paste0(' - ', params$propedeusediploma))`"
+subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
 
 ## Auteur en datum
 author: "`r params$author`, De HHs"
 date: last-modified
 
-## Versie
-versie: 1.0
+## LTA Template
+ltatemplate: 0.9.1.9000
 
 ## Format en output
 output-file: "lta-hhs-tidymodels-uitval.html"
 
 ## Parameters        
 params:
-  uitval: "Uitval na 1 jaar"
+  versie: "1.0"
+  uitval: "Uitval na 2 jaar"
+  propedeusediploma: "Zonder P" ## Nvt/Met P/Zonder P
   faculteit: "GVS"
   
-  ## HBO-V
-  opleidingsnaam: "B Opleiding tot Verpleegkundige"
-  opleiding: "HBO-V"
-  opleidingsvorm: "voltijd"
-  opleidingsvorm_afkorting: "VT"
-  selectie: false
+  ## GVS:HBO-V
+  # opleidingsnaam: "B Opleiding tot Verpleegkundige"
+  # opleiding: "HBO-V"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
   
-  ## HDT
+  ## GVS:MT
+  # opleidingsnaam: "B Mens en Techniek"
+  # opleiding: "MT"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## GVS:HDT
   # opleidingsnaam: "B Huidtherapie"
   # opleiding: "HDT"
   # opleidingsvorm: "voltijd"
   # opleidingsvorm_afkorting: "VT"
   # selectie: true
   
-  ## ORM DT
+  ## FDR:ORM DT
   # opleidingsnaam: "B Ondernemerschap Retail Management"
   # opleiding: "ORM"
   # opleidingsvorm: "deeltijd"
   # opleidingsvorm_afkorting: "DT"
   # selectie: false
   
+  ## TIS:IPO
+  # opleidingsnaam: "B Industrieel Product Ontwerpen"
+  # opleiding: "IPO"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## BFM:AC
+  opleidingsnaam: "B Accountancy"
+  opleiding: "AC"
+  opleidingsvorm: "voltijd"
+  opleidingsvorm_afkorting: "VT"
+  selectie: false
+  
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"
   
 ## Content
 includes:
-  inleiding:  true
-  data:       true
-  model_lr:   true
-  model_rf:   true
-  model_svm:  false
-  final_fit:  true
-  conclusies: true
-  copyright:  true
+  inleiding:      true
+  data:           true
+  model_lr:       true
+  model_rf:       true
+  model_svm:      false
+  final_fit:      true
+  conclusies:     true
+  verantwoording: true
+  copyright:      true
 ---
 
 ```{r setup, include = FALSE}
@@ -61,6 +85,15 @@ source("_Setup.R")
 
 ## Config
 sUitval_model <- params$uitval
+sPropedeusediploma <- params$propedeusediploma
+
+if(sPropedeusediploma == "Zonder P") {
+  sUitval_model_text <- paste(sUitval_model, "bij studenten zonder propedeusediploma")
+} else if(sPropedeusediploma == "Met P") {
+  sUitval_model_text <- paste(sUitval_model, "bij studenten met propedeusediploma")
+} else {
+  sUitval_model_text <- sUitval_model
+}
 
 ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
 current_opleiding <- Get_Current_opleiding(opleiding = params$opleiding, 
@@ -105,7 +138,11 @@ De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verr
 2.  *Vooropleidingskenmerken*: toelaatgevende vooropleiding, studiekeuzeprofiel, gemiddeld eindcijfer in de vooropleiding en eventuele deelname aan het Navitas programma.
 3.  *Aanmeldingskenmerken*: aansluiting (direct na diploma, tussenjaar, switch), dag van aanmelding, aantal parallelle studies aan De HHs en collegejaar.
 
-We toetsen in deze analyse *`r sUitval_model`*, voortaan **Uitval** genoemd. Uitval is gedefinieerd als het niet meer ingeschreven staan in de opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt niet als uitval.
+## Toelichting op de analyse
+
+We toetsen in deze analyse *`r sUitval_model_text`*, voortaan **Uitval** genoemd. 
+
+Uitval is gedefinieerd als het niet meer ingeschreven staan in de opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt niet als uitval.
 :::
 
 <!-- Data -->
@@ -141,30 +178,25 @@ dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>
   ## Maak van de uitval variabele een factor
   mutate(SUC_Uitval = as.factor(SUC_Uitval)) |> 
 
+  ## Verbijzonder eventueel op basis van het propedeusediploma
+  Filter_Propedeusediploma(sPropedeusediploma) |>
+
   ## Maak van de Dubbele studie variabele een Ja/Nee variabele
-  mutate(INS_Dubbele_studie = ifelse(INS_Aantal_inschrijvingen > 1, "Ja", "Nee")) |> 
-  
-  ## Herorden de levels van de variabele studiekeuzeprofiel
-  mutate(VOP_Studiekeuzeprofiel_LTA_afkorting = fct_relevel(
-    VOP_Studiekeuzeprofiel_LTA_afkorting,
-    lLevels_skp
-  )) |> 
-  
-  ## Herorden de levels van de variabele aansluiting
-  mutate(INS_Aansluiting_LTA = fct_relevel(
-    INS_Aansluiting_LTA,
-    lLevels_aansluiting
-  )) |>
-  
-  ## Herorden de levels van de variabele vooropleiding
-  mutate(VOP_Toelaatgevende_vooropleiding_soort = fct_relevel(
-    VOP_Toelaatgevende_vooropleiding_soort,
-    lLevels_vop
-  )) |> 
+  mutate(INS_Dubbele_studie = ifelse(INS_Aantal_inschrijvingen > 1, "Ja", "Nee")) |>  
 
   ## Verwijder INS_Aantal_inschrijvingen
-  select(-INS_Aantal_inschrijvingen)
+  select(-INS_Aantal_inschrijvingen) |> 
 
+  ## Pas voor een aantal variabelen de levels aan
+  Mutate_Levels(
+  c(
+    "VOP_Studiekeuzeprofiel_LTA_afkorting",
+    "INS_Aansluiting_LTA",
+    "VOP_Toelaatgevende_vooropleiding_soort"
+  ),
+    list(lLevels_skp, lLevels_vop, lLevels_vop)
+  )
+  
 ## B Huidtherapie: Filter op uitsluitend studenten met een rangnummer (selectie)
 if(opleiding == "HDT") {
   dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |> 
@@ -197,6 +229,10 @@ lSelect <- c(
     "SUC_Uitval",
     "VOP_Gemiddeld_cijfer_cijferlijst",
     "VOP_Gemiddeld_eindcijfer_VO_van_de_hoogste_vooropleiding_voor_het_HO",
+    "VOP_Cijfer_CE1_nederlands",
+    "VOP_Cijfer_CE1_engels",
+    "VOP_Cijfer_CE_proxy_wiskunde",
+    "VOP_Cijfer_CE1_natuurkunde",
     "VOP_Studiekeuzeprofiel_LTA_afkorting",
     "VOP_Toelaatgevende_vooropleiding_soort"
   )
@@ -214,30 +250,37 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen_base |>
   
   ## Hernoem variabelen voor beter leesbare namen
   rename(
-    ID                 = INS_Student_UUID_opleiding_vorm,
-    Geslacht           = DEM_Geslacht,
-    Leeftijd           = DEM_Leeftijd_1_oktober,
-    Reistijd           = GIS_Tijd_fiets_OV,
-    Dubbele_studie     = INS_Dubbele_studie,
-    Collegejaar        = INS_Collegejaar,
-    Aanmelding         = INS_Dagen_tussen_aanmelding_en_1_september,
-    Aansluiting        = INS_Aansluiting_LTA,
-    Navitas            = INS_Navitas_tf,
-    APCG               = CBS_APCG_tf,
-    SES_Arbeid         = SES_Deelscore_arbeid,
-    SES_Welvaart       = SES_Deelscore_welvaart,
-    SES_Totaal         = SES_Totaalscore,          
-    Uitval             = SUC_Uitval,
-    Cijfer_SE_VO       = VOP_Gemiddeld_cijfer_cijferlijst,
-    Cijfer_CE_VO       = VOP_Gemiddeld_eindcijfer_VO_van_de_hoogste_vooropleiding_voor_het_HO,
-    Studiekeuzeprofiel = VOP_Studiekeuzeprofiel_LTA_afkorting,
-    Vooropleiding      = VOP_Toelaatgevende_vooropleiding_soort
+    ID                    = INS_Student_UUID_opleiding_vorm,
+    Geslacht              = DEM_Geslacht,
+    Leeftijd              = DEM_Leeftijd_1_oktober,
+    Reistijd              = GIS_Tijd_fiets_OV,
+    Dubbele_studie        = INS_Dubbele_studie,
+    Collegejaar           = INS_Collegejaar,
+    Aanmelding            = INS_Dagen_tussen_aanmelding_en_1_september,
+    Aansluiting           = INS_Aansluiting_LTA,
+    Navitas               = INS_Navitas_tf,
+    APCG                  = CBS_APCG_tf,
+    SES_Arbeid            = SES_Deelscore_arbeid,
+    SES_Welvaart          = SES_Deelscore_welvaart,
+    SES_Totaal            = SES_Totaalscore,          
+    Uitval                = SUC_Uitval,
+    Cijfer_SE_VO          = VOP_Gemiddeld_cijfer_cijferlijst,
+    Cijfer_CE_VO          = VOP_Gemiddeld_eindcijfer_VO_van_de_hoogste_vooropleiding_voor_het_HO,
+    Cijfer_CE_Nederlands  = VOP_Cijfer_CE1_nederlands,
+    Cijfer_CE_Engels      = VOP_Cijfer_CE1_engels,
+    Cijfer_CE_Wiskunde    = VOP_Cijfer_CE_proxy_wiskunde,
+    Cijfer_CE_Natuurkunde = VOP_Cijfer_CE1_natuurkunde,
+    Studiekeuzeprofiel    = VOP_Studiekeuzeprofiel_LTA_afkorting,
+    Vooropleiding         = VOP_Toelaatgevende_vooropleiding_soort
   ) |> 
   
   ## Pas CBS_APCG_tf aan naar factor
   mutate(APCG = case_when(APCG == TRUE ~ "Ja",
                           APCG == FALSE ~ "Nee",
                           .default = "Onbekend")) |>
+
+  ## Geef aan waar missende cijfers in het VO zijn
+  Mutate_Cijfers_VO() |>
   
   ## Verwijder variabelen, waarbij er maar 1 waarde is
   select(where(~ n_distinct(.) > 1)) |>
@@ -249,6 +292,9 @@ if(opleiding == "HDT") {
   dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |> 
     rename(Rangnummer = RNK_Rangnummer)
 } 
+
+dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |> 
+ ltabase::sort_distinct()
 
 ## Verwijder de basis dataset
 rm(dfOpleiding_inschrijvingen_base)
@@ -304,7 +350,7 @@ diagnose(dfOpleiding_inschrijvingen) |>
   mutate(missing_percent = round(missing_percent, 2),
          unique_rate = round(missing_percent, 2)) |>
   arrange(desc(missing_percent)) |>
-  knitr::kable(caption = "Kwaliteit van de data voor bewerkingen")
+  knitr::kable(caption = "Kwaliteit van de data voor bewerkingen (gesorteerd op missende waarden)")
 
 ```
 
@@ -353,6 +399,7 @@ diagnose(dfOpleiding_inschrijvingen) |>
   knitr::kable(caption = "Kwaliteit van de data na bewerkingen")
 
 ```
+
 ## Bekijk de onderlinge correlaties
 
 Het is verstandig om voorafgaand aan het bouwen van een model te kijken naar de onderlinge correlaties tussen numerieke variabelen. Dit geeft inzicht in de data en kan helpen bij het maken van keuzes voor het model of de duiding van de uitkomsten.
@@ -367,7 +414,7 @@ dfOpleiding_inschrijvingen |>
   cor() |> 
   corrplot::corrplot(
     order = 'hclust', 
-    addrect = 3,
+    addrect = 4,
     method = "number",  
     tl.cex = 0.8,       
     tl.col = "black")
@@ -959,11 +1006,9 @@ last_fit |>
 
 ```
 
-
 <!-- Conclusies -->
 
 ::: {.content-hidden unless-meta="includes.conclusies"}
-
 # Conclusies
 
 ```{r, echo = FALSE}
@@ -978,15 +1023,18 @@ Last_fit_Accuracy   <- last_fit |>
   round(4) * 100
 Avg_Uitval          <- round(mean(dfOpleiding_inschrijvingen$Uitval == "TRUE") * 100, 2) 
 Base_Model_Accuracy <- round(100 - Avg_Uitval, 2)
-nAccuracy_verschil  <- 1 - abs(Last_fit_Accuracy/Base_Model_Accuracy)
 
 if(Avg_Uitval < 50) {
   Base_Model_Accuracy <- round(100 - Avg_Uitval, 2)
-  sUitval <- "viel uit"
+  sUitval <- "die niet uitviel"
 } else {
   Base_Model_Accuracy <- Avg_Uitval
-  sUitval <- "viel niet uit"
+  sUitval <- "die uitviel"
 }
+
+## Bereken nu het verschil in accuraatheid
+nAccuracy_verschil  <- round(abs(Last_fit_Accuracy - Base_Model_Accuracy), 2)
+pAccuracy_verschil  <- paste0(nAccuracy_verschil, "%") 
 
 ## Functies
 Get_Accuracy_vergelijking <-
@@ -1017,11 +1065,11 @@ Get_Accuracy_niveau <- function(Last_fit_Accuracy) {
 }
   
 Get_Accuracy_verschil <- function(nAccuracy_verschil) {
-  if (nAccuracy_verschil < 0.05) {
+  if (nAccuracy_verschil < 5) {
     "iets"
-  } else if (nAccuracy_verschil < 0.10) {
+  } else if (nAccuracy_verschil < 10) {
     "wat"
-  } else if (nAccuracy_verschil < 0.20) {
+  } else if (nAccuracy_verschil < 20) {
     "een stuk"
   } else {
     "veel"
@@ -1081,25 +1129,53 @@ if(!("Eindcijfer_VO" %in% dfTop_vif$Variable[1:3])
 
 ```
 
--   **Het beste prognosemodel blijkt het `r sBest_model` model te zijn.** Van de prognosemodellen die we hebben ontwikkeld om `r tolower(sUitval_model)` te voorspellen, had het  `r sBest_model` model de hoogste AUC/ROC waarde (`r sBest_model_auc`).
--   **De mate van accuraatheid van de toepassing van het model is `r sAccuracy_niveau` (`r Last_fit_Accuracy`%).** Het model scoort in de huidige opbouw `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van een *base-model* (`r Base_Model_Accuracy`%). Een base-model neemt de grootste klasse van de gemiddelde `r tolower(sUitval_model)` van de afgelopen jaren als basis: `r Avg_Uitval`% `r sUitval`. Een prognosemodel moet minimaal beter presteren dan een base-model om waarde toe te voegen. Dit is dus altijd meer dan de 50% lijn van de AUC/ROC curve, tenzij de klasses in het base-model toevallig precies 50% zijn. 
+## Het beste prognosemodel voor deze opleiding
+
+**Het beste prognosemodel blijkt het `r sBest_model` model te zijn.**
+
+-   Van de prognosemodellen die we hebben ontwikkeld om `r tolower(sUitval_model)` te voorspellen, had het `r sBest_model` model de hoogste AUC/ROC waarde (`r sBest_model_auc`).
+
+## Mate van accuraatheid en lift
+
+Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde toe te voegen. Het base-model neemt de grootste klasse van de gemiddelde `r tolower(sUitval_model)` van de afgelopen jaren als basis. Stel we zouden tegen alle studenten zeggen dat ze hun studie gaan halen, dan is de mate van accuratesse gelijk aan dit base-model. Dit base-model is dus altijd hoger dan de 50% lijn van de AUC/ROC curve, tenzij het base-model toevallig precies 50% is
+
+**De mate van accuraatheid van de toepassing van het model is `r sAccuracy_niveau` (`r Last_fit_Accuracy`%).**
+
+-   **Base-model: `r Base_Model_Accuracy`%** -- Voor deze opleiding bereken we het base-model als volgt. Van alle studenten viel `r Avg_Uitval`% uit. De grootste klasse (en de accuratesse) van het base-model is daarmee (100% - `r Avg_Uitval`% = ) `r Base_Model_Accuracy`% `r sUitval`. 
+-   **Accuratesse prognose: `r Last_fit_Accuracy`%** -- Het model voorspelt `r sUitval_model` met een accuratesse van `r Last_fit_Accuracy`%.
+-   **Lift: `r pAccuracy_verschil`** -- Het model scoort in de huidige opbouw met een verschil van `r pAccuracy_verschil` (de *lift*) `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van het base-model (`r Base_Model_Accuracy`%).
+
+## Factoren
+
 -   `r sConclusie_text`
+:::
+
+<!-- Verantwoording -->
+
+::: {.content-hidden unless-meta="includes.verantwoording"}
+```{r, echo=FALSE, results='asis'}
+sQuarto_version <- quarto::quarto_version()
+```
+
+ 
+
+**Verantwoording**
+
+Deze analyse maakt deel uit van het onderzoek naar kansengelijkheid van het lectoraat Learning Technology & Analytics van De Haagse Hogeschool: [No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness) \| Het rapport is door het lectoraat ontwikkeld in [Quarto](https://quarto.org/) `r sQuarto_version`. \| Template versie: `r rmarkdown::metadata$ltatemplate`
 :::
 
 <!-- Copyright -->
 
 ::: {.content-hidden unless-meta="includes.copyright"}
-
 ```{r, echo=FALSE, results='asis'}
 nCurrent_year   <- as.numeric(format(Sys.Date(), "%Y"))
-sQuarto_version <- quarto::quarto_version()
 ```
 
  
 
 **Copyright**
 
-Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool &copy; 2023-`r nCurrent_year` Alle rechten voorbehouden | Deze analyse maakt deel uit van het onderzoek naar kansengelijkheid van het lectoraat: [No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness) | Het rapport is door het lectoraat ontwikkeld in [Quarto](https://quarto.org/) `r sQuarto_version`.
+Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool © 2023-`r nCurrent_year` Alle rechten voorbehouden.
 :::
 
 <!-- Opschonen -->
@@ -1107,71 +1183,71 @@ Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool &co
 ```{r, echo = FALSE}
 #| label: cleanup
 
-# ## Datasets
-# rm(
-#   dfOpleiding_inschrijvingen,
-#   dfSummary,
-#   dfUitval_test,
-#   dfUitval_train,
-#   dfUitval_validation,
-#   splits
-#   )
-# 
-# ## Logistische regressie
-# if(bInclude_Model_LR) {
-#   rm(
-#     lr_auc,
-#     lr_auc_highest,
-#     lr_best,
-#     lr_mod,
-#     lr_plot,
-#     lr_recipe,
-#     lr_res,
-#     lr_workflow
-#   )
-#   if(sBest_model == "lr") {
-#     rm(last_lr_mod,
-#        last_lr_workflow)
-#   }
-# }
-# 
-# ## Random Forest
-# if(bInclude_Model_RF) {
-#   rm(
-#     rf_auc,
-#     rf_auc_highest,
-#     rf_best,
-#     rf_mod,
-#     rf_recipe,
-#     rf_res,
-#     rf_workflow,
-#     last_rf_mod,
-#     last_rf_workflow
-#   )
-#   if(sBest_model == "rf") {
-#     rm(last_rf_mod,
-#        last_rf_workflow)
-#   }
-# }
-# 
-# ## Final Fit
-# if(bInclude_Final_fit) {
-#   rm(
-#     last_fit
-#   )
-# }
-# 
-# ## Conclusies
-# if(bInclude_Conclusies) {
-#   rm(
-#     top_models,
-#     dfTop_vif,
-#     lTop3_vif,
-#     lTop45_vif
-#     )
-# }
-# 
-# ## Collect garbage
-# invisible(gc())
+## Datasets
+rm(
+  dfOpleiding_inschrijvingen,
+  dfSummary,
+  dfUitval_test,
+  dfUitval_train,
+  dfUitval_validation,
+  splits
+  )
+
+## Logistische regressie
+if(bInclude_Model_LR) {
+  rm(
+    lr_auc,
+    lr_auc_highest,
+    lr_best,
+    lr_mod,
+    lr_plot,
+    lr_recipe,
+    lr_res,
+    lr_workflow
+  )
+  if(sBest_model == "lr") {
+    rm(last_lr_mod,
+       last_lr_workflow)
+  }
+}
+
+## Random Forest
+if(bInclude_Model_RF) {
+  rm(
+    rf_auc,
+    rf_auc_highest,
+    rf_best,
+    rf_mod,
+    rf_recipe,
+    rf_res,
+    rf_workflow,
+    last_rf_mod,
+    last_rf_workflow
+  )
+  if(sBest_model == "rf") {
+    rm(last_rf_mod,
+       last_rf_workflow)
+  }
+}
+
+## Final Fit
+if(bInclude_Final_fit) {
+  rm(
+    last_fit
+  )
+}
+
+## Conclusies
+if(bInclude_Conclusies) {
+  rm(
+    top_models,
+    dfTop_vif,
+    lTop3_vif,
+    lTop45_vif
+    )
+}
+
+## Collect garbage
+invisible(gc())
   
 ```

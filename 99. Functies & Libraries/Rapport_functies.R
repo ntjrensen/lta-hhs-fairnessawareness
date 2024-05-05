@@ -156,6 +156,12 @@ Get_Opleiding_directory <- function(faculteit,
 ## Functie om de Uitval variabele te maken
 Mutate_Uitval <- function(df, model = "Uitval na 1 jaar") {
   
+  ## Vul de missende waarden in met 0
+  df <- df |>
+    mutate(
+      SUC_Uitval_aantal_jaar_LTA = coalesce(SUC_Uitval_aantal_jaar_LTA, 0)
+    )
+  
   if (model == "Uitval na 1 jaar") {
     return(
       df |>
@@ -168,7 +174,7 @@ Mutate_Uitval <- function(df, model = "Uitval na 1 jaar") {
     return(
       df |>
         mutate(
-          SUC_Uitval = ifelse(SUC_Uitval_aantal_jaar_LTA == 1:2, T, F),
+          SUC_Uitval = ifelse(SUC_Uitval_aantal_jaar_LTA %in% c(1, 2), T, F),
           SUC_Uitval = coalesce(SUC_Uitval, F)
         ) 
     )
@@ -176,7 +182,7 @@ Mutate_Uitval <- function(df, model = "Uitval na 1 jaar") {
     return(
       df |>
         mutate(
-          SUC_Uitval = ifelse(SUC_Uitval_aantal_jaar_LTA == 1:3, T, F),
+          SUC_Uitval = ifelse(SUC_Uitval_aantal_jaar_LTA %in% c(1, 2, 3), T, F),
           SUC_Uitval = coalesce(SUC_Uitval, F)
         ) 
     )
@@ -189,6 +195,36 @@ Mutate_Uitval <- function(df, model = "Uitval na 1 jaar") {
         ) 
     )
   } 
+  
+}
+
+## Functie om Uitval te verbijzonderen (met en zonder propedeusediploma)
+Filter_Propedeusediploma <- function(df, propedeusediploma = "Nvt") {
+  
+  if (propedeusediploma == "Nvt" || propedeusediploma == "" || is.na(propedeusediploma)) {
+    
+    ## Neem alle uitval mee
+    return(df)
+    
+  } else if (propedeusediploma == "Met P") {
+    
+    ## Verwijder de studenten die uitvallen met een propedeusediploma
+    return(
+      df |>
+        filter(SUC_Studiestatus_cat != "Uitval zonder propedeusediploma")
+    )
+    
+  } else if (propedeusediploma == "Zonder P") {
+    
+    ## Verwijder de studenten die uitvallen met een propedeusediploma
+    return(
+        df |>
+        filter(SUC_Studiestatus_cat != "Uitval met propedeusediploma")
+        ) 
+    
+  } else {
+    cli::cli_alert("De propedeusediploma variabele is niet correct")
+  }
   
 }
 
@@ -228,6 +264,23 @@ Mutate_Succes <- function(df, model = "Uitval na 1 jaar") {
         ) 
     )
   } 
+  
+}
+
+## Mutate missing cijfers VO
+Mutate_Cijfers_VO <- function(df) {
+  
+  df <- df |>
+    mutate(
+      Cijfer_SE_VO_missing          = ifelse(is.na(Cijfer_SE_VO),          "Ja", "Nee"),          
+      Cijfer_CE_VO_missing          = ifelse(is.na(Cijfer_CE_VO),          "Ja", "Nee"),        
+      Cijfer_CE_Nederlands_missing  = ifelse(is.na(Cijfer_CE_Nederlands),  "Ja", "Nee"),
+      Cijfer_CE_Engels_missing      = ifelse(is.na(Cijfer_CE_Engels),      "Ja", "Nee"),
+      Cijfer_CE_Wiskunde_missing    = ifelse(is.na(Cijfer_CE_Wiskunde),    "Ja", "Nee"),
+      Cijfer_CE_Natuurkunde_missing = ifelse(is.na(Cijfer_CE_Natuurkunde), "Ja", "Nee")
+    )
+  
+  return(df)
   
 }
 
@@ -320,6 +373,19 @@ Set_Levels <- function(df = dfOpleiding_inschrijvingen_base) {
       df,
       "VOP_Toelaatgevende_vooropleiding_soort"
     )
+}
+
+## Functie om de levels van een variabele te muteren
+Mutate_Levels <- function(df, vars, levels) {
+  for (i in seq_along(vars)) {
+    df <- df |>
+      mutate(
+        !!rlang::sym(vars[i]) := fct_expand(!!rlang::sym(vars[i]), levels[[i]]),
+        !!rlang::sym(vars[i]) := fct_relevel(!!rlang::sym(vars[i]), levels[[i]]),
+        !!rlang::sym(vars[i]) := fct_drop(!!rlang::sym(vars[i]))
+      )
+  }
+  return(df)
 }
 
 ## . ####
