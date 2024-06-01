@@ -18,6 +18,9 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[ ] Dalex
+  [ ] explainer - https://modeloriented.github.io/DALEXtra/reference/explain_tidymodels.html
+
 [ ] Warnings
   [x] Levels aanpassen aan wat er in de dataset set
 

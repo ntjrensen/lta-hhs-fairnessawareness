@@ -43,7 +43,7 @@ if(bSetup_executed == F) {
 
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1. LAAD LTABASE PACKAGE + DEFAULT DATABASES ####
+  ## 1. LAAD LTABASE PACKAGE fS ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -67,7 +67,7 @@ if(bSetup_executed == F) {
   ## Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
   ltabase::load_lta_datasets(message = TRUE)
   
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## ++++dldiklbeDAtraovvvex+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.4 Laad extra bibliotheken
   
   ## Laad extra bibliotheken
@@ -84,6 +84,8 @@ if(bSetup_executed == F) {
   library(klaR)        # voor classificatie en visualisatie
   library(betacal)     # voor beta calibration
   library(doParallel)  # voor parallel processing
+  library(DALEX)       # voor explainable AI
+  library(DALEXtra)    # voor explainable AI
   
   ## Geef de voorkeur bij conflicten aan het tidymodels package
   tidymodels_prefer(quiet = TRUE)

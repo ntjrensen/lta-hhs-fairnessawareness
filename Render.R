@@ -91,11 +91,14 @@ dfRender <- dfOpleidingen |>
       # "HBO-V_VT", 
       # "HBO-V_DT",
       # "CMD_VT", 
-      # "IPO_VT", 
+      # "IPO_VT",
+      # "E_VT",
+      # "B_VT",
+      "W_VT"#,
       # "MT_VT", 
       # "SW_VT", 
-      "ORM_DT",
-      "ORM_VT"#,
+      # "ORM_DT",
+      # "ORM_VT"#,
       #"AC_VT"
       ) 
   ) |> 

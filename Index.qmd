@@ -15,11 +15,11 @@ output-file: "lta-hhs-tidymodels-uitval.html"
 ## Parameters        
 params:
   versie: "1.0"
-  uitval: "Uitval na 2 jaar"
+  uitval: "Uitval na 1 jaar"
   propedeusediploma: "Zonder P" ## Nvt/Met P/Zonder P
   faculteit: "GVS"
   
-  ## GVS:HBO-V
+  # GVS:HBO-V
   # opleidingsnaam: "B Opleiding tot Verpleegkundige"
   # opleiding: "HBO-V"
   # opleidingsvorm: "voltijd"
@@ -34,11 +34,11 @@ params:
   # selectie: false
   
   ## GVS:HDT
-  # opleidingsnaam: "B Huidtherapie"
-  # opleiding: "HDT"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: true
+  opleidingsnaam: "B Huidtherapie"
+  opleiding: "HDT"
+  opleidingsvorm: "voltijd"
+  opleidingsvorm_afkorting: "VT"
+  selectie: true
   
   ## FDR:ORM DT
   # opleidingsnaam: "B Ondernemerschap Retail Management"
@@ -54,12 +54,40 @@ params:
   # opleidingsvorm_afkorting: "VT"
   # selectie: false
   
+  ## TIS:EC
+  # opleidingsnaam: "B Elektrotechniek"
+  # opleiding: "E"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## TIS:B
+  # opleidingsnaam: "B Bouwkunde"
+  # opleiding: "B"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
   ## BFM:AC
-  opleidingsnaam: "B Accountancy"
-  opleiding: "AC"
-  opleidingsvorm: "voltijd"
-  opleidingsvorm_afkorting: "VT"
-  selectie: false
+  # opleidingsnaam: "B International Business"
+  # opleiding: "IB-ES-3"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## BFM:AC
+  # opleidingsnaam: "B Accountancy"
+  # opleiding: "AC"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## ITD:CMD
+  # opleidingsnaam: "B Communication and Multimedia Design"
+  # opleiding: "CMD"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
   
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"
@@ -140,7 +168,7 @@ De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verr
 
 ## Toelichting op de analyse
 
-We toetsen in deze analyse *`r sUitval_model_text`*, voortaan **Uitval** genoemd. 
+We toetsen in deze analyse *`r sUitval_model_text`*, voortaan **Uitval** genoemd.
 
 Uitval is gedefinieerd als het niet meer ingeschreven staan in de opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt niet als uitval.
 :::
@@ -325,7 +353,7 @@ dfSummary |>
       all_continuous() ~ "{mean} ({sd})",
       all_categorical() ~ "{n} ({p}%)"
     ),
-    digits = all_continuous() ~ 2,
+    digits = all_continuous() ~ 2, 
     missing = "no",
     percent = "row"
   ) |> 
@@ -417,7 +445,8 @@ dfOpleiding_inschrijvingen |>
     addrect = 4,
     method = "number",  
     tl.cex = 0.8,       
-    tl.col = "black")
+    tl.col = "black",
+    diag = FALSE)
 ```
 
 ## Bouw de trainingset, testset en validatieset
@@ -990,6 +1019,64 @@ last_fit |>
 
 ```
 
+## Maak een explainer
+
+We maken een explainer om de voorspellingen van het model te kunnen verklaren. De explainer geeft inzicht in de voorspellingen van het model en de bijdrage van de variabelen aan de voorspelling.
+
+```{r}
+
+fitted_model_tmp <- last_fit |>
+  extract_fit_parsnip()
+
+vi_df <- vip::vi(fitted_model_tmp)
+vi_df
+
+```
+
+```{r}
+#| label: last_fit_explainer
+
+fitted_model <- last_fit |>
+  extract_fit_parsnip()
+
+workflow <- last_fit |>
+  extract_workflow()
+
+# Maak een explainer
+explain_lm <- DALEX::explain(model = workflow,
+  data = dfOpleiding_inschrijvingen,
+  y = dfOpleiding_inschrijvingen$Uitval,
+  label = "Linear Regression")
+
+```
+
+```{r}
+#| label: last_fit_model_parts
+
+# mp <- model_parts(explain_lm, loss_function = loss_root_mean_square)
+# 
+# # we can see a data.frame with results
+# mp
+# 
+# # we can plot the results
+# plot(mp)
+
+```
+
+```{r}
+#| label: last_fit_break_down
+
+student_x <- dfOpleiding_inschrijvingen[3,]
+
+bd_lm <- predict_parts(explainer = explain_lm,
+                 new_observation = student_x,
+                            type = "break_down")
+bd_lm
+
+plot(bd_lm)
+
+```
+
 ## Plot de ROC curve
 
 Tot slot maken we een ROC curve om de prestaties van het definitieve model te visualiseren. De Sensitivity (True Positive Rate) en Specificity (True Negative Rate) worden hierin uitgezet. De Area under the ROC Curve (AUC/ROC) geeft de prestaties van het model weer. Het model scoort beter naarmate de AUC/ROC dichter bij de 1 ligt (in de linkerbovenhoek). Een AUC/ROC van 0,5 betekent dat het model niet beter presteert dan een willekeurige voorspelling.
@@ -1141,7 +1228,7 @@ Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde t
 
 **De mate van accuraatheid van de toepassing van het model is `r sAccuracy_niveau` (`r Last_fit_Accuracy`%).**
 
--   **Base-model: `r Base_Model_Accuracy`%** -- Voor deze opleiding bereken we het base-model als volgt. Van alle studenten viel `r Avg_Uitval`% uit. De grootste klasse (en de accuratesse) van het base-model is daarmee (100% - `r Avg_Uitval`% = ) `r Base_Model_Accuracy`% `r sUitval`. 
+-   **Base-model: `r Base_Model_Accuracy`%** -- Voor deze opleiding bereken we het base-model als volgt. Van alle studenten viel `r Avg_Uitval`% uit. De grootste klasse (en de accuratesse) van het base-model is daarmee (100% - `r Avg_Uitval`% = ) `r Base_Model_Accuracy`% `r sUitval`.
 -   **Accuratesse prognose: `r Last_fit_Accuracy`%** -- Het model voorspelt `r sUitval_model` met een accuratesse van `r Last_fit_Accuracy`%.
 -   **Lift: `r pAccuracy_verschil`** -- Het model scoort in de huidige opbouw met een verschil van `r pAccuracy_verschil` (de *lift*) `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van het base-model (`r Base_Model_Accuracy`%).
 
