@@ -18,8 +18,26 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[ ] Studenten
+  [ ] Prototype bestanden van studenten toevoegen
+  [ ] Modellen opslaan en in een 1e pagina de explainer toepassen
+  [ ] Breakdown plot
+    [x] prediction > op laatste plek zetten
+    [x] getallen afronden op 1
+    [x] lump als de bijdrage 0 is
+    [x] kleuren toekennen op basis van + of min
+    [x] waarde van overige is niet goed
+    [ ] labels toevoegen >> in % omzetten
+    [x] intercept laten lopen van 0 naar de intercept
+    [x] balkje van prediction laten lopen van intercept naar prediction
+    [x] tekst van - beter uitlijnen
+    [x] kleuren van min en plus verbeteren
+    [ ] positie van tekst is niet goed
+    
+    
+
 [ ] Dalex
-  [ ] explainer - https://modeloriented.github.io/DALEXtra/reference/explain_tidymodels.html
+  [x] explainer - https://modeloriented.github.io/DALEXtra/reference/explain_tidymodels.html
 
 [ ] Warnings
   [x] Levels aanpassen aan wat er in de dataset set
