@@ -67,8 +67,8 @@ if(bSetup_executed == F) {
   ## Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
   ltabase::load_lta_datasets(message = TRUE)
   
-  ## ++++dldiklbeDAtraovvvex+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.4 Laad extra bibliotheken
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 1.4 Laad extra bibliotheken ####
   
   ## Laad extra bibliotheken
   library(tidymodels)  # voor machine learning
@@ -86,19 +86,31 @@ if(bSetup_executed == F) {
   library(doParallel)  # voor parallel processing
   library(DALEX)       # voor explainable AI
   library(DALEXtra)    # voor explainable AI
+  library(lobstr)      # voor het meten van objecten
+  library(butcher)     # voor het verkleinen van modellen
+  library(iBreakDown)  # voor het uitleggen van modellen
+  library(ggtext)      # voor het maken van opmaak in titels
+  library(showtext)    # voor het instellen van lettertypes
+  
+  # Add Google font
+  font_add_google("Source Sans Pro", "sourcesanspro")
+  
+  # Automatically use showtext to render text for future devices
+  showtext_auto()
   
   ## Geef de voorkeur bij conflicten aan het tidymodels package
   tidymodels_prefer(quiet = TRUE)
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.5 Laad extra functies
+  ## 1.5 Laad extra functies ####
   
   source("99. Functies & Libraries/Rapport_functies.R")
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.6 Bepaal de voorkeur voor de thema's
+  ## 1.6 Bepaal de voorkeur voor de thema's ####
   
-  theme_set(theme_minimal())
+  #theme_set(theme_minimal())
+  Set_LTA_Theme()
   
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -124,16 +136,78 @@ if(bSetup_executed == F) {
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 2.3 Gtsummary instellingen ####
   
-  ## Bepaal de standaard instelingen van gtsummary
+  ## Bepaal de standaard instellingen van gtsummary
   list("style_number-arg:big.mark" = ".",
        "style_number-arg:decimal.mark" = ",") |> 
     set_gtsummary_theme()
   invisible(theme_gtsummary_compact())
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2.4 Levels van variabelen
+  ## 2.4 Levels van variabelen ####
   
   ## Bepaal de volgorde van een aantal levels
   Get_Levels()
-
+  
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 2.5  Config ####
+  
+  sUitval_model <- params$uitval
+  sPropedeusediploma <- params$propedeusediploma
+  
+  sUitval_model_text <- Get_Uitval_model_text(sPropedeusediploma, sUitval_model)
+  
+  ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
+  current_opleiding <- Get_Current_opleiding(
+    opleiding = params$opleiding,
+    opleidingsvorm = params$opleidingsvorm_afkorting
+  )
+  
+  ## Bepaal op basis hiervan afgeleide variabelen
+  Set_Current_opleiding_vars(current_opleiding, debug = T)
+  
+  ## . ####
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 3. BASISQUERY ####
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 3.1 Inschrijvingen ####
+  
+  dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
+    board = "HHs/Inschrijvingen",
+    faculty = faculteit,
+    studyprogram = opleidingsnaam_huidig,
+    studytrack = opleiding,
+    studyform = toupper(opleidingsvorm),
+    range = "eerstejaars")
+  
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 3.2 Settings ####
+  
+  lResearch_settings <- list()
+  lResearch_settings[["sResearch_path"]] <- "Kansengelijkheid"
+  lResearch_settings[["sDataset"]] <- Get_sDataset(dfOpleiding_inschrijvingen_base)
+  
+  lMetadata <- Get_Metadata()
+  
+  Get_sCaption <- function() {
+    
+    sCaption <- paste0(
+      paste(
+        lMetadata[["sDataset"]],
+        lResearch_settings[["sResearch_path"]],
+        sep = ", "
+      ),
+      ". \U00A9 ",
+      lMetadata[["sAnalyse"]],
+      ", ",
+      format(Sys.Date(), "%Y")
+    )
+    
+    return(sCaption)
+    
+  }
+  
+  sCaption <- Get_sCaption()
+  
 }

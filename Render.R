@@ -169,7 +169,7 @@ for(i in 1:nrow(dfRender)) {
     )
     
     ## Render de quarto file en verplaats deze naar de output directory
-    Quarto_Render_Move(input = "Index.qmd",
+    Quarto_Render_Move(input = "Index_basis.qmd",
                        output_file = .output_file,
                        output_dir = .output_dir,
                        execute_params = .execute_params,

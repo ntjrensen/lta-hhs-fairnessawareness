@@ -18,23 +18,34 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-[ ] Studenten
-  [ ] Prototype bestanden van studenten toevoegen
-  [ ] Modellen opslaan en in een 1e pagina de explainer toepassen
-  [ ] Breakdown plot
-    [x] prediction > op laatste plek zetten
-    [x] getallen afronden op 1
-    [x] lump als de bijdrage 0 is
-    [x] kleuren toekennen op basis van + of min
-    [x] waarde van overige is niet goed
-    [ ] labels toevoegen >> in % omzetten
-    [x] intercept laten lopen van 0 naar de intercept
-    [x] balkje van prediction laten lopen van intercept naar prediction
-    [x] tekst van - beter uitlijnen
-    [x] kleuren van min en plus verbeteren
-    [ ] positie van tekst is niet goed
+[ ] Plots
+  [ ] Plots bewaren - als ze niet bestaan, anders inlezen of met parameter opnieuw maken
+    [ ] Omzetten naar een handige functie
+    [ ] Naam moet ook analyses bevatten
+    [ ] Opslag zoals bij bbc in plots project
+
+[ ] Queries/plots
+  [ ] Studentpersonas_opleidingen > opheffen en naar functies brengen
+
+[/] Studenten
+  [ ] Violin plot maken voor algemene student
+    [ ] Breakdown violin - https://ema.drwhy.ai/breakDown.html
+  [x] Prototype bestanden van studenten toevoegen
+  [x] Modellen opslaan en in een 1e pagina de explainer toepassen
+  [/] Ook maken voor:
+    [x] geslacht 
+    [x] aansluiting 
+    [ ] leeftijd vooropleiding
+    [ ] SES
+
+[x] Breakdown plot
+  [ ] labels voor Intercept en Voorspelling vet maken
     
-    
+[ ] Overige analyses
+  [ ] Shapley values uitproberen https://ema.drwhy.ai/shapley.html
+  [ ] Ceteris Paribus uitproberen https://ema.drwhy.ai/ceterisParibus.html
+  [ ] Partial Dependence plots uitproberen https://ema.drwhy.ai/partialDependenceProfiles.html
+  [ ] Modellen - interactie-effecten toevoegen?
 
 [ ] Dalex
   [x] explainer - https://modeloriented.github.io/DALEXtra/reference/explain_tidymodels.html
@@ -67,8 +78,25 @@
     [ ] https://workflowsets.tidymodels.org/
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## OPGELOST ####
+## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[x] Breakdown plot
+    [x] prediction > op laatste plek zetten
+    [x] getallen afronden op 1
+    [x] lump als de bijdrage 0 is
+    [x] kleuren toekennen op basis van + of min
+    [x] waarde van overige is niet goed
+    [x] labels toevoegen >> in % omzetten
+    [x] intercept laten lopen van 0 naar de intercept
+    [x] balkje van prediction laten lopen van intercept naar prediction
+    [x] tekst van - beter uitlijnen
+    [x] kleuren van min en plus verbeteren
+    [x] positie van tekst is niet goed
+
+[x] Splitsen van de algemene pagina en verdiepende analyses
+  [x] Bewaar final fits
+  [x] Maak nieuwe pagina voor verdiepende analyse
 
 [x] Extra variabelen
   [x] Wiskundecijfer -    VOP_Cijfer_SE_proxy_wiskunde

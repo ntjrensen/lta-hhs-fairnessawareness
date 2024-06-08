@@ -148,6 +148,113 @@ Get_Opleiding_directory <- function(faculteit,
   return(path)
 }
 
+## Functie om output directory te bepalen van de huidige opleiding
+Get_Current_opleiding_output_dir <- function(current_opleiding,
+                                             mode) {
+  
+  if(mode == "last-fits" | mode == "modelresults") {
+    .output_dir <- file.path("10. Output",
+                             tolower(current_opleiding$INS_Faculteit),
+                             "modelresults")
+  } else if(mode == "data") {
+    .output_dir <- file.path("10. Output",
+                             tolower(current_opleiding$INS_Faculteit),
+                             "data")
+  } else if(mode == "html") {
+    .output_dir <- file.path("10. Output",
+                             tolower(current_opleiding$INS_Faculteit))
+  } else if(mode == "plot") {
+    .output_dir <- file.path("10. Output",
+                             tolower(current_opleiding$INS_Faculteit),
+                             "plots")
+  } else {
+    cli::cli_alert("De mode is niet correct")
+  }
+  
+  return(.output_dir)
+  
+}
+  
+
+## Functie om de output directory te bepalen van de huidige opleiding
+Get_Current_opleiding_output_file <- function(df, mode, analyse = NULL) {
+  
+  ## Bepaal de beschrijving van de analyse
+  if(is.null(analyse)) {
+    .analyse <- Get_Huidige_analyse()
+  } else {
+    .analyse <- analyse
+  }
+  
+  if(mode == "last-fits") {
+    .suffix <- "_last-fits.rds"
+  } else if(mode == "html") {
+    .suffix <- ".html"
+  } else if(mode == "modelresults") {
+    .suffix <- "_modelresults.rds"
+  } else if(mode == "data") {
+    .suffix <- ".rds"
+  } else if(mode == "plot") {
+    .suffix <- ".png"
+  } else {
+    cli::cli_alert("De mode is niet correct")
+  }
+  
+  ## Bepaal de output file:
+  ## faculteit-opleiding-opleidingsvorm + analyse + suffix
+  .output_file <- paste0(
+    paste(
+      df$INS_Faculteit,
+      df$INS_Opleidingstype_LTA,
+      df$INS_Opleiding,
+      df$INS_Opleidingsvorm,
+      sep = "-"
+    ),
+    "_",
+    .analyse,
+    .suffix
+  )
+  
+}
+
+## Functie om de output path te bepalen voor de fitted models
+Get_Model_outputpath <- function(mode) {
+  
+  ## Bepaal de output file
+  .output_file <- Get_Current_opleiding_output_file(current_opleiding, mode)
+  
+  ## Bepaal de output directory
+  .output_dir <- Get_Current_opleiding_output_dir(current_opleiding, mode)
+  
+  ## Maak de directory indien deze nog niet bestaat
+  if (!dir.exists(.output_dir)) {
+    dir.create(.output_dir, recursive = TRUE)
+  }
+  
+  ## Geef het volledige outputpath terug
+  return(file.path(.output_dir, .output_file))
+  
+}
+
+## Functie om de output path te bepalen voor de plots
+Get_Plot_outputpath <- function(mode = "plot", plotname) {
+  
+  ## Bepaal de output file
+  .output_file <- paste0(plotname, ".png")
+  
+  ## Bepaal de output directory
+  .output_dir <- Get_Current_opleiding_output_dir(current_opleiding, mode)
+  
+  ## Maak de directory indien deze nog niet bestaat
+  if (!dir.exists(.output_dir)) {
+    dir.create(.output_dir, recursive = TRUE)
+  }
+  
+  ## Geef het volledige outputpath terug
+  return(file.path(.output_dir, .output_file))
+  
+}
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 3. DATASET FUNCTIES ####
@@ -406,6 +513,21 @@ Get_Opleidingsvorm_lang <- function(opleidingsvorm) {
   }
 }
 
+## Functie om de tekst te bepalen voor het uitval model (in de titel)
+Get_Uitval_model_text <- function(propedeusediploma, uitval_model) {
+  
+  if (propedeusediploma == "Zonder P") {
+    uitval_model_text <- paste(uitval_model, "bij studenten zonder propedeusediploma")
+  } else if (propedeusediploma == "Met P") {
+    uitval_model_text <- paste(uitval_model, "bij studenten met propedeusediploma")
+  } else {
+    uitval_model_text <- uitval_model
+  }
+  
+  return(uitval_model_text)
+  
+}
+
 ## Functie om een quarto bestand te renderen en te verplaatsen
 Quarto_Render_Move <- function(input,
                                output_file = NULL,
@@ -512,6 +634,25 @@ Copy_Reports <- function(remove_orgials = F, debug = F) {
   }
 }
 
+## Functie om de huidige analyse te bepalen
+Get_Huidige_analyse <- function() {
+  
+  ## Bepaal de beschrijving van de analyse
+  .uitval     <- janitor::make_clean_names(params$uitval)
+  .propedeuse <- janitor::make_clean_names(params$propedeusediploma)
+  
+  .analyse <- paste(
+    .uitval,
+    .propedeuse,
+    sep = "_"
+  )
+  
+  return(.analyse)
+  
+}
+
+
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 5. CLI FUNCTIES ####
@@ -531,3 +672,331 @@ Cli_Subheader <- function(sText) {
   cli::cat_rule()
   
 }
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 6. PLOT FUNCTIES ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+lColors_default <- c(
+  
+  ## Kleuren van title, onderwerp, ondertitel, caption, background
+  sTitle_color            = "black",
+  sSubject_color          = "#808080",
+  sSubtitle_color         = "black",
+  sSubtitle_prefix_color  = "#808080",
+  sSubtitle_warning_color = "#C8133B",
+  sCaption_color          = "darkgray",
+  sBackground_color       = "white",
+  
+  ## Kleur van tekst
+  sText_color            = "black",
+  sText_inside_color     = "white",
+  
+  ## Intercept (0) en gridlines
+  sBaseline_color        = "black",
+  sGridline_color        = "#CBCBCB",
+  sDeadline_color        = "black",
+  sBaseline_color_ses    = "darkgray",
+  
+  ## Vulkleur
+  sFill_color            = "lightgray",
+  
+  ## Lijnkleur
+  sAverage_line_color    = "#CBCBCB",
+  
+  ## Tekstkleur
+  sAverage_text_color    = "darkgray",
+  
+  ## Kleur van annotaties
+  sAnnotation_text_color = "black",
+  sArrow_color           = "darkgray",
+  
+  ## Kleur van jitter
+  sJitter_color          = "darkgray",
+  
+  ## Kleur van de errorband
+  sSE_color              = "#CBCBCB",
+  
+  ## Kleur van de band
+  sBand_color            = "grey95"
+)
+
+## Bepaal het basisthema
+Set_LTA_Theme <- function(title.font = "Source Sans Pro", type = "plot") {
+  theme_set(theme_minimal())
+  theme_update(
+    ## Margins
+    ## plot.margin = margin(c(10, 10, 10, 10), "points"),
+    
+    ## Titel en caption
+    plot.title = element_textbox_simple(
+      size = 16,
+      lineheight = 1,
+      color = lColors_default["sTitle_color"],
+      face = "bold",
+      padding = margin(0, 0, 0, 0),
+      margin = margin(5, 0, 5, 0) ,
+      family = title.font
+    ),
+    plot.subtitle = element_textbox_simple(
+      size = 12,
+      lineheight = 1,
+      color = lColors_default["sSubtitle_color"],
+      padding = margin(0, 0, 0, 0),
+      margin = margin(5, 0, 15, 0)
+    ),
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    plot.caption = element_textbox_simple(size = 8,
+                                          color = lColors_default["sCaption_color"],
+                                          padding = margin(0, 0, 0, 0),
+                                          margin = margin(15, 0, 0, 0)),
+    
+    ## Assen
+    axis.title.x = element_text(face = "bold",
+                                vjust = 5),
+    axis.title.y = element_text(face = "bold",
+                                margin = margin(
+                                  t = 0,
+                                  r = 10,
+                                  b = 0,
+                                  l = 0
+                                )),
+    axis.text.x  = element_text(size = 11),
+    # axis.text.x  = element_text(size = 11,
+    #                             vjust = 7),
+    axis.text.y  = element_text(size = 11),
+
+    ## Lijnen
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank(),
+
+    ## Legenda
+    legend.key.size = unit(.5, "cm"),
+    legend.text = element_text(size = 10),
+
+    ## Achtergrond wit en border niet zichtbaar
+    plot.background = element_rect(fill = lColors_default["sBackground_color"],
+                                   color = NA) +
+
+    ## Maak van de title van x en y een markdown element
+    theme(
+      axis.title.x = element_markdown(),
+      axis.title.y = element_markdown()
+    ) 
+      
+  )
+  
+}
+
+# Convert to data frame for ggplot
+Get_dfBreakdown_lm <- function(bd_lm) {
+
+  dfBreakdown_lm <- as.data.frame(bd_lm) |>
+    
+    ## Sorteer op basis van de position
+    arrange(desc(position)) |>
+    
+    ## Hernoem variabelen (intercept en prediction)
+    mutate(
+      variable = case_when(
+        variable == "intercept" ~ "Intercept",
+        variable == "prediction" ~ "Voorspelling",
+        TRUE ~ variable
+      )
+    ) |>
+    
+    ## Maak het label aan (in percentages)
+    mutate(label = paste0(as.character(round(contribution, 3) * 100), "%")) |>
+    mutate(
+      label = case_when(
+        variable %in% c("Intercept", "Voorspelling") ~ label,
+        sign == 1  ~ paste0("+", label),
+        sign == -1 ~ paste0(label),
+        sign == 0  ~ paste0("+", label),
+        .default = label
+      )
+    ) |>
+    mutate(label = case_when(label == "0%" ~ "+0%", .default = label)) |>
+    
+    ## Verwijder variabelen met een contribution van 0
+    filter(sign != 0) |>
+    
+    ## Maak start en end variabelen aan
+    mutate(start = dplyr::lag(cumulative, default = min(cumulative)),
+           end = cumulative) 
+
+  ## Voeg een rij toe voor "Overige variabelen"
+  dfBreakdown_lm <- dfBreakdown_lm |>
+    add_row(
+      variable = "+ Overige variabelen",
+      contribution = 0,
+      variable_name = NA,
+      variable_value = NA,
+      cumulative = dfBreakdown_lm$cumulative[dfBreakdown_lm$position == 1],
+      sign = "0",
+      position = 2,
+      label = "+0%",
+      start = dfBreakdown_lm$cumulative[dfBreakdown_lm$position == 1],
+      end = dfBreakdown_lm$cumulative[dfBreakdown_lm$position == 1]
+    ) |>
+    
+    ## Pas de positie aan
+    arrange(position) |>
+    mutate(position = row_number()) |>
+    arrange(desc(position)) |>
+    
+    ## Bepaal de volgende start en positie
+    mutate(
+      next_start = lead(start, default = NA),
+      next_position = lead(position, default = NA)
+    ) |>
+    mutate(start = case_when(
+      variable == "Intercept" ~ 0,
+      variable == "Voorspelling" ~ 0,
+      .default = start
+    )) |>
+    
+    ## Pas de sign aan
+    mutate(sign = case_when(variable == "Intercept" ~ "X", .default = sign)) |>
+    
+    ## Bepaal de kleur van de labels
+    mutate(label_color = case_when(
+      sign == "1" ~ "#C8133B", 
+      sign == "-1" ~ "#466F9D", 
+      .default = "black")) |>
+    
+    ## Bepaal de positie van de labels
+    rowwise() |>
+    mutate(label_position = max(start, end)) |>
+    ungroup()
+
+  ## Pas de sign aan naar een factor
+  dfBreakdown_lm$sign <- factor(
+    dfBreakdown_lm$sign,
+    levels = c("1", "-1", "0", "X"),
+    labels = c("Positief", "Negatief", "Geen", "X")
+  ) 
+  
+  return(dfBreakdown_lm)
+
+}
+
+## Functie om een watervalplot te maken
+Get_Waterfall_plot <- function(df) {
+   
+  ## Maak een watervalplot
+  plot <- ggplot(df) +
+    
+    # Voeg horizontale lijnen toe om de 0.2
+    geom_hline(
+      yintercept = y_breaks,
+      color = "#CBCBCB",
+      linetype = "solid",
+      linewidth = 0.5
+    ) +
+    
+    # Voeg een horizontale lijn toe op de laagste waarde
+    geom_hline(
+      yintercept = df$cumulative[df$position == 1],
+      color = "black",
+      linetype = "dotted"
+    ) +
+    
+    # Voeg de waterval bands toe
+    geom_rect(aes(
+      xmin = position - 0.4,
+      xmax = position + 0.4,
+      ymin = start,
+      ymax = end,
+      fill = sign
+    )) +
+    
+    # Voeg de waterval lijnen toe
+    geom_segment(aes(
+      x = next_position - 0.4,
+      xend = position + 0.4,
+      y = end,
+      yend = end
+    ),
+    color = "darkgray") +
+    
+    # Flip de plot
+    coord_flip() +
+    
+    # Bepaal de title en ondertitel
+    labs(
+      title = student_current_title,
+      subtitle = student_current_subtitle,
+      caption = sCaption,
+      x = NULL,
+      y = NULL
+    ) +
+    
+    # Vul de kleuren in
+    scale_fill_manual(values = c(
+      "Positief" = "#C8133B",
+      "Negatief" = "#466F9D",
+      "X" = "#C8133B"
+    )) +
+    
+    # Voeg tekstlabels toe voor de variabelen
+    geom_text(
+      aes(x = position, y = label_position, label = label),
+      hjust = -0.1,
+      size = 4,
+      color = "black"
+    ) +
+    
+    # Pas het thema aan om de y-as labels weer te geven
+    scale_x_continuous(breaks = df$position, labels = df$variable) +
+    scale_y_continuous(breaks = y_breaks,
+                       labels = y_labels,
+                       limits = c(0, 1)) +
+    
+    theme(legend.position = "none") +
+    theme(
+      axis.text.y = element_text(size = 10),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank()
+    )
+  
+  Set_LTA_Theme()
+  
+  return(plot)
+  
+}
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 7. HULP FUNCTIES ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## Functie nummers om te zetten naar een leesbare notatie
+Number_to_readable <- function(x, digits = 0) {
+  return(formatC(round(x, digits), format = "f", digits = digits, big.mark = ".", decimal.mark = ","))
+}
+
+## Haal de dataset (versie) op
+Get_sDataset <- function(df) {
+  unique(df$LTA_Dataset)
+}
+
+## Functie om de metadata van de analyse te bepalen
+Get_Metadata <- function() {
+  
+  lMetadata <- list(
+    "sBron_label"    = "Bron",
+    "sDataset_label" = "Dataset",
+    "sPlot_label"    = "Plot",
+    "sAnalyse_label" = "Analyse",
+    "sInstelling"    = "De HHs",
+    "sBron"          = "De HHs, IR & Analytics",
+    "sDataset"       = lResearch_settings[["sDataset"]],
+    "sAnalyse"       = "De HHs, Lectoraat Learning Technology & Analytics"
+  )
+  
+  return(lMetadata)
+}
+

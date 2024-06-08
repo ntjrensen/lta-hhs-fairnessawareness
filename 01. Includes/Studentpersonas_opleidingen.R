@@ -22,6 +22,14 @@
 ## 06-06-2024: TB: Aanmaak bestand
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 1. INSPECTEER dfOpleiding_inschrijvingen ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 1.1 Namen en inhoud ####
+
 # names(dfOpleiding_inschrijvingen)
 
 # [1] "Uitval"                        "Aanmelding"                    "Aansluiting"                  
@@ -35,76 +43,283 @@
 # [25] "SES_Welvaart"                  "Studiekeuzeprofiel"            "Vooropleiding"    
 
 # glimpse(dfOpleiding_inschrijvingen)
-# 
-# student_x <- dfOpleiding_inschrijvingen[3,]
 
-# Uitval 
-# Aanmelding 
-# Aansluiting 
-# APCG 
-# Cijfer_CE_Engels 
-# Cijfer_CE_Engels_missing 
-# Cijfer_CE_Natuurkunde
-# Cijfer_CE_Natuurkunde_missing 
-# Cijfer_CE_Nederlands 
-# Cijfer_CE_Nederlands_missing 
-# Cijfer_CE_VO 
-# Cijfer_CE_VO_missing
-# Cijfer_CE_Wiskunde 
-# Cijfer_CE_Wiskunde_missing 
-# Cijfer_SE_VO 
-# Cijfer_SE_VO_missing 
-# Collegejaar 
-# Dubbele_studie
-# Geslacht
-# ID
-# Leeftijd
-# Reistijd 
-# SES_Arbeid 
-# SES_Totaal 
-# SES_Welvaart 
-# Studiekeuzeprofiel
-# Vooropleiding
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 1.2 Functies ####
 
-dfPersona <- dfOpleiding_inschrijvingen |>
+## Functie om de meest voorkomende categorie te bepalen
+Get_Mostcommon_Category <- function(x) {
   
-  ## Split de opleidingen op basis van de Vooropleiding
-  group_by(Vooropleiding) |>
+  ## Test of x categorisch is
+  if(!is.factor(x) && !is.character(x)) {
+    stop("De variabele is niet categorisch")
+  }
   
-  ## Maak een persona aan op basis van de overige variabelen: 
-  ## kies de meest voorkomende waarden per variabele bij categorieën en de mediaan bij numerieke variabelen
-  summarise(
+  ## Bepaal de meest voorkomende categorie
+  x <- names(which.max(table(x)))
+  
+  return(x)
+  
+}
+
+## Functie om de mediaan te bepalen (afgerond en zonder NA's)
+Get_Median_Rounded <- function(x) {
+  
+  ## Test of x numeriek is
+  if(!is.numeric(x)) {
+    stop("De variabele is niet numeriek")
+  }
+  
+  ## Bepaal de mediaan
+  x <- round(median(x, na.rm = TRUE), 1)
+  
+  return(x)
+  
+}
+
+# Functie om een persona te maken van de studenten van een opleiding
+Get_dfPersona <- function(group = NULL) {
+  
+  lSelect_categorical <- c(
+    "Aansluiting",
+    "APCG",
+    "Cijfer_CE_Engels_missing",
+    "Cijfer_CE_Natuurkunde_missing",
+    "Cijfer_CE_Nederlands_missing",
+    "Cijfer_CE_VO_missing",
+    "Cijfer_CE_Wiskunde_missing",
+    "Cijfer_SE_VO_missing",
+    "Dubbele_studie",
+    "Geslacht",
+    "Studiekeuzeprofiel",
+    "Vooropleiding"
+  ) 
+  
+  if (!is.null(group)) {
+    .group <- as.name(group)
+    # Verwijder de groep variabele uit deze lijst
+    lSelect_categorical <- setdiff(lSelect_categorical, group)
+  }
+  
+  lSelect_numerical <- c(
+    "Aanmelding",
+    "Cijfer_CE_Engels",
+    "Cijfer_CE_Natuurkunde",
+    "Cijfer_CE_Nederlands",
+    "Cijfer_CE_VO",
+    "Cijfer_CE_Wiskunde",
+    "Cijfer_SE_VO",
+    "Leeftijd",
+    "Reistijd",
+    "SES_Arbeid",
+    "SES_Welvaart",
+    "SES_Totaal",
+    "Uitval"
+  )
+  
+  # Bereken het totaal voor deze opleiding
+  .totaal <- dfOpleiding_inschrijvingen |> 
+    count() |> 
+    pull(n)
+  
+  if (!is.null(group)) {
     
-    ## Categorische variabelen
-    Aansluiting                   = names(which.max(table(Aansluiting))),
-    APCG                          = names(which.max(table(APCG))),
-    Dubbele_studie                = names(which.max(table(Dubbele_studie))),
-    Cijfer_CE_Engels_missing      = names(which.max(table(Cijfer_CE_Engels_missing))),
-    Cijfer_CE_Natuurkunde_missing = names(which.max(table(Cijfer_CE_Natuurkunde_missing))),
-    Cijfer_CE_Nederlands_missing  = names(which.max(table(Cijfer_CE_Nederlands_missing))),
-    Cijfer_CE_VO_missing          = names(which.max(table(Cijfer_CE_VO_missing))),
-    Cijfer_CE_Wiskunde_missing    = names(which.max(table(Cijfer_CE_Wiskunde_missing))),
-    Cijfer_SE_VO_missing          = names(which.max(table(Cijfer_SE_VO_missing))),
-    Geslacht                      = names(which.max(table(Geslacht))),
-    Studiekeuzeprofiel            = names(which.max(table(Studiekeuzeprofiel))),
+    # Maak personas aan op basis van de opgegeven groep
+    dfPersona <- dfOpleiding_inschrijvingen |>
+      
+      # Split de opleidingen op basis van de groep
+      group_by(!!.group) |>
+      
+      # Maak een persona aan op basis van de overige variabelen: 
+      # kies de meest voorkomende waarden per variabele bij categorieën en de mediaan bij numerieke variabelen
+      summarise(
+        
+        # Categorische variabelen
+        across(
+          all_of(lSelect_categorical), 
+          Get_Mostcommon_Category,
+          .names = "{col}"
+        ),
+        
+        # Numerieke variabelen
+        across(
+          all_of(lSelect_numerical),
+          Get_Median_Rounded,
+          .names = "{col}"
+        ), 
+        
+        # Overige variabelen
+        Collegejaar = median(Collegejaar, na.rm = TRUE),
+        ID = NA,
+        
+        # Subtotaal aantal studenten
+        Subtotaal = n(),
+        
+        .groups = "drop") |> 
+      
+      # Tel het aantal studenten per groep
+      mutate(Totaal = .totaal,
+             Percentage = round(Subtotaal/Totaal, 3)) |>
+      
+      # Voeg de groep variabele toe en bepaal de categorie binnen de groep
+      mutate(Groep = group,
+             Categorie = !!.group) |>
+      
+      # Herorden
+      select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
     
-    ## Numerieke variabelen
-    Aanmelding            = round(median(Aanmelding, na.rm = TRUE), 1),
-    Cijfer_CE_Engels      = round(median(Cijfer_CE_Engels, na.rm = TRUE), 1),
-    Cijfer_CE_Natuurkunde = round(median(Cijfer_CE_Natuurkunde, na.rm = TRUE), 1),
-    Cijfer_CE_Nederlands  = round(median(Cijfer_CE_Nederlands, na.rm = TRUE), 1),
-    Cijfer_CE_VO          = round(median(Cijfer_CE_VO, na.rm = TRUE), 1),
-    Cijfer_CE_Wiskunde    = round(median(Cijfer_CE_Wiskunde, na.rm = TRUE), 1),
-    Cijfer_SE_VO          = round(median(Cijfer_SE_VO, na.rm = TRUE), 1),
-    Leeftijd              = round(median(Leeftijd, na.rm = TRUE), 1),
-    Reistijd              = round(median(Reistijd, na.rm = TRUE), 1),
-    SES_Arbeid            = round(median(SES_Arbeid, na.rm = TRUE), 1),
-    SES_Welvaart          = round(median(SES_Welvaart, na.rm = TRUE), 1),
-    SES_Totaal            = round(median(SES_Totaal, na.rm = TRUE), 1),
+  } else {
     
-    ## Overige variabelen
-    Uitval                = names(which.max(table(Uitval))),
-    Collegejaar           = median(Collegejaar),
-    ID                    = NA,                              
+    # Maak persona voor alle studenten zonder groepering
+    dfPersona <- dfOpleiding_inschrijvingen |>
+      
+      # Maak een persona aan op basis van de overige variabelen: 
+      # kies de meest voorkomende waarden per variabele bij categorieën 
+      # en de mediaan bij numerieke variabelen
+      summarise(
+        
+        # Categorische variabelen
+        across(
+          all_of(lSelect_categorical), 
+          Get_Mostcommon_Category,
+          .names = "{col}"
+        ),
+        
+        # Numerieke variabelen
+        across(
+          all_of(lSelect_numerical),
+          Get_Median_Rounded,
+          .names = "{col}"
+        ), 
+        
+        # Overige variabelen
+        Collegejaar = median(Collegejaar, na.rm = TRUE),
+        ID = NA,
+        
+        # Subtotaal aantal studenten
+        Subtotaal = n(),
+        
+        .groups = "drop") |> 
+      
+      # Tel het aantal studenten per groep
+      mutate(Totaal = .totaal,
+             Percentage = round(Subtotaal/Totaal, 3)) |>
+      
+      # Voeg de groep variabele toe en bepaal de categorie binnen de groep
+      mutate(Groep = "Alle",
+             Categorie = "Alle studenten") |>
+      
+      # Herorden
+      select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
+  }
+  
+  return(dfPersona)
+}
+
+## Functie om een persona te maken van de studenten van een opleiding
+Get_dfPersona_1 <- function(group) {
+  
+  .group <- as.name(group)
+  
+  lSelect_categorical <- c(
+    "Aansluiting",
+    "APCG",
+    "Cijfer_CE_Engels_missing",
+    "Cijfer_CE_Natuurkunde_missing",
+    "Cijfer_CE_Nederlands_missing",
+    "Cijfer_CE_VO_missing",
+    "Cijfer_CE_Wiskunde_missing",
+    "Cijfer_SE_VO_missing",
+    "Dubbele_studie",
+    "Geslacht",
+    "Studiekeuzeprofiel",
+    "Vooropleiding"
+  ) 
+  
+  ## Verwijder de groep variabele uit deze lijst
+  lSelect_categorical <- setdiff(lSelect_categorical, group)
+  
+  lSelect_numerical <- c(
+    "Aanmelding",
+    "Cijfer_CE_Engels",
+    "Cijfer_CE_Natuurkunde",
+    "Cijfer_CE_Nederlands",
+    "Cijfer_CE_VO",
+    "Cijfer_CE_Wiskunde",
+    "Cijfer_SE_VO",
+    "Leeftijd",
+    "Reistijd",
+    "SES_Arbeid",
+    "SES_Welvaart",
+    "SES_Totaal",
+    "Uitval"
+  )
+  
+  ## Bereken het totaal voor deze opleiding
+  .totaal <- dfOpleiding_inschrijvingen |> 
+    count() |> 
+    pull(n)
+  
+  ## Maak personas aan op basis van de opleiding
+  dfPersona <- dfOpleiding_inschrijvingen |>
     
-    .groups = "drop")
+    ## Split de opleidingen op basis van de Vooropleiding
+    group_by(!!.group) |>
+    
+    ## Maak een persona aan op basis van de overige variabelen: 
+    ## kies de meest voorkomende waarden per variabele bij categorieën en de mediaan bij numerieke variabelen
+    summarise(
+      
+      ## Categorische variabelen
+      across(
+        all_of(lSelect_categorical), 
+        Get_Mostcommon_Category,
+        .names = "{col}"
+      ),
+      
+      ## Numerieke variabelen
+      across(
+        all_of(lSelect_numerical),
+        Get_Median_Rounded,
+        .names = "{col}"
+      ), 
+      
+      ## Overige variabelen
+      Collegejaar                   = median(Collegejaar),
+      ID                            = NA,
+      
+      ## Subtotaal aantal studenten
+      Subtotaal = n(),
+      
+      .groups = "drop") |> 
+    
+    ## Tel het aantal studenten per groep
+    mutate(Totaal = .totaal,
+           Percentage = round(Subtotaal/Totaal, 3)) |>
+    
+    ## Voeg de groep variabele toe en bepaal de categorie binnen de groep
+    mutate(Groep = group,
+           Categorie = !!.group) |>
+    
+    ## Herorden
+    select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
+  
+  return(dfPersona)
+  
+}
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 2. BOUW PERSONAS ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## Maak een lijst van dfPersonas
+lDfPersona <- list()
+
+## Loop over de variabelen
+lDfPersona <- map(c("Geslacht", "Vooropleiding", "Aansluiting"), ~ Get_dfPersona(.x)) |> 
+  set_names(c("Geslacht", "Vooropleiding", "Aansluiting"))
+
+## Voeg de personas samen
+## dfPersona <- bind_rows(lDfPersona)
+

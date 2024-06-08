@@ -3,6 +3,9 @@ project:
 
 editor: visual
 
+# execute:
+#  keep-md: true
+  
 # Taalinstellingen
 lang: nl
 language: 
