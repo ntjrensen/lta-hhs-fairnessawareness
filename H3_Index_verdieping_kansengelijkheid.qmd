@@ -1,0 +1,444 @@
+---
+title: "3. Kansengelijkheid - `r params$uitval` `r ifelse(params$propedeusediploma == 'Nvt', '', paste0(' - ', params$propedeusediploma))`"
+subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
+
+## Auteur en datum
+author: "`r params$author`, De HHs"
+date: last-modified
+
+## LTA Template
+ltatemplate: 0.9.1.9000
+
+## Format en output
+output-file: "lta-hhs-tidymodels-uitval-verdieping-kansengelijkheid.html"
+
+## Parameters        
+params:
+  versie: "1.0"
+  uitval: "Uitval na 1 jaar"
+  propedeusediploma: "Zonder P" ## Nvt/Met P/Zonder P
+  
+  ## Recreate plots
+  recreateplots: true
+  
+  # GVS:HBO-V
+  faculteit: "GVS"
+  opleidingsnaam: "B Opleiding tot Verpleegkundige"
+  opleiding: "HBO-V"
+  opleidingsvorm: "voltijd"
+  opleidingsvorm_afkorting: "VT"
+  selectie: false
+  
+  ## GVS:MT
+  # faculteit: "GVS"
+  # opleidingsnaam: "B Mens en Techniek"
+  # opleiding: "MT"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## GVS:HDT
+  # faculteit: "GVS"
+  # opleidingsnaam: "B Huidtherapie"
+  # opleiding: "HDT"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: true
+  
+  ## FDR:ORM DT
+  # faculteit: "FDR"
+  # opleidingsnaam: "B Ondernemerschap Retail Management"
+  # opleiding: "ORM"
+  # opleidingsvorm: "deeltijd"
+  # opleidingsvorm_afkorting: "DT"
+  # selectie: false
+  
+  ## SWE:SW
+  # faculteit: "SWE"
+  # opleidingsnaam: "B Social Work"
+  # opleiding: "SW"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: true
+  
+  ## TIS:IPO
+  # faculteit: "TIS"
+  # opleidingsnaam: "B Industrieel Product Ontwerpen"
+  # opleiding: "IPO"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## TIS:EC
+  # faculteit: "TIS"
+  # opleidingsnaam: "B Elektrotechniek"
+  # opleiding: "E"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## TIS:B
+  # faculteit: "TIS"
+  # opleidingsnaam: "B Bouwkunde"
+  # opleiding: "B"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## BFM:AC
+  # faculteit: "BFM"
+  # opleidingsnaam: "B International Business"
+  # opleiding: "IB-ES-3"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## BFM:AC
+  # faculteit: "BFM"
+  # opleidingsnaam: "B Accountancy"
+  # opleiding: "AC"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## ITD:CMD
+  # faculteit: "ITD"
+  # opleidingsnaam: "B Communication and Multimedia Design"
+  # opleiding: "CMD"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## Author
+  author: "Theo Bakker, lector Learning Technology & Analytics"
+  
+## Content
+includes:
+  inleiding:      true
+  data:           true
+  model_lr:       true
+  model_rf:       true
+  model_svm:      false
+  final_fit:      true
+  conclusies:     true
+  verantwoording: true
+  nextsteps:      true
+  copyright:      true
+---
+
+```{r setup, include = FALSE}
+#| label: setup
+
+## Sluit het _Setup.R bestand in
+source("_Setup.R")
+
+```
+
+<!-- Inleiding -->
+
+::: {.content-hidden unless-meta="includes.inleiding"}
+# Inleiding
+
+Na de factoranalyse van de data gaan we nu in op het onderwerp van bias en kansengelijkheid. Het doel is beter te begrijpen of er studenten zijn met minder kans op succes en of dit disproportioneel is. Dit kan duiden op kansenongelijkheid.
+
+De analyse van kansengelijkheid heeft de volgende stappen:
+
+1.  We lezen de bewerkte dataset weer in en de modellen die we in de basis-analyse hebben gemaakt.
+2.  We maken weer een *explainer* om de modellen beter te begrijpen en te kunnen uitleggen.
+3.  Vervolgens berekenen we of er *bias* bestaat voor verschillende groepen studenten en of er mogelijk sprake is van kansenongelijkheid.
+:::
+
+<!-- Data -->
+
+# Voorbereidingen
+
+## Laad de data
+
+We laden de bewerkte data en prognosemodellen in voor:
+
+**Opleiding**: `r params$faculteit` \| `r params$opleidingsnaam` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sUitval_model`**
+
+```{r}
+#| label: load_data
+
+## Bepaal de paden
+sData_outputpath         <- Get_Model_outputpath(mode = "data")
+sFittedmodels_outputpath <- Get_Model_outputpath(mode = "last-fits")
+sModelresults_outputpath <- Get_Model_outputpath(mode = "modelresults")
+
+## Laad de data voor de opleiding: data, last fits en model results
+dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE)
+lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
+dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
+
+# Pas de Uitval variabele aan naar numeric (0/1), 
+# zodat er een explainer van gemaakt kan worden
+dfOpleiding_inschrijvingen$Uitval <- as.numeric(dfOpleiding_inschrijvingen$Uitval) - 1
+
+## Maak een lijst van dfPersonas
+lDfPersona <- list()
+
+## Loop over de variabelen
+lDfPersona <- map(c("Geslacht", "Vooropleiding", "Aansluiting"),
+                  ~ Get_dfPersona(.x)) |>
+  set_names(c("Geslacht", "Vooropleiding", "Aansluiting"))
+
+## Laad de persona's
+dfPersona_all <- Get_dfPersona()
+
+```
+
+## Maak een explainer
+
+We maken weer gebruik van de explainer van `Dalex`.
+
+```{r, include = FALSE}
+#| label: fitted_model
+
+sBest_model <- dfModel_results$model[dfModel_results$number == 1]
+last_fit    <- lLast_fits[[sBest_model]]
+
+fitted_model <- last_fit |>
+  extract_fit_parsnip()
+
+## Controleer of de coefficienten van het model numeriek zijn
+coefs <- tidy(fitted_model)$estimate
+
+# Controleer of de coëfficiënten numeriek zijn
+if (!is.numeric(coefs)) {
+  stop("De geëxtraheerde coëfficiënten zijn niet numeriek.")
+}
+
+```
+
+```{r}
+#| label: lf_explainer
+
+## Extraheer het fitted model en de workflow
+fitted_model <- last_fit |>
+  extract_fit_parsnip()
+
+workflow <- last_fit |>
+  extract_workflow()
+
+# Maak een explainer
+explain_lm <- DALEXtra::explain_tidymodels(
+  model = workflow,
+  data = dfOpleiding_inschrijvingen |> select(-Uitval),
+  y = dfOpleiding_inschrijvingen |> pull(Uitval),
+  colorize = TRUE,
+  verbose = FALSE,
+  label = "Linear Regression"
+)
+
+```
+
+<!-- Kansengelijkheid -->
+
+# Analyse van kansengelijkheid
+
+Tot slot onderzoeken we de kansengelijkheid. We onderzoeken of er bias is voor verschillende groepen studenten en of er mogelijk sprake is van kansengelijkheid. Ook hiervoor maken we gebruik van de explainer en onderzoeken we de invloed van de variabelen op de kans op uitval voor verschillende groepen studenten naar geslacht, vooropleiding en aansluiting.
+
+De volgende **definities** zijn van belang: 
+
+-   **Beschermde groep**: Een groep waarvan wordt verwacht dat deze mogelijk benadeeld wordt (bijv. minderheidsgroepen, vrouwen, etc.).
+-   **Bevoorrechte groep**: Een groep die als standaard wordt beschouwd en mogelijk bevoordeeld wordt (bijv. meerderheidsgroepen, mannen, etc.).
+
+In een onderwijssetting kunnen deze groepen anders liggen dan in de maatschappij. Zo hebben vrouwen in het onderwijs vaak een bevoorrechte positie omdat zij over het algemeen meer studiesucces hebbben, terwijl in de maatschappij vrouwen vaak een beschermde groep zijn.
+
+## Ratio's om kansengelijkheid te beoordelen
+
+Voor elke groep onderzoeken we **5 ratio's**, ook wel maatstaven of metrieken genoemd. Deze ratio's zijn afgeleid van verhoudingen in de confusion matrix en geven inzicht in de mate van bias en kansengelijkheid vanuit verschillende perspectieven van een prognosemodel.
+![](01. Includes/img/Fairness-Confustion-Matrix.png)
+
+`r kableExtra::text_spec("**1. Accuracy Equal Ratio**", color = lColors_hhs[["hhs-color-blue"]])` - _In welke mate voorspelt het model zowel de positieve als negatieve uitkomsten goed?_ 
+
+Deze maatstaf wordt gebruikt om te beoordelen of een model even accuraat is voor verschillende subgroepen binnen de dataset. Het vergelijkt de nauwkeurigheid van het model voor een beschermde groep (een minderheidsgroep) met de nauwkeurigheid voor een bevoorrechte groep (de meerderheidsgroep). Deze ratio wordt berekend als de verhouding tussen de nauwkeurigheid voor de beschermde groep en de nauwkeurigheid voor de bevoorrechte groep: 
+
+_hier uitwerken_
+
+**Definities**
+
+-   **Nauwkeurigheid (Accuracy)**: Het percentage correcte voorspellingen van het model. Dit wordt berekend als het aantal juiste voorspellingen gedeeld door het totale aantal voorspellingen.
+
+**Interpretatie**
+
+-   **Ratio = 1**: Het model is even accuraat voor beide groepen.
+-   **Ratio < 1**: Het model is minder accuraat voor de beschermde groep dan voor de bevoorrechte groep, wat wijst op mogelijke bias tegen de beschermde groep.
+-   **Ratio > 1**: Het model is meer accuraat voor de beschermde groep dan voor de bevoorrechte groep, wat ook op een vorm van bias kan wijzen, maar in het voordeel van de beschermde groep.
+
+`r kableExtra::text_spec("**2. Equal Opportunity Ratio**", color = lColors_hhs[["hhs-color-blue"]])` -  _In welke mate zijn de terecht positieve voorspellingen gelijk?_
+
+Deze maatstaf beoordeelt de gelijkheid van kansen die een model biedt aan verschillende subgroepen in termen van de 'True Positive Rate' (TPR). Het vergelijkt de kans dat een model correct een positieve uitkomst voorspelt voor een beschermde groep versus een bevoorrechte groep. Deze ratio wordt berekend als de verhouding tussen de TPR voor de beschermde groep en de TPR voor de bevoorrechte groep. 
+
+De True Positive Rate (TPR) wordt ook wel de **gevoeligheid** of **recall** genoemd. Het wordt berekend als het aantal true positives gedeeld door het totaal aantal werkelijke positives. **Het is een maat voor hoe goed het model positieve uitkomsten correct identificeert.**
+
+**Definities**
+
+-   **TP**: True Positives (correcte voorspellingen van positieve uitkomsten)
+-   **FN**: False Negatives (werkelijke positieve uitkomsten die foutief als negatief zijn voorspeld)
+
+**Interpretatie**
+
+-   **Ratio = 1**: Het model biedt gelijke kansen aan beide groepen in termen van het correct voorspellen van positieve uitkomsten.
+-   **Ratio < 1**: Het model biedt minder kansen aan de beschermde groep in vergelijking met de bevoorrechte groep, wat wijst op mogelijke bias tegen de beschermde groep.
+-   **Ratio > 1**: Het model biedt meer kansen aan de beschermde groep in vergelijking met de bevoorrechte groep, wat ook op een vorm van bias kan wijzen, maar in het voordeel van de beschermde groep.
+
+`r kableExtra::text_spec("**3. Predictive Equality Ratio**", color = lColors_hhs[["hhs-color-blue"]])` - _In welke mate zijn de vals positieve voorspellingen gelijk?_
+
+Deze maatstaf beoordeelt de gelijkheid van het aantal False Positives (vals-positieven) tussen verschillende subgroepen. Het vergelijkt de False Positive Rate (FPR) voor een beschermde groep met de FPR voor een bevoorrechte groep.
+
+-   **False Positive Rate (FPR)**: Dit is de verhouding van het aantal vals-positieve voorspellingen (False Positives, FP) ten opzichte van het totaal aantal werkelijke negatieve gevallen (True Negatives, TN en False Positives, FP). Het geeft aan hoe vaak een model onterecht een positieve uitkomst voorspelt voor negatieve gevallen.
+
+**Definities**
+
+-   **FP**: False Positives (foutieve voorspellingen van positieve uitkomsten)
+-   **TN**: True Negatives (correcte voorspellingen van negatieve uitkomsten)
+
+De Predictive Equality Ratio wordt berekend als de verhouding tussen de FPR voor de beschermde groep en de FPR voor de bevoorrechte groep.
+
+**Interpretatie**
+
+-   **Ratio = 1**: Het model heeft een gelijke kans om False Positives te maken voor beide groepen.
+-   **Ratio < 1**: Het model heeft minder kans om False Positives te maken voor de beschermde groep dan voor de bevoorrechte groep, wat wijst op mogelijke bias ten nadele van de bevoorrechte groep.
+-   **Ratio > 1**: Het model heeft meer kans om False Positives te maken voor de beschermde groep dan voor de bevoorrechte groep, wat wijst op mogelijke bias ten nadele van de beschermde groep.
+
+`r kableExtra::text_spec("**4. Predictive Parity Ratio**", color = lColors_hhs[["hhs-color-blue"]])` - _In welke mate zijn de terecht positieve voorspellingen gelijk?_
+
+Deze maatstaf beoordeelt de gelijkheid van de voorspellingsnauwkeurigheid tussen verschillende subgroepen door de positieve voorspellende waarde (Positive Predictive Value, PPV) van het model voor een beschermde groep te vergelijken met die voor een bevoorrechte groep.
+
+**Definities**
+
+-   **Positieve Voorspellende Waarde (PPV)**: Dit wordt ook wel de **precisie** genoemd en wordt berekend als het aantal true positives (TP) gedeeld door het totaal aantal voorspelde positives (TP en FP). Het is een maat voor de nauwkeurigheid van de positieve voorspellingen van het model.
+-   **TP**: True Positives (correcte voorspellingen van positieve uitkomsten)
+-   **FP**: False Positives (foutieve voorspellingen van positieve uitkomsten)
+
+**Interpretatie**
+
+-   **Ratio = 1**: Het model heeft een gelijke voorspellingsnauwkeurigheid voor beide groepen.
+-   **Ratio < 1**: Het model is minder nauwkeurig in het voorspellen van positieve uitkomsten voor de beschermde groep dan voor de bevoorrechte groep, wat wijst op mogelijke bias tegen de beschermde groep.
+-   **Ratio > 1**: Het model is meer nauwkeurig in het voorspellen van positieve uitkomsten voor de beschermde groep dan voor de bevoorrechte groep, wat ook op een vorm van bias kan wijzen, maar in het voordeel van de beschermde groep.
+
+`r kableExtra::text_spec("**5. Statistical Parity Ratio**", color = lColors_hhs[["hhs-color-blue"]])` -  _In welke mate zijn de positieve voorspellingen gelijk?_
+
+Deze maatstaf beoordeelt de gelijkheid van de positieve voorspellingen (ongeacht of ze correct zijn of niet) tussen verschillende subgroepen. Het vergelijkt de kans dat een model een positieve uitkomst voorspelt voor een beschermde groep met de kans dat het een positieve uitkomst voorspelt voor een bevoorrechte groep.
+
+**Definities**
+
+-   **Positieve Voorspelling**: Een voorspelling waarin het model een positieve uitkomst voorspelt (bijv. aangenomen worden, krediet goedkeuring, etc.).
+
+**Berekening**:
+De Statistical Parity Ratio wordt berekend als de verhouding tussen de kans op een positieve voorspelling voor de beschermde groep en de kans op een positieve voorspelling voor de bevoorrechte groep:
+
+**Interpretatie**
+
+-   **Ratio = 1**: Het model voorspelt even vaak positieve uitkomsten voor beide groepen.
+-   **Ratio < 1**: Het model voorspelt minder vaak positieve uitkomsten voor de beschermde groep dan voor de bevoorrechte groep, wat wijst op mogelijke bias tegen de beschermde groep.
+-   **Ratio > 1**: Het model voorspelt vaker positieve uitkomsten voor de beschermde groep dan voor de bevoorrechte groep, wat kan wijzen op bias ten nadele van de bevoorrechte groep.
+
+Nu we deze begrippen hebben gedefinieerd, gaan we de bias en kansengelijkheid van het model onderzoeken voor verschillende groepen studenten. Hiervoor gebruiken we het `fairmodels` package van `Dalex`.
+
+## Fairness checks
+
+We maken een fairness analyse voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting`. Voor elke groep berekenen we de maatstaven die we hierboven hebben behandeld. 
+
+We maken een plot van de fairness analyse, waarbij we per variabele één categorie nemen als de bevoorrechte groep; voor Geslacht is dit 'Vrouw (V)', voor Vooropleiding is dit 'havo' en voor Aansluiting is dit 'Direct'. Als binnen een variabele een groep een ratio heeft die naar links of naar rechts afwijkt, kan dit duiden op een verschil in kansengelijkheid. 
+
+Het wijkt af als de balken verder buiten het groene vlak komen en in het rode vlak; dit is 0,2 naar beide kanten -- dus minder dan 0,8 of meer dan 1,2. Deze marge is gebaseerd op het 4/5 principe: er is sprake van een te groot verschil als de maat voor een beschermde groep 4/5 of meer afwijkt van de bevoorrechte groep. 
+
+```{r}
+#| label: bias_analysis
+#| results: asis
+
+## Maak een fairness analyse
+for(name in c("Geslacht", "Vooropleiding", "Aansluiting")) {
+
+  ## Groep
+  Knit_Header(glue("Fairness check {name}"), 3)
+  
+  if(name == "Geslacht") {
+    sPrivileged <- "V"
+  } else if(name == "Vooropleiding") {
+    sPrivileged <- "HAVO"
+  } else if(name == "Aansluiting") {
+    sPrivileged <- "Direct"
+  }
+
+  ## Maak een fairness object
+  fobject <- Get_objFairness(explain_lm, name, sPrivileged)
+
+  ## Maak een tabel van de fairness analyse
+  dfFairness_totaal <- Get_dfFairness_totaal(fobject) 
+  
+  ## Toon de resultaten
+  # print(knitr::kable(dfFairness_totaal))
+
+  ## Maak en print een plot van de fairness analyse
+  fairness_plot <- suppressWarnings(
+                      Get_Fairness_plot(
+                          fobject,
+                          group = name,
+                          privileged = sPrivileged))
+
+  print(suppressWarnings(fairness_plot))
+  
+}
+
+```
+
+<!-- Conclusies -->
+
+::: {.content-hidden unless-meta="includes.conclusies"}
+# Conclusies
+
+Hier komen de conclusies.
+:::
+
+<!-- Next steps -->
+
+::: {.content-hidden unless-meta="includes.nextsteps"}
+# Next Steps
+
+...
+:::
+
+<!-- Verantwoording -->
+
+::: {.content-hidden unless-meta="includes.verantwoording"}
+```{r, echo=FALSE, results='asis'}
+sQuarto_version <- quarto::quarto_version()
+```
+
+ 
+
+**Verantwoording**
+
+Deze analyse maakt deel uit van het onderzoek naar kansengelijkheid van het lectoraat Learning Technology & Analytics van De Haagse Hogeschool: [No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness) \| Het rapport is door het lectoraat ontwikkeld in [Quarto](https://quarto.org/) `r sQuarto_version`. \| Template versie: `r rmarkdown::metadata$ltatemplate`
+:::
+
+<!-- Copyright -->
+
+::: {.content-hidden unless-meta="includes.copyright"}
+```{r, echo=FALSE, results='asis'}
+nCurrent_year   <- as.numeric(format(Sys.Date(), "%Y"))
+```
+
+ 
+
+**Copyright**
+
+Dr. Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool © 2023-`r nCurrent_year` Alle rechten voorbehouden.
+:::
+
+<!-- Opschonen -->
+
+```{r, echo = FALSE}
+#| label: cleanup
+
+## Datasets
+
+
+## Collect garbage
+invisible(gc())
+  
+```

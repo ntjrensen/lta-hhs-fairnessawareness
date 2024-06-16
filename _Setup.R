@@ -109,6 +109,8 @@ if(bSetup_executed == F) {
   library(extrafont)    # voor het bewaren van plots
   library(sysfonts)     # voor fonts
   
+  library(fairmodels)   # voor fairness in modellen
+  
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.5 Fonts ####
   

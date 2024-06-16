@@ -1,0 +1,774 @@
+---
+title: "2. Factoranalyse - `r params$uitval` `r ifelse(params$propedeusediploma == 'Nvt', '', paste0(' - ', params$propedeusediploma))`"
+subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
+
+## Auteur en datum
+author: "`r params$author`, De HHs"
+date: last-modified
+
+## LTA Template
+ltatemplate: 0.9.1.9000
+
+## Format en output
+output-file: "lta-hhs-tidymodels-uitval-verdieping-factoren.html"
+
+## Parameters        
+params:
+  versie: "1.0"
+  uitval: "Uitval na 1 jaar"
+  propedeusediploma: "Zonder P" ## Nvt/Met P/Zonder P
+  
+  ## Recreate plots
+  recreateplots: false
+  
+  # GVS:HBO-V
+  faculteit: "GVS"
+  opleidingsnaam: "B Opleiding tot Verpleegkundige"
+  opleiding: "HBO-V"
+  opleidingsvorm: "voltijd"
+  opleidingsvorm_afkorting: "VT"
+  selectie: false
+  
+  ## GVS:MT
+  # faculteit: "GVS"
+  # opleidingsnaam: "B Mens en Techniek"
+  # opleiding: "MT"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## GVS:HDT
+  # faculteit: "GVS"
+  # opleidingsnaam: "B Huidtherapie"
+  # opleiding: "HDT"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: true
+  
+  ## FDR:ORM DT
+  # faculteit: "FDR"
+  # opleidingsnaam: "B Ondernemerschap Retail Management"
+  # opleiding: "ORM"
+  # opleidingsvorm: "deeltijd"
+  # opleidingsvorm_afkorting: "DT"
+  # selectie: false
+  
+  ## SWE:SW
+  # faculteit: "SWE"
+  # opleidingsnaam: "B Social Work"
+  # opleiding: "SW"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: true
+  
+  ## TIS:IPO
+  # faculteit: "TIS"
+  # opleidingsnaam: "B Industrieel Product Ontwerpen"
+  # opleiding: "IPO"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## TIS:EC
+  # faculteit: "TIS"
+  # opleidingsnaam: "B Elektrotechniek"
+  # opleiding: "E"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## TIS:B
+  # faculteit: "TIS"
+  # opleidingsnaam: "B Bouwkunde"
+  # opleiding: "B"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## BFM:AC
+  # faculteit: "BFM"
+  # opleidingsnaam: "B International Business"
+  # opleiding: "IB-ES-3"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## BFM:AC
+  # faculteit: "BFM"
+  # opleidingsnaam: "B Accountancy"
+  # opleiding: "AC"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## ITD:CMD
+  # faculteit: "ITD"
+  # opleidingsnaam: "B Communication and Multimedia Design"
+  # opleiding: "CMD"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## Author
+  author: "Theo Bakker, lector Learning Technology & Analytics"
+  
+## Content
+includes:
+  inleiding:      true
+  data:           true
+  model_lr:       true
+  model_rf:       true
+  model_svm:      false
+  final_fit:      true
+  conclusies:     true
+  verantwoording: true
+  nextsteps:      true
+  copyright:      true
+---
+
+```{r setup, include = FALSE}
+#| label: setup
+
+## Sluit het _Setup.R bestand in
+source("_Setup.R")
+
+```
+
+<!-- Inleiding -->
+
+::: {.content-hidden unless-meta="includes.inleiding"}
+# Inleiding
+
+Na de basis-analyse van de data en het bouwen van de prognosemodellen, gaan we in deze verdiepende analyse dieper in op de **factoren** van de modellen. Het doel is beter te begrijpen hoe de factoren precies de uitval verklaren. Deze verdiepende factoranalyse heeft 5 stappen:
+
+1.  We lezen de bewerkte dataset in en de modellen die we in de basis-analyse hebben gemaakt.
+2.  We maken een *explainer* om de modellen beter te begrijpen en te kunnen uitleggen. Dit lichten we later in deze pagina toe.
+3.  We gebruiken het beste model om de prognose te verklaren en te begrijpen. We kijken naar de bijdrage van de variabelen aan de voorspelling en passen het model toe op de meest voorkomende studenten.
+4.  Vervolgens onderzoeken we de stabiliteit van de invloed van de verklarende variabelen met behulp van *Shapley* waarden.
+5.  Tot slot onderzoeken we hoe de uitval er *anders* uit zou kunnen zien als de studenten andere kenmerken zouden hebben met een *ceteris paribus analyse*.
+:::
+
+<!-- Data -->
+
+# Voorbereidingen
+
+## Laad de data
+
+We laden de bewerkte data en prognosemodellen in voor:
+
+**Opleiding**: `r params$faculteit` \| `r params$opleidingsnaam` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sUitval_model`**
+
+```{r}
+#| label: load_data
+
+## Bepaal de paden
+sData_outputpath         <- Get_Model_outputpath(mode = "data")
+sFittedmodels_outputpath <- Get_Model_outputpath(mode = "last-fits")
+sModelresults_outputpath <- Get_Model_outputpath(mode = "modelresults")
+
+## Laad de data voor de opleiding: data, last fits en model results
+dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE)
+lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
+dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
+
+# Pas de Uitval variabele aan naar numeric (0/1), 
+# zodat er een explainer van gemaakt kan worden
+dfOpleiding_inschrijvingen$Uitval <- as.numeric(dfOpleiding_inschrijvingen$Uitval) - 1
+
+## Maak een lijst van dfPersonas
+lDfPersona <- list()
+
+## Loop over de variabelen
+lDfPersona <- map(c("Geslacht", "Vooropleiding", "Aansluiting"),
+                  ~ Get_dfPersona(.x)) |>
+  set_names(c("Geslacht", "Vooropleiding", "Aansluiting"))
+
+## Laad de persona's
+dfPersona_all <- Get_dfPersona()
+
+```
+
+# Verdiepende analyse van het model
+
+We weten vanuit de basis-analyse welke variabelen van invloed zijn, maar niet hoe en in welke richting ze uitval verklaren: dragen ze sterk bij of juist niet, verhogen of verlagen ze uitval? Om het model beter te begrijpen en te kunnen uitleggen, maken met behulp van het [`Dalex` package](https://dalex.drwhy.ai) een *explainer*.
+
+Dalex is onder andere ontwikkeld om uit te kunnen leggen welke verklarende variabelen van belang zijn en wat deze voor een effect hebben in een model. Een explainer is een model-onafhankelijke *wrapper*, geeft inzicht in de voorspellingen van het model en de bijdrage van de variabelen aan de prognose. Een explainer maakt het verder mogelijk om modellen onderling te vergelijken en benchmarken.
+
+## Maak een explainer
+
+We gaan nu een stap verder met behulp van het `Dalex` package. Op basis van het tidymodels model extraheren we de informatie voor de explainer van Dalex.
+
+```{r, include=FALSE}
+#| label: fitted_model
+
+sBest_model <- dfModel_results$model[dfModel_results$number == 1]
+last_fit    <- lLast_fits[[sBest_model]]
+
+fitted_model <- last_fit |>
+  extract_fit_parsnip()
+
+## Controleer of de coefficienten van het model numeriek zijn
+coefs <- tidy(fitted_model)$estimate
+
+# Controleer of de coëfficiënten numeriek zijn
+if (!is.numeric(coefs)) {
+  stop("De geëxtraheerde coëfficiënten zijn niet numeriek.")
+}
+
+```
+
+```{r}
+#| label: lf_explainer
+
+## Extraheer het fitted model en de workflow
+fitted_model <- last_fit |>
+  extract_fit_parsnip()
+
+workflow <- last_fit |>
+  extract_workflow()
+
+# Maak een explainer
+explain_lm <- DALEX::explain(
+  model = workflow,
+  data = dfOpleiding_inschrijvingen,
+  y = dfOpleiding_inschrijvingen$Uitval,
+  label = "Linear Regression")
+
+```
+
+## Toets de Root Mean Square Error
+
+De eerste analyse is de Root Mean Square Error (RMSE) van de voorspellingen van het model. De meeste voorspellende factoren en hun RMSE zijn:
+
+```{r}
+#| label: lf_model_parts
+
+sPlotPath <- file.path(Get_Plot_outputpath(plotname = "lf_model_parts_rmse"))
+
+## Als de plot niet bestaat of als recreateplots - T, maak dan een nieuwe plot
+if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
+
+## Bereken de model parts op basis van de RMSE
+mp_rmse <- model_parts(explain_lm, loss_function = loss_root_mean_square)
+
+p_mp_rmse <- plot(mp_rmse) +
+  
+  ## Themes
+  theme_minimal() +
+  Set_LTA_Theme() +
+  
+  ## Titel, ondertitel en caption
+  labs(
+    title = "Meest voorspellende factoren",
+    subtitle = "Root Mean Square Error (RMSE) na permutaties",
+    caption = sCaption,
+    x = NULL,
+    y = NULL
+  ) +
+  
+  ## Verberg de legenda
+  theme(
+    legend.position = "none"
+  ) +
+  
+  ## Voeg LTA elementen toe
+  Add_LTA_theme_elements()
+
+## Print de plot
+suppressWarnings(print(p_mp_rmse))
+
+## Bewaar de plot
+suppressWarnings(
+  Finalize_Plot(
+    plot_name = p_mp_rmse,
+    save_filepath = sPlotPath
+  ))
+} else {
+  
+  ## Toon de bestaande plot
+  knitr::include_graphics(sPlotPath)
+  
+}
+```
+
+Het valt op dat de meest voorspellende variabelen ook een hoge RMSE hebben. Dit betekent dat deze variabelen een grote invloed hebben op de voorspelling van het model, maar per toepassing op een individuele student uit het verleden ook sterk kunnen variëren.
+
+## Inspecteer variabelen met de meeste invloed
+
+Een volgende analyse is een toepassing van het model op de meest voorkomende student. We kijken eerst naar de meest voorkomende student in het algemeen. Vervolgens analyseren we de meest voorkomende student in meerdere groepen: naar vooropleiding, geslacht, leeftijd en aansluiting, etc. Om de meest voorkomende student te bepalen, gebruiken we de meeste frequente waarden van de verklarende variabelen in de dataset per groep.
+
+*Ter illustratie* Stel dat we een onderscheid maken tussen mbo en havo studenten, dan bepalen we de mediaan van numerieke variabelen en de frequentste waarde van categorische variabelen. Van de leeftijd kan misschien 20 het vaakst voorkomen, etc. De meest voorkomende student is dus geen daadwerkelijke student, maar een representatie van de groep op basis van de meeste frequente kenmerken.
+
+We kijken hiermee naar de voorspelling van het model per groep en de bijdrage van de verklarende variabelen aan die specifieke voorspelling. Dit geeft een verder inzicht in de werking van het model. Een categorie met 20 studenten of minder laten we buiten beschouwing.
+
+```{r}
+#| label: lf_break_down_all
+#| echo: false
+#| results: asis
+
+## Maak een breakdown van de meeste voorkomende student over alle data
+breakdown_lm_all <- predict_parts(explainer = explain_lm,
+                                  new_observation = dfPersona_all[1, ],
+                                  type = "break_down")
+
+## Bereken de intercept
+nIntercept <- breakdown_lm_all |> 
+  filter(variable == "intercept") |>
+  pull(cumulative) * 100 |> 
+  round(1) 
+
+sIntercept <- Number_to_readable(nIntercept, digits = 1)
+
+```
+
+### Toelichting op de opbouw van de kans op uitval
+
+De opbouw van het model bestaat uit een *intercept*, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de basiskans op uitval voor alle studenten. Deze kans is voor de `r params$opleidingsnaam` (`r params$opleiding`) `r params$opleidingsvorm` `r sIntercept`%. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de kans op uitval verhoogt, een negatieve bijdrage betekent dat het de kans op uitval verlaagt.
+
+Het kan zijn dat nieuwe variabelen geen invloed meer hebben op de kans. Dit betekent niet per se dat ze niet belangrijk zijn. Het kan zijn dat de invloed die ze hebben op de kans al is 'afgevangen' door variabelen die eerder in het model zijn opgenomen. Een voorbeeld: de variabele `Cijfer_CE_VO_missing = Ja` betekent dat een student geen VO cijfers heeft voor het centraal schriftelijk examen. Dit geldt voor vrijwel alle MBO studenten. Doordat de variabele Cijfer_CE_VO_missing de kans op uitval net wat sterker beïnvloedt, komt `Vooropleiding = MBO` niet meer voor als invloedrijke variabele, maar is dit wel de achterliggende reden dat het cijfer ontbreekt.
+
+Uiteindelijk tellen alle verklarende variabelen op tot een definitieve voorspelling die per persoon verschilt, afhankelijk van hun persoonlijke kenmerken per variabele.
+
+### De meest voorkomende student (totaal)
+
+We kijken eerst naar de meest voorkomende student in de opleiding. We analyseren de kans op uitval voor deze *fictieve* student en de bijdrage van de variabelen aan die kans. Daarbij tonen we de verdeling van de voorspellingen voor deze student voor alle variabelen en per variabele. Dit laat zien welke variabelen belangrijk zijn, naar welke kant de verdeling neigt en welke spreiding de kansverdeling heeft. Wat betekent dit?
+
+-   **All data** - De eerste variabele `all data` is eigenlijk geen variabele, maar geeft aan wat alle data samen aan kans op uitval voorspellen. Variabelen die daarna bovenaan staan, wegen het zwaarst in de voorspelling van de kans.
+-   **Richting** - Als de verdeling van de kansen naar de rechterkant van de x-as gaat, draagt deze variabele meer bij aan een toename op de kans op uitval; als deze naar de linkerkant beweegt, draagt deze variabele juist bij aan een afname op de kans op uitval.
+-   **Spreiding** - Als de spreiding breed is, geeft dit aan dat er binnen deze variabele veel variatie is in de kans op uitval en er voorzichtig mee omgegaan moet worden. Als de spreiding heel smal is, betekent dit dat de variabele weinig of geen invloed heeft op de kans op uitval. Deze variabelen bevinden zich op de intercept.
+-   **Vorm** - De vorm achter de variabele (een viool) geeft de verdeling van de kans op uitval weer. Hoe breder de viool, hoe meer studenten op die locatie een kans op uitval hebben.
+
+```{r}
+#| label: lf_break_down_distribution_all
+#| echo: false
+#| results: asis
+
+## Bepaal de plot
+sPlotPath <- file.path(Get_Plot_outputpath(plotname = "lf_break_down_distribution_all"))
+
+## Als de plot niet bestaat of als recreateplots - T, maak dan een nieuwe plot
+if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
+
+  ## Bepaal de algemene persona en de breakdown (met distributie)
+  breakdown_lm_all <- predict_parts(explainer = explain_lm,
+                                    new_observation = dfPersona_all[1, ],
+                                    type = "break_down",  
+                                    keep_distributions = TRUE)
+  
+  ## Bepaal de dataframe voor de breakdown
+  dfBreakdown_lm_all <- Get_dfBreakdown_lm(breakdown_lm_all)
+  
+  ## Bepaal de titels
+  lTitles <- Get_Breakdown_titles(breakdown_lm_all, dfPersona_all, 1, 
+                                  "Alle studenten", "Alle studenten",
+                                  mode = "all")
+  
+  ## Bouw de basisplot
+  plot <- suppressWarnings(plot(breakdown_lm_all, plot_distributions = TRUE)) 
+
+  # Bepaal de breaks voor de x-as
+  y_breaks <- seq(0, 1, by = 0.2)
+  y_labels <- paste0(seq(0, 100, by = 20), "%")
+  
+  ## Maak de plot af op basis van de LTA vormgeving  
+  plot <- plot +
+    
+    ## Themes
+    theme_minimal() +
+    Set_LTA_Theme() +
+    
+    # Bepaal de titel, ondertitel en caption
+    labs(
+      title = lTitles[[1]],
+      subtitle = lTitles[[2]],
+      caption = sCaption,
+      x = NULL,
+      y = NULL
+    )
+  
+  ## Pas de summary laag aan voor de gemiddelde kans (laag 3)
+  plot$layers[[3]] <- stat_summary(
+      fun = mean,
+      geom = "point",
+      shape = 20,
+      size = 3,
+      color = lColors_default[["sNegative_color"]],
+      fill = lColors_default[["sNegative_color"]]
+    ) 
+    
+  
+  ## Maak de plot af
+  plot <- plot +
+      
+    # Pas de y-as labels aan
+    scale_y_continuous(breaks = y_breaks,
+                       labels = y_labels,
+                       limits = c(0, 1)) +
+    
+    ## Verberg de legenda
+    theme(
+      legend.position = "none"
+    ) +
+    
+    ## Voeg LTA elementen toe
+    Add_LTA_theme_elements()
+    
+  
+  # Print de plot
+  suppressWarnings(print(plot))
+
+  ## Sla de plot op
+  suppressWarnings(
+    Finalize_Plot(
+          plot_name = plot,
+          save_filepath = sPlotPath
+        )
+    )
+
+} else {
+
+  ## Toon de bestaande plot
+  knitr::include_graphics(sPlotPath)
+
+}
+
+```
+
+### De meest voorkomende student (per groep)
+
+Nu de algemene opbouw van de kans op uitval bekend is voor de meest voorkomende student, gaan we verder met een analyse van de meest voorkomende studenten *per groep*.
+
+De volgorde van de variabelen is zo gesorteerd dat per groep de meest voorspellende variabelen bovenaan staat. De volgorde verschilt per groep en geeft inzicht in wat er per groep speelt. De variabelen zijn vaak proxies voor onderliggende verschillen.
+
+```{r}
+#| label: lf_break_down
+#| echo: false
+#| results: asis
+
+## Loop over de persona's
+for (name in names(lDfPersona)) {
+
+  ## Laad de dataset voor de huidige persona
+  dfPersona <- lDfPersona[[name]]
+
+  ## Print de naam van lDfPersona als header
+  Knit_Header(glue("Naar {tolower(name)}"), 3)
+
+  ## Bepaal of er in de dataset een groep is met minder dan 21 studenten;
+  ## Zo ja, laat die buiten beschouwing en meld dit
+  if (any(dfPersona$Subtotaal < 21)) {
+
+    ## Bepaal de categorieën met minder dan 21 studenten
+    lCategorie_te_laag <- dfPersona |>
+        filter(Subtotaal < 21) |>
+        pull(Categorie) 
+
+    ## Bepaal de tekst voor de melding
+    if(length(lCategorie_te_laag) > 1) {
+      .categorieen  <- paste0(head(lCategorie_te_laag, 
+                                        length(lCategorie_te_laag) - 1), " en ", 
+                                   tail(lCategorie_te_laag, 1))
+      .subtotalen   <- "De subtotalen voor de categorieën"
+      .persoonsvorm <- "zijn"
+    } else {
+      .categorieen  <- lCategorie_te_laag
+      .subtotalen   <- "Het subtotaal voor de categorie"
+      .persoonsvorm <- "is"
+    }
+    
+    ## Print de melding
+    Knit_print_rule(glue("{(.subtotalen)} {(.categorieen)} {(.persoonsvorm)} te laag voor een betrouwbare analyse."))
+  }
+  
+  ## Open een panel-tabset
+  Knit_print_rule(glue("::: {.panel-tabset}", 
+                       .open = "{{", 
+                       .close = "}}"))
+
+  ## Bepaal de sorteervolgorde van de variabelen
+  if(name == "Geslacht") {
+    lArrange <- c("M", "V")
+  } else if (name == "Vooropleiding") {
+    lArrange <- lLevels_vop
+  } else if (name == "Aansluiting"){
+    lArrange <- lLevels_aansluiting
+  }
+  
+  # Sorteer de persona op basis van de levels van de categorie
+  dfPersona <- dfPersona |> 
+    arrange(match(Categorie, lArrange))
+  
+  # Loop over de persona's
+  for (j in 1:nrow(dfPersona)) {
+
+    ## Bepaal de huidige student
+    student_current   <- dfPersona[j, ]
+    student_groep     <- student_current$Groep
+    student_categorie <- dfPersona[j, ]$Categorie # levels(student_current[[student_groep]])[j]
+    
+    ## Bepaal de plotnaam
+    sPlotPath <- Get_Breakdown_plotpath(student_groep, student_categorie)
+    
+    ## Als het subtotaal < 21, ga dan door naar het volgende item
+    if (as.numeric(dfPersona[j, 'Subtotaal']) < 21) {
+      next
+    }
+      
+    ## Als recreateplots == T, maak dan een nieuwe plot
+    if(params$recreateplots) {
+      
+      ## Bepaal de breakdown voor de huidige student
+      breakdown_lm <- predict_parts(explainer = explain_lm,
+                                    new_observation = student_current,
+                                    type = "break_down")
+  
+      dfBreakdown_lm <- Get_dfBreakdown_lm(breakdown_lm)
+      
+      ## Toon de header
+      Knit_Header(student_categorie, 4)
+        
+      ## Functie om de titels te bepalen
+      lTitles <- Get_Breakdown_titles(breakdown_lm, dfPersona, j, 
+                                      student_groep, student_categorie)
+      
+      # Watervalplot met ggplot
+      plot <- Get_Waterfall_plot(dfBreakdown_lm, lTitles)
+  
+      # Print de plot
+      suppressWarnings(print(plot))
+  
+      ## Sla de plot op
+      suppressWarnings(
+        Finalize_Plot(
+          plot_name = plot,
+          save_filepath = sPlotPath
+        ))
+
+    } else {
+      
+      ## Toon de header
+      Knit_Header(student_categorie, 4)
+        
+      ## Toon de bestaande plot
+      sPlot <- glue("![]({sPlotPath})")
+      Knit_print_rule(sPlot)
+      
+    }
+
+  } 
+  
+  ## Sluit de panel-tabset
+  Knit_print_rule(":::")
+
+}
+
+```
+
+## Shapley
+
+Na deze factorentanalyse kijken we naar de stabiliteit van de invloed van de verklarende variabelen. We gebruiken hiervoor *Shapley* waarden. Anders dan bij de vorige modellen, houdt Shapley rekening met een andere volgorde van de variabelen.
+
+De volgorde van de variabelen is cumulatief (additief) en maakt dus uit voor de bijdrage aan het model: als er een andere variabele al in het model is toegevoegd, heeft dat invloed op de daaropvolgende variabele. Een Shapley analyse permuteert de volgorde van de variabelen om daarmee de verschillen te berekenen in de bijdrage aan de voorspelling. Zo krijgen we nog beter zicht op het belang en de invloed van de individuele variabelen in het voorspelmodel. Variabelen zonder bijdrage hebben we verwijderd.
+
+```{r}
+#| label: lf_shapley
+
+## Bewaar de plot
+sPlotPath <- file.path(Get_Plot_outputpath(plotname = "lf_shapley"))
+
+## Als de plot niet bestaat of als recreateplots - T, maak dan een nieuwe plot
+if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
+
+  ## Bepaal de Shapley waarden
+  lf_shapley <- 
+    predict_parts(
+      explainer = explain_lm,
+      new_observation = dfPersona_all[1, ],
+      type = "shap",
+      B = 20
+    )
+
+  ## Zet deze om naar een dataframe
+  dfShapley <- Get_dfShapley(lf_shapley)
+
+  ## Bouw de plot
+  shapley_plot <- Get_Shapley_plot(dfShapley)
+  
+  ## Print de plot
+  suppressWarnings(print(shapley_plot))
+
+  ## Sla de plot op
+  suppressWarnings(
+    Finalize_Plot(
+      plot_name = shapley_plot,
+      save_filepath = sPlotPath
+    ))
+
+} else {
+
+  ## Print de bestaande plot
+  knitr::include_graphics(sPlotPath)
+
+}
+
+```
+
+**Toelichting:**
+
+-   De variabelen met blauwe balken *verlagen* de kans op uitval, de variabelen met rode balken *verhogen* de kans op uitval.
+-   De boxplot in iedere balk geeft de spreiding van de bijdrage van de variabelen aan de voorspelling weer. Hoe breder de boxplot, des te meer variatie in de bijdrage van de variabele aan de voorspelling.
+-   De positie van de variabele geeft het belang van de variabele aan in de voorspelling. Hoe hoger de variabele, des te belangrijker de variabele is in de voorspelling.
+
+<!-- Scenarios -->
+
+## What-if: een ceteris paribus analyse
+
+Tot slot gaan we een aantal scenario's bekijken (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de kans op uitval eruit zou zien als sommige variabelen net wat anders waren geweest.
+
+Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde kans op uitval. Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
+
+*Ter illustratie*: Stel dat de student in dit model net een wat hoger eindexamencijfer zou hebben gehad op de middelbare school, wat zou dan de kans op uitval zijn geweest? Het is waarschijnlijk dat de kans op uitval dan lager zou zijn geweest.
+
+Opnieuw kijken we naar geslacht, vooropleiding en aansluiting. Het kan zijn dat een van de categorieën niet zichtbaar is, dit komt doordat deze dan over elkaar heen vallen.
+
+```{r}
+#| label: lf_cp_all
+#| echo: false
+#| results: asis
+
+library(ingredients)
+
+# names(dfPersona_all)
+
+student_all <- dfPersona_all[1, ] |> as.data.frame()
+
+dfPersona_tmp <- bind_rows(lDfPersona)
+student_m    <- dfPersona_tmp[1, ]
+student_v    <- dfPersona_tmp[2, ]
+student_mbo  <- dfPersona_tmp[3, ]
+student_havo <- dfPersona_tmp[4, ]
+student_vwo  <- dfPersona_tmp[5, ]
+
+## Maak variabelen splits voor elke continue
+variable_splits = list(
+  Leeftijd = seq(
+    min(dfOpleiding_inschrijvingen$Leeftijd),
+    max(dfOpleiding_inschrijvingen$Leeftijd),
+    1
+  ),
+  Cijfer_CE_VO = seq(0, 10, 0.5),
+  Cijfer_CE_Wiskunde = seq(0, 10, 0.5),
+  SES_Totaal = seq(
+    min(dfOpleiding_inschrijvingen$SES_Totaal),
+    max(dfOpleiding_inschrijvingen$SES_Totaal),
+    0.1
+  ),
+  Aanmelding = seq(
+    min(dfOpleiding_inschrijvingen$Aanmelding),
+    max(dfOpleiding_inschrijvingen$Aanmelding),
+    1
+  )
+)
+
+for (name in c("Geslacht", "Vooropleiding", "Aansluiting")) {
+  
+  Knit_Header(name, 3)
+
+  ## Maak een breakdown van de meeste voorkomende student over alle data
+  if(name == "Geslacht") {
+    .new_observation <- dfPersona_tmp |>
+      filter(Groep == "Geslacht") |> 
+      arrange(match(Geslacht, c("M","V")))
+  } else if(name == "Vooropleiding") {
+    .new_observation <- dfPersona_tmp |>
+      filter(Groep == "Vooropleiding",
+             Vooropleiding %in% c("MBO", "HAVO", "VWO")) |>
+      arrange(match(Vooropleiding, c("MBO", "HAVO", "VWO")))
+  } else if(name == "Aansluiting") {
+    .new_observation <- dfPersona_tmp |>
+      filter(Groep == "Aansluiting") |>
+      arrange(match(
+        Aansluiting,
+        c("Direct",
+          "Tussenjaar",
+          "Switch",
+          "Na CD",
+          "Overig",
+          "Onbekend")
+      ))
+  }
+  
+  ## Maak een ceteris paribus analyse
+  cp_lm_all <- predict_profile(
+    explainer = explain_lm,
+    new_observation = .new_observation,
+    variable_splits = variable_splits
+  )
+  
+  ## Maak een Ceteris Paribus plot
+  cp_plot <- Get_Ceteris_paribus_plot(cp_lm_all, name)
+  
+  # Print de plot
+  print(cp_plot)
+}
+
+```
+
+<!-- Conclusies -->
+
+::: {.content-hidden unless-meta="includes.conclusies"}
+# Conclusies
+
+Hier komen de overige conclusies.
+:::
+
+<!-- Next steps -->
+
+::: {.content-hidden unless-meta="includes.nextsteps"}
+# Vervolgstappen: kansengelijkheid
+
+De volgende stap (stap 3) is te onderzoeken of er binnen deze opleiding binnen deze modellen **kansengelijkheid** bestaat.
+
+Dit doen we door de metrieken van de modellen te evalueren voor verschillende groepen studenten, zoals accuraatheid. Als de metrieken van de voorspellingen van het model voor verschillende groepen studenten sterk uiteenloopt kan er sprake zijn van een bias en duiden op kansenongelijkheid. Dit is het onderwerp van de volgende en laatste analyse.
+:::
+
+<!-- Verantwoording -->
+
+::: {.content-hidden unless-meta="includes.verantwoording"}
+```{r, echo=FALSE, results='asis'}
+sQuarto_version <- quarto::quarto_version()
+```
+
+ 
+
+**Verantwoording**
+
+Deze analyse maakt deel uit van het onderzoek naar kansengelijkheid van het lectoraat Learning Technology & Analytics van De Haagse Hogeschool: [No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness) \| Het rapport is door het lectoraat ontwikkeld in [Quarto](https://quarto.org/) `r sQuarto_version`. \| Template versie: `r rmarkdown::metadata$ltatemplate`
+:::
+
+<!-- Copyright -->
+
+::: {.content-hidden unless-meta="includes.copyright"}
+```{r, echo=FALSE, results='asis'}
+nCurrent_year   <- as.numeric(format(Sys.Date(), "%Y"))
+```
+
+ 
+
+**Copyright**
+
+Dr. Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool © 2023-`r nCurrent_year` Alle rechten voorbehouden.
+:::
+
+<!-- Opschonen -->
+
+```{r, echo = FALSE}
+#| label: cleanup
+
+## Datasets
+
+
+## Collect garbage
+invisible(gc())
+  
+```

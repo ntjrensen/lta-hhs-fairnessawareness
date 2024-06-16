@@ -996,9 +996,76 @@ Get_dfShapley <- function(shapley_object) {
   
 }
 
+## Functie om een fairness object te maken
+Get_objFairness <- function(explainer, protected_var, privileged, verbose = FALSE) {
+  
+  ## Bepaal de protected variabele
+  .protected <- dfOpleiding_inschrijvingen |> 
+    select(-Uitval) |>
+    select(all_of({{protected_var}})) |>
+    pull()
+  
+  ## Maak een fairness object
+  fobject <- fairness_check(explainer,
+                            protected = .protected,
+                            privileged = privileged,
+                            cutoff = 0.5,
+                            verbose = verbose,
+                            colorize = TRUE)
+  
+  ## Return het fairness object
+  return(fobject)
+}
+
+Get_dfFairness_totaal <- function(fobject) {
+  
+  ## Maak een tabel van de fairness analyse
+  dfFairness <<- fobject[["fairness_check_data"]] |>
+    as.data.frame() |> 
+    filter(!is.na(score))
+  
+  ## Bereken per metric of de score buiten de cutoff ligt
+  dfFairness_metric <<- dfFairness |>
+    
+    ## Bereken per groep of de score buiten de cutoff ligt
+    mutate(Categorie_buiten_grenzen = ifelse(score < 0.8 |
+                                              score > 1.2, "Ja", "Nee")) |> 
+    ## Bereken per groep of er > 1 Ja is
+    group_by(metric) |>
+    summarise(Metric_buiten_grenzen = ifelse(sum(Categorie_buiten_grenzen == "Ja") > 1, "Ja", "Nee"))
+  
+  ## Verrijk de tabel met variabele Metric_buiten_grenzen
+  dfFairness_totaal <- dfFairness |>
+    
+    ## Bereken per groep of de score buiten de cutoff ligt
+    mutate(Categorie_buiten_grenzen = ifelse(score < 0.8 |
+                                              score > 1.2, "Ja", "Nee")) |> 
+    
+    ## Koppel aan de metric
+    left_join(dfFairness_metric, by = "metric") |> 
+    select(-model) |> 
+    
+    ## Hernoem de kolommen
+    rename(Metric = metric,
+           `Metric buiten grenzen` = Metric_buiten_grenzen,
+           Score = score,
+           Categorie = subgroup,
+           `Categorie buiten grenzen` = Categorie_buiten_grenzen) |> 
+    select(Metric, 
+           `Metric buiten grenzen`, 
+           Categorie, 
+           `Categorie buiten grenzen`) #|> 
+    
+    ## Verwijder missende waarden
+    #drop_na()
+  
+  return(dfFairness_totaal)
+  
+}
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 7. PLOT FUNCTIES ####
+## 7. COLOR LIJSTEN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 lColors_default <- c(
@@ -1048,6 +1115,42 @@ lColors_default <- c(
   sPositive_color        = "#466F9D",
   sNegative_color        = "#C8133B"
 )
+
+lColors_geslacht <- c(
+  "M" = "#1170AA",
+  "V" = "#FC7D0B")
+
+lColors_toelaatgevende_vooropleiding <- c(
+  "MBO"      = "#1170AA",
+  "HAVO"     = "#FC7D0B",
+  "VWO"      = "#F1CE63",
+  "BD"       = "#A3CCE9",
+  "CD"       = "#57606C",
+  "HO"       = "#9467BD",
+  "Overig"   = "#A3ACB9",
+  "Onbekend" = "#C8D0D9"
+)
+
+lColors_aansluiting <- c(
+  "Direct"            = "#FC7D0B",
+  "Tussenjaar"        = "#1170AA",
+  "Switch intern"     = "#5FA2CE",
+  "Switch extern"     = "#A3CCE9",
+  "2e Studie"         = "#F1CE63",
+  "Na CD"             = "#57606C",
+  "Overig"            = "#A3ACB9",
+  "Onbekend"          = "#C8D0D9"
+)
+
+lColors_hhs <- c(
+  "hhs-color-green" = "#9EA700",
+  "hhs-color-blue"  = "#00B2CD"
+)
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 8. PLOT FUNCTIES ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## Bepaal het basisthema
 Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
@@ -1116,18 +1219,32 @@ Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
 }
 
 ## Functie om LTA thema elementen toe te voegen
-Add_LTA_theme_elements <- function() {
-  theme(
-    plot.title = element_text(size = 14, face = "bold"),
-    plot.subtitle = element_markdown(),
-    axis.text.y = element_text(size = 10),
-    plot.caption = element_textbox_simple(
-      size = 8,
-      color = lColors_default["sCaption_color"],
-      padding = margin(0, 0, 0, 0),
-      margin = margin(15, 0, 0, 0)
-    )
-  )
+Add_LTA_theme_elements <- function(title_subtitle = TRUE) {
+  
+  if(title_subtitle) {
+      theme(
+        plot.title = element_text(size = 14, face = "bold"),
+        plot.subtitle = element_markdown(),
+        axis.text.y = element_text(size = 10),
+        plot.caption = element_textbox_simple(
+          size = 8,
+          color = lColors_default["sCaption_color"],
+          padding = margin(0, 0, 0, 0),
+          margin = margin(15, 0, 0, 0)
+        )
+      ) 
+    } else {
+        theme(
+          axis.text.y = element_text(size = 10),
+          plot.caption = element_textbox_simple(
+            size = 8,
+            color = lColors_default["sCaption_color"],
+            padding = margin(0, 0, 0, 0),
+            margin = margin(15, 0, 0, 0)
+          )
+        )
+    }
+  
 }
 
 ## Functie om de caption te bepalen
@@ -1170,17 +1287,23 @@ Get_ROC_plot <- function(models, position = NULL) {
     geom_abline(lty = 3) + 
     coord_equal() + 
     scale_color_manual(values = lColors) +
-    labs(x = "1 - specificiteit", y = "sensitiviteit", color = "Model") +
+    labs(x = "1 - specificiteit", 
+         y = "sensitiviteit", 
+         color = "Model",
+         caption = sCaption) +
     theme(
       axis.title.x = element_text(margin = margin(t = 20))
-    )
+    ) +
+    
+    ## Voeg LTA elementen toe
+    Add_LTA_theme_elements(title_subtitle = FALSE)
   
   return(plot)
   
 }
 
 ## Functie om de titels te bepalen
-Get_Breakdown_Titles <- function(bd, df, j, 
+Get_Breakdown_titles <- function(bd, df, j, 
                                  student_groep, student_categorie, 
                                  mode = "group",
                                  debug = FALSE) {
@@ -1336,8 +1459,8 @@ Get_Waterfall_plot <- function(df, titles) {
   
 }
 
-## Print breakdownplots
-Get_Breakdown_Plots <- function(groep) {
+## Print breakdownplots (niet meer in gebruik)
+Get_Breakdown_plot <- function(groep) {
   
   ## Bepaal het pad
   plotdir <- Get_Current_opleiding_output_dir(current_opleiding, mode = "plot")
@@ -1423,6 +1546,137 @@ Get_Shapley_plot <- function(data) {
   
 }
 
+## Functie om de ceteris paribus plot te maken
+Get_Ceteris_paribus_plot <- function(cp_lm_all, name) {
+  
+  ## Bepaal de y as
+  y_breaks <- seq(0, 1, by = 0.2)
+  y_labels <- paste0(seq(0, 100, by = 20), "%")
+  
+  # Plot de ceteris paribus analyse
+  cp_plot <- plot(
+    cp_lm_all,
+    color = "_ids_",  # Gebruik kleur voor _ids_
+    variables = c(
+      "Leeftijd",
+      "Cijfer_CE_VO",
+      "Cijfer_CE_Wiskunde",
+      "SES_Totaal",
+      "Aanmelding"
+    )
+  )
+  
+  ## Verwijder de bestaande kleurenschaal, 
+  ## zodat er geen waarschuwing komt over de bestaande kleurenschaal
+  cp_plot$scales$scales <- list()
+  
+  ## Bouw de kleurenschaal op basis van de variabele
+  if(name == "Geslacht") {
+    .values = unname(lColors_geslacht[unique(cp_lm_all$Geslacht)])
+    .labels = names(lColors_geslacht[unique(cp_lm_all$Geslacht)])
+  } else if (name == "Vooropleiding") {
+    .values = unname(lColors_toelaatgevende_vooropleiding[unique(cp_lm_all$Vooropleiding)])
+    .labels = names(lColors_toelaatgevende_vooropleiding[unique(cp_lm_all$Vooropleiding)])
+  } else if (name == "Aansluiting") {
+    .values = unname(lColors_aansluiting[unique(cp_lm_all$Aansluiting)])
+    .labels = names(lColors_aansluiting[unique(cp_lm_all$Aansluiting)])
+  }
+  
+  ## Bouw nu de plot verder op
+  cp_plot <- cp_plot +  
+    
+    # Voeg een enkele schaal toe voor de fill
+    scale_color_manual(
+      name = name,
+      values = .values,
+      labels = .labels, 
+    ) +
+    
+    # Pas de y-as schaal aan
+    scale_y_continuous(breaks = y_breaks,
+                       labels = y_labels,
+                       limits = c(0, 1)) +
+    
+    # Pas de labels aan
+    labs(title = "Ceteris-paribus profiel",
+         subtitle = glue("Kans op uitval voor de meest voorkomende studenten naar **{tolower(name)}**"),
+         y = NULL,
+         caption = sCaption) +
+    
+    # Pas het thema aan
+    theme_minimal() +
+    theme(
+      axis.title.x = element_text(margin = margin(t = 20)),
+      axis.text.x = element_text(angle = 45, hjust = 1)
+    ) +
+    
+    Set_LTA_Theme() +
+    
+    # Voeg LTA elementen toe
+    Add_LTA_theme_elements(title_subtitle = TRUE) +
+    
+    # Pas de positie van de legenda aan
+    theme(legend.position = "bottom") +
+    
+    # Maak het grid iets rustiger
+    theme(panel.grid.minor = element_blank())
+  
+  # Geef de plot terug
+  return(cp_plot)
+  
+}
+
+## Functie om een fairness plot t emaken
+Get_Fairness_plot <- function(fairness_object, group, privileged) {
+  
+  ## Bepaal de y as
+  y_breaks <- seq(-100, 100, by = 0.2)
+  #y_labels <- paste0(seq(0, 100, by = 20), "%")
+  
+  ## Maak een fairness plot
+  fairness_plot <- fairness_object |> 
+    plot() +
+    theme_minimal() +
+    Set_LTA_Theme() +
+    
+    ## Voeg titel en subtitel toe
+    labs(
+      title = "Fairness check",
+      subtitle = glue("Fairness van het model voor **{group}** ",
+                      "ten opzichte van **{privileged}**"),
+      caption = sCaption,
+      x = NULL,
+      y = NULL)
+    
+  ## Verwijder de bestaande kleurenschaal, 
+  ## zodat er geen waarschuwing komt over de bestaande kleurenschaal
+  fairness_plot$scales$scales <- list()
+  
+  # Bouw de plot verder op
+  fairness_plot <- fairness_plot +
+    
+    ## Bepaal de kleur
+    scale_fill_manual(
+      values = c("#466F9D")
+    ) +
+      
+    # Pas de y-as schaal aan
+    scale_y_continuous(breaks = y_breaks) +
+    
+    ## Voeg LTA elementen toe
+    Add_LTA_theme_elements(title_subtitle = TRUE) +
+    
+    ## Pas een aantal thema elementen aan
+    theme(
+      panel.grid.minor = element_blank(),
+      legend.position = "none",
+      strip.text = element_text(hjust = 0)
+    )
+  
+  return(fairness_plot)
+  
+}
+
 ## Op basis van het bbplot package gebouwd (vandaar de namen in lowercase,
 ## zodat deze functies die van het bbplot package overschrijven)
 
@@ -1476,7 +1730,7 @@ Finalize_Plot <-
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 8. HULP FUNCTIES ####
+## 9. HULP FUNCTIES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## Functie nummers om te zetten naar een leesbare notatie

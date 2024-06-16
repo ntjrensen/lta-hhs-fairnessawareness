@@ -20,13 +20,46 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[ ] Fairness analyse
+  [ ] Basisartikel: https://cran.r-project.org/web/packages/fairmodels/vignettes/Basic_tutorial.html
+  [ ] Teksten:
+      [x] Uitleg verder aanvullen met een CF matrix
+      [ ] Met voorbeelden vanuit het onderwijs
+      [ ] Moet niet de hele dataset omgekeerd gemaakt worden? > kans op retentie
+  [ ] Goed printen:
+      Fairness check for models: Linear Regression 
+      Linear Regression passes 0/5 metrics
+      Total loss :  17.90476 
+  [ ] Opmaak verbeteren:
+      [x] kopjes naar links
+      [x] kleuren aanpassen
+      [ ] hoogte van de afbeelding > met ggsave etc.
+      [ ] achtergrond voor cutoff is niet goed (+ .2 ipv .3)
+  [x] Omzetten naar een functie
+  [x] Foutmeldingen wegwerken
+      Warning in print.fairness_object(fobject) :
+      Omiting NA for models: Linear Regression
+      Information about passed metrics may be inaccurate due to NA present, 
+      it is advisable to check metric_scores plot.
+  [ ] Warning: Removed 8 rows containing missing values or values 
+      outside the scale range (`geom_bar()`).
+  
+
+[ ] Overige analyses
+  [x] Shapley values: https://ema.drwhy.ai/shapley.html
+  [x] Ceteris Paribus: https://ema.drwhy.ai/ceterisParibus.html
+  [ ] Partial Dependence plots: https://ema.drwhy.ai/partialDependenceProfiles.html
+  [ ] Modellen - interactie-effecten toevoegen?
+      Bepalen of er interacties zijn tussen de factoren obv [Partial Dependence Plots](http
+      ://christophm.github.io/interpretable-ml-book/pdp.html) te maken.
+
 [ ] Plots
   [ ] gam model uitproberen
     [ ] https://parsnip.tidymodels.org/reference/details_gen_additive_mod_mgcv.html
     [ ] https://forum.posit.co/t/how-to-define-smoothed-models-for-a-gam-using-tidymodels-and-recipe/144772
 
 [ ] Navigatie
-  [ ] links naar pagina 1 en 3 van analyses opnemen aan rechterzijde
+  [ ] links naar H1, 2 en 3 van analyses opnemen aan rechterzijde
   [x] logo hhs
 
 [ ] Andere opleidingen proberen
@@ -37,14 +70,6 @@
         [ ] als dit te weinig observaties of jaren zijn, dan next
   [ ] SWE model - Basis
       [ ] Factoranalyse voor RF werkend krijgen
-
-[ ] Overige analyses
-  [x] Shapley values uitproberen https://ema.drwhy.ai/shapley.html
-  [x] Ceteris Paribus uitproberen https://ema.drwhy.ai/ceterisParibus.html
-  [ ] Partial Dependence plots uitproberen https://ema.drwhy.ai/partialDependenceProfiles.html
-  [ ] Modellen - interactie-effecten toevoegen?
-      of er interacties zijn tussen de factoren. Dit doen we door de [Partial Dependence Plots](http
-      ://christophm.github.io/interpretable-ml-book/pdp.html) te maken.
 
 [ ] Modellen
   [ ] Diplomarendement
@@ -62,7 +87,10 @@
 ## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-[ ] Queries
+[x] Plots
+  [x] Opmaak van alle plots in LTA format brengen
+
+[x] Queries
   [x] Studentpersonas_opleidingen > opheffen en naar functies brengen
   
 [x] TODO: ID verwijderen uit model
