@@ -1,0 +1,349 @@
+---
+title: "3. Kansengelijkheid - `r params$uitval` `r ifelse(params$propedeusediploma == 'Nvt', '', paste0(' - ', params$propedeusediploma))`"
+subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
+
+## Auteur en datum
+author: "`r params$author`, De HHs"
+date: last-modified
+
+## LTA Template
+ltatemplate: 0.9.1.9000
+
+## Format en output
+output-file: "lta-hhs-tidymodels-uitval-verdieping-kansengelijkheid.html"
+
+## Parameters        
+params:
+  versie: "1.0"
+  uitval: "Uitval na 1 jaar"
+  propedeusediploma: "Zonder P" ## Nvt/Met P/Zonder P
+  faculteit: "GVS"
+  
+  ## Recreate plots
+  recreateplots: true
+  
+  # GVS:HBO-V
+  opleidingsnaam: "B Opleiding tot Verpleegkundige"
+  opleiding: "HBO-V"
+  opleidingsvorm: "voltijd"
+  opleidingsvorm_afkorting: "VT"
+  selectie: false
+  
+  ## GVS:MT
+  # opleidingsnaam: "B Mens en Techniek"
+  # opleiding: "MT"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## GVS:HDT
+  # opleidingsnaam: "B Huidtherapie"
+  # opleiding: "HDT"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: true
+  
+  ## FDR:ORM DT
+  # opleidingsnaam: "B Ondernemerschap Retail Management"
+  # opleiding: "ORM"
+  # opleidingsvorm: "deeltijd"
+  # opleidingsvorm_afkorting: "DT"
+  # selectie: false
+  
+  ## TIS:IPO
+  # opleidingsnaam: "B Industrieel Product Ontwerpen"
+  # opleiding: "IPO"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## TIS:EC
+  # opleidingsnaam: "B Elektrotechniek"
+  # opleiding: "E"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## TIS:B
+  # opleidingsnaam: "B Bouwkunde"
+  # opleiding: "B"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## BFM:AC
+  # opleidingsnaam: "B International Business"
+  # opleiding: "IB-ES-3"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## BFM:AC
+  # opleidingsnaam: "B Accountancy"
+  # opleiding: "AC"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## ITD:CMD
+  # opleidingsnaam: "B Communication and Multimedia Design"
+  # opleiding: "CMD"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  ## Author
+  author: "Theo Bakker, lector Learning Technology & Analytics"
+  
+## Content
+includes:
+  inleiding:      true
+  data:           true
+  model_lr:       true
+  model_rf:       true
+  model_svm:      false
+  final_fit:      true
+  conclusies:     true
+  verantwoording: true
+  nextsteps:      true
+  copyright:      true
+---
+
+```{r setup, include = FALSE}
+#| label: setup
+
+## Sluit het _Setup.R bestand in
+source("_Setup.R")
+
+```
+
+<!-- Inleiding -->
+
+::: {.content-hidden unless-meta="includes.inleiding"}
+# Inleiding
+
+Na de factoranalyse van de data gaan we nu in op het onderwerp van bias en kansengelijkheid. Het doel is beter te begrijpen of er studenten zijn met minder kans op succes en of dit disproportioneel is. Dit kan duiden op kansenongelijkheid.
+
+De analyse van kansengelijkheid heeft de volgende stappen:
+
+1.  We lezen de bewerkte dataset weer in en de modellen die we in de basis-analyse hebben gemaakt.
+2.  We maken weer een *explainer* om de modellen beter te begrijpen en te kunnen uitleggen.
+3.  We kijken eerst hoe de uitval er *anders* uit zou kunnen zien als de studenten andere kenmerken zouden hebben met een *ceteris paribus analyse*. De basis hiervoor zijn weer de meest voorkomende studenten uit de factoranalyse.
+4.  Tot slot berekenen we of er *bias* bestaat voor verschillende groepen studenten en of er mogelijk sprake is van kansenongelijkheid.
+:::
+
+<!-- Data -->
+
+# Voorbereidingen
+
+## Laad de data
+
+We laden de bewerkte data en prognosemodellen in voor:
+
+**Opleiding**: `r params$faculteit` \| `r params$opleidingsnaam` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sUitval_model`**
+
+```{r}
+#| label: load_data
+
+## Bepaal de paden
+sData_outputpath         <- Get_Model_outputpath(mode = "data")
+sFittedmodels_outputpath <- Get_Model_outputpath(mode = "last-fits")
+sModelresults_outputpath <- Get_Model_outputpath(mode = "modelresults")
+
+## Laad de data voor de opleiding: data, last fits en model results
+dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE)
+lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
+dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
+
+# Pas de Uitval variabele aan naar numeric (0/1), 
+# zodat er een explainer van gemaakt kan worden
+dfOpleiding_inschrijvingen$Uitval <- as.numeric(dfOpleiding_inschrijvingen$Uitval) - 1
+
+## Laad de persona's
+source("01. Includes/Studentpersonas_opleidingen.R")
+dfPersona_all <- Get_dfPersona()
+
+```
+
+# Verdiepende analyse van scenario's
+
+We weten vanuit de basis-analyse welke variabelen van invloed zijn en vanuit de factoranalyse welke groepen studenten er zijn en hoe de verklarende variabelen van invloed zijn, maar ook verschillen per groep. We gaan nu dieper in op de invloed van de variabelen op de kans op uitval en de invloed van de groepen studenten op de kans op uitval.
+
+```{r, include=FALSE}
+#| label: fitted_model
+
+sBest_model <- dfModel_results$model[dfModel_results$number == 1]
+last_fit    <- lLast_fits[[sBest_model]]
+
+fitted_model <- last_fit |>
+  extract_fit_parsnip()
+
+## Controleer of de coefficienten van het model numeriek zijn
+coefs <- tidy(fitted_model)$estimate
+
+# Controleer of de coëfficiënten numeriek zijn
+if (!is.numeric(coefs)) {
+  stop("De geëxtraheerde coëfficiënten zijn niet numeriek.")
+}
+
+```
+
+## Maak een explainer
+
+Op basis van het tidymodels model extraheren we weer de informatie voor de Dalex explainer.
+
+```{r}
+#| label: lf_explainer
+
+## Extraheer het fitted model en de workflow
+fitted_model <- last_fit |>
+  extract_fit_parsnip()
+
+workflow <- last_fit |>
+  extract_workflow()
+
+# Maak een explainer
+explain_lm <- DALEX::explain(
+  model = workflow,
+  data = dfOpleiding_inschrijvingen,
+  y = dfOpleiding_inschrijvingen$Uitval,
+  label = "Linear Regression")
+
+```
+
+## What-if: een ceteric paribus analyse
+
+Met de explainer gaan we eerst een aantal scenario's bekijken. We nemen weerde meest voorkomende studenten, maar beelden nu af hoe de kans op uitval eruit zou zien als de studenten andere kenmerken zouden hebben. We kijken naar de opbouw van de kans op uitval voor de meest voorkomende studenten en voor de meest voorkomende studenten per groep.
+
+```{r}
+#| label: lf_cp_all
+#| echo: false
+#| results: asis
+
+library(ingredients)
+
+# names(dfPersona_all)
+
+student_all <- dfPersona_all[1, ] |> as.data.frame()
+
+dfPersona_tmp <- bind_rows(lDfPersona)  |> as.data.frame()
+
+# student_m   <- lDfPersona[["Geslacht"]] |>  
+#                  filter(Geslacht == "M") |> 
+#                  slice(1)
+# student_v   <- lDfPersona[["Geslacht"]] |>  
+#                  filter(Geslacht == "V") |> 
+#                  slice(1)
+
+student_m    <- dfPersona_tmp[1, ]
+student_v    <- dfPersona_tmp[2, ]
+student_mbo  <- dfPersona_tmp[3, ]
+student_havo <- dfPersona_tmp[4, ]
+student_vwo  <- dfPersona_tmp[5, ]
+
+## Maak variabelen splits voor elke continue
+variable_splits = list(
+  Leeftijd = seq(
+    min(dfOpleiding_inschrijvingen$Leeftijd),
+    max(dfOpleiding_inschrijvingen$Leeftijd),
+    1
+  ),
+  Cijfer_CE_VO = seq(0, 10, 0.5),
+  Cijfer_CE_Wiskunde = seq(0, 10, 0.5),
+  SES_Totaal = seq(
+    min(dfOpleiding_inschrijvingen$SES_Totaal),
+    max(dfOpleiding_inschrijvingen$SES_Totaal),
+    0.1
+  ),
+  Aanmelding = seq(
+    min(dfOpleiding_inschrijvingen$Aanmelding),
+    max(dfOpleiding_inschrijvingen$Aanmelding),
+    1
+  )
+)
+
+## Maak een breakdown van de meeste voorkomende student over alle data
+cp_lm_all <- predict_profile(
+  explainer = explain_lm,
+  new_observation = rbind(student_mbo, student_havo, student_vwo),
+  variable_splits = variable_splits
+)
+
+## Plot de ceteris paribus analyse
+plot(
+  cp_lm_all,
+  color = "_ids_",
+  variables = c(
+    "Leeftijd",
+    "Cijfer_CE_VO",
+    "Cijfer_CE_Wiskunde",
+    "SES_Totaal",
+    "Aanmelding"
+  )
+) +
+  ggtitle("Ceteris-paribus profiel (numerieke variabelen)", "") + ylim(0, 0.8) +
+  scale_color_manual(
+    name = "Student:",
+    values = c("#4378bf", "orange", "#FF0000"),
+    labels = c("mbo" , "havo", "vwo")
+  )
+
+
+```
+
+<!-- Conclusies -->
+
+::: {.content-hidden unless-meta="includes.conclusies"}
+# Conclusies
+
+Hier komen de overige conclusies.
+:::
+
+<!-- Next steps -->
+
+::: {.content-hidden unless-meta="includes.nextsteps"}
+# Next Steps
+
+...
+:::
+
+<!-- Verantwoording -->
+
+::: {.content-hidden unless-meta="includes.verantwoording"}
+```{r, echo=FALSE, results='asis'}
+sQuarto_version <- quarto::quarto_version()
+```
+
+ 
+
+**Verantwoording**
+
+Deze analyse maakt deel uit van het onderzoek naar kansengelijkheid van het lectoraat Learning Technology & Analytics van De Haagse Hogeschool: [No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness) \| Het rapport is door het lectoraat ontwikkeld in [Quarto](https://quarto.org/) `r sQuarto_version`. \| Template versie: `r rmarkdown::metadata$ltatemplate`
+:::
+
+<!-- Copyright -->
+
+::: {.content-hidden unless-meta="includes.copyright"}
+```{r, echo=FALSE, results='asis'}
+nCurrent_year   <- as.numeric(format(Sys.Date(), "%Y"))
+```
+
+ 
+
+**Copyright**
+
+Dr. Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool © 2023-`r nCurrent_year` Alle rechten voorbehouden.
+:::
+
+<!-- Opschonen -->
+
+```{r, echo = FALSE}
+#| label: cleanup
+
+## Datasets
+
+
+## Collect garbage
+invisible(gc())
+  
+```

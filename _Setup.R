@@ -71,108 +71,126 @@ if(bSetup_executed == F) {
   ## 1.4 Laad extra bibliotheken ####
   
   ## Laad extra bibliotheken
-  library(tidymodels)  # voor machine learning
-  library(vip)         # voor variable importance plots
-  library(forcats)     # om factor variabelen te bewerken
-  library(performance) # voor performance metingen op lr modellen
-  library(dlookr)      # om data te inspecteren
-  library(gtsummary)   # voor beschrijvende summary tabellen
-  library(cli)         # voor cli teksten
-  library(glue)        # voor string interpolatie
-  library(probably)    # voor probabilistische modellen
-  library(discrim)     # discriminant analysis
-  library(klaR)        # voor classificatie en visualisatie
-  library(betacal)     # voor beta calibration
-  library(doParallel)  # voor parallel processing
-  library(DALEX)       # voor explainable AI
-  library(DALEXtra)    # voor explainable AI
-  library(lobstr)      # voor het meten van objecten
-  library(butcher)     # voor het verkleinen van modellen
-  library(iBreakDown)  # voor het uitleggen van modellen
-  library(ggtext)      # voor het maken van opmaak in titels
-  library(showtext)    # voor het instellen van lettertypes
+  library(conflicted)   # om conflicten op te lossen
+  library(tidymodels)   # voor machine learning
   
-  # Add Google font
-  font_add_google("Source Sans Pro", "sourcesanspro")
+  library(vip)          # voor variable importance plots
+  library(forcats)      # om factor variabelen te bewerken
+  library(performance)  # voor performance metingen op lr modellen
+  #library(dlookr)      # om data te inspecteren > geeft conflicten vanwege showtext_auto()
+  library(gtsummary)    # voor beschrijvende summary tabellen
+  library(cli)          # voor cli teksten
+  library(glue)         # voor string interpolatie
+  library(probably)     # voor probabilistische modellen
+  library(discrim)      # discriminant analysis
+  library(klaR)         # voor classificatie en visualisatie
+  library(betacal)      # voor beta calibration
   
-  # Automatically use showtext to render text for future devices
-  showtext_auto()
+  library(doParallel)   # voor parallel processing
+  library(DALEX)        # voor explainable AI
+  library(DALEXtra)     # voor explainable AI
+  library(lobstr)       # voor het meten van objecten
+  library(butcher)      # voor het verkleinen van modellen
+  library(iBreakDown)   # voor het uitleggen van modellen
+  library(ggtext)       # voor het maken van opmaak in titels
   
+  library(showtext)     # voor het instellen van lettertypes
+  library(ggplot2)      # voor het maken van plots
+  library(cvms)         # voor confusion matrices
+  library(ggimage)      # voor confusion matrices
+  library(rsvg)         # voor confusion matrices
+  library(ggnewscale)   # voor confusion matrices
+  
+  library(ggpubr)       # voor het bewaren van plots
+  library(bbplot)       # voor het bewaren van plots
+  library(grid)         # voor het bewaren van plots
+  
+  library(gridGraphics) # voor het bewaren van plots
+  library(extrafont)    # voor het bewaren van plots
+  library(sysfonts)     # voor fonts
+  
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 1.5 Fonts ####
+  
+  extrafont::loadfonts(quiet = TRUE)
+
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 1.6 Laad extra functies ####
+
+  source("99. Functies & Libraries/Rapport_functies.R")
+
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 1.7 Bepaal de voorkeur voor de thema's ####
+
+  Set_LTA_Theme()
+
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 1.8 Tidymodels ####
+
   ## Geef de voorkeur bij conflicten aan het tidymodels package
   tidymodels_prefer(quiet = TRUE)
-  
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.5 Laad extra functies ####
-  
-  source("99. Functies & Libraries/Rapport_functies.R")
-  
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.6 Bepaal de voorkeur voor de thema's ####
-  
-  #theme_set(theme_minimal())
-  Set_LTA_Theme()
-  
+
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 2. BASISVARIABELEN / PADEN ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  
+
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 2.1 Netwerkpaden ####
-  
+
   # Als LTA_ROOT, LTA_DATA of LTA_BOARD niet bestaan, dan wordt de omgeving opnieuw ingesteld
   ltabase::set_lta_sys_env()
-  
+
   ## Bepaal de netwerkdirectory
   Network_directory <- ltabase::get_lta_network_directory()
-  
+
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 2.2 Debuginstellingen ####
-  
+
   ## Stel de debug opties in: icecream package settings
   ltabase::set_icecream_options()
   icecream::ic_disable()
-  
+
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 2.3 Gtsummary instellingen ####
-  
+
   ## Bepaal de standaard instellingen van gtsummary
   list("style_number-arg:big.mark" = ".",
-       "style_number-arg:decimal.mark" = ",") |> 
+       "style_number-arg:decimal.mark" = ",") |>
     set_gtsummary_theme()
   invisible(theme_gtsummary_compact())
-  
+
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 2.4 Levels van variabelen ####
-  
+
   ## Bepaal de volgorde van een aantal levels
   Get_Levels()
-  
+
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 2.5  Config ####
-  
+
   sUitval_model <- params$uitval
   sPropedeusediploma <- params$propedeusediploma
-  
+
   sUitval_model_text <- Get_Uitval_model_text(sPropedeusediploma, sUitval_model)
-  
+
   ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
   current_opleiding <- Get_Current_opleiding(
     opleiding = params$opleiding,
     opleidingsvorm = params$opleidingsvorm_afkorting
   )
-  
+
   ## Bepaal op basis hiervan afgeleide variabelen
   Set_Current_opleiding_vars(current_opleiding, debug = T)
-  
+
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 3. BASISQUERY ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  
+
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 3.1 Inschrijvingen ####
-  
+  ## 3.1 Inschrijvingen  ####
+
   dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
     board = "HHs/Inschrijvingen",
     faculty = faculteit,
@@ -183,31 +201,26 @@ if(bSetup_executed == F) {
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 3.2 Settings ####
-  
+
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 3.2.1 Metadata ####
+
   lResearch_settings <- list()
   lResearch_settings[["sResearch_path"]] <- "Kansengelijkheid"
   lResearch_settings[["sDataset"]] <- Get_sDataset(dfOpleiding_inschrijvingen_base)
-  
+
   lMetadata <- Get_Metadata()
-  
-  Get_sCaption <- function() {
-    
-    sCaption <- paste0(
-      paste(
-        lMetadata[["sDataset"]],
-        lResearch_settings[["sResearch_path"]],
-        sep = ", "
-      ),
-      ". \U00A9 ",
-      lMetadata[["sAnalyse"]],
-      ", ",
-      format(Sys.Date(), "%Y")
-    )
-    
-    return(sCaption)
-    
-  }
-  
+
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 3.2.2 Caption ####
+
   sCaption <- Get_sCaption()
+
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 3.2.3 Plots ####
+
+  ## Bepaal de hoogte en breedte van afbeeldingen
+  nPlotWidth  <- 640
+  nPlotHeight <- 550
   
 }

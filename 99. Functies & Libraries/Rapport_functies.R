@@ -152,20 +152,30 @@ Get_Opleiding_directory <- function(faculteit,
 Get_Current_opleiding_output_dir <- function(current_opleiding,
                                              mode) {
   
+  .fac_opl_vorm <- paste0(
+    current_opleiding$INS_Faculteit,
+    "/",
+    current_opleiding$INS_Opleidingstype_LTA,
+    "-",
+    current_opleiding$INS_Opleiding,
+    "-",
+    current_opleiding$INS_Opleidingsvorm
+  ) |> tolower()
+  
   if(mode == "last-fits" | mode == "modelresults") {
     .output_dir <- file.path("10. Output",
-                             tolower(current_opleiding$INS_Faculteit),
+                             .fac_opl_vorm,
                              "modelresults")
   } else if(mode == "data") {
     .output_dir <- file.path("10. Output",
-                             tolower(current_opleiding$INS_Faculteit),
+                             .fac_opl_vorm,
                              "data")
   } else if(mode == "html") {
     .output_dir <- file.path("10. Output",
-                             tolower(current_opleiding$INS_Faculteit))
+                             .fac_opl_vorm)
   } else if(mode == "plot") {
     .output_dir <- file.path("10. Output",
-                             tolower(current_opleiding$INS_Faculteit),
+                             .fac_opl_vorm,
                              "plots")
   } else {
     cli::cli_alert("De mode is niet correct")
@@ -174,7 +184,6 @@ Get_Current_opleiding_output_dir <- function(current_opleiding,
   return(.output_dir)
   
 }
-  
 
 ## Functie om de output directory te bepalen van de huidige opleiding
 Get_Current_opleiding_output_file <- function(df, mode, analyse = NULL) {
@@ -237,7 +246,7 @@ Get_Model_outputpath <- function(mode) {
 }
 
 ## Functie om de output path te bepalen voor de plots
-Get_Plot_outputpath <- function(mode = "plot", plotname) {
+Get_Plot_outputpath <- function(plotname, mode = "plot") {
   
   ## Bepaal de output file
   .output_file <- paste0(plotname, ".png")
@@ -253,6 +262,18 @@ Get_Plot_outputpath <- function(mode = "plot", plotname) {
   ## Geef het volledige outputpath terug
   return(file.path(.output_dir, .output_file))
   
+}
+
+## Functie om de output path te bepalen voor de breakdown plots
+Get_Breakdown_plotpath <- function(student_groep, student_categorie) {
+  
+  ## Vervang spaties door - in de student_groep en student_categorie
+  .student_groep     <- gsub(" ", "-", student_groep)
+  .student_categorie <- gsub(" ", "-", student_categorie)
+  
+  file.path(Get_Plot_outputpath(
+    plotname = tolower(glue("lf_break_down_{(.student_groep)}_{(.student_categorie)}")))
+  )
 }
 
 ## . ####
@@ -430,10 +451,10 @@ Get_Levels <- function() {
   lLevels_aansluiting <<- c(
     "Direct",
     "Tussenjaar",
-    "2e Studie",
     "Switch intern",
     "Switch extern",
     "Na CD",
+    "2e Studie",
     "Overig",
     "Onbekend"
   )
@@ -651,6 +672,20 @@ Get_Huidige_analyse <- function() {
   
 }
 
+## Functie om een header 3 te knitten
+Knit_Header <- function(x, rep = 1) {
+  
+  .header <- rep("#", rep) |> paste(collapse = "")
+  
+  Knit_print_rule(glue("{(.header)} {x}"))
+}
+
+## Functie om een regel te knitten
+Knit_print_rule <- function(x) {
+  
+  knit_print(glue("\n\n\n{x}\n\n"))
+  
+}
 
 
 ## . ####
@@ -675,7 +710,295 @@ Cli_Subheader <- function(sText) {
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 6. PLOT FUNCTIES ####
+## 6. QUERY FUNCTIES ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## Functie om de meest voorkomende categorie te bepalen
+Get_Mostcommon_Category <- function(x) {
+  
+  ## Test of x categorisch is
+  if(!is.factor(x) && !is.character(x)) {
+    stop("De variabele is niet categorisch")
+  }
+  
+  ## Bepaal de meest voorkomende categorie
+  x <- names(which.max(table(x)))
+  
+  return(x)
+  
+}
+
+## Functie om de mediaan te bepalen (afgerond en zonder NA's)
+Get_Median_Rounded <- function(x) {
+  
+  ## Test of x numeriek is
+  if(!is.numeric(x)) {
+    stop("De variabele is niet numeriek")
+  }
+  
+  ## Bepaal de mediaan
+  x <- round(median(x, na.rm = TRUE), 1)
+  
+  return(x)
+  
+}
+
+# Functie om een persona te maken van de studenten van een opleiding
+Get_dfPersona <- function(group = NULL) {
+  
+  lSelect_categorical <- c(
+    "Aansluiting",
+    "APCG",
+    "Cijfer_CE_Engels_missing",
+    "Cijfer_CE_Natuurkunde_missing",
+    "Cijfer_CE_Nederlands_missing",
+    "Cijfer_CE_VO_missing",
+    "Cijfer_CE_Wiskunde_missing",
+    "Cijfer_SE_VO_missing",
+    "Dubbele_studie",
+    "Geslacht",
+    "Studiekeuzeprofiel",
+    "Vooropleiding"
+  ) 
+  
+  if (!is.null(group)) {
+    .group <- as.name(group)
+    # Verwijder de groep variabele uit deze lijst
+    lSelect_categorical <- setdiff(lSelect_categorical, group)
+  }
+  
+  lSelect_numerical <- c(
+    "Aanmelding",
+    "Cijfer_CE_Engels",
+    "Cijfer_CE_Natuurkunde",
+    "Cijfer_CE_Nederlands",
+    "Cijfer_CE_VO",
+    "Cijfer_CE_Wiskunde",
+    "Cijfer_SE_VO",
+    "Leeftijd",
+    "Reistijd",
+    "SES_Arbeid",
+    "SES_Welvaart",
+    "SES_Totaal",
+    "Uitval"
+  )
+  
+  # Bereken het totaal voor deze opleiding
+  .totaal <- dfOpleiding_inschrijvingen |> 
+    count() |> 
+    pull(n)
+  
+  if (!is.null(group)) {
+    
+    # Maak personas aan op basis van de opgegeven groep
+    dfPersona <- dfOpleiding_inschrijvingen |>
+      
+      # Split de opleidingen op basis van de groep
+      group_by(!!.group) |>
+      
+      # Maak een persona aan op basis van de overige variabelen: 
+      # kies de meest voorkomende waarden per variabele bij categorieën en de mediaan bij numerieke variabelen
+      summarise(
+        
+        # Categorische variabelen
+        across(
+          all_of(lSelect_categorical), 
+          Get_Mostcommon_Category,
+          .names = "{col}"
+        ),
+        
+        # Numerieke variabelen
+        across(
+          all_of(lSelect_numerical),
+          Get_Median_Rounded,
+          .names = "{col}"
+        ), 
+        
+        # Overige variabelen
+        Collegejaar = median(Collegejaar, na.rm = TRUE),
+        ID = NA,
+        
+        # Subtotaal aantal studenten
+        Subtotaal = n(),
+        
+        .groups = "drop") |> 
+      
+      # Tel het aantal studenten per groep
+      mutate(Totaal = .totaal,
+             Percentage = round(Subtotaal/Totaal, 3)) |>
+      
+      # Voeg de groep variabele toe en bepaal de categorie binnen de groep
+      mutate(Groep = group,
+             Categorie = !!.group) |>
+      
+      # Herorden
+      select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
+    
+  } else {
+    
+    # Maak persona voor alle studenten zonder groepering
+    dfPersona <- dfOpleiding_inschrijvingen |>
+      
+      # Maak een persona aan op basis van de overige variabelen: 
+      # kies de meest voorkomende waarden per variabele bij categorieën 
+      # en de mediaan bij numerieke variabelen
+      summarise(
+        
+        # Categorische variabelen
+        across(
+          all_of(lSelect_categorical), 
+          Get_Mostcommon_Category,
+          .names = "{col}"
+        ),
+        
+        # Numerieke variabelen
+        across(
+          all_of(lSelect_numerical),
+          Get_Median_Rounded,
+          .names = "{col}"
+        ), 
+        
+        # Overige variabelen
+        Collegejaar = median(Collegejaar, na.rm = TRUE),
+        ID = NA,
+        
+        # Subtotaal aantal studenten
+        Subtotaal = n(),
+        
+        .groups = "drop") |> 
+      
+      # Tel het aantal studenten per groep
+      mutate(Totaal = .totaal,
+             Percentage = round(Subtotaal/Totaal, 3)) |>
+      
+      # Voeg de groep variabele toe en bepaal de categorie binnen de groep
+      mutate(Groep = "Alle",
+             Categorie = "Alle studenten") |>
+      
+      # Herorden
+      select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
+  }
+  
+  return(dfPersona)
+}
+
+# Convert to data frame for ggplot
+Get_dfBreakdown_lm <- function(bd_lm) {
+  
+  dfBreakdown_lm <- as.data.frame(bd_lm) |>
+    
+    ## Sorteer op basis van de position
+    arrange(desc(position)) |>
+    
+    ## Hernoem variabelen (intercept en prediction)
+    mutate(
+      variable = case_when(
+        variable == "intercept" ~ "Intercept",
+        variable == "prediction" ~ "Voorspelling",
+        TRUE ~ variable
+      )
+    ) |>
+    
+    ## Maak het label aan (in percentages)
+    mutate(label = paste0(as.character(round(contribution, 3) * 100), "%")) |>
+    mutate(
+      label = case_when(
+        variable %in% c("Intercept", "Voorspelling") ~ label,
+        sign == 1  ~ paste0("+", label),
+        sign == -1 ~ paste0(label),
+        sign == 0  ~ paste0("+", label),
+        .default = label
+      )
+    ) |>
+    mutate(label = case_when(label == "0%" ~ "+0%", .default = label)) |>
+    
+    ## Verwijder variabelen met een contribution van 0
+    filter(sign != 0) |>
+    
+    ## Maak start en end variabelen aan
+    mutate(start = dplyr::lag(cumulative, default = min(cumulative)),
+           end = cumulative) 
+  
+  ## Voeg een rij toe voor "Overige variabelen"
+  dfBreakdown_lm <- dfBreakdown_lm |>
+    add_row(
+      variable = "+ Overige variabelen",
+      contribution = 0,
+      variable_name = NA,
+      variable_value = NA,
+      cumulative = dfBreakdown_lm$cumulative[dfBreakdown_lm$position == 1],
+      sign = "0",
+      position = 2,
+      label = "+0%",
+      start = dfBreakdown_lm$cumulative[dfBreakdown_lm$position == 1],
+      end = dfBreakdown_lm$cumulative[dfBreakdown_lm$position == 1]
+    ) |>
+    
+    ## Pas de positie aan
+    arrange(position) |>
+    mutate(position = row_number()) |>
+    arrange(desc(position)) |>
+    
+    ## Bepaal de volgende start en positie
+    mutate(
+      next_start = lead(start, default = NA),
+      next_position = lead(position, default = NA)
+    ) |>
+    mutate(start = case_when(
+      variable == "Intercept" ~ 0,
+      variable == "Voorspelling" ~ 0,
+      .default = start
+    )) |>
+    
+    ## Pas de sign aan
+    mutate(sign = case_when(variable == "Intercept" ~ "X", .default = sign)) |>
+    
+    ## Bepaal de kleur van de labels
+    mutate(label_color = case_when(
+      sign == "1" ~ lColors_default[["sNegative_color"]], 
+      sign == "-1" ~ lColors_default[["sPositive_color"]], 
+      .default = "black")) |>
+    
+    ## Bepaal de positie van de labels
+    rowwise() |>
+    mutate(label_position = max(start, end)) |>
+    ungroup()
+  
+  ## Pas de sign aan naar een factor
+  dfBreakdown_lm$sign <- factor(
+    dfBreakdown_lm$sign,
+    levels = c("1", "-1", "0", "X"),
+    labels = c("Positief", "Negatief", "Geen", "X")
+  ) 
+  
+  return(dfBreakdown_lm)
+  
+}
+
+## Functie om de Shapley waarden te bepalen
+Get_dfShapley <- function(shapley_object) {
+  
+  ## Maak een dataframe van de shapley waarden
+  dfShapley <- shapley_object |> 
+    
+    ## Verwijder variabelen zonder contribution
+    filter(contribution != 0) |>
+    
+    ## Bereken de gemiddelde contribution per variabele
+    group_by(variable) |>
+    mutate(mean_val = mean(contribution)) |>
+    ungroup() |>
+    
+    ## Sorteer de variabelen op basis van de gemiddelde contribution
+    mutate(variable = fct_reorder(variable, abs(mean_val))) 
+  
+  return(dfShapley)
+  
+}
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 7. PLOT FUNCTIES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 lColors_default <- c(
@@ -719,11 +1042,15 @@ lColors_default <- c(
   sSE_color              = "#CBCBCB",
   
   ## Kleur van de band
-  sBand_color            = "grey95"
+  sBand_color            = "grey95",
+  
+  ## Positief en negatief
+  sPositive_color        = "#466F9D",
+  sNegative_color        = "#C8133B"
 )
 
 ## Bepaal het basisthema
-Set_LTA_Theme <- function(title.font = "Source Sans Pro", type = "plot") {
+Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
   theme_set(theme_minimal())
   theme_update(
     ## Margins
@@ -764,8 +1091,6 @@ Set_LTA_Theme <- function(title.font = "Source Sans Pro", type = "plot") {
                                   l = 0
                                 )),
     axis.text.x  = element_text(size = 11),
-    # axis.text.x  = element_text(size = 11,
-    #                             vjust = 7),
     axis.text.y  = element_text(size = 11),
 
     ## Lijnen
@@ -790,102 +1115,137 @@ Set_LTA_Theme <- function(title.font = "Source Sans Pro", type = "plot") {
   
 }
 
-# Convert to data frame for ggplot
-Get_dfBreakdown_lm <- function(bd_lm) {
+## Functie om LTA thema elementen toe te voegen
+Add_LTA_theme_elements <- function() {
+  theme(
+    plot.title = element_text(size = 14, face = "bold"),
+    plot.subtitle = element_markdown(),
+    axis.text.y = element_text(size = 10),
+    plot.caption = element_textbox_simple(
+      size = 8,
+      color = lColors_default["sCaption_color"],
+      padding = margin(0, 0, 0, 0),
+      margin = margin(15, 0, 0, 0)
+    )
+  )
+}
 
-  dfBreakdown_lm <- as.data.frame(bd_lm) |>
-    
-    ## Sorteer op basis van de position
-    arrange(desc(position)) |>
-    
-    ## Hernoem variabelen (intercept en prediction)
-    mutate(
-      variable = case_when(
-        variable == "intercept" ~ "Intercept",
-        variable == "prediction" ~ "Voorspelling",
-        TRUE ~ variable
-      )
-    ) |>
-    
-    ## Maak het label aan (in percentages)
-    mutate(label = paste0(as.character(round(contribution, 3) * 100), "%")) |>
-    mutate(
-      label = case_when(
-        variable %in% c("Intercept", "Voorspelling") ~ label,
-        sign == 1  ~ paste0("+", label),
-        sign == -1 ~ paste0(label),
-        sign == 0  ~ paste0("+", label),
-        .default = label
-      )
-    ) |>
-    mutate(label = case_when(label == "0%" ~ "+0%", .default = label)) |>
-    
-    ## Verwijder variabelen met een contribution van 0
-    filter(sign != 0) |>
-    
-    ## Maak start en end variabelen aan
-    mutate(start = dplyr::lag(cumulative, default = min(cumulative)),
-           end = cumulative) 
-
-  ## Voeg een rij toe voor "Overige variabelen"
-  dfBreakdown_lm <- dfBreakdown_lm |>
-    add_row(
-      variable = "+ Overige variabelen",
-      contribution = 0,
-      variable_name = NA,
-      variable_value = NA,
-      cumulative = dfBreakdown_lm$cumulative[dfBreakdown_lm$position == 1],
-      sign = "0",
-      position = 2,
-      label = "+0%",
-      start = dfBreakdown_lm$cumulative[dfBreakdown_lm$position == 1],
-      end = dfBreakdown_lm$cumulative[dfBreakdown_lm$position == 1]
-    ) |>
-    
-    ## Pas de positie aan
-    arrange(position) |>
-    mutate(position = row_number()) |>
-    arrange(desc(position)) |>
-    
-    ## Bepaal de volgende start en positie
-    mutate(
-      next_start = lead(start, default = NA),
-      next_position = lead(position, default = NA)
-    ) |>
-    mutate(start = case_when(
-      variable == "Intercept" ~ 0,
-      variable == "Voorspelling" ~ 0,
-      .default = start
-    )) |>
-    
-    ## Pas de sign aan
-    mutate(sign = case_when(variable == "Intercept" ~ "X", .default = sign)) |>
-    
-    ## Bepaal de kleur van de labels
-    mutate(label_color = case_when(
-      sign == "1" ~ "#C8133B", 
-      sign == "-1" ~ "#466F9D", 
-      .default = "black")) |>
-    
-    ## Bepaal de positie van de labels
-    rowwise() |>
-    mutate(label_position = max(start, end)) |>
-    ungroup()
-
-  ## Pas de sign aan naar een factor
-  dfBreakdown_lm$sign <- factor(
-    dfBreakdown_lm$sign,
-    levels = c("1", "-1", "0", "X"),
-    labels = c("Positief", "Negatief", "Geen", "X")
-  ) 
+## Functie om de caption te bepalen
+Get_sCaption <- function() {
   
-  return(dfBreakdown_lm)
+  sCaption <- paste0(
+    paste(
+      lMetadata[["sDataset"]],
+      lResearch_settings[["sResearch_path"]],
+      sep = ", "
+    ),
+    ". \U00A9 ",
+    lMetadata[["sAnalyse"]],
+    ", ",
+    format(Sys.Date(), "%Y")
+  )
+  
+  return(sCaption)
+  
+}
 
+## Functie om een ROC plot te maken
+Get_ROC_plot <- function(models, position = NULL) {
+  
+  lColors <- c("#fc7d0b", "#1170aa",
+               "#c85200", "#a3cce9")
+  
+  ## Combineer eventueel meerdere modellen
+  if(is.list(models)) {
+    models <- bind_rows(models)
+  }
+  
+  if(!is.null(position)) {
+    lColors <- lColors[position]
+  }
+  
+  plot <- models |>
+    ggplot(aes(x = 1 - specificity, y = sensitivity, col = model)) + 
+    geom_path(lwd = 1.5, alpha = 0.8) +
+    geom_abline(lty = 3) + 
+    coord_equal() + 
+    scale_color_manual(values = lColors) +
+    labs(x = "1 - specificiteit", y = "sensitiviteit", color = "Model") +
+    theme(
+      axis.title.x = element_text(margin = margin(t = 20))
+    )
+  
+  return(plot)
+  
+}
+
+## Functie om de titels te bepalen
+Get_Breakdown_Titles <- function(bd, df, j, 
+                                 student_groep, student_categorie, 
+                                 mode = "group",
+                                 debug = FALSE) {
+  
+  ## Bepaal de uitvalskans, totalen en de titel/ondertitel
+  nUitval     <- Number_to_readable(as.numeric(bd$cumulative[bd$variable == 'prediction']) * 100, digits = 1)
+  nSubtotaal  <- Number_to_readable(as.numeric(df[j, 'Subtotaal']))
+  nTotaal     <- Number_to_readable(as.numeric(df[j, 'Totaal']))
+  nPercentage <- Number_to_readable(as.numeric(df[j, 'Percentage']) * 100, digits = 1)
+  
+  if(debug) {
+    cli::cli_alert_info(c("nUitval: ",     nUitval))
+    cli::cli_alert_info(c("nSubtotaal: ",  nSubtotaal))
+    cli::cli_alert_info(c("nTotaal: ",     nTotaal))
+    cli::cli_alert_info(c("nPercentage: ", nPercentage))
+  }
+  
+  # Bouw de titel
+  if(mode == "all") {
+    student_current_title <- glue(
+      "Opbouw van de kans op uitval ({tolower(student_groep)})"
+    )
+  } else if(mode == "group") {
+    student_current_title <- glue(
+      "Opbouw van de kans op uitval naar {tolower(student_groep)}"
+    )
+  }  
+  
+  if(debug) {
+    cli::cli_alert_info(student_current_title)
+  }
+  
+  student_current_subtitle <- glue(
+    " | kans op uitval: {nUitval}%"
+  )
+  
+  if(mode == "all") {
+    student_current_subtitle <- glue(
+      "**{student_categorie}**",
+      student_current_subtitle,
+      " | _N_ = {nSubtotaal}"
+    )
+  } else if(mode == "group") {
+    student_current_subtitle <- glue(
+      "{student_groep}: **{student_categorie}**",
+      student_current_subtitle,
+      " | _N_ = {nSubtotaal} van {nTotaal} ({nPercentage}%)"
+    )
+  }
+  
+  if(debug) {
+    cli::cli_alert_info(student_current_subtitle)
+  }
+  
+  return(list(student_current_title, 
+              student_current_subtitle))
 }
 
 ## Functie om een watervalplot te maken
-Get_Waterfall_plot <- function(df) {
+Get_Waterfall_plot <- function(df, titles) {
    
+  # Bepaal de breaks voor de x-as
+  y_breaks <- seq(0, 1, by = 0.2)
+  y_labels <- paste0(seq(0, 100, by = 20), "%")
+  
   ## Maak een watervalplot
   plot <- ggplot(df) +
     
@@ -927,8 +1287,8 @@ Get_Waterfall_plot <- function(df) {
     
     # Bepaal de title en ondertitel
     labs(
-      title = student_current_title,
-      subtitle = student_current_subtitle,
+      title = titles[[1]],
+      subtitle = titles[[2]],
       caption = sCaption,
       x = NULL,
       y = NULL
@@ -936,9 +1296,9 @@ Get_Waterfall_plot <- function(df) {
     
     # Vul de kleuren in
     scale_fill_manual(values = c(
-      "Positief" = "#C8133B",
-      "Negatief" = "#466F9D",
-      "X" = "#C8133B"
+      "Positief" = lColors_default[["sNegative_color"]],
+      "Negatief" = lColors_default[["sPositive_color"]],
+      "X" = lColors_default[["sNegative_color"]]
     )) +
     
     # Voeg tekstlabels toe voor de variabelen
@@ -960,17 +1320,163 @@ Get_Waterfall_plot <- function(df) {
       axis.text.y = element_text(size = 10),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank()
-    )
+    ) +
   
-  Set_LTA_Theme()
+    ## Maak de labels van Intercept en voorspelling vetgedrukt
+    ## suppressWarnings, omdat er een warning komt dat vectorized input in de toekomst niet mogelijk is
+    suppressWarnings(theme(axis.text.y = element_text(
+      face = ifelse(
+        df$variable %in% c("Intercept", "Voorspelling"),
+        "bold",
+        "plain"
+      )
+    )))
   
   return(plot)
   
 }
 
+## Print breakdownplots
+Get_Breakdown_Plots <- function(groep) {
+  
+  ## Bepaal het pad
+  plotdir <- Get_Current_opleiding_output_dir(current_opleiding, mode = "plot")
+  
+  ## Laad de dataset voor de huidige persona
+  dfPersona <- lDfPersona[[groep]]
+  
+  ## Bepaal de groep
+  .groep <- tolower(groep)
+  
+  Knit_Header("Naar {.groep}", 3)
+  
+  ## Bepaal of er in de dataset een groep is met minder dan 21 studenten;
+  ## Zo ja, laat die buiten beschouwing en meld dit
+  if (any(dfPersona$Subtotaal < 21)) {
+    
+    lCategorie_te_laag <- dfPersona |>
+      filter(Subtotaal < 21) |>
+      pull(Categorie) |>
+      paste(collapse = ", ")
+    
+    Knit_print_rule(glue("Subtotaal voor {.groep}: {lCategorie_te_laag} is te laag voor een betrouwbare analyse."))
+  }
+  
+  ## Open een panel-tabset
+  Knit_print_rule(glue("::: {.panel-tabset}", 
+                       .open = "{{", 
+                       .close = "}}"))
+  
+  for (j in 1:nrow(dfPersona)) {
+    
+    ## Bepaal de huidige student
+    student_current   <- dfPersona[j, ]
+    student_groep     <- student_current$Groep
+    student_categorie <- levels(student_current[[student_groep]])[j]
+    
+    sPlot <- glue("![]({plotdir}/lf_break_down_{tolower(student_groep)}_{tolower(student_categorie)}.png")
+    Knit_print_rule(sPlot)
+    
+    ## ![](Index_verdieping_factoren_files/figure-html/lf_model_parts-1.png){width=672}
+    ## ![](10. Output/gvs/b-hbo-v-vt/plots/lf_break_down_geslacht_m.png
+    ## ![](10. Output/gvs/b-hbo-v-vt/plots/lf_break_down_distribution_all.png){width=1333}
+    
+  }
+  
+    #knit_print(glue("\n\n\n### Naar {.categorie}\n\n"))
+    # lPlots <<- list.files(
+    #   path = plotdir,
+    #   pattern = glue("^lf_break_down_{.categorie}_(.*).png$"),
+    #   full.names = TRUE
+    # )
+  
+  ##knitr::include_graphics(as.character(lPlots), error = TRUE)
+  
+  ## Sluit de panel-tabset
+  Knit_print_rule(":::")
+  
+}
+
+## Functie om een Shapley plot te maken
+Get_Shapley_plot <- function(data) {
+  
+  p <- data |> 
+    ggplot(aes(contribution, variable, fill = mean_val > 0)) +
+    geom_col(data = ~distinct(., variable, mean_val), 
+             aes(mean_val, variable), 
+             alpha = 0.5) +
+    geom_boxplot(width = 0.5) +
+    theme(legend.position = "none") +
+    scale_fill_manual(values = c("TRUE" = lColors_default[["sNegative_color"]], 
+                                 "FALSE" = lColors_default[["sPositive_color"]])) +
+    
+    # Bepaal de title en ondertitel
+    labs(
+      title = "Shapley values",
+      subtitle = "Bijdrage per variabele voor de meest voorkomende student",
+      caption = sCaption,
+      x = NULL,
+      y = NULL
+    )
+  
+  return(p)
+  
+}
+
+## Op basis van het bbplot package gebouwd (vandaar de namen in lowercase,
+## zodat deze functies die van het bbplot package overschrijven)
+
+## Left align
+left_align <- function (plot_name, pieces) {
+  grob <- ggplot2::ggplotGrob(plot_name)
+  n <- length(pieces)
+  grob$layout$l[grob$layout$name %in% pieces] <- 2
+  return(grob)
+}
+
+## Save plot
+save_plot <- function (plot_grid, width, height, save_filepath) {
+  
+  ggplot2::ggsave(
+    filename = save_filepath,
+    plot = plot_grid,
+    width = (width / 72),
+    height = (height / 72),
+    bg = "white",
+    device = ragg::agg_png,
+    res = 300,
+    create.dir = TRUE
+  )
+}
+
+## Bewaar een afbeelding
+Finalize_Plot <-
+  function (plot_name,
+            source_name,
+            save_filepath = file.path(Sys.getenv("TMPDIR"),
+                                      "tmp-nc.png"),
+            width_pixels = nPlotWidth,
+            height_pixels = nPlotHeight,
+            show_plot = FALSE) {
+    
+    ## Print de plot
+    plot_grid <- ggpubr::ggarrange(
+      plot_name,
+      ncol = 1,
+      nrow = 2,
+      # heights = c(1, 0.045 / (height_pixels / 450)) ## Correctie op BBC template (marge)
+      heights = c(1, 0 / (height_pixels / 450))
+    )
+    save_plot(plot_grid, width_pixels, height_pixels, save_filepath)
+    
+    if(show_plot) {
+      invisible(plot_grid)
+    }
+  }
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 7. HULP FUNCTIES ####
+## 8. HULP FUNCTIES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## Functie nummers om te zetten naar een leesbare notatie

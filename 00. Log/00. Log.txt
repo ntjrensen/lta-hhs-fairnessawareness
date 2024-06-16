@@ -14,74 +14,102 @@
 ## 28-04-2024: TB: Aanmaak bestand
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+## Plotpagina van Dalex: https://github.com/ModelOriented/DALEX/blob/28a936b067abad5c3a3ff11b8a6b7a4bfdab1db8/R/plot_model_performance.R#L118
+
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 [ ] Plots
-  [ ] Plots bewaren - als ze niet bestaan, anders inlezen of met parameter opnieuw maken
-    [ ] Omzetten naar een handige functie
-    [ ] Naam moet ook analyses bevatten
-    [ ] Opslag zoals bij bbc in plots project
+  [ ] gam model uitproberen
+    [ ] https://parsnip.tidymodels.org/reference/details_gen_additive_mod_mgcv.html
+    [ ] https://forum.posit.co/t/how-to-define-smoothed-models-for-a-gam-using-tidymodels-and-recipe/144772
 
-[ ] Queries/plots
-  [ ] Studentpersonas_opleidingen > opheffen en naar functies brengen
+[ ] Navigatie
+  [ ] links naar pagina 1 en 3 van analyses opnemen aan rechterzijde
+  [x] logo hhs
 
-[/] Studenten
-  [ ] Violin plot maken voor algemene student
-    [ ] Breakdown violin - https://ema.drwhy.ai/breakDown.html
-  [x] Prototype bestanden van studenten toevoegen
-  [x] Modellen opslaan en in een 1e pagina de explainer toepassen
-  [/] Ook maken voor:
-    [x] geslacht 
-    [x] aansluiting 
-    [ ] leeftijd vooropleiding
-    [ ] SES
-
-[x] Breakdown plot
-  [ ] labels voor Intercept en Voorspelling vet maken
-    
-[ ] Overige analyses
-  [ ] Shapley values uitproberen https://ema.drwhy.ai/shapley.html
-  [ ] Ceteris Paribus uitproberen https://ema.drwhy.ai/ceterisParibus.html
-  [ ] Partial Dependence plots uitproberen https://ema.drwhy.ai/partialDependenceProfiles.html
-  [ ] Modellen - interactie-effecten toevoegen?
-
-[ ] Dalex
-  [x] explainer - https://modeloriented.github.io/DALEXtra/reference/explain_tidymodels.html
-
-[ ] Warnings
-  [x] Levels aanpassen aan wat er in de dataset set
-
-[ ] Modellen
-  [ ] Diplomarendement
-  [x] Uitval met en zonder prop
-    [x] SUC_P_aantal_jaar
-  [ ] Aan het begin een klein staatje van het aantal uitval per jaar.
-  
 [ ] Andere opleidingen proberen
   [ ] ORM_DT
       [select_inspect_data]    
       [ ] te weinig observaties ondervangen
         [ ] voeg per opleiding het aantal eerstejaars toe en unieke collegejaren.
         [ ] als dit te weinig observaties of jaren zijn, dan next
+  [ ] SWE model - Basis
+      [ ] Factoranalyse voor RF werkend krijgen
 
-[ ] Plot
-  [ ] de beste plot in de auc tonen: If performance is about the same, 
-  we’d prefer to choose a higher penalty value. zie https://www.tidymodels.org/start/case-study/
+[ ] Overige analyses
+  [x] Shapley values uitproberen https://ema.drwhy.ai/shapley.html
+  [x] Ceteris Paribus uitproberen https://ema.drwhy.ai/ceterisParibus.html
+  [ ] Partial Dependence plots uitproberen https://ema.drwhy.ai/partialDependenceProfiles.html
+  [ ] Modellen - interactie-effecten toevoegen?
+      of er interacties zijn tussen de factoren. Dit doen we door de [Partial Dependence Plots](http
+      ://christophm.github.io/interpretable-ml-book/pdp.html) te maken.
 
+[ ] Modellen
+  [ ] Diplomarendement
+  [x] Uitval met en zonder prop
+    [x] SUC_P_aantal_jaar
+  [ ] Aan het begin een klein staatje van het aantal uitval per jaar.
+  [ ] Een workflow set uitproberen:
+    [ ] https://workflowsets.tidymodels.org/
+    
 [ ] Teksten
   [ ] Beste model fits zoals op https://rpubs.com/mikek25/tidymodels_churn
   [ ] Teksten voor conclusies herzien
-  
-  [ ] Een workflow set uitproberen:
-    [ ] https://workflowsets.tidymodels.org/
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[ ] Queries
+  [x] Studentpersonas_opleidingen > opheffen en naar functies brengen
+  
+[x] TODO: ID verwijderen uit model
+
+[x] Referenties
+
+[x] Dalex
+  [x] explainer - https://modeloriented.github.io/DALEXtra/reference/explain_tidymodels.html
+  [x] Functie die Dalex omzet naar LTA opmaak
+        [x] title / subtitle
+        [x] caption
+        [x] points in violin plots
+  
+[x] Warnings
+  [x] Levels aanpassen aan wat er in de dataset set
+
+[x] SWE model - Basis
+  [x] Warning for variable 'Cijfer_CE_Natuurkunde':
+simpleWarning in wilcox.test.default(x = DATA[[1L]], y = DATA[[2L]], ...): cannot compute exact p-value with ties
+  [-] Model parameters needing finalization:
+    # Randomly Selected Predictors ('mtry') See `?dials::finalize` or `?dials::update.parameters` for more information.
+  [x] Uitspraak over basemodel klopt niet  
+  [x] Confusion matrix toevoegen
+  [x] ROC curves plots > 2 met kleur maken en labels aanpassen (naam en positie)
+  [x] Most important plots > positie x label aanpassen
+  
+[x] Personas
+  [x] Prototype bestanden van studenten toevoegen
+  [x] Modellen opslaan en in een 1e pagina de explainer toepassen
+  [x] Ook maken voor:
+    [x] geslacht 
+    [x] aansluiting 
+
 [x] Breakdown plot
+  [x] Tabsets -  https://quarto.org/docs/output-formats/html-basics.html
+  [x] Ook werkend krijgen als we uitgaan van bestaande afbeeldingen
+  [x] Volgorde van de tabs kunnen aanpassen 
+  [x] spatie in naamgeving > een dash
+    
+  [x] labels voor Intercept en Voorspelling vet maken
+    [/] Ook maken voor:
+      [x] geslacht 
+      [x] aansluiting 
+      [-] leeftijd vooropleiding
+      [-] SES
+    [-] Violin plot maken voor algemene student
+    [-] Breakdown violin - https://ema.drwhy.ai/breakDown.html
     [x] prediction > op laatste plek zetten
     [x] getallen afronden op 1
     [x] lump als de bijdrage 0 is
@@ -93,6 +121,14 @@
     [x] tekst van - beter uitlijnen
     [x] kleuren van min en plus verbeteren
     [x] positie van tekst is niet goed
+    [x] Plots bewaren - als ze niet bestaan, anders inlezen of met parameter opnieuw maken
+    [x] Omzetten naar een handige functie
+    [x] Naam moet ook analyses bevatten
+    [x] Opslag zoals bij bbc in plots project
+    [x] Font problemen oplossen
+    [x] Warnings niet tonen
+    [x] Volgorde moet in lijn zijn met de sortering van de elementen
+  
 
 [x] Splitsen van de algemene pagina en verdiepende analyses
   [x] Bewaar final fits
@@ -135,7 +171,6 @@
 
 [x] Corplot voor hoge correlaties  
   
-
 [x] Meer variabelen?
     [x] Bij HDT: RNK_Rangnummer
     [x] BUI_Internationale_student_tf

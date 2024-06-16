@@ -140,6 +140,9 @@ Documentatie <- ltabase::get_lta_documentation_enrollments(network_directory = N
 ## Lees algemene Tableau kleuren in: deze moeten vooraf bekend zijn.
 lColors_Tableau <- ltabase::get_colors_tableau()
 
+# [1] "#fc7d0b" "#1170aa" "#a3acb9" "#c85200" "#a3cce9" "#57606c" "#ffbc79" "#5fa2ce" "#7b848f" "#f28e2b" "#c8d0d9"
+# [12] "#b6992d" "#f1ce63" "#9467BD" "#C5B0D5" "#E377C2" "#F7B6D2" "#17BECF" "#9EDAE5" "#8C564b" "#C49C94" "#2CA02C"
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 7. CONFLICTS ####

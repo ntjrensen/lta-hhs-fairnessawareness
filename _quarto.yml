@@ -6,10 +6,18 @@ editor: visual
 # execute:
 #  keep-md: true
   
+## Citaties
+link-citations: true
+bibliography: bibliography/references.bib
+csl: bibliography/apa.csl
+
 # Taalinstellingen
 lang: nl
 language: 
   other-links-title: "Meer informatie"
+  
+# Lightbox
+lightbox: true
 
 ## Output instellingen
 format:
@@ -36,6 +44,7 @@ format:
     ## Links rechterzijde
     toc: true
     toc-title: Inhoudsopgave
+    toc-depth: 4
     other-links:
       - text: "Over het lectoraat Learning Technology & Analytics"
         href: https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics
