@@ -20,12 +20,20 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[x] Pagina 1
+  [x] Kopjes van tabellen aanpassen
+  [x] preprocessing > NL term
+[ ] Pagina 2
+
 [ ] Fairness analyse
   [ ] Basisartikel: https://cran.r-project.org/web/packages/fairmodels/vignettes/Basic_tutorial.html
   [ ] Teksten:
+      [x] Moet niet de hele dataset omgekeerd gemaakt worden? > kans op retentie
+        [x] Pagina 1
+        [ ] Pagina 2
+        [ ] Pagina 3
       [x] Uitleg verder aanvullen met een CF matrix
       [ ] Met voorbeelden vanuit het onderwijs
-      [ ] Moet niet de hele dataset omgekeerd gemaakt worden? > kans op retentie
   [ ] Goed printen:
       Fairness check for models: Linear Regression 
       Linear Regression passes 0/5 metrics

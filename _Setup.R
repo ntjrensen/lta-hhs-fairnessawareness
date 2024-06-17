@@ -171,10 +171,10 @@ if(bSetup_executed == F) {
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 2.5  Config ####
 
-  sUitval_model <- params$uitval
+  sSucces_model <- params$succes
   sPropedeusediploma <- params$propedeusediploma
 
-  sUitval_model_text <- Get_Uitval_model_text(sPropedeusediploma, sUitval_model)
+  sSucces_model_text <- Get_Succes_model_text(sPropedeusediploma, sSucces_model)
 
   ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
   current_opleiding <- Get_Current_opleiding(

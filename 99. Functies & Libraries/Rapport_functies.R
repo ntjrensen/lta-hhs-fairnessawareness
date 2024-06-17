@@ -327,7 +327,7 @@ Mutate_Uitval <- function(df, model = "Uitval na 1 jaar") {
 }
 
 ## Functie om Uitval te verbijzonderen (met en zonder propedeusediploma)
-Filter_Propedeusediploma <- function(df, propedeusediploma = "Nvt") {
+Filter_Propedeusediploma_Uitval <- function(df, propedeusediploma = "Nvt") {
   
   if (propedeusediploma == "Nvt" || propedeusediploma == "" || is.na(propedeusediploma)) {
     
@@ -356,39 +356,39 @@ Filter_Propedeusediploma <- function(df, propedeusediploma = "Nvt") {
   
 }
 
-## Functie om de Succes variabele te maken
-Mutate_Succes <- function(df, model = "Uitval na 1 jaar") {
+## Functie om de Retentie variabele te maken
+Mutate_Retentie <- function(df, model = "Retentie na 1 jaar") {
   
-  if (model == "Uitval na 1 jaar") {
+  if (model == "Retentie na 1 jaar") {
     return(
       df |>
         mutate(
-          SUC_Succes = ifelse(SUC_Uitval_aantal_jaar_LTA == 1, T, F),
-          SUC_Succes = coalesce(SUC_Succes, F)
+          SUC_Retentie = ifelse(SUC_Uitval_aantal_jaar_LTA == 1, F, T),
+          SUC_Retentie = coalesce(SUC_Retentie, T)
         ) 
     )
-  } else if (model == "Uitval na 2 jaar") {
+  } else if (model == "Retentie na 2 jaar") {
     return(
       df |>
         mutate(
-          SUC_Succes = ifelse(SUC_Uitval_aantal_jaar_LTA == 1:2, T, F),
-          SUC_Succes = coalesce(SUC_Succes, F)
+          SUC_Retentie = ifelse(SUC_Uitval_aantal_jaar_LTA == 1:2, F, T),
+          SUC_Retentie = coalesce(SUC_Retentie, T)
         ) 
     )
-  } else if (model == "Uitval na 3 jaar") {
+  } else if (model == "Retentie na 3 jaar") {
     return(
       df |>
         mutate(
-          SUC_Succes = ifelse(SUC_Uitval_aantal_jaar_LTA == 1:3, T, F),
-          SUC_Succes = coalesce(SUC_Succes, F)
+          SUC_Retentie = ifelse(SUC_Uitval_aantal_jaar_LTA == 1:3, F, T),
+          SUC_Retentie = coalesce(SUC_Retentie, T)
         ) 
     )
-  } else if (model == "Alle uitval"){
+  } else if (model == "Alle retentie"){
     return(
       df |>
         mutate(
-          SUC_Succes = ifelse(SUC_Uitval_aantal_jaar_LTA > 0, T, F),
-          SUC_Succes = coalesce(SUC_Succes, F)
+          SUC_Retentie = ifelse(SUC_Uitval_aantal_jaar_LTA > 0, F, T),
+          SUC_Retentie = coalesce(SUC_Retentie, T)
         ) 
     )
   } 
@@ -534,18 +534,18 @@ Get_Opleidingsvorm_lang <- function(opleidingsvorm) {
   }
 }
 
-## Functie om de tekst te bepalen voor het uitval model (in de titel)
-Get_Uitval_model_text <- function(propedeusediploma, uitval_model) {
+## Functie om de tekst te bepalen voor het model (in de titel)
+Get_Succes_model_text <- function(propedeusediploma, succes_model) {
   
   if (propedeusediploma == "Zonder P") {
-    uitval_model_text <- paste(uitval_model, "bij studenten zonder propedeusediploma")
+    succes_model_text <- paste(succes_model, "bij studenten zonder propedeusediploma")
   } else if (propedeusediploma == "Met P") {
-    uitval_model_text <- paste(uitval_model, "bij studenten met propedeusediploma")
+    succes_model_text <- paste(succes_model, "bij studenten met propedeusediploma")
   } else {
-    uitval_model_text <- uitval_model
+    succes_model_text <- succes_model
   }
   
-  return(uitval_model_text)
+  return(succes_model_text)
   
 }
 
@@ -659,11 +659,11 @@ Copy_Reports <- function(remove_orgials = F, debug = F) {
 Get_Huidige_analyse <- function() {
   
   ## Bepaal de beschrijving van de analyse
-  .uitval     <- janitor::make_clean_names(params$uitval)
+  .succes     <- janitor::make_clean_names(params$succes)
   .propedeuse <- janitor::make_clean_names(params$propedeusediploma)
   
   .analyse <- paste(
-    .uitval,
+    .succes,
     .propedeuse,
     sep = "_"
   )
@@ -780,7 +780,7 @@ Get_dfPersona <- function(group = NULL) {
     "SES_Arbeid",
     "SES_Welvaart",
     "SES_Totaal",
-    "Uitval"
+    "Retentie"
   )
   
   # Bereken het totaal voor deze opleiding
@@ -830,6 +830,9 @@ Get_dfPersona <- function(group = NULL) {
       # Voeg de groep variabele toe en bepaal de categorie binnen de groep
       mutate(Groep = group,
              Categorie = !!.group) |>
+      
+      # Mutate leeftijd naar integer
+      mutate(Leeftijd = as.integer(Leeftijd)) |>
       
       # Herorden
       select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
@@ -1001,7 +1004,7 @@ Get_objFairness <- function(explainer, protected_var, privileged, verbose = FALS
   
   ## Bepaal de protected variabele
   .protected <- dfOpleiding_inschrijvingen |> 
-    select(-Uitval) |>
+    select(-Retentie) |>
     select(all_of({{protected_var}})) |>
     pull()
   
@@ -1308,14 +1311,14 @@ Get_Breakdown_titles <- function(bd, df, j,
                                  mode = "group",
                                  debug = FALSE) {
   
-  ## Bepaal de uitvalskans, totalen en de titel/ondertitel
-  nUitval     <- Number_to_readable(as.numeric(bd$cumulative[bd$variable == 'prediction']) * 100, digits = 1)
+  ## Bepaal de retentiekans, totalen en de titel/ondertitel
+  nRetentie   <- Number_to_readable(as.numeric(bd$cumulative[bd$variable == 'prediction']) * 100, digits = 1)
   nSubtotaal  <- Number_to_readable(as.numeric(df[j, 'Subtotaal']))
   nTotaal     <- Number_to_readable(as.numeric(df[j, 'Totaal']))
   nPercentage <- Number_to_readable(as.numeric(df[j, 'Percentage']) * 100, digits = 1)
   
   if(debug) {
-    cli::cli_alert_info(c("nUitval: ",     nUitval))
+    cli::cli_alert_info(c("nRetentie: ",   nRetentie))
     cli::cli_alert_info(c("nSubtotaal: ",  nSubtotaal))
     cli::cli_alert_info(c("nTotaal: ",     nTotaal))
     cli::cli_alert_info(c("nPercentage: ", nPercentage))
@@ -1324,11 +1327,11 @@ Get_Breakdown_titles <- function(bd, df, j,
   # Bouw de titel
   if(mode == "all") {
     student_current_title <- glue(
-      "Opbouw van de kans op uitval ({tolower(student_groep)})"
+      "Opbouw van de kans op retentie ({tolower(student_groep)})"
     )
   } else if(mode == "group") {
     student_current_title <- glue(
-      "Opbouw van de kans op uitval naar {tolower(student_groep)}"
+      "Opbouw van de kans op retentie naar {tolower(student_groep)}"
     )
   }  
   
@@ -1337,7 +1340,7 @@ Get_Breakdown_titles <- function(bd, df, j,
   }
   
   student_current_subtitle <- glue(
-    " | kans op uitval: {nUitval}%"
+    " | kans op retentie: {nRetentie}%"
   )
   
   if(mode == "all") {
@@ -1419,9 +1422,9 @@ Get_Waterfall_plot <- function(df, titles) {
     
     # Vul de kleuren in
     scale_fill_manual(values = c(
-      "Positief" = lColors_default[["sNegative_color"]],
-      "Negatief" = lColors_default[["sPositive_color"]],
-      "X" = lColors_default[["sNegative_color"]]
+      "Positief" = lColors_default[["sPositive_color"]],
+      "Negatief" = lColors_default[["sNegative_color"]],
+      "X" = lColors_default[["sPositive_color"]]
     )) +
     
     # Voeg tekstlabels toe voor de variabelen
@@ -1459,66 +1462,6 @@ Get_Waterfall_plot <- function(df, titles) {
   
 }
 
-## Print breakdownplots (niet meer in gebruik)
-Get_Breakdown_plot <- function(groep) {
-  
-  ## Bepaal het pad
-  plotdir <- Get_Current_opleiding_output_dir(current_opleiding, mode = "plot")
-  
-  ## Laad de dataset voor de huidige persona
-  dfPersona <- lDfPersona[[groep]]
-  
-  ## Bepaal de groep
-  .groep <- tolower(groep)
-  
-  Knit_Header("Naar {.groep}", 3)
-  
-  ## Bepaal of er in de dataset een groep is met minder dan 21 studenten;
-  ## Zo ja, laat die buiten beschouwing en meld dit
-  if (any(dfPersona$Subtotaal < 21)) {
-    
-    lCategorie_te_laag <- dfPersona |>
-      filter(Subtotaal < 21) |>
-      pull(Categorie) |>
-      paste(collapse = ", ")
-    
-    Knit_print_rule(glue("Subtotaal voor {.groep}: {lCategorie_te_laag} is te laag voor een betrouwbare analyse."))
-  }
-  
-  ## Open een panel-tabset
-  Knit_print_rule(glue("::: {.panel-tabset}", 
-                       .open = "{{", 
-                       .close = "}}"))
-  
-  for (j in 1:nrow(dfPersona)) {
-    
-    ## Bepaal de huidige student
-    student_current   <- dfPersona[j, ]
-    student_groep     <- student_current$Groep
-    student_categorie <- levels(student_current[[student_groep]])[j]
-    
-    sPlot <- glue("![]({plotdir}/lf_break_down_{tolower(student_groep)}_{tolower(student_categorie)}.png")
-    Knit_print_rule(sPlot)
-    
-    ## ![](Index_verdieping_factoren_files/figure-html/lf_model_parts-1.png){width=672}
-    ## ![](10. Output/gvs/b-hbo-v-vt/plots/lf_break_down_geslacht_m.png
-    ## ![](10. Output/gvs/b-hbo-v-vt/plots/lf_break_down_distribution_all.png){width=1333}
-    
-  }
-  
-    #knit_print(glue("\n\n\n### Naar {.categorie}\n\n"))
-    # lPlots <<- list.files(
-    #   path = plotdir,
-    #   pattern = glue("^lf_break_down_{.categorie}_(.*).png$"),
-    #   full.names = TRUE
-    # )
-  
-  ##knitr::include_graphics(as.character(lPlots), error = TRUE)
-  
-  ## Sluit de panel-tabset
-  Knit_print_rule(":::")
-  
-}
 
 ## Functie om een Shapley plot te maken
 Get_Shapley_plot <- function(data) {
@@ -1530,8 +1473,8 @@ Get_Shapley_plot <- function(data) {
              alpha = 0.5) +
     geom_boxplot(width = 0.5) +
     theme(legend.position = "none") +
-    scale_fill_manual(values = c("TRUE" = lColors_default[["sNegative_color"]], 
-                                 "FALSE" = lColors_default[["sPositive_color"]])) +
+    scale_fill_manual(values = c("TRUE" = lColors_default[["sPositive_color"]], 
+                                 "FALSE" = lColors_default[["sNegative_color"]])) +
     
     # Bepaal de title en ondertitel
     labs(
@@ -1599,7 +1542,7 @@ Get_Ceteris_paribus_plot <- function(cp_lm_all, name) {
     
     # Pas de labels aan
     labs(title = "Ceteris-paribus profiel",
-         subtitle = glue("Kans op uitval voor de meest voorkomende studenten naar **{tolower(name)}**"),
+         subtitle = glue("Kans op retentie voor de meest voorkomende studenten naar **{tolower(name)}**"),
          y = NULL,
          caption = sCaption) +
     

@@ -1,5 +1,5 @@
 ---
-title: "2. Factoranalyse - `r params$uitval` `r ifelse(params$propedeusediploma == 'Nvt', '', paste0(' - ', params$propedeusediploma))`"
+title: "2. Factoranalyse - `r params$succes` `r ifelse(params$propedeusediploma == 'Nvt', '', paste0(' - ', params$propedeusediploma))`"
 subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
 
 ## Auteur en datum
@@ -10,16 +10,16 @@ date: last-modified
 ltatemplate: 0.9.1.9000
 
 ## Format en output
-output-file: "lta-hhs-tidymodels-uitval-verdieping-factoren.html"
+output-file: "lta-hhs-tidymodels-retentie-verdieping-factoren.html"
 
 ## Parameters        
 params:
   versie: "1.0"
-  uitval: "Uitval na 1 jaar"
-  propedeusediploma: "Zonder P" ## Nvt/Met P/Zonder P
+  succes: "Retentie na 1 jaar"
+  propedeusediploma: "Nvt" ## Nvt/Met P/Zonder P
   
   ## Recreate plots
-  recreateplots: false
+  recreateplots: true
   
   # GVS:HBO-V
   faculteit: "GVS"
@@ -139,13 +139,13 @@ source("_Setup.R")
 ::: {.content-hidden unless-meta="includes.inleiding"}
 # Inleiding
 
-Na de basis-analyse van de data en het bouwen van de prognosemodellen, gaan we in deze verdiepende analyse dieper in op de **factoren** van de modellen. Het doel is beter te begrijpen hoe de factoren precies de uitval verklaren. Deze verdiepende factoranalyse heeft 5 stappen:
+Na de basis-analyse van de data en het bouwen van de prognosemodellen, gaan we in deze verdiepende analyse dieper in op de **factoren** van de modellen. Het doel is beter te begrijpen hoe de factoren precies de retentie verklaren. Deze verdiepende factoranalyse heeft 5 stappen:
 
 1.  We lezen de bewerkte dataset in en de modellen die we in de basis-analyse hebben gemaakt.
 2.  We maken een *explainer* om de modellen beter te begrijpen en te kunnen uitleggen. Dit lichten we later in deze pagina toe.
 3.  We gebruiken het beste model om de prognose te verklaren en te begrijpen. We kijken naar de bijdrage van de variabelen aan de voorspelling en passen het model toe op de meest voorkomende studenten.
 4.  Vervolgens onderzoeken we de stabiliteit van de invloed van de verklarende variabelen met behulp van *Shapley* waarden.
-5.  Tot slot onderzoeken we hoe de uitval er *anders* uit zou kunnen zien als de studenten andere kenmerken zouden hebben met een *ceteris paribus analyse*.
+5.  Tot slot onderzoeken we hoe de retentie er *anders* uit zou kunnen zien als de studenten andere kenmerken zouden hebben met een *ceteris paribus analyse*.
 :::
 
 <!-- Data -->
@@ -156,7 +156,7 @@ Na de basis-analyse van de data en het bouwen van de prognosemodellen, gaan we i
 
 We laden de bewerkte data en prognosemodellen in voor:
 
-**Opleiding**: `r params$faculteit` \| `r params$opleidingsnaam` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sUitval_model`**
+**Opleiding**: `r params$faculteit` \| `r params$opleidingsnaam` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
 ```{r}
 #| label: load_data
@@ -171,9 +171,9 @@ dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE)
 lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
 dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
 
-# Pas de Uitval variabele aan naar numeric (0/1), 
+# Pas de Retentie variabele aan naar numeric (0/1), 
 # zodat er een explainer van gemaakt kan worden
-dfOpleiding_inschrijvingen$Uitval <- as.numeric(dfOpleiding_inschrijvingen$Uitval) - 1
+dfOpleiding_inschrijvingen$Retentie <- as.numeric(dfOpleiding_inschrijvingen$Retentie) - 1
 
 ## Maak een lijst van dfPersonas
 lDfPersona <- list()
@@ -190,7 +190,7 @@ dfPersona_all <- Get_dfPersona()
 
 # Verdiepende analyse van het model
 
-We weten vanuit de basis-analyse welke variabelen van invloed zijn, maar niet hoe en in welke richting ze uitval verklaren: dragen ze sterk bij of juist niet, verhogen of verlagen ze uitval? Om het model beter te begrijpen en te kunnen uitleggen, maken met behulp van het [`Dalex` package](https://dalex.drwhy.ai) een *explainer*.
+We weten vanuit de basis-analyse welke variabelen van invloed zijn, maar niet hoe en in welke richting ze retentie verklaren: dragen ze sterk bij of juist niet, verhogen of verlagen ze retentie? Om het model beter te begrijpen en te kunnen uitleggen, maken met behulp van het [`Dalex` package](https://dalex.drwhy.ai) een *explainer*.
 
 Dalex is onder andere ontwikkeld om uit te kunnen leggen welke verklarende variabelen van belang zijn en wat deze voor een effect hebben in een model. Een explainer is een model-onafhankelijke *wrapper*, geeft inzicht in de voorspellingen van het model en de bijdrage van de variabelen aan de prognose. Een explainer maakt het verder mogelijk om modellen onderling te vergelijken en benchmarken.
 
@@ -231,7 +231,7 @@ workflow <- last_fit |>
 explain_lm <- DALEX::explain(
   model = workflow,
   data = dfOpleiding_inschrijvingen,
-  y = dfOpleiding_inschrijvingen$Uitval,
+  y = dfOpleiding_inschrijvingen$Retentie,
   label = "Linear Regression")
 
 ```
@@ -321,22 +321,22 @@ sIntercept <- Number_to_readable(nIntercept, digits = 1)
 
 ```
 
-### Toelichting op de opbouw van de kans op uitval
+### Toelichting op de opbouw van de kans op retentie
 
-De opbouw van het model bestaat uit een *intercept*, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de basiskans op uitval voor alle studenten. Deze kans is voor de `r params$opleidingsnaam` (`r params$opleiding`) `r params$opleidingsvorm` `r sIntercept`%. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de kans op uitval verhoogt, een negatieve bijdrage betekent dat het de kans op uitval verlaagt.
+De opbouw van het model bestaat uit een *intercept*, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de basiskans op retentie voor alle studenten. Deze kans is voor de `r params$opleidingsnaam` (`r params$opleiding`) `r params$opleidingsvorm` `r sIntercept`%. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de kans op retentie verhoogt, een negatieve bijdrage betekent dat het de kans op retentie verlaagt.
 
-Het kan zijn dat nieuwe variabelen geen invloed meer hebben op de kans. Dit betekent niet per se dat ze niet belangrijk zijn. Het kan zijn dat de invloed die ze hebben op de kans al is 'afgevangen' door variabelen die eerder in het model zijn opgenomen. Een voorbeeld: de variabele `Cijfer_CE_VO_missing = Ja` betekent dat een student geen VO cijfers heeft voor het centraal schriftelijk examen. Dit geldt voor vrijwel alle MBO studenten. Doordat de variabele Cijfer_CE_VO_missing de kans op uitval net wat sterker beïnvloedt, komt `Vooropleiding = MBO` niet meer voor als invloedrijke variabele, maar is dit wel de achterliggende reden dat het cijfer ontbreekt.
+Het kan zijn dat nieuwe variabelen geen invloed meer hebben op de kans. Dit betekent niet per se dat ze niet belangrijk zijn. Het kan zijn dat de invloed die ze hebben op de kans al is 'afgevangen' door variabelen die eerder in het model zijn opgenomen. Een voorbeeld: de variabele `Cijfer_CE_VO_missing = Ja` betekent dat een student geen VO cijfers heeft voor het centraal schriftelijk examen. Dit geldt voor vrijwel alle MBO studenten. Doordat de variabele Cijfer_CE_VO_missing de kans op retentie net wat sterker beïnvloedt, komt `Vooropleiding = MBO` niet meer voor als invloedrijke variabele, maar is dit wel de achterliggende reden dat het cijfer ontbreekt.
 
 Uiteindelijk tellen alle verklarende variabelen op tot een definitieve voorspelling die per persoon verschilt, afhankelijk van hun persoonlijke kenmerken per variabele.
 
 ### De meest voorkomende student (totaal)
 
-We kijken eerst naar de meest voorkomende student in de opleiding. We analyseren de kans op uitval voor deze *fictieve* student en de bijdrage van de variabelen aan die kans. Daarbij tonen we de verdeling van de voorspellingen voor deze student voor alle variabelen en per variabele. Dit laat zien welke variabelen belangrijk zijn, naar welke kant de verdeling neigt en welke spreiding de kansverdeling heeft. Wat betekent dit?
+We kijken eerst naar de meest voorkomende student in de opleiding. We analyseren de kans op retentie voor deze *fictieve* student en de bijdrage van de variabelen aan die kans. Daarbij tonen we de verdeling van de voorspellingen voor deze student voor alle variabelen en per variabele. Dit laat zien welke variabelen belangrijk zijn, naar welke kant de verdeling neigt en welke spreiding de kansverdeling heeft. Wat betekent dit?
 
--   **All data** - De eerste variabele `all data` is eigenlijk geen variabele, maar geeft aan wat alle data samen aan kans op uitval voorspellen. Variabelen die daarna bovenaan staan, wegen het zwaarst in de voorspelling van de kans.
--   **Richting** - Als de verdeling van de kansen naar de rechterkant van de x-as gaat, draagt deze variabele meer bij aan een toename op de kans op uitval; als deze naar de linkerkant beweegt, draagt deze variabele juist bij aan een afname op de kans op uitval.
--   **Spreiding** - Als de spreiding breed is, geeft dit aan dat er binnen deze variabele veel variatie is in de kans op uitval en er voorzichtig mee omgegaan moet worden. Als de spreiding heel smal is, betekent dit dat de variabele weinig of geen invloed heeft op de kans op uitval. Deze variabelen bevinden zich op de intercept.
--   **Vorm** - De vorm achter de variabele (een viool) geeft de verdeling van de kans op uitval weer. Hoe breder de viool, hoe meer studenten op die locatie een kans op uitval hebben.
+-   **All data** - De eerste variabele `all data` is eigenlijk geen variabele, maar geeft aan wat alle data samen aan kans op retentie voorspellen. Variabelen die daarna bovenaan staan, wegen het zwaarst in de voorspelling van de kans.
+-   **Richting** - Als de verdeling van de kansen naar de linkerkant van de x-as gaat, draagt deze variabele meer bij aan een toename op de kans op retentie; als deze naar de rechterkant beweegt, draagt deze variabele juist bij aan een afname op de kans op retentie
+-   **Spreiding** - Als de spreiding breed is, geeft dit aan dat er binnen deze variabele veel variatie is in de kans op retentie en er voorzichtig mee omgegaan moet worden. Als de spreiding heel smal is, betekent dit dat de variabele weinig of geen invloed heeft op de kans op retentie Deze variabelen bevinden zich op de intercept.
+-   **Vorm** - De vorm achter de variabele (een viool) geeft de verdeling van de kans op retentie weer. Hoe breder de viool-vorm, hoe meer studenten op die locatie een kans op retentie hebben.
 
 ```{r}
 #| label: lf_break_down_distribution_all
@@ -436,7 +436,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 ### De meest voorkomende student (per groep)
 
-Nu de algemene opbouw van de kans op uitval bekend is voor de meest voorkomende student, gaan we verder met een analyse van de meest voorkomende studenten *per groep*.
+Nu de algemene opbouw van de kans op retentie bekend is voor de meest voorkomende student, gaan we verder met een analyse van de meest voorkomende studenten *per groep*.
 
 De volgorde van de variabelen is zo gesorteerd dat per groep de meest voorspellende variabelen bovenaan staat. De volgorde verschilt per groep en geeft inzicht in wat er per groep speelt. De variabelen zijn vaak proxies voor onderliggende verschillen.
 
@@ -615,7 +615,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 **Toelichting:**
 
--   De variabelen met blauwe balken *verlagen* de kans op uitval, de variabelen met rode balken *verhogen* de kans op uitval.
+-   De variabelen met blauwe balken *verlagen* de kans op retentie, de variabelen met rode balken *verhogen* de kans op retentie
 -   De boxplot in iedere balk geeft de spreiding van de bijdrage van de variabelen aan de voorspelling weer. Hoe breder de boxplot, des te meer variatie in de bijdrage van de variabele aan de voorspelling.
 -   De positie van de variabele geeft het belang van de variabele aan in de voorspelling. Hoe hoger de variabele, des te belangrijker de variabele is in de voorspelling.
 
@@ -623,11 +623,11 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 ## What-if: een ceteris paribus analyse
 
-Tot slot gaan we een aantal scenario's bekijken (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de kans op uitval eruit zou zien als sommige variabelen net wat anders waren geweest.
+Tot slot gaan we een aantal scenario's bekijken (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de kans op retentie eruit zou zien als sommige variabelen net wat anders waren geweest.
 
-Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde kans op uitval. Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
+Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde kans op retentie Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
 
-*Ter illustratie*: Stel dat de student in dit model net een wat hoger eindexamencijfer zou hebben gehad op de middelbare school, wat zou dan de kans op uitval zijn geweest? Het is waarschijnlijk dat de kans op uitval dan lager zou zijn geweest.
+*Ter illustratie*: Stel dat de student in dit model net een wat hoger eindexamencijfer zou hebben gehad op de middelbare school, wat zou dan de kans op retentie zijn geweest? Het is waarschijnlijk dat de kans op retentie dan hoger zou zijn geweest.
 
 Opnieuw kijken we naar geslacht, vooropleiding en aansluiting. Het kan zijn dat een van de categorieën niet zichtbaar is, dit komt doordat deze dan over elkaar heen vallen.
 
@@ -757,7 +757,7 @@ nCurrent_year   <- as.numeric(format(Sys.Date(), "%Y"))
 
 **Copyright**
 
-Dr. Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool © 2023-`r nCurrent_year` Alle rechten voorbehouden.
+Dr. Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool © 2023-`r nCurrent_year`. Alle rechten voorbehouden.
 :::
 
 <!-- Opschonen -->

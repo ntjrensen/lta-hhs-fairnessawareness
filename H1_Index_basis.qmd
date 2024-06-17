@@ -1,5 +1,5 @@
 ---
-title: "1. Prognosemodel - `r params$uitval` `r ifelse(params$propedeusediploma == 'Nvt', '', paste0(' - ', params$propedeusediploma))`"
+title: "1. Prognosemodel - `r params$succes` `r ifelse(params$propedeusediploma == 'Nvt', '', paste0(' - ', params$propedeusediploma))`"
 subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
 
 ## Auteur en datum
@@ -10,13 +10,13 @@ date: last-modified
 ltatemplate: 0.9.1.9000
 
 ## Format en output
-output-file: "lta-hhs-tidymodels-uitval-basis.html"
+output-file: "lta-hhs-tidymodels-retentie-basis.html"
 
 ## Parameters        
 params:
   versie: "1.0"
-  uitval: "Uitval na 1 jaar"
-  propedeusediploma: "Zonder P" ## Nvt/Met P/Zonder P
+  succes: "Retentie na 1 jaar"
+  propedeusediploma: "Nvt" ## Nvt/Met P/Zonder P
   
   # GVS:HBO-V
   faculteit: "GVS"
@@ -150,7 +150,11 @@ dfModel_results <- data.frame(
 
 ## Het nut van prognosemodellen
 
-Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om de uitval te verminderen of te voorkomen. Voor het lectoraat is het van belang dat we in vervolg hierop kunnen analyseren of er sprake is van bias in de data in relatie tot uitval en er mogelijk sprake is van een gebrek aan kansengelijkheid. Een prognosemodel is dus de opmaat naar een fairness analyse. Zie voor een verdere toelichting het onderzoeksprogramma '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
+Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de retentie van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen.
+
+Het lectoraat Learning Technology & Analytics (LTA) heeft als doel te kunnen analyseren of er sprake is van bias in de data in relatie tot het succes van studenten en er mogelijk sprake is van een gebrek aan kansengelijkheid. Hiervoor zetten we machine learning in. Een prognosemodel is dus niet een doel op zicht, maar het instrument voor een fairness analyse. Zie voor een verdere toelichting het onderzoeksprogramma '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
+
+Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse de retentie als uitkomstvariabele nemen.
 
 ## Toelichting op de methode
 
@@ -158,7 +162,7 @@ Voor de ontwikkeling van prognosemodellen gebruiken we de aanpak van [Tidymodels
 
 ## Toelichting op de data
 
-De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verrijkt door het lectoraat Learning Technology & Analytics. De data bevat informatie over de inschrijvingen van studenten in het eerste jaar van de opleiding:
+De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verrijkt door het lectoraat LTA. De data bevat informatie over de inschrijvingen van studenten in het eerste jaar van de opleiding:
 
 1.  *Demografische kenmerken*: geslacht, leeftijd, reistijd en SES totaalscore.
 2.  *Vooropleidingskenmerken*: toelaatgevende vooropleiding, studiekeuzeprofiel, gemiddeld eindcijfer in de vooropleiding en eventuele deelname aan het Navitas programma.
@@ -166,9 +170,11 @@ De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verr
 
 ## Toelichting op de analyse
 
-We toetsen in deze analyse *`r sUitval_model_text`*, voortaan **Uitval** genoemd.
+We toetsen in deze analyse *`r sSucces_model_text`*, voortaan **Retentie** genoemd.
 
-Uitval is gedefinieerd als het niet meer ingeschreven staan in de opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt niet als uitval.
+Retentie is gedefinieerd als ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt ook als retentie.
+
+Uitval is het tegenovergestelde van retentie: niet ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt *niet* als uitval.
 :::
 
 <!-- Data -->
@@ -179,7 +185,7 @@ Uitval is gedefinieerd als het niet meer ingeschreven staan in de opleiding in e
 
 We laden een subset in van historische data specifiek voor:
 
-**Opleiding**: `r params$faculteit` \| `r params$opleidingsnaam` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sUitval_model`**
+**Opleiding**: `r params$faculteit` \| `r params$opleidingsnaam` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
 ```{r}
 #| label: load_data
@@ -198,14 +204,14 @@ Set_Levels(dfOpleiding_inschrijvingen_base)
 
 dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>  
   
-  ## Maak een eenvoudige Uitval variabele aan
-  Mutate_Uitval(sUitval_model) |>
+  ## Maak een eenvoudige succes variabele aan
+  Mutate_Retentie(sSucces_model) |>
   
-  ## Maak van de uitval variabele een factor
-  mutate(SUC_Uitval = as.factor(SUC_Uitval)) |> 
+  ## Maak van de succes variabele een factor
+  mutate(SUC_Retentie = as.factor(SUC_Retentie)) |> 
 
   ## Verbijzonder eventueel op basis van het propedeusediploma
-  Filter_Propedeusediploma(sPropedeusediploma) |>
+  # Filter_Propedeusediploma(sPropedeusediploma) |>
 
   ## Maak van de Dubbele studie variabele een Ja/Nee variabele
   mutate(INS_Dubbele_studie = ifelse(INS_Aantal_inschrijvingen > 1, "Ja", "Nee")) |>  
@@ -233,7 +239,7 @@ if(opleiding == "HDT") {
 
 ## Selecteer en inspecteer de data
 
-We selecteren eerst de relevante variabelen. We verwijderen daarbij variabelen die maar 1 waarde hebben. We bekijken de variabelen in een samenvatting in relatie tot de Uitval. Daarnaast bekijken we de kwaliteit van de data op missende waarden.
+We selecteren eerst de relevante variabelen. We verwijderen daarbij variabelen die maar 1 waarde hebben. We bekijken de variabelen in een samenvatting in relatie tot retentie. Daarnaast bekijken we de kwaliteit van de data op missende waarden.
 
 ```{r}
 #| label: select_inspect_data
@@ -252,7 +258,7 @@ lSelect <- c(
     "SES_Deelscore_arbeid",
     "SES_Deelscore_welvaart",
     "SES_Totaalscore",
-    "SUC_Uitval",
+    "SUC_Retentie",
     "VOP_Gemiddeld_cijfer_cijferlijst",
     "VOP_Gemiddeld_eindcijfer_VO_van_de_hoogste_vooropleiding_voor_het_HO",
     "VOP_Cijfer_CE1_nederlands",
@@ -289,7 +295,7 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen_base |>
     SES_Arbeid            = SES_Deelscore_arbeid,
     SES_Welvaart          = SES_Deelscore_welvaart,
     SES_Totaal            = SES_Totaalscore,          
-    Uitval                = SUC_Uitval,
+    Retentie              = SUC_Retentie,
     Cijfer_SE_VO          = VOP_Gemiddeld_cijfer_cijferlijst,
     Cijfer_CE_VO          = VOP_Gemiddeld_eindcijfer_VO_van_de_hoogste_vooropleiding_voor_het_HO,
     Cijfer_CE_Nederlands  = VOP_Cijfer_CE1_nederlands,
@@ -336,17 +342,17 @@ dfSummary <- dfOpleiding_inschrijvingen |>
   ## Verwijder kolommen die niet relevant zijn voor de analyse
   select(-c(ID, Collegejaar)) |> 
   
-  ## Pas de labels van Uitval aan van True naar Ja, en van False naar Nee
-  mutate(Uitval = fct_recode(Uitval, "Nee" = "FALSE", "Ja" = "TRUE")) |>
+  ## Pas de labels van Retentie aan van True naar Ja, en van False naar Nee
+  mutate(Retentie = fct_recode(Retentie, "Nee" = "FALSE", "Ja" = "TRUE")) |>
   
   ## Pas de volgorde van de labels van Uitval aan
-  mutate(Uitval = fct_relevel(Uitval, "Ja", "Nee"))
+  mutate(Retentie = fct_relevel(Retentie, "Ja", "Nee"))
 
 ## Toon deze als een samenvattende tabel
 tbl_dfSummary <- dfSummary |> 
   
   tbl_summary(
-    by = Uitval,
+    by = Retentie,
     statistic = list(
       all_continuous() ~ "{mean} ({sd})",
       all_categorical() ~ "{n} ({p}%)"
@@ -358,10 +364,10 @@ tbl_dfSummary <- dfSummary |>
   
   ## Richt de vormgeving van de table in
   modify_header(all_stat_cols() ~ "**{level}**, N={n} ({style_percent(p)}%)") |>
-  modify_spanning_header(c("stat_1", "stat_2") ~ "**Uitval**") |>
+  modify_spanning_header(c("stat_1", "stat_2") ~ "**Retentie**") |>
   modify_header(label = "**Variabele**") |>
   bold_labels() |>
-  modify_caption("**Studentkenmerken versus Uitval**") |>
+  modify_caption("**Studentkenmerken versus Retentie**") |>
   suppressWarnings(add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
         test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE))) |>
   add_overall(last = TRUE, col_label = "**Totaal**, N = {N}")
@@ -381,7 +387,13 @@ diagnose(dfOpleiding_inschrijvingen) |>
   mutate(missing_percent = round(missing_percent, 2),
          unique_rate = round(missing_percent, 2)) |>
   arrange(desc(missing_percent)) |>
-  knitr::kable(caption = "Kwaliteit van de data voor bewerkingen (gesorteerd op missende waarden)")
+  knitr::kable(caption = "Kwaliteit van de data voor bewerkingen (gesorteerd op missende waarden)",
+               col.names = c("Variabelen",
+                           "Type",
+                           "# Missende waarden",
+                           "% Missende waarden",
+                           "# Unieke waarden",
+                           "Ratio unieke waarden"))
 
 ## Verwijder dlookr
 detach("package:dlookr", unload = TRUE)
@@ -392,9 +404,9 @@ detach("package:dlookr", unload = TRUE)
 
 -   Uit de eerste diagnose blijkt dat niet alle variabelen goed genoeg zijn voor het bouwen van een prognosemodel: er zijn missende waarden en niet alle veldtypes zijn geschikt. We passen de variabelen aan zodat we in het model er goed mee kunnen werken.
 -   Prognosemodellen kunnen niet omgaan met missende waarden. Om bias te voorkomen verwijderen we geen rijen met missende waarden, maar vullen die op (*imputatie*). We bewerken de data zo dat alle missende waarden worden opgevuld: bij numerieke waarden met het gemiddelde en bij categorische variabelen met 'Onbekend'.
--   We passen sommige variabelen aan, zodat ze in het model gebruikt kunnen worden: tekstvelden zetten we om naar factor; logische variabelen (Ja/Nee) zetten we om naar een numerieke variabele (1/0).
--   De uitkomstvariabele, `Uitval`, leiden we af van de variabele `SUC_Uitval_aantal_jaar_LTA`. Als de waarde daar 1 is, is de student na 1 jaar uitgevallen, 2 na 2 jaar, etc.
--   Een fictief studentnummer (`INS_Student_UUID_opleiding_vorm`) gebruiken we ook, zodat we - als er afwijkende resultaten zijn - de dataset gericht kunnen onderzoeken indien nodig.
+-   We passen sommige variabelen aan, zodat ze in het model gebruikt kunnen worden: tekstvelden zetten we om naar factor (een categorische variabele); logische variabelen (Ja/Nee) zetten we om naar een numerieke variabele (1/0).
+-   De uitkomstvariabele, `Retentie`, leiden we af van de variabele `SUC_Uitval_aantal_jaar_LTA`. Als de waarde daar 1 is, is de student na 1 jaar uitgevallen, 2 na 2 jaar, etc. Zolang de waarde daar 0 is, is de student niet uitgevallen.
+-   Een fictief studentnummer (`INS_Student_UUID_opleiding_vorm`) gebruiken we, zodat we - als er afwijkende resultaten zijn - de dataset gericht kunnen onderzoeken indien nodig.
 
 ```{r}
 #| label: mutate_data
@@ -420,8 +432,8 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |>
     fct_explicit_na(.x, na_level = "Onbekend")
   ))) |> 
   
-  ## Herschik de kolommen, zodat Uitval vooraan staat
-  select(Uitval, everything()) 
+  ## Herschik de kolommen, zodat Retentie vooraan staat
+  select(Retentie, everything()) 
 
 ## Bekijk de data
 ## glimpse(dfOpleiding_inschrijvingen) 
@@ -433,7 +445,13 @@ suppressMessages(library(dlookr))
 diagnose(dfOpleiding_inschrijvingen) |> 
   mutate(missing_percent = round(missing_percent, 2),
          unique_rate = round(unique_rate, 2)) |>
-  knitr::kable(caption = "Kwaliteit van de data na bewerkingen")
+  knitr::kable(caption = "Kwaliteit van de data na bewerkingen",
+               col.names = c("Variabelen",
+                           "Type",
+                           "# Missende waarden",
+                           "% Missende waarden",
+                           "# Unieke waarden",
+                           "Ratio unieke waarden"))
 
 detach("package:dlookr", unload = TRUE)
 
@@ -463,10 +481,10 @@ dfOpleiding_inschrijvingen |>
 ## Bouw de trainingset, testset en validatieset
 
 -   De data is nu geschikt om een prognosemodel mee te bouwen.
--   Om het model te bouwen, testen en valideren, splitsen we de data in drie delen van 60%, 20% en 20%. We doen dit op zo'n manier, dat elk deel ongeveer een gelijk aantal studenten bevat dat uitvalt.
--   We trainen het model op basis van 60% en testen de modellen tijden het trainen op de overige 20% (de testset).
--   Als het model klaar is, valideren we het op de 20% studenten uit de validatieset, die is opgebouwd uit zo recent mogelijke data. De validatieset blijft dus de gehele tijd ongemoeid, zodat we overfitting - een te goed model op bekende data, maar slechte performance op onbekende data - voorkomen.
--   Een willekeurig, maar vaststaand seedgetal voorkomt dat we bij elke run van het model c.q. deze code een net iets andere uitkomst krijgen.
+-   Om het model te bouwen, testen en valideren, splitsen we de data in drie delen van 60%, 20% en 20%. We doen dit op zo'n manier, dat elk deel ongeveer een gelijk aantal studenten bevat dat doorstudeert (dus niet uitvalt).
+-   We trainen het model op basis van 60% en testen de modellen tijdens het trainen op de overige 20% (de testset).
+-   Als het model klaar is, valideren we het op de 20% studenten uit de validatieset. De validatieset blijft dus de gehele tijd ongemoeid, zodat we overfitting - een te goed model op bekende data, maar slechte performance op onbekende data - voorkomen.
+-   Een willekeurig, maar vaststaand *seed*-getal voorkomt dat we bij elke run van het model c.q. deze code een net iets andere uitkomst krijgen.
 
 ```{r}
 #| label: split_data
@@ -475,28 +493,30 @@ set.seed(0821)
 
 ## Splits de data in 3 delen: 60%, 20% en 20%
 splits      <- initial_validation_split(dfOpleiding_inschrijvingen,
-                                        strata = Uitval,
+                                        strata = Retentie,
                                         prop = c(0.6, 0.2))
 
 ## Maak drie sets: een trainingset, een testset en een validatieset
-dfUitval_train      <- training(splits)
-dfUitval_test       <- testing(splits)
-dfUitval_validation <- validation_set(splits)
+dfRetentie_train      <- training(splits)
+dfRetentie_test       <- testing(splits)
+dfRetentie_validation <- validation_set(splits)
 
 ## Maak een resample set op basis van 10 folds (default)
-dfUitval_resamples  <- vfold_cv(dfUitval_train, strata = Uitval)
+dfRetentie_resamples  <- vfold_cv(dfRetentie_train, strata = Retentie)
 
-## Training set proporties uitval
-dfUitval_train |> 
-  count(Uitval) |> 
+## Training set proporties
+dfRetentie_train |> 
+  count(Retentie) |> 
   mutate(prop = n/sum(n)) |> 
-  knitr::kable(caption = "Trainingsset") 
+  knitr::kable(caption = "Trainingsset",
+               col.names = c("Retentie", "Aantal", "Proportie"))
 
-## Test set proporties uitval
-dfUitval_test  |> 
-  count(Uitval) |> 
+## Test set proporties
+dfRetentie_test  |> 
+  count(Retentie) |> 
   mutate(prop = n/sum(n)) |> 
-  knitr::kable(caption = "Testset") 
+  knitr::kable(caption = "Testset",
+               col.names = c("Retentie", "Aantal", "Proportie")) 
 
 ```
 
@@ -538,7 +558,7 @@ Vervolgens zetten we meerdere stappen in een 'recipe':
 
 ## Bouw de recipe: logistische regressie
 lr_recipe <- 
-  recipe(Uitval ~ ., data = dfUitval_train) |>  
+  recipe(Retentie ~ ., data = dfRetentie_train) |>  
   update_role(ID, new_role = "ID") |>           ## Zet de student ID als ID variabele
   step_rm(ID, Collegejaar) |>                   ## Verwijder ID en collegejaar uit het model
   step_dummy(all_nominal_predictors()) |>       ## Maak dummy variabelen van categorische variabelen
@@ -547,7 +567,12 @@ lr_recipe <-
 
 ## Toon de recipe
 tidy(lr_recipe) |> 
-  knitr::kable()
+  knitr::kable(col.names = c("Nummer", 
+                             "Operatie", 
+                             "Type",
+                             "Getraind",
+                             "Sla over",
+                             "ID"))
 
 ## Toon de variabelen die nog resteren
 model_vars <- lr_recipe |> 
@@ -562,7 +587,7 @@ while (length(model_vars) %% 3 != 0) {
 
 model_vars_matrix <- matrix(model_vars, ncol = 3, byrow = FALSE)
 
-knitr::kable(model_vars_matrix, caption = "Resterende variabelen na preprocessing")
+knitr::kable(model_vars_matrix, caption = "Resterende variabelen na bewerkingen")
 
 
 ```
@@ -599,7 +624,7 @@ lr_reg_grid <- tibble(penalty = 10 ^ seq(-4, -1, length.out = 30))
 ## Train en tune het model: logistische regressie
 lr_res <- 
   lr_workflow |> 
-  tune_grid(dfUitval_validation,
+  tune_grid(dfRetentie_validation,
             grid = lr_reg_grid,
             control = control_grid(save_pred = TRUE),
             metrics = metric_set(roc_auc))
@@ -643,7 +668,7 @@ max_auc_penalty <- lr_res |>
 lr_plot_plus <- lr_plot + 
   geom_vline(xintercept = max_auc_penalty, color = "red")
 
-# Vindt een mean voor de max AUC die hoger is
+# Vind een mean voor de max AUC die hoger is
 max_auc_mean <- lr_res |> 
   collect_metrics() |> 
   filter(mean == max(mean)) |> 
@@ -670,7 +695,13 @@ top_models <-
   arrange(penalty) 
 
 top_models|> 
-  knitr::kable()
+  knitr::kable(col.names = c("Penalty", 
+                             "Metriek", 
+                             "Estimator",
+                             "Gemiddelde",
+                             "Aantal",
+                             "SE",
+                             "Configuratie"))
 
 ```
 
@@ -687,7 +718,13 @@ lr_best <-
 
 lr_best|> 
   mutate(mean = round(mean, 6)) |>
-  knitr::kable()
+  knitr::kable(col.names = c("Penalty", 
+                             "Metriek", 
+                             "Estimator",
+                             "Gemiddelde",
+                             "Aantal",
+                             "SE",
+                             "Configuratie"))
 
 ```
 
@@ -699,7 +736,7 @@ lr_best|>
 lr_auc <- 
   lr_res |> 
   collect_predictions(parameters = lr_best) |> 
-  roc_curve(Uitval, .pred_FALSE) |> 
+  roc_curve(Retentie, .pred_FALSE) |> 
   mutate(model = "Logistisch Regressie")
 
 ## Plot de ROC curve
@@ -709,7 +746,7 @@ Get_ROC_plot(lr_auc, position = 1)
 lr_auc_highest   <-
   lr_res |>
   collect_predictions(parameters = lr_best) |> 
-  roc_auc(Uitval, .pred_FALSE)
+  roc_auc(Retentie, .pred_FALSE)
 
 ## Voeg de naam van het model en de AUC toe dfModel_results
 dfModel_results <- 
@@ -765,12 +802,17 @@ We maken een recipe voor het random forest model. We verwijderen de student ID e
 
 ## Maak de recipe: random forest
 rf_recipe <- 
-  recipe(Uitval ~ ., data = dfUitval_train) |> 
+  recipe(Retentie ~ ., data = dfRetentie_train) |> 
   step_rm(ID, Collegejaar)                      ## Verwijder ID en Collegejaar uit het model
   
 ## Toon de recipe
 tidy(rf_recipe) |> 
-  knitr::kable()
+  knitr::kable(col.names = c("Nummer", 
+                             "Operatie", 
+                             "Type",
+                             "Getraind",
+                             "Sla over",
+                             "ID"))
 ```
 
 ## Maak de workflow
@@ -811,7 +853,7 @@ set.seed(2904)
 ## Bouw het grid: random forest
 rf_res <- 
   rf_workflow |> 
-  tune_grid(dfUitval_validation,
+  tune_grid(dfRetentie_validation,
             grid = 25,
             control = control_grid(save_pred = TRUE),
             metrics = metric_set(roc_auc))
@@ -829,7 +871,14 @@ We evalueren de beste modellen en maken een ROC curve om de performance van het 
 rf_res |> 
   show_best(metric = "roc_auc", n = 15) |> 
   mutate(mean = round(mean, 6)) |>
-  knitr::kable()
+  knitr::kable(col.names = c("Mtry", 
+                             "Min. aantal", 
+                             "Metriek",
+                             "Estimator",
+                             "Gemiddelde",
+                             "Aantal",
+                             "SE",
+                             "Configuratie"))
 
 ## Plot de resultaten
 autoplot(rf_res) +
@@ -854,7 +903,9 @@ rf_best <-
   select_best(metric = "roc_auc")
 
 rf_best|> 
-  knitr::kable()
+  knitr::kable(col.names = c("Mtry", 
+                             "Min. aantal", 
+                             "Configuratie"))
 
 ```
 
@@ -866,13 +917,20 @@ rf_best|>
 rf_res |> 
   collect_predictions() |> 
   head(10) |>
-  knitr::kable()
+  knitr::kable(col.names = c("% Voorsp. FALSE", 
+                             "% Voorsp. TRUE", 
+                             "ID",
+                             "Rij",
+                             "Mtry", 
+                             "Min. aantal", 
+                             "Retentie",
+                             "Configuratie"))
 
 ## Bepaal de AUC/ROC curve
 rf_auc <- 
   rf_res |> 
   collect_predictions(parameters = rf_best) |> 
-  roc_curve(Uitval, .pred_FALSE) |> 
+  roc_curve(Retentie, .pred_FALSE) |> 
   mutate(model = "Random Forest")
 
 ## Plot de ROC curve
@@ -882,7 +940,7 @@ Get_ROC_plot(rf_auc, position = 2)
 rf_auc_highest   <-
   rf_res |>
   collect_predictions(parameters = rf_best) |> 
-  roc_auc(Uitval, .pred_FALSE)
+  roc_auc(Retentie, .pred_FALSE)
 
 ## Voeg de naam van het model en de AUC toe dfModel_results
 dfModel_results <- 
@@ -922,7 +980,7 @@ dfModel_results <- dfModel_results |>
   arrange(number)
 
 ## Bepaal het beste model
-sBest_model <- dfModel_results$model[dfModel_results$best == TRUE]
+sBest_model     <- dfModel_results$model[dfModel_results$best == TRUE]
 sBest_model_auc <- round(dfModel_results$auc[dfModel_results$best == TRUE], 4)
 ```
 
@@ -1067,7 +1125,16 @@ We evalueren het finale model op basis van 3 metrieken (accuraatheid, ROC/AUC en
 last_fit |> 
   collect_metrics() |> 
   mutate(.estimate = round(.estimate, 4)) |>
-  knitr::kable()
+  knitr::kable(col.names = c("Metriek", 
+                             "Estimator",
+                             "Estimate",
+                             "Configuratie"))
+
+```
+
+```{r}
+#| label: last_fit_metrics_vif_plot
+#| code-fold: true
 
 # Extraheer de feature importance
 dfVif <- last_fit |>
@@ -1118,7 +1185,7 @@ Tot slot maken we een ROC curve om de prestaties van het definitieve model te vi
 ## Toon de roc curve
 auc_lf <- last_fit |> 
   collect_predictions() |> 
-  roc_curve(Uitval, .pred_FALSE) |> 
+  roc_curve(Retentie, .pred_FALSE) |> 
   mutate(model = "Last fit")
 
 Get_ROC_plot(auc_lf, position = 3)
@@ -1134,21 +1201,21 @@ Get_ROC_plot(auc_lf, position = 3)
 #| label: conclusions_accuracy
 #| code-fold: false
 
-## Bepaal de accuraatheid van het model, het gemiddelde uitvalpercentage en het base-model
+## Bepaal de accuraatheid van het model, het gemiddelde retentiepercentage en het base-model
 Last_fit_Accuracy   <- last_fit |>
   collect_metrics() |>
   filter(.metric == "accuracy") |>
   pull(.estimate) |>
   round(4) * 100
-Avg_Uitval          <- round(mean(dfOpleiding_inschrijvingen$Uitval == TRUE) * 100, 2) 
-Base_Model_Accuracy <- round(100 - Avg_Uitval, 2)
+Avg_Retentie        <- round(mean(dfOpleiding_inschrijvingen$Retentie == TRUE) * 100, 2) 
+Base_Model_Accuracy <- round(100 - Avg_Retentie, 2)
 
-if(Avg_Uitval < 50) {
-  Base_Model_Accuracy <- round(100 - Avg_Uitval, 2)
-  sUitval <- "die niet uitviel"
+if(Avg_Retentie < 50) {
+  Base_Model_Accuracy <- round(100 - Avg_Retentie, 2)
+  sRetentie <- "die niet doorstudeerde"
 } else {
-  Base_Model_Accuracy <- Avg_Uitval
-  sUitval <- "die uitviel"
+  Base_Model_Accuracy <- Avg_Retentie
+  sRetentie <- "die doorstudeerde"
 }
 
 ## Bereken nu het verschil in accuraatheid
@@ -1233,14 +1300,14 @@ if(!("Eindcijfer_VO" %in% dfTop_vif$Variable[1:3])
    & "Eindcijfer_VO" %in% dfTop_vif$Variable[4:5]) {
   sConclusie_text <- glue::glue(
     sConclusie_text,
-    "**Het model toont wel aan dat de herkomst van studenten sterker is gecorreleerd met {tolower(sUitval_model)} dan eerdere prestaties of vooropleiding.** ",
+    "**Het model toont wel aan dat de herkomst van studenten sterker is gecorreleerd met {tolower(sSucces_model)} dan eerdere prestaties of vooropleiding.** ",
     "De _Variable Importance Factor_ (VIF) laat namelijk zien dat de variabelen {lTop3_vif} de 3 belangrijkste variabelen zijn voor het voorspellen van {tolower(sUitval_model)}, gevolgd door {lTop45_vif}."
   )
 } else if ("Eindcijfer_VO" %in% dfTop_vif$Variable[1:3]) {
   sConclusie_text <- glue::glue(
     sConclusie_text,
-    "**Het model toont aan dat eerdere prestaties van studenten sterker zijn gecorreleerd met {tolower(sUitval_model)} dan herkomst.** ",
-    "De _Variable Importance Factor_ (VIF) laat namelijk zien dat de variabelen {lTop3_vif} de 3 belangrijkste variabelen zijn voor het voorspellen van {tolower(sUitval_model)}, gevolgd door {lTop45_vif}."
+    "**Het model toont aan dat eerdere prestaties van studenten sterker zijn gecorreleerd met {tolower(sSucces_model)} dan herkomst.** ",
+    "De _Variable Importance Factor_ (VIF) laat namelijk zien dat de variabelen {lTop3_vif} de 3 belangrijkste variabelen zijn voor het voorspellen van {tolower(sSucces_model)}, gevolgd door {lTop45_vif}."
   )
 } else {
   sConclusie_text <- "**Vooralsnog geen nadere bijzonderheden.**"
@@ -1252,16 +1319,16 @@ if(!("Eindcijfer_VO" %in% dfTop_vif$Variable[1:3])
 
 **Het beste prognosemodel blijkt het `r sBest_model` model te zijn.**
 
--   Van de prognosemodellen die we hebben ontwikkeld om `r tolower(sUitval_model)` te voorspellen, had het `r sBest_model` model de hoogste AUC/ROC waarde (`r sBest_model_auc`).
+-   Van de prognosemodellen die we hebben ontwikkeld om `r tolower(sSucces_model)` te voorspellen, had het `r sBest_model` model de hoogste AUC/ROC waarde (`r sBest_model_auc`).
 
 ## Mate van accuraatheid en lift
 
-Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde op accuraatheid toe te voegen. Het base-model neemt de grootste klasse van de gemiddelde `r tolower(sUitval_model)` van de afgelopen jaren als basis. Stel we zouden tegen alle studenten zeggen dat ze hun studie gaan halen, dan is de mate van accuratesse gelijk aan dit base-model. Dit base-model is dus altijd hoger dan de 50% lijn van de AUC/ROC curve, tenzij het base-model toevallig precies 50% is.
+Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde op accuraatheid toe te voegen. Het base-model neemt de grootste klasse van de gemiddelde `r tolower(sSucces_model)` van de afgelopen jaren als basis. Stel we zouden tegen alle studenten zeggen dat ze hun studie gaan halen, dan is de mate van accuratesse gelijk aan dit base-model. Dit base-model is dus altijd hoger dan de 50% lijn van de AUC/ROC curve, tenzij het base-model toevallig precies 50% is.
 
 **De mate van accuraatheid van de toepassing van het model is `r sAccuracy_niveau` (`r Last_fit_Accuracy`%).**
 
--   **Base-model: `r Base_Model_Accuracy`%** -- Voor deze opleiding bereken we het base-model als volgt. Van alle studenten viel `r Avg_Uitval`% uit. De grootste klasse (en de accuratesse) van het base-model is daarmee (100% - `r Avg_Uitval`% = ) `r Base_Model_Accuracy`% `r sUitval`.
--   **Accuratesse prognose: `r Last_fit_Accuracy`%** -- Het model voorspelt `r sUitval_model` met een accuratesse van `r Last_fit_Accuracy`%.
+-   **Base-model: `r Base_Model_Accuracy`%** -- Voor deze opleiding bereken we het base-model als volgt. Van alle studenten studeerde `r Avg_Retentie`% door. De grootste klasse (en de accuratesse) van het base-model is daarmee (100% - `r Avg_Retentie`% = ) `r Base_Model_Accuracy`% `r sRetentie`.
+-   **Accuratesse prognose: `r Last_fit_Accuracy`%** -- Het model voorspelt `r sSucces_model` met een accuratesse van `r Last_fit_Accuracy`%.
 -   **Lift: `r pAccuracy_verschil`** -- Het model scoort in de huidige opbouw met een verschil van `r pAccuracy_verschil` (de *lift*) `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van het base-model (`r Base_Model_Accuracy`%).
 
 ## Confusion Matrix
@@ -1272,12 +1339,12 @@ Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde o
 ## Bepaal de confusion matrix
 confusion_matrix <- last_fit |>
   collect_predictions() |>
-  conf_mat(truth = Uitval, estimate = .pred_class) 
+  conf_mat(truth = Retentie, estimate = .pred_class) 
 
 dfConf_matrix <- as_tibble(confusion_matrix$table) |>
   rename(Werkelijkheid = Truth) |>
-  mutate(Werkelijkheid = ifelse(Werkelijkheid == "TRUE", "Uitval", "Geen uitval"),
-         Prediction = ifelse(Prediction == "TRUE", "Uitval", "Geen uitval"))
+  mutate(Werkelijkheid = ifelse(Werkelijkheid == "TRUE", "Retentie", "Geen retentie"),
+         Prediction = ifelse(Prediction == "TRUE", "Retentie", "Geen retentie"))
 
 pTP <- Number_to_readable((dfConf_matrix$n[1]/sum(dfConf_matrix$n)*100),1)
 pFP <- Number_to_readable((dfConf_matrix$n[3]/sum(dfConf_matrix$n)*100),1)
@@ -1288,7 +1355,7 @@ pACC <- Number_to_readable(Last_fit_Accuracy,1)
 
 ```
 
-De prestaties van het model kunnen we verder uitdrukken in een *confusion matrix*. Hierin zien we de voorspellingen van het model en de werkelijke uitkomsten. De matrix geeft inzicht in de mate van correcte en incorrecte voorspellingen. De accuraatheid van het model berekenen we door het aandeel goed voorspelde uitkosten, Uitval = Uitval (*True Positive*) en Geen uitval = Geen uitval (*True Negative*), af te zetten tegen het totaal aantal voorspellingen: `r pTP`% + `r pTN`% = `r pACC`%.
+De prestaties van het model kunnen we verder uitdrukken in een *confusion matrix*. Hierin zien we de voorspellingen van het model en de werkelijke uitkomsten. De matrix geeft inzicht in de mate van correcte en incorrecte voorspellingen. De accuraatheid van het model berekenen we door het aandeel goed voorspelde uitkomsten, Retentie = Retentie (*True Positive*) en Geen retentie = Geen retentie (*True Negative*), af te zetten tegen het totaal aantal voorspellingen: `r pTP`% + `r pTN`% = `r pACC`%.
 
 ```{r}
 #| label: confusion_matrix_plot
@@ -1320,9 +1387,9 @@ plot_confusion_matrix(dfConf_matrix,
 
 ## Uitleggen of verklaren?
 
-Naast de accuraatheid van het model is het ook belangrijk om te weten welke factoren het meest bijdragen aan de voorspelling van `r tolower(sUitval_model)`. Daarin gaat de vergelijking met de prestaties van het basemodel mank. Dat model geeft op geen enkele manier aan waarom een student een kans op succes of uitval heeft, anders dan - 'dit is gebruikelijk in deze opleiding'.
+Naast de accuraatheid van het model is het ook belangrijk om te weten welke factoren het meest bijdragen aan de voorspelling van `r tolower(sSucces_model)`. Daarin gaat de vergelijking met de prestaties van het basemodel mank. Dat model geeft op geen enkele manier aan waarom een student een kans op succes heeft, anders dan - 'dit is gebruikelijk in deze opleiding'.
 
-Ongeacht de mate van accuraatheid, is het voor ons onderzoek naar kansengelijkheid essentieel om te weten welke factoren het meest bijdragen aan de voorspelling van `r tolower(sUitval_model)`. Het gaat erom dat we het belang van de factoren in de voorspellingen kunnen begrijpen en duiden. Machine Learning is hiervoor uitstekend geschikt, omdat het de mogelijkheid biedt om de belangrijkste factoren en hun invloed te leren kennen [@Shmueli.2010; @Shmueli.2011].
+Ongeacht de mate van accuraatheid, is het voor ons onderzoek naar kansengelijkheid essentieel om te weten welke factoren het meest bijdragen aan de voorspelling van `r tolower(sSucces_model)`. Het gaat erom dat we het belang van de factoren in de voorspellingen kunnen begrijpen en duiden. Machine Learning is hiervoor uitstekend geschikt, omdat het de mogelijkheid biedt om de belangrijkste factoren en hun invloed te leren kennen [@Shmueli.2010; @Shmueli.2011].
 
 ## Factoren
 
@@ -1334,12 +1401,12 @@ Ongeacht de mate van accuraatheid, is het voor ons onderzoek naar kansengelijkhe
 ::: {.content-hidden unless-meta="includes.nextsteps"}
 # Vervolgstappen: Factoranalyse
 
-De volgende stap (stap 2) is een verdiepende analyse van de mate waarin de **factoren** die we gevonden hebben van invloed zijn op `r sUitval_model`. We kijken naar de rangorde, of ze `r sUitval` verhogen of juist verlagen en hoe stabiel de factoren zijn als we in andere volgordes aan het model toevoegen. Om het concreet te maken zullen we het model toepassen op een aantal fictieve studenten, die we opbouwen uit de meeste voorkomende waarden in deze opleiding. Dit is het onderwerp van analyse 2: de Factoranalyse.
+De volgende stap (stap 2) is een verdiepende analyse van de mate waarin de **factoren** die we gevonden hebben van invloed zijn op `r sSucces_model`. We kijken naar de rangorde, of ze `r sRetentie` verhogen of juist verlagen en hoe stabiel de factoren zijn als we in andere volgordes aan het model toevoegen. Om het concreet te maken zullen we het model toepassen op een aantal fictieve studenten, die we opbouwen uit de meeste voorkomende waarden in deze opleiding. Dit is het onderwerp van analyse 2: de Factoranalyse.
 :::
 
 <!-- Referenties -->
 
-# References {.unnumbered}
+# Literatuur {.unnumbered}
 
 ::: {#refs}
 :::
@@ -1369,7 +1436,7 @@ nCurrent_year   <- as.numeric(format(Sys.Date(), "%Y"))
 
 **Copyright**
 
-Dr. Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool © 2023-`r nCurrent_year` Alle rechten voorbehouden.
+Dr. Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool © 2023-`r nCurrent_year`. Alle rechten voorbehouden.
 :::
 
 <!-- Opschonen -->
@@ -1381,9 +1448,9 @@ Dr. Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool
 rm(
   dfOpleiding_inschrijvingen,
   dfSummary,
-  dfUitval_test,
-  dfUitval_train,
-  dfUitval_validation,
+  dfRetentie_test,
+  dfRetentie_train,
+  dfRetentie_validation,
   splits
   )
 
