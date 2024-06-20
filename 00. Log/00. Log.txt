@@ -29,7 +29,7 @@
       Linear Regression passes 0/5 metrics
       Total loss :  17.90476 
   
-  [ ] Plaatjes per groep hoger maken als er meer variabelen zijn (h2)
+  [x] Plaatjes per groep hoger maken als er meer variabelen zijn (h2)
 
 [ ] Overige analyses
   [ ] Partial Dependence plots: https://ema.drwhy.ai/partialDependenceProfiles.html
