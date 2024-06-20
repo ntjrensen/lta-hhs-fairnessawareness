@@ -22,12 +22,12 @@ params:
   recreateplots: true
   
   # GVS:HBO-V
-  faculteit: "GVS"
-  opleidingsnaam: "B Opleiding tot Verpleegkundige"
-  opleiding: "HBO-V"
-  opleidingsvorm: "voltijd"
-  opleidingsvorm_afkorting: "VT"
-  selectie: false
+  # faculteit: "GVS"
+  # opleidingsnaam: "B Opleiding tot Verpleegkundige"
+  # opleiding: "HBO-V"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
   
   ## GVS:MT
   # faculteit: "GVS"
@@ -54,12 +54,12 @@ params:
   # selectie: false
   
   ## SWE:SW
-  # faculteit: "SWE"
-  # opleidingsnaam: "B Social Work"
-  # opleiding: "SW"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: true
+  faculteit: "SWE"
+  opleidingsnaam: "B Social Work"
+  opleiding: "SW"
+  opleidingsvorm: "voltijd"
+  opleidingsvorm_afkorting: "VT"
+  selectie: true
   
   ## TIS:IPO
   # faculteit: "TIS"
@@ -236,9 +236,18 @@ explain_lm <- DALEX::explain(
 
 ```
 
-## Toets de Root Mean Square Error
+## Toets de Root Mean Square Error na permutaties
 
-De eerste analyse is de Root Mean Square Error (RMSE) van de voorspellingen van het model. De meeste voorspellende factoren en hun RMSE zijn:
+De eerste analyse is de Root Mean Square Error (RMSE) na permutaties. 
+-   De **RMSE(()) is een maatstaf voor de gemiddelde afwijking van de voorspellingen van een model ten opzichte van de werkelijke waarden. Het wordt berekend als de wortel van de gemiddelde kwadratische fout. 
+-   **RMSE na permutaties** wil zeggen dat de RMSE is berekend na het herhaaldelijk willekeurig herschikken (permuteren) van de variabelen in de dataset en daarmee de voorspellingen. Deze techniek passen we toe om de robuustheid en betrouwbaarheid van het model te evalueren. 
+
+**Waarom RMSE na permutaties?**
+
+-   **Modelvalidatie**: Door de variabelen te permuteren en de RMSE te berekenen, kunnen we de prestatie van het model vergelijken met een willekeurige schatting. Een model dat significant beter presteert dan het gemiddelde RMSE na permutaties heeft waarschijnlijk voorspellende kracht.
+-   **Overfit detectie**: Als de RMSE van het originele model niet veel beter is dan het RMSE na permutaties, kan dit een indicatie zijn dat het model overfit is op de trainingsdata en niet goed generaliseert naar nieuwe data.
+	
+De meeste voorspellende factoren en hun RMSE zijn:
 
 ```{r}
 #| label: lf_model_parts
@@ -615,7 +624,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 **Toelichting:**
 
--   De variabelen met blauwe balken *verlagen* de kans op retentie, de variabelen met rode balken *verhogen* de kans op retentie
+-   De variabelen met blauwe balken *verhogen* de kans op retentie, de variabelen met rode balken *verlagen* de kans op retentie
 -   De boxplot in iedere balk geeft de spreiding van de bijdrage van de variabelen aan de voorspelling weer. Hoe breder de boxplot, des te meer variatie in de bijdrage van de variabele aan de voorspelling.
 -   De positie van de variabele geeft het belang van de variabele aan in de voorspelling. Hoe hoger de variabele, des te belangrijker de variabele is in de voorspelling.
 

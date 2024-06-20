@@ -19,12 +19,12 @@ params:
   propedeusediploma: "Nvt" ## Nvt/Met P/Zonder P
   
   # GVS:HBO-V
-  faculteit: "GVS"
-  opleidingsnaam: "B Opleiding tot Verpleegkundige"
-  opleiding: "HBO-V"
-  opleidingsvorm: "voltijd"
-  opleidingsvorm_afkorting: "VT"
-  selectie: false
+  # faculteit: "GVS"
+  # opleidingsnaam: "B Opleiding tot Verpleegkundige"
+  # opleiding: "HBO-V"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
   
   ## GVS:MT
   # faculteit: "GVS"
@@ -51,12 +51,12 @@ params:
   # selectie: false
   
   ## SWE:SW
-  # faculteit: "SWE"
-  # opleidingsnaam: "B Social Work"
-  # opleiding: "SW"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: true
+  faculteit: "SWE"
+  opleidingsnaam: "B Social Work"
+  opleiding: "SW"
+  opleidingsvorm: "voltijd"
+  opleidingsvorm_afkorting: "VT"
+  selectie: true
   
   ## TIS:IPO
   # faculteit: "TIS"
@@ -156,6 +156,14 @@ Het lectoraat Learning Technology & Analytics (LTA) heeft als doel te kunnen ana
 
 Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse de retentie als uitkomstvariabele nemen.
 
+::: {.callout-warning}
+## Disclaimer
+
+De modellen die we in deze analyses ontwikkelen zijn bedoeld om de dynamiek in het studiesucces van studenten een opleiding beter te begrijpen om kansengelijkheid en te bevorderen. 
+
+**Deze modellen mogen op geen enkele wijze gebruikt worden om individuele studenten te beoordelen of hun succes te voorspellen.** 
+:::
+
 ## Toelichting op de methode
 
 Voor de ontwikkeling van prognosemodellen gebruiken we de aanpak van [Tidymodels](https://www.tidymodels.org/). Tidymodels is een framework voor het bouwen van een prognosemodel. Hiermee verzekeren we ons van een systematische, herhaalbare en schaalbare aanpak voor het bouwen van prognosemodellen.
@@ -175,6 +183,7 @@ We toetsen in deze analyse *`r sSucces_model_text`*, voortaan **Retentie** genoe
 Retentie is gedefinieerd als ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt ook als retentie.
 
 Uitval is het tegenovergestelde van retentie: niet ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt *niet* als uitval.
+
 :::
 
 <!-- Data -->
@@ -368,8 +377,15 @@ tbl_dfSummary <- dfSummary |>
   modify_header(label = "**Variabele**") |>
   bold_labels() |>
   modify_caption("**Studentkenmerken versus Retentie**") |>
-  suppressWarnings(add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
-        test.args = all_tests("fisher.test") ~ list(simulate.p.value = TRUE))) |>
+  add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
+        test.args = list(
+          all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
+          all_tests("wilcox.test") ~ list(exact = FALSE)
+        )) |> 
+  add_significance_stars(
+      hide_p = FALSE,
+      pattern = "{p.value}{stars}"
+    ) |>
   add_overall(last = TRUE, col_label = "**Totaal**, N = {N}")
 
 tbl_dfSummary
@@ -478,13 +494,16 @@ dfOpleiding_inschrijvingen |>
     diag = FALSE)
 ```
 
-## Bouw de trainingset, testset en validatieset
+## Bouw de trainingset, validatieset en testset
 
 -   De data is nu geschikt om een prognosemodel mee te bouwen.
 -   Om het model te bouwen, testen en valideren, splitsen we de data in drie delen van 60%, 20% en 20%. We doen dit op zo'n manier, dat elk deel ongeveer een gelijk aantal studenten bevat dat doorstudeert (dus niet uitvalt).
--   We trainen het model op basis van 60% en testen de modellen tijdens het trainen op de overige 20% (de testset).
--   Als het model klaar is, valideren we het op de 20% studenten uit de validatieset. De validatieset blijft dus de gehele tijd ongemoeid, zodat we overfitting - een te goed model op bekende data, maar slechte performance op onbekende data - voorkomen.
+-   We trainen het model op basis van 60% en valideren de modellen tijdens het trainen op de overige 20% (de validatieset).
+-   De verdeling van de training- en validatieset muteren we 10x (10 *folds*) om te voorkomen dat het model te veel leert van de trainingset en daardoor slecht presteert op de validatieset.
+-   Als het model klaar is, testen we het op de 20% studenten uit de testset. De testset blijft dus de gehele tijd ongemoeid, zodat we overfitting - een te goed model op bekende data, maar slechte presetaties (*performance*) op onbekende data - voorkomen.
 -   Een willekeurig, maar vaststaand *seed*-getal voorkomt dat we bij elke run van het model c.q. deze code een net iets andere uitkomst krijgen.
+
+![](01.%20Includes/img/voorspelmodel-dataset-lta-hhs.png){width=80% fig-align="center"}
 
 ```{r}
 #| label: split_data
@@ -503,20 +522,30 @@ dfRetentie_validation <- validation_set(splits)
 
 ## Maak een resample set op basis van 10 folds (default)
 dfRetentie_resamples  <- vfold_cv(dfRetentie_train, strata = Retentie)
+```
+
+```{r, echo=FALSE}
+#| label: split_data_tbl
 
 ## Training set proporties
-dfRetentie_train |> 
+dfRetentie_train_prop <- dfRetentie_train |> 
   count(Retentie) |> 
-  mutate(prop = n/sum(n)) |> 
-  knitr::kable(caption = "Trainingsset",
-               col.names = c("Retentie", "Aantal", "Proportie"))
+  mutate(Naam = "Trainingset",
+         prop = n/sum(n)) 
 
 ## Test set proporties
-dfRetentie_test  |> 
+dfRetentie_test_prop <- dfRetentie_test  |> 
   count(Retentie) |> 
-  mutate(prop = n/sum(n)) |> 
-  knitr::kable(caption = "Testset",
-               col.names = c("Retentie", "Aantal", "Proportie")) 
+  mutate(Naam = "Testset",
+         prop = n/sum(n)) 
+
+## Combineer de training- en validatieset om te tonen in een tabel
+bind_rows(dfRetentie_train_prop,
+          dfRetentie_test_prop) |> 
+  mutate(prop = scales::percent(prop, accuracy = 0.1)) |>
+  select(Naam, Retentie, n, prop) |> 
+  knitr::kable(caption = "Verhouding training- en testset",
+               col.names = c("Naam", "Retentie", "Aantal", "Proportie"))
 
 ```
 
@@ -530,7 +559,7 @@ dfRetentie_test  |>
 
 ## Maak het model
 
-We bouwen eerst het model.
+Eerst bouwen we het model.
 
 ```{r}
 #| label: lr_mod
@@ -546,7 +575,8 @@ lr_mod <-
 
 Vervolgens zetten we meerdere stappen in een 'recipe':
 
--   We verwijderen de student ID en het collegejaar uit de data, omdat deze niet moet worden gebruikt in het model.
+-   We definiëren de student-ID als ID variabele. Daarmee krijgt deze variabele de rol van uniek rij-kenmerk.
+-   We verwijderen vervolgens de oorspronkelijke student-ID en het collegejaar uit de data, omdat deze verder niet gebruikt moeten worden in het model.
 -   We converteren factoren naar dummy variabelen.
 -   We verwijderen variabelen die geen waarde toevoegen: variabelen met enkel nullen.
 -   We transformeren numerieke variabelen om ze met elkaar te kunnen vergelijken door ze te centreren en schalen.
@@ -573,6 +603,12 @@ tidy(lr_recipe) |>
                              "Getraind",
                              "Sla over",
                              "ID"))
+```
+
+De variabelen die nu nog resteren zijn:
+
+```{r, echo=FALSE}
+#| label: lr_recipe_tbl
 
 ## Toon de variabelen die nog resteren
 model_vars <- lr_recipe |> 
@@ -588,7 +624,6 @@ while (length(model_vars) %% 3 != 0) {
 model_vars_matrix <- matrix(model_vars, ncol = 3, byrow = FALSE)
 
 knitr::kable(model_vars_matrix, caption = "Resterende variabelen na bewerkingen")
-
 
 ```
 
@@ -917,6 +952,8 @@ rf_best|>
 rf_res |> 
   collect_predictions() |> 
   head(10) |>
+  mutate(.pred_FALSE = scales::percent(.pred_FALSE, accuracy = 0.1),
+         .pred_TRUE = scales::percent(.pred_TRUE, accuracy = 0.1)) |>
   knitr::kable(col.names = c("% Voorsp. FALSE", 
                              "% Voorsp. TRUE", 
                              "ID",
@@ -1115,7 +1152,7 @@ saveRDS(dfOpleiding_inschrijvingen, file = sData_outputpath)
 
 ## Evalueer het finale model: metrieken en vif
 
-We evalueren het finale model op basis van 3 metrieken (accuraatheid, ROC/AUC en de [Brier score](https://en.wikipedia.org/wiki/Brier_score) = de Mean Squared Error) en de Variable Importance Factor (VIF). Uit de VIF is op te maken welke variabelen het meest bijdragen aan de voorspelling van de uitkomstvariabele.
+We evalueren het finale model op basis van 4 metrieken: 1) accuraatheid, 2) ROC/AUC en 3) de [Brier score](https://en.wikipedia.org/wiki/Brier_score) (de Mean Squared Error) en 4) de Variable Importance Factor (VIF). Uit de VIF is op te maken welke variabelen het meest bijdragen aan de voorspelling van de uitkomstvariabele.
 
 ```{r}
 #| label: last_fit_metrics_vif
@@ -1176,7 +1213,7 @@ print(importance_plot)
 
 ## Plot de ROC curve
 
-Tot slot maken we een ROC curve om de prestaties van het definitieve model te visualiseren. De Sensitivity (True Positive Rate) en Specificity (True Negative Rate) worden hierin uitgezet. De Area under the ROC Curve (AUC/ROC) geeft de prestaties van het model weer. Het model scoort beter naarmate de AUC/ROC dichter bij de 1 ligt (in de linkerbovenhoek). Een AUC/ROC van 0,5 betekent dat het model niet beter presteert dan een willekeurige voorspelling.
+Tot slot maken we een ROC curve om de prestaties van het definitieve model te visualiseren. De Sensitivity (True Positive Rate) en Specificity (True Negative Rate) worden hierin uitgezet. De Area under the ROC Curve (AUC/ROC) geeft de prestaties van het model weer. Het model scoort beter naarmate de AUC/ROC dichter bij de 1 ligt, de linker bovenhoek. De linker bovenhoek houdt in dat alle prognoses exact overeenstemmen met de werkelijkheid. Een AUC/ROC van 0,5 betekent dat het model niet beter presteert dan een willekeurige voorspelling.
 
 ```{r}
 #| label: last_fit_roc
@@ -1344,18 +1381,22 @@ confusion_matrix <- last_fit |>
 dfConf_matrix <- as_tibble(confusion_matrix$table) |>
   rename(Werkelijkheid = Truth) |>
   mutate(Werkelijkheid = ifelse(Werkelijkheid == "TRUE", "Retentie", "Geen retentie"),
-         Prediction = ifelse(Prediction == "TRUE", "Retentie", "Geen retentie"))
+         Prediction    = ifelse(Prediction == "TRUE", "Retentie", "Geen retentie"))
 
-pTP <- Number_to_readable((dfConf_matrix$n[1]/sum(dfConf_matrix$n)*100),1)
-pFP <- Number_to_readable((dfConf_matrix$n[3]/sum(dfConf_matrix$n)*100),1)
-pTN <- Number_to_readable((dfConf_matrix$n[2]/sum(dfConf_matrix$n)*100),1)
-pFN <- Number_to_readable((dfConf_matrix$n[4]/sum(dfConf_matrix$n)*100),1)
+pTP <- Number_to_readable((dfConf_matrix$n[4]/sum(dfConf_matrix$n)*100),1)
+pFP <- Number_to_readable((dfConf_matrix$n[2]/sum(dfConf_matrix$n)*100),1)
+pTN <- Number_to_readable((dfConf_matrix$n[1]/sum(dfConf_matrix$n)*100),1)
+pFN <- Number_to_readable((dfConf_matrix$n[3]/sum(dfConf_matrix$n)*100),1)
 pACC <- Number_to_readable(Last_fit_Accuracy,1)
 
 
 ```
 
-De prestaties van het model kunnen we verder uitdrukken in een *confusion matrix*. Hierin zien we de voorspellingen van het model en de werkelijke uitkomsten. De matrix geeft inzicht in de mate van correcte en incorrecte voorspellingen. De accuraatheid van het model berekenen we door het aandeel goed voorspelde uitkomsten, Retentie = Retentie (*True Positive*) en Geen retentie = Geen retentie (*True Negative*), af te zetten tegen het totaal aantal voorspellingen: `r pTP`% + `r pTN`% = `r pACC`%.
+De prestaties van het model kunnen we verder uitdrukken in een *confusion matrix*. Hierin zien we de voorspellingen van het model en de werkelijke uitkomsten. De matrix geeft inzicht in de mate van correcte en incorrecte voorspellingen. Ter illustratie werken we de matrix uit voor een voorspelling waarop een bindend studieadvies (BSA) gebaseerd zou kunnen zijn.
+
+![](01.%20Includes/img/confustion-matrix-retention-lta-hhs.png)
+
+We passen de confusion matrix nu toe op het model dat als beste naar voren kwam. De **accuraatheid** van dit model is **`r pACC`%**. De accuraatheid van het model berekenen we door de som van de diagonaal te berekenen: het aandeel goed voorspelde uitkomsten, Retentie = Retentie (*True Positive*) en Geen retentie = Geen retentie (*True Negative*), af te zetten tegen het totaal aantal voorspellingen: `r pTP`% + `r pTN`% = `r pACC`%. (NB. De weergave in deze confusion matrix is diagonaal gespiegeld vergeleken met het voorbeeld.)
 
 ```{r}
 #| label: confusion_matrix_plot
@@ -1374,8 +1415,8 @@ plot_confusion_matrix(dfConf_matrix,
                       )) +
   ## Pas de labels aan
   labs(title = "Confusion Matrix",
-       x = "Werkelijkheid",
-       y = "Voorspelling",
+       x = "Werkelijke uitkost",
+       y = "Voorspelde uitkomst",
        caption = sCaption) +
   
   Set_LTA_Theme() +
@@ -1391,9 +1432,9 @@ Naast de accuraatheid van het model is het ook belangrijk om te weten welke fact
 
 Ongeacht de mate van accuraatheid, is het voor ons onderzoek naar kansengelijkheid essentieel om te weten welke factoren het meest bijdragen aan de voorspelling van `r tolower(sSucces_model)`. Het gaat erom dat we het belang van de factoren in de voorspellingen kunnen begrijpen en duiden. Machine Learning is hiervoor uitstekend geschikt, omdat het de mogelijkheid biedt om de belangrijkste factoren en hun invloed te leren kennen [@Shmueli.2010; @Shmueli.2011].
 
-## Factoren
+<!-- ## Factoren -->
 
--   `r sConclusie_text`
+<!-- -   `r sConclusie_text` -->
 :::
 
 <!-- Next steps -->

@@ -5,6 +5,16 @@ editor: visual
 
 # execute:
 #  keep-md: true
+
+website:
+  navbar:
+    tools:
+      - icon: github
+        menu:
+          - text: Source Code
+            href:  https://code.com
+          - text: Report a Bug
+            href:  https://bugs.com
   
 ## Citaties
 link-citations: true
@@ -50,3 +60,5 @@ format:
         href: https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics
       - text: "Over het onderzoeksprogramma 'No Fairness without Awareness'"
         href: https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness
+      - text: "Github repository"
+        href: https://github.com/LTA-HHs/lta-hhs-tidymodels-uitval

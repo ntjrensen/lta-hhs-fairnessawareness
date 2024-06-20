@@ -20,42 +20,18 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-[x] Pagina 1
-  [x] Kopjes van tabellen aanpassen
-  [x] preprocessing > NL term
-[ ] Pagina 2
-
 [ ] Fairness analyse
   [ ] Basisartikel: https://cran.r-project.org/web/packages/fairmodels/vignettes/Basic_tutorial.html
-  [ ] Teksten:
-      [x] Moet niet de hele dataset omgekeerd gemaakt worden? > kans op retentie
-        [x] Pagina 1
-        [ ] Pagina 2
-        [ ] Pagina 3
-      [x] Uitleg verder aanvullen met een CF matrix
-      [ ] Met voorbeelden vanuit het onderwijs
+  [ ] Teksten: voorbeelden vanuit het onderwijs
+     
   [ ] Goed printen:
       Fairness check for models: Linear Regression 
       Linear Regression passes 0/5 metrics
       Total loss :  17.90476 
-  [ ] Opmaak verbeteren:
-      [x] kopjes naar links
-      [x] kleuren aanpassen
-      [ ] hoogte van de afbeelding > met ggsave etc.
-      [ ] achtergrond voor cutoff is niet goed (+ .2 ipv .3)
-  [x] Omzetten naar een functie
-  [x] Foutmeldingen wegwerken
-      Warning in print.fairness_object(fobject) :
-      Omiting NA for models: Linear Regression
-      Information about passed metrics may be inaccurate due to NA present, 
-      it is advisable to check metric_scores plot.
-  [ ] Warning: Removed 8 rows containing missing values or values 
-      outside the scale range (`geom_bar()`).
   
+  [ ] Plaatjes per groep hoger maken als er meer variabelen zijn (h2)
 
 [ ] Overige analyses
-  [x] Shapley values: https://ema.drwhy.ai/shapley.html
-  [x] Ceteris Paribus: https://ema.drwhy.ai/ceterisParibus.html
   [ ] Partial Dependence plots: https://ema.drwhy.ai/partialDependenceProfiles.html
   [ ] Modellen - interactie-effecten toevoegen?
       Bepalen of er interacties zijn tussen de factoren obv [Partial Dependence Plots](http
@@ -83,7 +59,7 @@
   [ ] Diplomarendement
   [x] Uitval met en zonder prop
     [x] SUC_P_aantal_jaar
-  [ ] Aan het begin een klein staatje van het aantal uitval per jaar.
+  [ ] Aan het begin een klein staatje van het aantal retentie per jaar.
   [ ] Een workflow set uitproberen:
     [ ] https://workflowsets.tidymodels.org/
     
@@ -95,6 +71,53 @@
 ## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[-] metric
+  ## Pas een deel van de data aan
+  # fobject$fairness_check_data <- fobject$fairness_check_data |> 
+  #   mutate(metric = case_when(
+  #     metric == "Accuracy equality ratio    (TP + TN)/(TP + FP + TN + FN)" ~ "Accuracy Equality Ratio",
+  #     metric == "Predictive parity ratio     TP/(TP + FP)" ~ "Predictive Parity Ratio",
+  #     metric == "Predictive equality ratio   FP/(FP + TN)" ~ "Predictive Equality Ratio",
+  #     metric == "Equal opportunity ratio     TP/(TP + FN)" ~ "Equal Opportunity Ratio",
+  #     metric == "Statistical parity ratio   (TP + FP)/(TP + FP + TN + FN)" ~ "Statistical Parity Ratio",
+  #     .default = metric
+  #   ))
+
+[x] Analyses
+  [x] Shapley values: https://ema.drwhy.ai/shapley.html
+  [x] Ceteris Paribus: https://ema.drwhy.ai/ceterisParibus.html
+  
+
+[x] Teksten
+  [x] Moet niet de hele dataset omgekeerd gemaakt worden? > kans op retentie
+        [x] Pagina 1
+        [x] Pagina 2
+        [x] Pagina 3
+      [x] Uitleg verder aanvullen met een CF matrix
+      [x] Disclaimer toevoegen
+
+[x] Opmaak
+      [x] als https://www.dehaagsehogeschool.nl/over-de-haagse/werken-bij-de-haagse/de-haagse-als-werkgever
+[x] Opmaak verbeteren:
+    [x] kopjes naar links
+    [x] kleuren aanpassen
+    [x] hoogte van de afbeelding > met ggsave etc.
+    [-] achtergrond voor cutoff is niet goed (+ .2 ipv .3)
+[x] Omzetten naar een functie
+[x] Foutmeldingen wegwerken
+    Warning in print.fairness_object(fobject) :
+    Omiting NA for models: Linear Regression
+    Information about passed metrics may be inaccurate due to NA present, 
+    it is advisable to check metric_scores plot.
+[x] Warning: Removed 8 rows containing missing values or values 
+    outside the scale range (`geom_bar()`).
+[x] If a bar reaches the red field, it means that for this metric model is exceeding the (epsilon, 1/epsilon) range. In this case the DecisionTreeClassifier has one NaN. In this case appropriate message is given (it can be disabled with verbose=False). >> https://dalex.drwhy.ai/python-dalex-fairness.html
+[x] Pagina 1
+  [x] Kopjes van tabellen aanpassen
+  [x] preprocessing > NL term
+[ ] Pagina 2
+  [ ] Kopjes van tabellen aanpassen
+  [ ] preprocessing > NL term
 [x] Plots
   [x] Opmaak van alle plots in LTA format brengen
 

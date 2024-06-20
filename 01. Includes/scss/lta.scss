@@ -5,10 +5,16 @@ $hhs-color-blue: #00B2CD;
 /*-- scss:rules --*/
 h1 {
   color: $hhs-color-green;
+  font-family: Aktiv Grotesk,sans-serif;
 }
 
 h2#toc-title, .quarto-other-links h2 {
   color: $hhs-color-green;
+  font-family: GT Walsheim, Aktiv Grotesk, sans-serif;
+}
+
+h2, h3, h4, h5, h6 {
+  font-family: GT Walsheim, Aktiv Grotesk, sans-serif;
 }
 
 #quarto-margin-sidebar {
