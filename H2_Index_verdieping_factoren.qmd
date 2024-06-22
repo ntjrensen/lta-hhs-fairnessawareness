@@ -45,21 +45,29 @@ params:
   # opleidingsvorm_afkorting: "VT"
   # selectie: true
   
-  ## FDR:ORM DT
-  # faculteit: "FDR"
+  ## BRV:ORM DT
+  # faculteit: "BRV"
   # opleidingsnaam: "B Ondernemerschap Retail Management"
   # opleiding: "ORM"
   # opleidingsvorm: "deeltijd"
   # opleidingsvorm_afkorting: "DT"
   # selectie: false
   
+  ## BRV:ORM DT
+  faculteit: "BRV"
+  opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
+  opleiding: "BO"
+  opleidingsvorm: "duaal"
+  opleidingsvorm_afkorting: "DU"
+  selectie: false
+  
   ## SWE:SW
-  faculteit: "SWE"
-  opleidingsnaam: "B Social Work"
-  opleiding: "SW"
-  opleidingsvorm: "voltijd"
-  opleidingsvorm_afkorting: "VT"
-  selectie: true
+  # faculteit: "SWE"
+  # opleidingsnaam: "B Social Work"
+  # opleiding: "SW"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: true
   
   ## TIS:IPO
   # faculteit: "TIS"
@@ -162,9 +170,9 @@ We laden de bewerkte data en prognosemodellen in voor:
 #| label: load_data
 
 ## Bepaal de paden
-sData_outputpath         <- Get_Model_outputpath(mode = "data")
-sFittedmodels_outputpath <- Get_Model_outputpath(mode = "last-fits")
-sModelresults_outputpath <- Get_Model_outputpath(mode = "modelresults")
+sData_outputpath           <- Get_Model_outputpath(mode = "data")
+sFittedmodels_outputpath   <- Get_Model_outputpath(mode = "last-fits")
+sModelresults_outputpath   <- Get_Model_outputpath(mode = "modelresults")
 
 ## Laad de data voor de opleiding: data, last fits en model results
 dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE)
@@ -634,7 +642,12 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 ## What-if: een ceteris paribus analyse
 
-Tot slot gaan we een aantal scenario's bekijken (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de kans op retentie eruit zou zien als sommige variabelen net wat anders waren geweest.
+Tot slot gaan we een aantal scenario's bekijken (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de kans op retentie eruit zou zien als telkens een van de variabelen net wat anders was geweest. 
+
+:::{.callout-warning appearance='default' icon=true}
+## Let op!
+Dit is de invloed van de variabelen bij de unieke combinatie van deze meest voorkomende student per categorie. Zie voor de invloed van een variabelen ongeacht de combinatie de Partial Dependence Profielen.
+:::
 
 Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde kans op retentie Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
 

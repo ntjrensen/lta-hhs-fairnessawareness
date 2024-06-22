@@ -20,16 +20,11 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[ ] html wegschrijven naar separate report folder
+
 [ ] Fairness analyse
   [ ] Basisartikel: https://cran.r-project.org/web/packages/fairmodels/vignettes/Basic_tutorial.html
   [ ] Teksten: voorbeelden vanuit het onderwijs
-     
-  [ ] Goed printen:
-      Fairness check for models: Linear Regression 
-      Linear Regression passes 0/5 metrics
-      Total loss :  17.90476 
-  
-  [x] Plaatjes per groep hoger maken als er meer variabelen zijn (h2)
 
 [ ] Overige analyses
   [ ] Partial Dependence plots: https://ema.drwhy.ai/partialDependenceProfiles.html
@@ -52,8 +47,8 @@
       [ ] te weinig observaties ondervangen
         [ ] voeg per opleiding het aantal eerstejaars toe en unieke collegejaren.
         [ ] als dit te weinig observaties of jaren zijn, dan next
-  [ ] SWE model - Basis
-      [ ] Factoranalyse voor RF werkend krijgen
+  [x] SWE model - Basis
+      [x] Factoranalyse voor RF werkend krijgen
 
 [ ] Modellen
   [ ] Diplomarendement
@@ -70,6 +65,15 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[-] violinplot oid voor ceteris paribus
+[x] Printen     
+  [x] Goed printen:
+      Fairness check for models: Linear Regression 
+      Linear Regression passes 0/5 metrics
+      Total loss :  17.90476 
+  
+  [x] Plaatjes per groep hoger maken als er meer variabelen zijn (h2)
 
 [-] metric
   ## Pas een deel van de data aan

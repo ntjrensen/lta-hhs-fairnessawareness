@@ -42,21 +42,29 @@ params:
   # opleidingsvorm_afkorting: "VT"
   # selectie: true
   
-  ## FDR:ORM DT
-  # faculteit: "FDR"
+  ## BRV:ORM DT
+  # faculteit: "BRV"
   # opleidingsnaam: "B Ondernemerschap Retail Management"
   # opleiding: "ORM"
   # opleidingsvorm: "deeltijd"
   # opleidingsvorm_afkorting: "DT"
   # selectie: false
   
+  ## BRV:ORM DT
+  faculteit: "BRV"
+  opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
+  opleiding: "BO"
+  opleidingsvorm: "duaal"
+  opleidingsvorm_afkorting: "DU"
+  selectie: false
+  
   ## SWE:SW
-  faculteit: "SWE"
-  opleidingsnaam: "B Social Work"
-  opleiding: "SW"
-  opleidingsvorm: "voltijd"
-  opleidingsvorm_afkorting: "VT"
-  selectie: true
+  # faculteit: "SWE"
+  # opleidingsnaam: "B Social Work"
+  # opleiding: "SW"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: true
   
   ## TIS:IPO
   # faculteit: "TIS"
@@ -156,7 +164,7 @@ Het lectoraat Learning Technology & Analytics (LTA) heeft als doel te kunnen ana
 
 Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse de retentie als uitkomstvariabele nemen.
 
-::: {.callout-warning}
+::: {.callout-warning appearance='default' icon=true}
 ## Disclaimer
 
 De modellen die we in deze analyses ontwikkelen zijn bedoeld om de dynamiek in het studiesucces van studenten een opleiding beter te begrijpen om kansengelijkheid en te bevorderen. 
@@ -358,35 +366,8 @@ dfSummary <- dfOpleiding_inschrijvingen |>
   mutate(Retentie = fct_relevel(Retentie, "Ja", "Nee"))
 
 ## Toon deze als een samenvattende tabel
-tbl_dfSummary <- dfSummary |> 
-  
-  tbl_summary(
-    by = Retentie,
-    statistic = list(
-      all_continuous() ~ "{mean} ({sd})",
-      all_categorical() ~ "{n} ({p}%)"
-    ),
-    digits = all_continuous() ~ 2, 
-    missing = "no",
-    percent = "row"
-  ) |> 
-  
-  ## Richt de vormgeving van de table in
-  modify_header(all_stat_cols() ~ "**{level}**, N={n} ({style_percent(p)}%)") |>
-  modify_spanning_header(c("stat_1", "stat_2") ~ "**Retentie**") |>
-  modify_header(label = "**Variabele**") |>
-  bold_labels() |>
-  modify_caption("**Studentkenmerken versus Retentie**") |>
-  add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
-        test.args = list(
-          all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
-          all_tests("wilcox.test") ~ list(exact = FALSE)
-        )) |> 
-  add_significance_stars(
-      hide_p = FALSE,
-      pattern = "{p.value}{stars}"
-    ) |>
-  add_overall(last = TRUE, col_label = "**Totaal**, N = {N}")
+
+tbl_dfSummary <- Get_tblSummary(dfSummary)
 
 tbl_dfSummary
   

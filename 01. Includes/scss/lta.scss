@@ -1,6 +1,11 @@
 /*-- scss:defaults --*/
-$hhs-color-green: #9EA700;
-$hhs-color-blue: #00B2CD;
+$hhs-color-green:      #9EA700;
+$hhs-color-blue:       #00B2CD;
+$metrics-color-red:    #C8133B;
+$metrics-color-green:  #287233;
+$metrics-color-blue:   #5FA2CE;
+$metrics-color-yellow: #FFD966;
+$metrics-color-orange: #FFA500;
 
 /*-- scss:rules --*/
 h1 {
@@ -27,4 +32,24 @@ h2, h3, h4, h5, h6 {
 
 #TOC {
   margin: 50px 0 0 0;
+}
+
+.metrics-red {
+  color: $metrics-color-red;
+}
+
+.metrics-green {
+  color: $metrics-color-green;
+}
+
+.metrics-blue {
+  color: $metrics-color-blue;
+}
+
+.metrics-orange {
+  color: $metrics-color-orange;
+}
+
+.example {
+  color: $hhs-color-blue;
 }

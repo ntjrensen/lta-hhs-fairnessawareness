@@ -60,6 +60,7 @@ if(bSetup_executed == F) {
   ## 1.2 ltabase package in (installeer indien nodig) ####
   
   source("99. Functies & Libraries/Inladen_ltabase.R")
+  source("99. Functies & Libraries/Fairness_functies.R")
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
@@ -79,6 +80,8 @@ if(bSetup_executed == F) {
   library(performance)  # voor performance metingen op lr modellen
   #library(dlookr)      # om data te inspecteren > geeft conflicten vanwege showtext_auto()
   library(gtsummary)    # voor beschrijvende summary tabellen
+  library(gt)           # voor tabellen
+  library(gtExtras)     # voor sparklines
   library(cli)          # voor cli teksten
   library(glue)         # voor string interpolatie
   library(probably)     # voor probabilistische modellen
@@ -110,6 +113,8 @@ if(bSetup_executed == F) {
   library(sysfonts)     # voor fonts
   
   library(fairmodels)   # voor fairness in modellen
+  
+  library(quartostamp)  # voor extra quarto 
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.5 Fonts ####
@@ -209,7 +214,8 @@ if(bSetup_executed == F) {
 
   lResearch_settings <- list()
   lResearch_settings[["sResearch_path"]] <- "Kansengelijkheid"
-  lResearch_settings[["sDataset"]] <- Get_sDataset(dfOpleiding_inschrijvingen_base)
+  lResearch_settings[["sDataset"]]       <- Get_sDataset(dfOpleiding_inschrijvingen_base)
+  lResearch_settings[["sOpleiding"]]     <- Get_sOpleiding()
 
   lMetadata <- Get_Metadata()
 

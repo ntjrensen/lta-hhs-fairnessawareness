@@ -1626,6 +1626,28 @@
       ],
       "Hash": "03009c105dfae79460b8eb9d8cf791e4"
     },
+    "gtExtras": {
+      "Package": "gtExtras",
+      "Version": "0.5.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "cli",
+        "commonmark",
+        "dplyr",
+        "fontawesome",
+        "ggplot2",
+        "glue",
+        "gt",
+        "htmltools",
+        "knitr",
+        "paletteer",
+        "rlang",
+        "scales"
+      ],
+      "Hash": "654cdd2db0d2d1c2ab4ae8ee8af63168"
+    },
     "gtable": {
       "Package": "gtable",
       "Version": "0.3.5",
@@ -2508,6 +2530,20 @@
       ],
       "Hash": "d1cb0a04921876e321420588e9a5aa91"
     },
+    "paletteer": {
+      "Package": "paletteer",
+      "Version": "1.6.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "prismatic",
+        "rematch2",
+        "rlang",
+        "rstudioapi"
+      ],
+      "Hash": "ac364dee7ff8277fb4144fcc1e26302f"
+    },
     "pan": {
       "Package": "pan",
       "Version": "1.9",
@@ -2739,6 +2775,19 @@
       ],
       "Hash": "6b01fc98b1e86c4f705ce9dcfd2f57c7"
     },
+    "prismatic": {
+      "Package": "prismatic",
+      "Version": "1.1.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "farver",
+        "grDevices",
+        "graphics"
+      ],
+      "Hash": "51967d2e55a523791ae22832e86209ae"
+    },
     "probably": {
       "Package": "probably",
       "Version": "1.0.3",
@@ -2915,6 +2964,23 @@
         "yaml"
       ],
       "Hash": "c94c271f9b998d116186a78b2a9b23c1"
+    },
+    "quartostamp": {
+      "Package": "quartostamp",
+      "Version": "0.1.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "quartostamp",
+      "RemoteUsername": "matt-dray",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "a38fee14b64e46e2ed2be94725c3b7a6100042bf",
+      "Requirements": [
+        "cli",
+        "clipr",
+        "rstudioapi"
+      ],
+      "Hash": "77a22133b0cacdced35c36da832a7cae"
     },
     "questionr": {
       "Package": "questionr",

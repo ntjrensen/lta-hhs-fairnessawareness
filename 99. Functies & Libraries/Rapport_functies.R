@@ -117,6 +117,20 @@ Show_Current_opleiding_vars <- function(){
   ))
 }
 
+## Functie om de huidige opleidingsnaam te bepalen
+Get_sOpleiding <- function() {
+  
+  if(!exists("current_opleiding")){
+    cli::cli_abort("current_opleiding is niet gedefinieerd")
+  }
+  
+  return(paste0(current_opleiding$INS_Opleidingsnaam_huidig, 
+                " (", 
+                current_opleiding$INS_Opleiding, ") ", 
+                current_opleiding$INS_Opleidingsvorm))
+  
+}
+
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 2. PAD FUNCTIES ####
@@ -532,6 +546,76 @@ Get_Opleidingsvorm_lang <- function(opleidingsvorm) {
   } else {
     return("onbekend")
   }
+}
+
+## Functie om een samenvattende tabel te maken
+Get_tblSummary <- function(df) {
+  
+  dfSummary <- df |> 
+    
+    tbl_summary(
+      by = Retentie,
+      statistic = list(
+        all_continuous() ~ "{mean} ({sd})",
+        all_categorical() ~ "{n} ({p}%)"
+      ),
+      digits = all_continuous() ~ 2, 
+      missing = "no",
+      percent = "row"
+    ) |> 
+    
+    ## Richt de vormgeving van de table in
+    modify_header(all_stat_cols() ~ "**{level}**, N={n} ({style_percent(p)}%)") |>
+    modify_spanning_header(c("stat_1", "stat_2") ~ "**Retentie**") |>
+    modify_header(label = "**Variabele**") |>
+    bold_labels() |>
+    modify_caption("**Studentkenmerken versus Retentie**") |>
+    add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
+          test.args = list(
+            all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
+            all_tests("wilcox.test") ~ list(exact = FALSE)
+          )) |> 
+    add_significance_stars(
+      hide_p = FALSE,
+      pattern = "{p.value}{stars}"
+    ) |>
+    add_overall(last = TRUE, col_label = "**Totaal**, N = {N}")
+  
+  return(dfSummary)
+  
+}
+
+## Functie om een sparkline tabel te maken
+Get_tblSparklines <- function(df, group = "Geslacht", var = "Leeftijd") {
+  
+  .group <- as.name(group)
+  .var   <- as.name(var)
+  
+  dfSparkline <- df |> 
+    
+    dplyr::group_by(!!.group) |>
+    
+    dplyr::summarize(
+      mean = mean(!!.var),
+      sd = sd(!!.var),
+      # must end up with list of data for each row in the input dataframe
+      var_data = list(!!.var),
+      .groups = "drop"
+    )
+  
+  tblSparkline <- dfSparkline |>
+    arrange(desc(!!.group)) |>
+    gt() |>
+    gtExtras::gt_plt_dist(
+      var_data,
+      type = "density",
+      line_color = lColors_default[["sGridline_color"]],
+      fill_color = lColors_default[["sMetric_blue"]]
+    ) |>
+    fmt_number(columns = mean:sd, decimals = 1) 
+  
+  return(tblSparkline)
+  
 }
 
 ## Functie om de tekst te bepalen voor het model (in de titel)
@@ -1116,7 +1200,13 @@ lColors_default <- c(
   
   ## Positief en negatief
   sPositive_color        = "#466F9D",
-  sNegative_color        = "#C8133B"
+  sNegative_color        = "#C8133B",
+  
+  ## Metrics
+  sMetrics_green         = "#287233",
+  sMetrics_red           = "#C8133B",
+  sMetrics_yellow        = "#FFD966",
+  sMetrics_blue          = "#5FA2CE"
 )
 
 lColors_geslacht <- c(
@@ -1257,6 +1347,7 @@ Get_sCaption <- function() {
     paste(
       lMetadata[["sDataset"]],
       lResearch_settings[["sResearch_path"]],
+      lResearch_settings[["sOpleiding"]],
       sep = ", "
     ),
     ". \U00A9 ",
@@ -1697,6 +1788,7 @@ Get_Metadata <- function() {
     "sInstelling"    = "De HHs",
     "sBron"          = "De HHs, IR & Analytics",
     "sDataset"       = lResearch_settings[["sDataset"]],
+    "sOpleiding"     = lResearch_settings[["sOpleiding"]],
     "sAnalyse"       = "De HHs, Lectoraat Learning Technology & Analytics"
   )
   
