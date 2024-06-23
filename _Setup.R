@@ -125,14 +125,19 @@ if(bSetup_executed == F) {
   ## 1.6 Laad extra functies ####
 
   source("99. Functies & Libraries/Rapport_functies.R")
+  
+  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  ## 1.7 Kleuren ####
+  
+  source("01. Includes/Include_Colors.R")
 
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.7 Bepaal de voorkeur voor de thema's ####
+  ## 1.8 Bepaal de voorkeur voor de thema's ####
 
   Set_LTA_Theme()
 
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.8 Tidymodels ####
+  ## 1.9 Tidymodels ####
 
   ## Geef de voorkeur bij conflicten aan het tidymodels package
   tidymodels_prefer(quiet = TRUE)
@@ -179,16 +184,16 @@ if(bSetup_executed == F) {
   sSucces_model <- params$succes
   sPropedeusediploma <- params$propedeusediploma
 
-  sSucces_model_text <- Get_Succes_model_text(sPropedeusediploma, sSucces_model)
+  sSucces_model_text <- Get_Succes_Model_Text(sPropedeusediploma, sSucces_model)
 
   ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
-  current_opleiding <- Get_Current_opleiding(
+  current_opleiding <- Get_Current_Opleiding(
     opleiding = params$opleiding,
     opleidingsvorm = params$opleidingsvorm_afkorting
   )
 
   ## Bepaal op basis hiervan afgeleide variabelen
-  Set_Current_opleiding_vars(current_opleiding, debug = T)
+  Set_Current_Opleiding_Vars(current_opleiding, debug = T)
 
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -22,15 +22,20 @@
 
 [ ] html wegschrijven naar separate report folder
 
-[ ] Fairness analyse
-  [ ] Basisartikel: https://cran.r-project.org/web/packages/fairmodels/vignettes/Basic_tutorial.html
-  [ ] Teksten: voorbeelden vanuit het onderwijs
+[ ] Normalisatie
+  [x] Namen van functies consistent maken
+  [ ] Functies aanvullen voor repeterende code
+  [x] Colors naar settings overzetten
+  [x] _lm vervangen door _lf
 
-[ ] Overige analyses
-  [ ] Partial Dependence plots: https://ema.drwhy.ai/partialDependenceProfiles.html
-  [ ] Modellen - interactie-effecten toevoegen?
-      Bepalen of er interacties zijn tussen de factoren obv [Partial Dependence Plots](http
-      ://christophm.github.io/interpretable-ml-book/pdp.html) te maken.
+[ ] Fairness analyse
+  [/] Basisartikel: https://cran.r-project.org/web/packages/fairmodels/vignettes/Basic_tutorial.html
+    [/] 1.3.2 plot density
+      [x] Standaard density plot met verdeling
+      [x] Waarom geen density bij vooropleiding?
+      [ ] Ook alle studenten?
+      [x] Naam van model aan de rechterzijde weghalen
+  [x] Teksten: voorbeelden vanuit het onderwijs
 
 [ ] Plots
   [ ] gam model uitproberen
@@ -43,7 +48,7 @@
 
 [ ] Andere opleidingen proberen
   [ ] ORM_DT
-      [select_inspect_data]    
+      [ ] select_inspect_data   
       [ ] te weinig observaties ondervangen
         [ ] voeg per opleiding het aantal eerstejaars toe en unieke collegejaren.
         [ ] als dit te weinig observaties of jaren zijn, dan next
@@ -59,12 +64,21 @@
     [ ] https://workflowsets.tidymodels.org/
     
 [ ] Teksten
-  [ ] Beste model fits zoals op https://rpubs.com/mikek25/tidymodels_churn
+  [x] Beste model fits zoals op https://rpubs.com/mikek25/tidymodels_churn
   [ ] Teksten voor conclusies herzien
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[x] Overige analyses
+  [x] Partial Dependence plots: https://ema.drwhy.ai/partialDependenceProfiles.html
+    [x] Analyse en afbeeldingen maken
+    [x] Sortering van de levels
+    [x] Dit ook controleren bij CP analyses
+  [-] Modellen - interactie-effecten toevoegen?
+      Bepalen of er interacties zijn tussen de factoren obv [Partial Dependence Plots](http
+      ://christophm.github.io/interpretable-ml-book/pdp.html) te maken.
 
 [-] violinplot oid voor ceteris paribus
 [x] Printen     

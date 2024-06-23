@@ -147,13 +147,13 @@ source("_Setup.R")
 ::: {.content-hidden unless-meta="includes.inleiding"}
 # Inleiding
 
-Na de factoranalyse van de data gaan we nu in op het onderwerp van bias en kansengelijkheid. Het doel is beter te begrijpen of er studenten zijn met minder kans op succes en of dit disproportioneel is. Dit kan duiden op kansenongelijkheid.
+Na de factoranalyse van de data gaan we nu in op de onderwerpen bias, fairness en kansengelijkheid. Het doel is beter te begrijpen of er studenten zijn met minder kans op succes en of dit disproportioneel is. Dit kan duiden op kansenongelijkheid.
 
 De analyse van kansengelijkheid heeft de volgende stappen:
 
 1.  We lezen de bewerkte dataset weer in en de modellen die we in de basis-analyse hebben gemaakt.
 2.  We maken weer een *explainer* om de modellen beter te begrijpen en te kunnen uitleggen.
-3.  Vervolgens berekenen we of er *bias* bestaat voor verschillende groepen studenten en of er mogelijk sprake is van kansenongelijkheid.
+3.  Vervolgens berekenen we of er *bias* bestaat voor verschillende groepen studenten naar geslacht, vooropleiding en vorm van aansluiting. We analyseren daarvooor de verdeling van kansen en mate van fairness in het voorspelmodel dat we hebben ontwikkeld.
 :::
 
 <!-- Data -->
@@ -162,7 +162,7 @@ De analyse van kansengelijkheid heeft de volgende stappen:
 
 ## Laad de data
 
-We laden de bewerkte data en prognosemodellen in voor:
+We laden de bewerkte data en het beste prognosemodel in voor:
 
 **Opleiding**: `r params$faculteit` \| `r params$opleidingsnaam` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
@@ -170,9 +170,9 @@ We laden de bewerkte data en prognosemodellen in voor:
 #| label: load_data
 
 ## Bepaal de paden
-sData_outputpath         <- Get_Model_outputpath(mode = "data")
-sFittedmodels_outputpath <- Get_Model_outputpath(mode = "last-fits")
-sModelresults_outputpath <- Get_Model_outputpath(mode = "modelresults")
+sData_outputpath         <- Get_Model_Outputpath(mode = "data")
+sFittedmodels_outputpath <- Get_Model_Outputpath(mode = "last-fits")
+sModelresults_outputpath <- Get_Model_Outputpath(mode = "modelresults")
 
 ## Laad de data voor de opleiding: data, last fits en model results
 dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE)
@@ -198,7 +198,7 @@ dfPersona_all <- Get_dfPersona()
 
 ## Maak een explainer
 
-We maken weer gebruik van de explainer van `Dalex`.
+We maken weer gebruik van de explainer van `DALEX`.
 
 ```{r, include = FALSE}
 #| label: fitted_model
@@ -230,7 +230,7 @@ workflow <- last_fit |>
   extract_workflow()
 
 # Maak een explainer
-explain_lm <- DALEXtra::explain_tidymodels(
+explain_lf <- DALEXtra::explain_tidymodels(
   model = workflow,
   data = dfOpleiding_inschrijvingen |> select(-Retentie),
   y = dfOpleiding_inschrijvingen |> pull(Retentie),
@@ -241,13 +241,16 @@ explain_lm <- DALEXtra::explain_tidymodels(
 
 ```
 
+
+  
+
 <!-- Kansengelijkheid -->
 
 # Analyse van kansengelijkheid
 
 Tot slot onderzoeken we kansengelijkheid door te kijken naar bias in de data. Dit wordt ook wel een *fairness analyse* genoemd. Het leidende werk voor fairness analyses is [*Fairness and Machine Learning: Limitations and Opportunities*](https://fairmlbook.org/pdf/fairmlbook.pdf) [@Barocas.2023]. De methode die we in dit deel van de analyse hanteren is op dit gedachtengoed gebaseerd.
 
-We onderzoeken of er bias bestaat voor verschillende groepen studenten als mogelijk teken van kansenongelijkheid. Ook hiervoor maken we gebruik van de `Dalex` explainer en onderzoeken de invloed van de variabelen op de kans op retentie voor verschillende groepen studenten naar geslacht, vooropleiding en aansluiting.
+We onderzoeken of er bias bestaat voor verschillende groepen studenten als mogelijk teken van kansenongelijkheid. Ook hiervoor maken we gebruik van de `DALEX` explainer en onderzoeken de invloed van de variabelen op de kans op retentie voor verschillende groepen studenten naar geslacht, vooropleiding en aansluiting.
 
 De volgende **definities** zijn van belang:
 
@@ -285,7 +288,7 @@ $$ \text{ACC} = \frac{TP + TN}{TP + FP + TN + FN} $$
 
 **Voorbeeld**
 
-<span class = "example">Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de nauwkeurigheid van het model voor havisten 80% is en voor mbo-ers 70%. De Accuracy Equality Ratio is dan 0,875 (70% / 80%). Dit betekent dat het model minder accuraat is voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).</span>
+[Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de nauwkeurigheid van het model voor havisten 80% is en voor mbo-ers 70%. De Accuracy Equality Ratio is dan 0,875 (70% / 80%). Dit betekent dat het model minder accuraat is voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).]{.example}
 
 ## 2. Equal Opportunity
 
@@ -314,7 +317,7 @@ $$ \text{TPR} = \frac{TP}{TP + FN} $$
 
 **Voorbeeld**
 
-<span class = "example">Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de True Positive Rate voor havisten 70% is en voor mbo-ers 60%. De Equal Opportunity Ratio is dan 0,857 (60% / 70%). Dit betekent dat het model minder kans biedt aan de beschermde groep (mbo-ers) om correct positieve uitkomsten te voorspellen dan aan de bevoorrechte groep (havisten).</span>
+[Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de True Positive Rate voor havisten 70% is en voor mbo-ers 60%. De Equal Opportunity Ratio is dan 0,857 (60% / 70%). Dit betekent dat het model minder kans biedt aan de beschermde groep (mbo-ers) om correct positieve uitkomsten te voorspellen dan aan de bevoorrechte groep (havisten).]{.example}
 
 ## 3. Predictive Equality
 
@@ -343,7 +346,7 @@ $$ \text{FPR} = \frac{FP}{FP + TN} $$
 
 **Voorbeeld**
 
-<span class = "example">Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de False Positive Rate voor havisten 20% is en voor mbo-ers 30%. De Predictive Equality Ratio is dan 1,5 (30% / 20%). Dit betekent dat het model meer kans heeft om vals-positieve voorspellingen te maken voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).</span>
+[Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de False Positive Rate voor havisten 20% is en voor mbo-ers 30%. De Predictive Equality Ratio is dan 1,5 (30% / 20%). Dit betekent dat het model meer kans heeft om vals-positieve voorspellingen te maken voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).]{.example}
 
 ## 4. Predictive Parity
 
@@ -370,7 +373,7 @@ $$ \text{PPV} = \frac{TP}{TP + FP} $$
 
 **Voorbeeld**
 
-<span class = "example">Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de Positive Predictive Value voor havisten 80% is en voor mbo-ers 70%. De Predictive Parity Ratio is dan 0,875 (70% / 80%). Dit betekent dat het model minder nauwkeurig is in het voorspellen van positieve uitkomsten voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).</span>
+[Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de Positive Predictive Value voor havisten 80% is en voor mbo-ers 70%. De Predictive Parity Ratio is dan 0,875 (70% / 80%). Dit betekent dat het model minder nauwkeurig is in het voorspellen van positieve uitkomsten voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).]{.example}
 
 ## 5. Statistical Parity
 
@@ -396,14 +399,75 @@ $$ \text{SPR} = \frac{TP + FP}{TP + FP + TN + FN} $$
 
 **Voorbeeld**
 
-<span class = "example">Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de kans op een positieve voorspelling voor havisten 80% is en voor mbo-ers 70%. De Statistical Parity Ratio is dan 0,875 (70% / 80%). Dit betekent dat het model minder vaak positieve uitkomsten voorspelt voor de beschermde groep (havisten) dan voor de bevoorrechte groep (mbo-ers).</span>
+[Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de kans op een positieve voorspelling voor havisten 80% is en voor mbo-ers 70%. De Statistical Parity Ratio is dan 0,875 (70% / 80%). Dit betekent dat het model minder vaak positieve uitkomsten voorspelt voor de beschermde groep (havisten) dan voor de bevoorrechte groep (mbo-ers).]{.example}
 :::
 
-Nu we deze begrippen hebben gedefinieerd, onderzoeken we de bias en kansengelijkheid van het model voor verschillende groepen studenten. Hiervoor gebruiken we het `fairmodels` package van `Dalex`.
+Nu we deze begrippen hebben gedefinieerd, kunnen we de bias en kansengelijkheid van het model voor verschillende groepen studenten analyseren. Hiervoor gebruiken we het `fairmodels` package van `DALEX`.
+
+<!-- Verdeling van kansen per groep -->
+
+## Verdeling van kansen
+
+Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we eerst de *verdeling van de kansen* op retentie voor verschillende groepen studenten voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting`. De verdeling van deze kansen is uniek per opleiding.
+
+**Toelichting**
+
+-   De verdeling van de kansen is te zien door de *boxplot* en de *violin plot*. 
+-   De boxplot geeft de vier quartielen aan van de data: de box staat voor de middelste 50% van de data, met een streep die de mediaan aangeeft (de middelste waarde van de data). De lijnen (*whiskers*) geven de 1e 25% en laatste 25% van de data. 
+-   De boxplot wordt gecombineerd met de violin plot, waarbij de breedte van de violin de dichtheid van de data aangeeft. Het kan zijn dat het lijkt alsof er geen violin is; in dat geval is de verdeling van het aantal studenten zeer breed en de violin vorm daardoor heel smal.
+-   Samen geven deze twee visualisaties een goed beeld van de verdeling van de voorspelde kansen van het model.
+
+```{r}
+#| label: bias_analysis_density
+#| results: asis
+
+## Maak een fairness analyse
+for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
+
+  ## Groep
+  Knit_Header(group, 3)
+  
+  if(group == "Geslacht") {
+    sPrivileged <- "V"
+  } else if(group == "Vooropleiding") {
+    sPrivileged <- "HAVO"
+  } else if(group == "Aansluiting") {
+    sPrivileged <- "Direct"
+  }
+
+  ## Maak een fairness object
+  fobject <- Get_objFairness(explain_lf, group, sPrivileged)
+  
+  ## Maak een tabel van de fairness analyse
+  dfFairness_totaal <- Get_dfFairness_Total(fobject)
+  
+  ## Maak een plot van de fairness analyse
+  density_plot <- suppressWarnings(
+    Get_Density_Plot(fobject, group = group) 
+  ) 
+
+  ## Bewaar de plot
+  sPlotname <- glue("density_plot_{tolower(group)}")
+  sPlotPath <- Get_Plot_Outputpath(sPlotname, mode = "plot")
+
+  suppressWarnings(
+        Finalize_Plot(
+          plot_name = density_plot,
+          save_filepath = sPlotPath,
+          height_pixels = 250 + (50 * length(unique(dfFairness_totaal$Categorie)))
+        ))
+
+  ## Toon de bestaande plot
+  sPlot <- glue("![]({sPlotPath})")
+  Knit_Print_Rule(sPlot)
+
+}
+
+```
 
 ## Fairness checks
 
-We maken een fairness analyse voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting`. Voor elke groep berekenen we de maatstaven die we hierboven hebben behandeld.
+Nu we de verdeling van de kansen kennen, maken we tot slot een fairness analyse voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting`. Voor elke groep berekenen we de maatstaven die we eerder hebben behandeld.
 
 We maken een plot van de fairness analyse, waarbij we per variabele één categorie nemen als de bevoorrechte groep; voor Geslacht is dit 'Vrouw (V)', voor Vooropleiding is dit 'havo' en voor Aansluiting is dit 'Direct'. Als binnen een variabele een groep een ratio heeft die naar links of naar rechts afwijkt, kan dit duiden op een verschil in kansengelijkheid.
 
@@ -430,33 +494,31 @@ De keuze voor twee maatstaven als minimum baseren we op een combinatie van stati
 #| results: asis
 
 ## Maak een fairness analyse
-for(name in c("Geslacht", "Vooropleiding", "Aansluiting")) {
+for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
   ## Groep
-  Knit_Header(glue("{name}"), 3)
+  Knit_Header(group, 3)
   
-  if(name == "Geslacht") {
+  if(group == "Geslacht") {
     sPrivileged <- "V"
-  } else if(name == "Vooropleiding") {
+  } else if(group == "Vooropleiding") {
     sPrivileged <- "HAVO"
-  } else if(name == "Aansluiting") {
+  } else if(group == "Aansluiting") {
     sPrivileged <- "Direct"
   }
 
   ## Maak een fairness object
-  fobject <- Get_objFairness(explain_lm, name, sPrivileged)
+  fobject <- Get_objFairness(explain_lf, group, sPrivileged)
 
   ## Maak een tabel van de fairness analyse
-  dfFairness_totaal <- Get_dfFairness_totaal(fobject)
-  
+  dfFairness_totaal <- Get_dfFairness_Total(fobject)
   
   ## Check of er bias is
-  Print_Fairness_object_LTA(fobject)
-  # Knit_print_rule(suppressWarnings(print(fobject, colorize = FALSE)))
-  # 
+  Print_Fairness_Object_LTA(fobject)
+
   ## Maak een plot van de fairness analyse
   fairness_plot <- suppressWarnings(
-    Get_Fairness_plot(fobject, group = name, privileged = sPrivileged) +
+    Get_Fairness_Plot(fobject, group = group, privileged = sPrivileged) +
       theme(panel.border = element_rect(
         colour = "darkgrey",
         fill = NA,
@@ -465,8 +527,8 @@ for(name in c("Geslacht", "Vooropleiding", "Aansluiting")) {
   )
 
   ## Bewaar de plot
-  sPlotname <- glue("fairness_plot_{tolower(name)}")
-  sPlotPath <- Get_Plot_outputpath(sPlotname, mode = "plot")
+  sPlotname <- glue("fairness_plot_{tolower(group)}")
+  sPlotPath <- Get_Plot_Outputpath(sPlotname, mode = "plot")
 
   suppressWarnings(
         Finalize_Plot(
@@ -477,7 +539,7 @@ for(name in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
   ## Toon de bestaande plot
   sPlot <- glue("![]({sPlotPath})")
-  Knit_print_rule(sPlot)
+  Knit_Print_Rule(sPlot)
   
 }
 

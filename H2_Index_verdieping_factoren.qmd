@@ -147,13 +147,14 @@ source("_Setup.R")
 ::: {.content-hidden unless-meta="includes.inleiding"}
 # Inleiding
 
-Na de basis-analyse van de data en het bouwen van de prognosemodellen, gaan we in deze verdiepende analyse dieper in op de **factoren** van de modellen. Het doel is beter te begrijpen hoe de factoren precies de retentie verklaren. Deze verdiepende factoranalyse heeft 5 stappen:
+Na de basis-analyse van de data en het bouwen van de prognosemodellen, gaan we in deze verdiepende analyse dieper in op de **factoren** van de modellen. Het doel is beter te begrijpen hoe de factoren precies de retentie verklaren. Deze verdiepende factoranalyse heeft 6 stappen:
 
 1.  We lezen de bewerkte dataset in en de modellen die we in de basis-analyse hebben gemaakt.
 2.  We maken een *explainer* om de modellen beter te begrijpen en te kunnen uitleggen. Dit lichten we later in deze pagina toe.
 3.  We gebruiken het beste model om de prognose te verklaren en te begrijpen. We kijken naar de bijdrage van de variabelen aan de voorspelling en passen het model toe op de meest voorkomende studenten.
 4.  Vervolgens onderzoeken we de stabiliteit van de invloed van de verklarende variabelen met behulp van *Shapley* waarden.
-5.  Tot slot onderzoeken we hoe de retentie er *anders* uit zou kunnen zien als de studenten andere kenmerken zouden hebben met een *ceteris paribus analyse*.
+5.  Daarna onderzoeken we hoe de retentie er *anders* uit zou kunnen zien als de studenten andere kenmerken zouden hebben met een *Ceteris Paribus analyse*.
+6.  Tot slot onderzoeken we per variabele de variantie van de voorspellingen met een *Partial Dependence analyse*.\
 :::
 
 <!-- Data -->
@@ -170,9 +171,9 @@ We laden de bewerkte data en prognosemodellen in voor:
 #| label: load_data
 
 ## Bepaal de paden
-sData_outputpath           <- Get_Model_outputpath(mode = "data")
-sFittedmodels_outputpath   <- Get_Model_outputpath(mode = "last-fits")
-sModelresults_outputpath   <- Get_Model_outputpath(mode = "modelresults")
+sData_outputpath           <- Get_Model_Outputpath(mode = "data")
+sFittedmodels_outputpath   <- Get_Model_Outputpath(mode = "last-fits")
+sModelresults_outputpath   <- Get_Model_Outputpath(mode = "modelresults")
 
 ## Laad de data voor de opleiding: data, last fits en model results
 dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE)
@@ -198,13 +199,13 @@ dfPersona_all <- Get_dfPersona()
 
 # Verdiepende analyse van het model
 
-We weten vanuit de basis-analyse welke variabelen van invloed zijn, maar niet hoe en in welke richting ze retentie verklaren: dragen ze sterk bij of juist niet, verhogen of verlagen ze retentie? Om het model beter te begrijpen en te kunnen uitleggen, maken met behulp van het [`Dalex` package](https://dalex.drwhy.ai) een *explainer*.
+We weten vanuit de basis-analyse welke variabelen van invloed zijn, maar niet hoe en in welke richting ze retentie verklaren: dragen ze sterk bij of juist niet, verhogen of verlagen ze retentie? Om het model beter te begrijpen en te kunnen uitleggen, maken met behulp van het [`DALEX` package](https://dalex.drwhy.ai) een *explainer*.
 
-Dalex is onder andere ontwikkeld om uit te kunnen leggen welke verklarende variabelen van belang zijn en wat deze voor een effect hebben in een model. Een explainer is een model-onafhankelijke *wrapper*, geeft inzicht in de voorspellingen van het model en de bijdrage van de variabelen aan de prognose. Een explainer maakt het verder mogelijk om modellen onderling te vergelijken en benchmarken.
+DALEX is onder andere ontwikkeld om uit te kunnen leggen welke verklarende variabelen van belang zijn en wat deze voor een effect hebben in een model. Een explainer is een model-onafhankelijke *wrapper*, geeft inzicht in de voorspellingen van het model en de bijdrage van de variabelen aan de prognose. Een explainer maakt het verder mogelijk om modellen onderling te vergelijken en benchmarken.
 
 ## Maak een explainer
 
-We gaan nu een stap verder met behulp van het `Dalex` package. Op basis van het tidymodels model extraheren we de informatie voor de explainer van Dalex.
+We gaan nu een stap verder met behulp van het `DALEX` package. Op basis van het tidymodels model extraheren we de informatie voor de explainer van Dalex.
 
 ```{r, include=FALSE}
 #| label: fitted_model
@@ -236,7 +237,7 @@ workflow <- last_fit |>
   extract_workflow()
 
 # Maak een explainer
-explain_lm <- DALEX::explain(
+explain_lf <- DALEX::explain(
   model = workflow,
   data = dfOpleiding_inschrijvingen,
   y = dfOpleiding_inschrijvingen$Retentie,
@@ -258,13 +259,13 @@ De meeste voorspellende factoren en hun RMSE zijn:
 ```{r}
 #| label: lf_model_parts
 
-sPlotPath <- file.path(Get_Plot_outputpath(plotname = "lf_model_parts_rmse"))
+sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_model_parts_rmse"))
 
 ## Als de plot niet bestaat of als recreateplots - T, maak dan een nieuwe plot
 if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 ## Bereken de model parts op basis van de RMSE
-mp_rmse <- model_parts(explain_lm, loss_function = loss_root_mean_square)
+mp_rmse <- model_parts(explain_lf, loss_function = loss_root_mean_square)
 
 p_mp_rmse <- plot(mp_rmse) +
   
@@ -287,7 +288,7 @@ p_mp_rmse <- plot(mp_rmse) +
   ) +
   
   ## Voeg LTA elementen toe
-  Add_LTA_theme_elements()
+  Add_LTA_Theme_Elements()
 
 ## Print de plot
 suppressWarnings(print(p_mp_rmse))
@@ -322,17 +323,17 @@ We kijken hiermee naar de voorspelling van het model per groep en de bijdrage va
 #| results: asis
 
 ## Maak een breakdown van de meeste voorkomende student over alle data
-breakdown_lm_all <- predict_parts(explainer = explain_lm,
+breakdown_lf_all <- predict_parts(explainer = explain_lf,
                                   new_observation = dfPersona_all[1, ],
                                   type = "break_down")
 
 ## Bereken de intercept
-nIntercept <- breakdown_lm_all |> 
+nIntercept <- breakdown_lf_all |> 
   filter(variable == "intercept") |>
   pull(cumulative) * 100 |> 
   round(1) 
 
-sIntercept <- Number_to_readable(nIntercept, digits = 1)
+sIntercept <- Change_Number_Marks(nIntercept, digits = 1)
 
 ```
 
@@ -359,27 +360,27 @@ We kijken eerst naar de meest voorkomende student in de opleiding. We analyseren
 #| results: asis
 
 ## Bepaal de plot
-sPlotPath <- file.path(Get_Plot_outputpath(plotname = "lf_break_down_distribution_all"))
+sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_break_down_distribution_all"))
 
 ## Als de plot niet bestaat of als recreateplots - T, maak dan een nieuwe plot
 if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
   ## Bepaal de algemene persona en de breakdown (met distributie)
-  breakdown_lm_all <- predict_parts(explainer = explain_lm,
+  breakdown_lf_all <- predict_parts(explainer = explain_lf,
                                     new_observation = dfPersona_all[1, ],
                                     type = "break_down",  
                                     keep_distributions = TRUE)
   
   ## Bepaal de dataframe voor de breakdown
-  dfBreakdown_lm_all <- Get_dfBreakdown_lm(breakdown_lm_all)
+  dfBreakdown_lf_all <- Get_dfBreakdown_Lf(breakdown_lf_all)
   
   ## Bepaal de titels
-  lTitles <- Get_Breakdown_titles(breakdown_lm_all, dfPersona_all, 1, 
+  lTitles <- Get_Breakdown_Titles(breakdown_lf_all, dfPersona_all, 1, 
                                   "Alle studenten", "Alle studenten",
                                   mode = "all")
   
   ## Bouw de basisplot
-  plot <- suppressWarnings(plot(breakdown_lm_all, plot_distributions = TRUE)) 
+  plot <- suppressWarnings(plot(breakdown_lf_all, plot_distributions = TRUE)) 
 
   # Bepaal de breaks voor de x-as
   y_breaks <- seq(0, 1, by = 0.2)
@@ -426,20 +427,20 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
     ) +
     
     ## Voeg LTA elementen toe
-    Add_LTA_theme_elements()
+    Add_LTA_Theme_Elements()
     
   ## Sla de plot op
   suppressWarnings(
     Finalize_Plot(
           plot_name = plot,
           save_filepath = sPlotPath,
-          height_pixels = 50 + (15 * nrow(dfBreakdown_lm_all))
+          height_pixels = 50 + (15 * nrow(dfBreakdown_lf_all))
         )
     )
   
   ## Toon de bestaande plot
   sPlot <- glue("![]({sPlotPath})")
-  Knit_print_rule(sPlot)
+  Knit_Print_Rule(sPlot)
 
 } else {
 
@@ -462,13 +463,13 @@ De volgorde van de variabelen is zo gesorteerd dat per groep de meest voorspelle
 #| results: asis
 
 ## Loop over de persona's
-for (name in names(lDfPersona)) {
+for (group in names(lDfPersona)) {
 
   ## Laad de dataset voor de huidige persona
-  dfPersona <- lDfPersona[[name]]
+  dfPersona <- lDfPersona[[group]]
 
   ## Print de naam van lDfPersona als header
-  Knit_Header(glue("Naar {tolower(name)}"), 3)
+  Knit_Header(glue("Naar {tolower(group)}"), 3)
 
   ## Bepaal of er in de dataset een groep is met minder dan 21 studenten;
   ## Zo ja, laat die buiten beschouwing en meld dit
@@ -493,20 +494,20 @@ for (name in names(lDfPersona)) {
     }
     
     ## Print de melding
-    Knit_print_rule(glue("{(.subtotalen)} {(.categorieen)} {(.persoonsvorm)} te laag voor een betrouwbare analyse."))
+    Knit_Print_Rule(glue("{(.subtotalen)} {(.categorieen)} {(.persoonsvorm)} te laag voor een betrouwbare analyse."))
   }
   
   ## Open een panel-tabset
-  Knit_print_rule(glue("::: {.panel-tabset}", 
+  Knit_Print_Rule(glue("::: {.panel-tabset}", 
                        .open = "{{", 
                        .close = "}}"))
 
   ## Bepaal de sorteervolgorde van de variabelen
-  if(name == "Geslacht") {
+  if(group == "Geslacht") {
     lArrange <- c("M", "V")
-  } else if (name == "Vooropleiding") {
+  } else if (group == "Vooropleiding") {
     lArrange <- lLevels_vop
-  } else if (name == "Aansluiting"){
+  } else if (group == "Aansluiting"){
     lArrange <- lLevels_aansluiting
   }
   
@@ -523,7 +524,7 @@ for (name in names(lDfPersona)) {
     student_categorie <- dfPersona[j, ]$Categorie # levels(student_current[[student_groep]])[j]
     
     ## Bepaal de plotnaam
-    sPlotPath <- Get_Breakdown_plotpath(student_groep, student_categorie)
+    sPlotPath <- Get_Breakdown_Plotpath(student_groep, student_categorie)
     
     ## Als het subtotaal < 21, ga dan door naar het volgende item
     if (as.numeric(dfPersona[j, 'Subtotaal']) < 21) {
@@ -534,33 +535,33 @@ for (name in names(lDfPersona)) {
     if(params$recreateplots) {
       
       ## Bepaal de breakdown voor de huidige student
-      breakdown_lm <- predict_parts(explainer = explain_lm,
+      breakdown_lf <- predict_parts(explainer = explain_lf,
                                     new_observation = student_current,
                                     type = "break_down")
   
-      dfBreakdown_lm <- Get_dfBreakdown_lm(breakdown_lm)
+      dfBreakdown_lf <- Get_dfBreakdown_Lf(breakdown_lf)
       
       ## Toon de header
       Knit_Header(student_categorie, 4)
         
       ## Functie om de titels te bepalen
-      lTitles <- Get_Breakdown_titles(breakdown_lm, dfPersona, j, 
+      lTitles <- Get_Breakdown_Titles(breakdown_lf, dfPersona, j, 
                                       student_groep, student_categorie)
       
       # Watervalplot met ggplot
-      plot <- Get_Waterfall_plot(dfBreakdown_lm, lTitles)
+      plot <- Get_Waterfall_Plot(dfBreakdown_lf, lTitles)
   
       ## Sla de plot op
       suppressWarnings(
         Finalize_Plot(
           plot_name = plot,
           save_filepath = sPlotPath,
-          height_pixels = 50 + (15 * nrow(dfBreakdown_lm))
+          height_pixels = 50 + (15 * nrow(dfBreakdown_lf))
         ))
       
       ## Toon de bestaande plot
       sPlot <- glue("![]({sPlotPath})")
-      Knit_print_rule(sPlot)
+      Knit_Print_Rule(sPlot)
 
     } else {
       
@@ -569,14 +570,14 @@ for (name in names(lDfPersona)) {
         
       ## Toon de bestaande plot
       sPlot <- glue("![]({sPlotPath})")
-      Knit_print_rule(sPlot)
+      Knit_Print_Rule(sPlot)
       
     }
 
   } 
   
   ## Sluit de panel-tabset
-  Knit_print_rule(":::")
+  Knit_Print_Rule(":::")
 
 }
 
@@ -592,7 +593,7 @@ De volgorde van de variabelen is cumulatief (additief) en maakt dus uit voor de 
 #| label: lf_shapley
 
 ## Bewaar de plot
-sPlotPath <- file.path(Get_Plot_outputpath(plotname = "lf_shapley"))
+sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_shapley"))
 
 ## Als de plot niet bestaat of als recreateplots - T, maak dan een nieuwe plot
 if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
@@ -600,7 +601,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
   ## Bepaal de Shapley waarden
   lf_shapley <- 
     predict_parts(
-      explainer = explain_lm,
+      explainer = explain_lf,
       new_observation = dfPersona_all[1, ],
       type = "shap",
       B = 20
@@ -610,7 +611,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
   dfShapley <- Get_dfShapley(lf_shapley)
 
   ## Bouw de plot
-  shapley_plot <- Get_Shapley_plot(dfShapley)
+  shapley_plot <- Get_Shapley_Plot(dfShapley)
   
   ## Sla de plot op
   suppressWarnings(
@@ -640,13 +641,14 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 <!-- Scenarios -->
 
-## What-if: een ceteris paribus analyse
+## What-if: een Ceteris Paribus analyse
 
-Tot slot gaan we een aantal scenario's bekijken (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de kans op retentie eruit zou zien als telkens een van de variabelen net wat anders was geweest. 
+Vervolgens analyseren we een aantal scenario's (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de kans op retentie eruit zou zien als telkens een van de variabelen net wat anders was geweest.
 
-:::{.callout-warning appearance='default' icon=true}
+::: {.callout-warning appearance="default" icon="true"}
 ## Let op!
-Dit is de invloed van de variabelen bij de unieke combinatie van deze meest voorkomende student per categorie. Zie voor de invloed van een variabelen ongeacht de combinatie de Partial Dependence Profielen.
+
+Dit is de invloed van de variabelen bij de unieke combinatie van deze meest voorkomende student per categorie. Zie voor de invloed van een variabelen ongeacht deze unieke combinatie de analyse van Partial Dependence Profielen in de volgende paragraaf.
 :::
 
 Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde kans op retentie Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
@@ -694,27 +696,27 @@ variable_splits = list(
   )
 )
 
-for (name in c("Geslacht", "Vooropleiding", "Aansluiting")) {
+for (group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
   
   ## Als recreateplots == T, maak dan een nieuwe plot
   if(params$recreateplots) {
   
     ## Bewaar de plot
-    sPlotPath <- file.path(Get_Plot_outputpath(plotname = paste0("lf_cp_", tolower(name))))
+    sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_cp_", tolower(group))))
     
-    Knit_Header(name, 3)
+    Knit_Header(group, 3)
   
     ## Maak een breakdown van de meeste voorkomende student over alle data
-    if(name == "Geslacht") {
+    if(group == "Geslacht") {
       .new_observation <- dfPersona_tmp |>
         filter(Groep == "Geslacht") |> 
         arrange(match(Geslacht, c("M","V")))
-    } else if(name == "Vooropleiding") {
+    } else if(group == "Vooropleiding") {
       .new_observation <- dfPersona_tmp |>
         filter(Groep == "Vooropleiding",
                Vooropleiding %in% c("MBO", "HAVO", "VWO")) |>
         arrange(match(Vooropleiding, c("MBO", "HAVO", "VWO")))
-    } else if(name == "Aansluiting") {
+    } else if(group == "Aansluiting") {
       .new_observation <- dfPersona_tmp |>
         filter(Groep == "Aansluiting") |>
         arrange(match(
@@ -729,14 +731,14 @@ for (name in c("Geslacht", "Vooropleiding", "Aansluiting")) {
     }
     
     ## Maak een ceteris paribus analyse
-    cp_lm_all <- predict_profile(
-      explainer = explain_lm,
+    cp_lf_all <- predict_profile(
+      explainer = explain_lf,
       new_observation = .new_observation,
       variable_splits = variable_splits
     )
     
     ## Maak een Ceteris Paribus plot
-    cp_plot <- Get_Ceteris_paribus_plot(cp_lm_all, name)
+    cp_plot <- Get_Ceteris_Paribus_Plot(cp_lf_all, group)
     
     suppressWarnings(
           Finalize_Plot(
@@ -746,27 +748,102 @@ for (name in c("Geslacht", "Vooropleiding", "Aansluiting")) {
     
     ## Print de bestaande plot
     sPlot <- glue("![]({sPlotPath})")
-    Knit_print_rule(sPlot)
+    Knit_Print_Rule(sPlot)
     
     } else {
       
       ## Print de bestaande plot
-      sPlotPath <- file.path(Get_Plot_outputpath(plotname = paste0("lf_cp_", tolower(name))))
+      sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_cp_", tolower(group))))
       sPlot <- glue("![]({sPlotPath})")
-      Knit_print_rule(sPlot)
+      Knit_Print_Rule(sPlot)
   
   } 
 }
 
 ```
 
-<!-- Conclusies -->
+<!-- Partial Dependence -->
 
-::: {.content-hidden unless-meta="includes.conclusies"}
-# Conclusies
+## Partial Dependence analyse
 
-Hier komen de overige conclusies.
-:::
+Tot slot analyseren we *Partial Dependence*. Hierbij onderzoeken we de invloed van individuele variabelen op de kans op retentie, ongeacht de combinatie van de meest voorkomende studenten. Per (numerieke) variabele analyseren we de variantie binnen de kansen op retentie. We gebruiken hiervoor het gemiddelde van alle Ceteris Paribus profielen. Vandaar dat we ook wel spreken over Partial Dependence profielen (PDP's). We gebruiken voor deze analyse weer het `DALEX` package.
+
+We analyseren eerst de variabelen voor alle studenten. We tonen niet alleen de gemiddelde lijn, maar ook de lijnen van de individuele CP-profielen. Vervolgens analyseren op dezelfde manier de variabelen per groep: geslacht, vooropleiding en aansluiting.
+
+**Toelichting**
+
+-   De *gemiddelde lijn* geeft de gemiddelde kans op retentie weer voor alle studenten in de dataset voor alle waarden per variabele.
+-   De *individuele lijnen* geven de kans op retentie weer voor de individuele studenten in de dataset voor alle waarden per variabele. De bandbreedte van de individuele lijnen geeft de spreiding van de kans op retentie weer binnen de variabele. Het toont dat de kans op retentie per student kan verschillen, zelfs als de variabele gelijk is; de richting van het verband is wel gelijk.
+-   Standaard worden 100 willekeurige profielen gekozen om deze afbeeldingen op te bouwen; door deze selectie kan het zijn dat sommige categorieën met weinig observaties in de populatie niet afgebeeld worden.
+-   Doordat lijnen kunnen overlappen kan het zijn dat sommige lijnen niet zichtbaar zijn. De legenda geeft aan welke mogelijke categorieën voorkomen in de analyse.
+
+```{r}
+#| label: lf_pdp_all
+#| echo: false
+#| results: asis
+
+set.seed(1134)
+
+## Maak een PDP voor alle variabelen. Gebruik de variable_splits die we eerder hebben gemaakt
+for (group in c("Alle studenten", "Geslacht", "Vooropleiding", "Aansluiting")) {
+  
+  ## Als recreateplots == T, maak dan een nieuwe plot
+  if(params$recreateplots) {
+  
+    ## Bewaar de plot
+    sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_pdp_",
+                                                                 tolower(group))))
+    ## Maak een header
+    Knit_Header(group, 3)
+
+    if(group == "Alle studenten") {
+      
+      ## Maak het model profiel
+      pdp_lf <- model_profile(explainer = explain_lf,
+                              variable_splits = variable_splits)
+
+      ## Maak een Partial Dependence plot
+      pdp_plot <- Get_Partial_Dependence_Plot(pdp_lf, "all")
+      
+      
+    } else {
+      
+      ## Maak het model profiel
+      pdp_lf <- model_profile(explainer = explain_lf,
+                              variable_splits = variable_splits,
+                              groups = group)
+      
+      ## Maak een Partial Dependence plot per groep
+      pdp_plot <- Get_Partial_Dependence_Plot(pdp_lf, group)
+      
+    }
+    
+    ## Sla de plot op
+    suppressWarnings(
+          Finalize_Plot(
+            plot_name = pdp_plot,
+            save_filepath = sPlotPath
+          ))
+
+    ## Print de bestaande plot
+    sPlot <- glue("![]({sPlotPath})")
+    Knit_Print_Rule(sPlot)
+    
+    } else {
+      
+      ## Maak een header
+      Knit_Header(group, 3)
+      
+      ## Print de bestaande plot
+      sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_pdp_",
+                                                                   tolower(group))))
+      sPlot <- glue("![]({sPlotPath})")
+      Knit_Print_Rule(sPlot)
+      
+    }
+  }
+
+```
 
 <!-- Next steps -->
 

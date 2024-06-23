@@ -672,7 +672,7 @@ lr_plot <-
   ) +
   
   ## Voeg LTA elementen toe
-  Add_LTA_theme_elements(title_subtitle = FALSE)
+  Add_LTA_Theme_Elements(title_subtitle = FALSE)
 
 # Zoek de penalty waarde met de max AUC
 max_auc_penalty <- lr_res |> 
@@ -756,7 +756,7 @@ lr_auc <-
   mutate(model = "Logistisch Regressie")
 
 ## Plot de ROC curve
-Get_ROC_plot(lr_auc, position = 1)
+Get_ROC_Plot(lr_auc, position = 1)
 
 ## Bepaal de AUC van het beste model
 lr_auc_highest   <-
@@ -905,7 +905,7 @@ autoplot(rf_res) +
   ) +
   
   ## Voeg LTA elementen toe
-  Add_LTA_theme_elements(title_subtitle = FALSE)
+  Add_LTA_Theme_Elements(title_subtitle = FALSE)
 
 ```
 
@@ -952,7 +952,7 @@ rf_auc <-
   mutate(model = "Random Forest")
 
 ## Plot de ROC curve
-Get_ROC_plot(rf_auc, position = 2)
+Get_ROC_Plot(rf_auc, position = 2)
 
 ## Bepaal de AUC van het beste model
 rf_auc_highest   <-
@@ -983,7 +983,7 @@ Eerst combineren we de AUC/ROC curves van de modellen om ze te vergelijken. We k
 #| label: bind_rows_auc_roc
 
 ## Combineer de AUC/ROC curves om de modellen te vergelijken
-Get_ROC_plot(list(lr_auc, rf_auc))
+Get_ROC_Plot(list(lr_auc, rf_auc))
 
 
 ```
@@ -1120,13 +1120,13 @@ if(sBest_model == "Logistic Regression") {
 }
 
 ## Bewaar de resultaten, de modelresultaten en de bijbehorende data
-sFittedmodels_outputpath <- Get_Model_outputpath(mode = "last-fits")
+sFittedmodels_outputpath <- Get_Model_Outputpath(mode = "last-fits")
 saveRDS(lLast_fits, file = sFittedmodels_outputpath)
 
-sModelresults_outputpath <- Get_Model_outputpath(mode = "modelresults")
+sModelresults_outputpath <- Get_Model_Outputpath(mode = "modelresults")
 saveRDS(dfModel_results, file = sModelresults_outputpath)
 
-sData_outputpath <- Get_Model_outputpath(mode = "data")
+sData_outputpath <- Get_Model_Outputpath(mode = "data")
 saveRDS(dfOpleiding_inschrijvingen, file = sData_outputpath)
 
 ```
@@ -1185,7 +1185,7 @@ importance_plot <- dfVif |>
   coord_flip() +
   
   ## Voeg LTA elementen toe
-  Add_LTA_theme_elements(title_subtitle = TRUE)
+  Add_LTA_Theme_Elements(title_subtitle = TRUE)
 
 # Toon de plot
 print(importance_plot)
@@ -1206,7 +1206,7 @@ auc_lf <- last_fit |>
   roc_curve(Retentie, .pred_FALSE) |> 
   mutate(model = "Last fit")
 
-Get_ROC_plot(auc_lf, position = 3)
+Get_ROC_Plot(auc_lf, position = 3)
 
 ```
 
@@ -1364,11 +1364,11 @@ dfConf_matrix <- as_tibble(confusion_matrix$table) |>
   mutate(Werkelijkheid = ifelse(Werkelijkheid == "TRUE", "Retentie", "Geen retentie"),
          Prediction    = ifelse(Prediction == "TRUE", "Retentie", "Geen retentie"))
 
-pTP <- Number_to_readable((dfConf_matrix$n[4]/sum(dfConf_matrix$n)*100),1)
-pFP <- Number_to_readable((dfConf_matrix$n[2]/sum(dfConf_matrix$n)*100),1)
-pTN <- Number_to_readable((dfConf_matrix$n[1]/sum(dfConf_matrix$n)*100),1)
-pFN <- Number_to_readable((dfConf_matrix$n[3]/sum(dfConf_matrix$n)*100),1)
-pACC <- Number_to_readable(Last_fit_Accuracy,1)
+pTP <- Change_Number_Marks((dfConf_matrix$n[4]/sum(dfConf_matrix$n)*100),1)
+pFP <- Change_Number_Marks((dfConf_matrix$n[2]/sum(dfConf_matrix$n)*100),1)
+pTN <- Change_Number_Marks((dfConf_matrix$n[1]/sum(dfConf_matrix$n)*100),1)
+pFN <- Change_Number_Marks((dfConf_matrix$n[3]/sum(dfConf_matrix$n)*100),1)
+pACC <- Change_Number_Marks(Last_fit_Accuracy,1)
 
 
 ```
@@ -1403,7 +1403,7 @@ plot_confusion_matrix(dfConf_matrix,
   Set_LTA_Theme() +
   
   ## Voeg LTA elementen toe
-  Add_LTA_theme_elements(title_subtitle = TRUE)
+  Add_LTA_Theme_Elements(title_subtitle = TRUE)
 
 ```
 

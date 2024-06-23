@@ -26,7 +26,7 @@
 source("99. Functies & Libraries/Fairness_helper_functies.R")
 
 ## Functie om de uitkomsten van een fairness object te tonen
-Print_Fairness_object_LTA <- function(x,
+Print_Fairness_Object_LTA <- function(x,
                                   ...,
                                   colorize = TRUE,
                                   fairness_metrics = c("ACC", "TPR", "PPV", "FPR", "STP"),
