@@ -24,18 +24,11 @@
 
 [ ] Normalisatie
   [x] Namen van functies consistent maken
-  [ ] Functies aanvullen voor repeterende code
   [x] Colors naar settings overzetten
   [x] _lm vervangen door _lf
-
-[ ] Fairness analyse
-  [/] Basisartikel: https://cran.r-project.org/web/packages/fairmodels/vignettes/Basic_tutorial.html
-    [/] 1.3.2 plot density
-      [x] Standaard density plot met verdeling
-      [x] Waarom geen density bij vooropleiding?
-      [ ] Ook alle studenten?
-      [x] Naam van model aan de rechterzijde weghalen
-  [x] Teksten: voorbeelden vanuit het onderwijs
+  [ ] Functies aanvullen voor repeterende code
+  [ ] afbeeldingen in andere repo zetten
+  [ ] naam repo aanpassen
 
 [ ] Plots
   [ ] gam model uitproberen
@@ -44,7 +37,6 @@
 
 [ ] Navigatie
   [ ] links naar H1, 2 en 3 van analyses opnemen aan rechterzijde
-  [x] logo hhs
 
 [ ] Andere opleidingen proberen
   [ ] ORM_DT
@@ -70,6 +62,18 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[x] Fairness analyse
+  [x] Basisartikel: https://cran.r-project.org/web/packages/fairmodels/vignettes/Basic_tutorial.html
+    [x] 1.3.2 plot density
+      [x] Standaard density plot met verdeling
+      [x] Waarom geen density bij vooropleiding?
+      [x] Ook alle studenten?
+      [x] Naam van model aan de rechterzijde weghalen
+  [x] Teksten: voorbeelden vanuit het onderwijs
+
+[x] Navigatie
+  [x] logo hhs
 
 [x] Overige analyses
   [x] Partial Dependence plots: https://ema.drwhy.ai/partialDependenceProfiles.html
