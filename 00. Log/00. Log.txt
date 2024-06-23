@@ -28,7 +28,7 @@
   [x] _lm vervangen door _lf
   [ ] Functies aanvullen voor repeterende code
   [ ] afbeeldingen in andere repo zetten
-  [ ] naam repo aanpassen
+  [x] naam repo aanpassen
 
 [ ] Plots
   [ ] gam model uitproberen
