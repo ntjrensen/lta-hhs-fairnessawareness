@@ -131,7 +131,7 @@ for(i in 1:nrow(dfRender)) {
   for (j in lUitval) {
   
     ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
-    current_render_opleiding <- Get_Current_Opleiding(opleiding = .opleiding,
+    current_render_opleiding <- Get_Current_opleiding(opleiding = .opleiding,
                                                       opleidingsvorm = .opleidingsvorm)
 
     ## Bepaal de output file:
@@ -161,7 +161,7 @@ for(i in 1:nrow(dfRender)) {
       faculteit                = current_render_opleiding$INS_Faculteit,
       opleidingsnaam           = current_render_opleiding$INS_Opleidingsnaam_huidig,
       opleiding                = current_render_opleiding$INS_Opleiding,
-      opleidingsvorm           = Get_Opleidingsvorm_Lang(current_render_opleiding$INS_Opleidingsvorm),
+      opleidingsvorm           = Get_Opleidingsvorm_lang(current_render_opleiding$INS_Opleidingsvorm),
       opleidingsvorm_afkorting = current_render_opleiding$INS_Opleidingsvorm,
       selectie                 = ifelse(current_render_opleiding$INS_Opleiding == "HDT", 
                                         TRUE, 

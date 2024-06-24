@@ -164,12 +164,12 @@ Het lectoraat Learning Technology & Analytics (LTA) heeft als doel te kunnen ana
 
 Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse de retentie als uitkomstvariabele nemen.
 
-::: {.callout-warning appearance='default' icon=true}
+::: {.callout-warning appearance="default" icon="true"}
 ## Disclaimer
 
-De modellen die we in deze analyses ontwikkelen zijn bedoeld om de dynamiek in het studiesucces van studenten een opleiding beter te begrijpen om kansengelijkheid en te bevorderen. 
+De modellen die we in deze analyses ontwikkelen zijn bedoeld om de dynamiek in het studiesucces van studenten een opleiding beter te begrijpen om kansengelijkheid en te bevorderen.
 
-**Deze modellen mogen op geen enkele wijze gebruikt worden om individuele studenten te beoordelen of hun succes te voorspellen.** 
+**Deze modellen mogen op geen enkele wijze gebruikt worden om individuele studenten te beoordelen of hun succes te voorspellen.**
 :::
 
 ## Toelichting op de methode
@@ -191,7 +191,6 @@ We toetsen in deze analyse *`r sSucces_model_text`*, voortaan **Retentie** genoe
 Retentie is gedefinieerd als ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt ook als retentie.
 
 Uitval is het tegenovergestelde van retentie: niet ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt *niet* als uitval.
-
 :::
 
 <!-- Data -->
@@ -484,7 +483,7 @@ dfOpleiding_inschrijvingen |>
 -   Als het model klaar is, testen we het op de 20% studenten uit de testset. De testset blijft dus de gehele tijd ongemoeid, zodat we overfitting - een te goed model op bekende data, maar slechte presetaties (*performance*) op onbekende data - voorkomen.
 -   Een willekeurig, maar vaststaand *seed*-getal voorkomt dat we bij elke run van het model c.q. deze code een net iets andere uitkomst krijgen.
 
-![](01.%20Includes/img/voorspelmodel-dataset-lta-hhs.png){width=80% fig-align="center"}
+![](01.%20Includes/img/voorspelmodel-dataset-lta-hhs.png){width="80%" fig-align="center"}
 
 ```{r}
 #| label: split_data

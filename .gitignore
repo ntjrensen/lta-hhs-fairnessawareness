@@ -36,10 +36,7 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-00. Log.txt
 90. Test
-91. Tutorials
-92. Graveyard
-99. Tmp
+98. Graveyard
 
 /.quarto/

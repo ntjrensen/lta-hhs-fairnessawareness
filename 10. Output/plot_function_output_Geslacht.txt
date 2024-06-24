@@ -1,8 +1,0 @@
-Creating fairness classification object
--> Privileged subgroup		: character ([32m Ok [39m )
--> Protected variable		: factor ([32m Ok [39m ) 
--> Cutoff values for explainers	: 0.8 ( for all subgroups )
--> Fairness objects		: 0 objects 
--> Checking explainers		: 1 in total ( [32m compatible [39m )
--> Metric calculation		: 5/13 metrics calculated for all models ( [33m8 NA created[39m )
-[32m Fairness object created succesfully [39m 

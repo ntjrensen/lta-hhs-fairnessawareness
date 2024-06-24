@@ -20,23 +20,19 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-[ ] html wegschrijven naar separate report folder
-
 [ ] Normalisatie
-  [x] Namen van functies consistent maken
-  [x] Colors naar settings overzetten
-  [x] _lm vervangen door _lf
   [ ] Functies aanvullen voor repeterende code
-  [ ] afbeeldingen in andere repo zetten
-  [x] naam repo aanpassen
+  [ ] Afbeeldingen in andere repo zetten
+  
+[ ] Navigatie
+  [ ] Html wegschrijven naar separate report folder
+  [ ] Links naar H1, 2 en 3 van analyses opnemen aan rechterzijde
 
 [ ] Plots
+  [ ] 50% lijn aan density plots toevoegen
   [ ] gam model uitproberen
     [ ] https://parsnip.tidymodels.org/reference/details_gen_additive_mod_mgcv.html
     [ ] https://forum.posit.co/t/how-to-define-smoothed-models-for-a-gam-using-tidymodels-and-recipe/144772
-
-[ ] Navigatie
-  [ ] links naar H1, 2 en 3 van analyses opnemen aan rechterzijde
 
 [ ] Andere opleidingen proberen
   [ ] ORM_DT
@@ -62,6 +58,12 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[x] Normalisatie
+  [x] Namen van functies consistent maken
+  [x] Colors naar settings overzetten
+  [x] _lm vervangen door _lf
+  [x] naam repo aanpassen
 
 [x] Fairness analyse
   [x] Basisartikel: https://cran.r-project.org/web/packages/fairmodels/vignettes/Basic_tutorial.html

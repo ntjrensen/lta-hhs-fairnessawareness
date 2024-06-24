@@ -241,9 +241,6 @@ explain_lf <- DALEXtra::explain_tidymodels(
 
 ```
 
-
-  
-
 <!-- Kansengelijkheid -->
 
 # Analyse van kansengelijkheid
@@ -412,8 +409,8 @@ Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we eerst
 
 **Toelichting**
 
--   De verdeling van de kansen is te zien door de *boxplot* en de *violin plot*. 
--   De boxplot geeft de vier quartielen aan van de data: de box staat voor de middelste 50% van de data, met een streep die de mediaan aangeeft (de middelste waarde van de data). De lijnen (*whiskers*) geven de 1e 25% en laatste 25% van de data. 
+-   De verdeling van de kansen is te zien door de *boxplot* en de *violin plot*.
+-   De boxplot geeft de vier quartielen aan van de data: de box staat voor de middelste 50% van de data, met een streep die de mediaan aangeeft (de middelste waarde van de data). De lijnen (*whiskers*) geven de 1e 25% en laatste 25% van de data.
 -   De boxplot wordt gecombineerd met de violin plot, waarbij de breedte van de violin de dichtheid van de data aangeeft. Het kan zijn dat het lijkt alsof er geen violin is; in dat geval is de verdeling van het aantal studenten zeer breed en de violin vorm daardoor heel smal.
 -   Samen geven deze twee visualisaties een goed beeld van de verdeling van de voorspelde kansen van het model.
 
