@@ -204,7 +204,7 @@ Get_Current_Opleiding_Output_File <- function(df, mode, analyse = NULL) {
   
   ## Bepaal de beschrijving van de analyse
   if(is.null(analyse)) {
-    .analyse <- Get_Huidige_analyse()
+    .analyse <- Get_Current_Analysis()
   } else {
     .analyse <- analyse
   }
@@ -537,6 +537,7 @@ Mutate_Levels <- function(df, vars, levels) {
 
 ## Functie om de lange naam van de opleidingsvorm te bepalen
 Get_Opleidingsvorm_Lang <- function(opleidingsvorm) {
+  
   if (opleidingsvorm == "VT") {
     return("voltijd")
   } else if (opleidingsvorm == "DT") {
@@ -546,6 +547,7 @@ Get_Opleidingsvorm_Lang <- function(opleidingsvorm) {
   } else {
     return("onbekend")
   }
+  
 }
 
 ## Functie om een samenvattende tabel te maken
@@ -591,18 +593,20 @@ Get_tblSparklines <- function(df, group = "Geslacht", var = "Leeftijd") {
   .group <- as.name(group)
   .var   <- as.name(var)
   
+  ## Bepaal de sparkline tabel
   dfSparkline <- df |> 
     
     dplyr::group_by(!!.group) |>
     
+    ## Bewaar de lijst van uitkomsten in een lijst
     dplyr::summarize(
       mean = mean(!!.var),
       sd = sd(!!.var),
-      # must end up with list of data for each row in the input dataframe
       var_data = list(!!.var),
       .groups = "drop"
     )
   
+  ## Zet om naar een gt tabel
   tblSparkline <- dfSparkline |>
     arrange(desc(!!.group)) |>
     gt() |>
@@ -740,7 +744,7 @@ Copy_Reports <- function(remove_orgials = F, debug = F) {
 }
 
 ## Functie om de huidige analyse te bepalen
-Get_Huidige_analyse <- function() {
+Get_Current_Analysis <- function() {
   
   ## Bepaal de beschrijving van de analyse
   .succes     <- janitor::make_clean_names(params$succes)
@@ -756,7 +760,7 @@ Get_Huidige_analyse <- function() {
   
 }
 
-## Functie om een header 3 te knitten
+## Functie om een header te knitten
 Knit_Header <- function(x, rep = 1) {
   
   .header <- rep("#", rep) |> paste(collapse = "")
@@ -830,6 +834,7 @@ Get_Median_Rounded <- function(x) {
 # Functie om een persona te maken van de studenten van een opleiding
 Get_dfPersona <- function(group = NULL) {
   
+  ## Bepaal de categorische variabelen die gebruikt worden
   lSelect_categorical <- c(
     "Aansluiting",
     "APCG",
@@ -845,12 +850,14 @@ Get_dfPersona <- function(group = NULL) {
     "Vooropleiding"
   ) 
   
+  ## Verwijder de huidige groep variabele uit deze lijst
   if (!is.null(group)) {
     .group <- as.name(group)
     # Verwijder de groep variabele uit deze lijst
     lSelect_categorical <- setdiff(lSelect_categorical, group)
   }
   
+  ## Bepaal de numerieke variabelen die gebruikt worden
   lSelect_numerical <- c(
     "Aanmelding",
     "Cijfer_CE_Engels",
@@ -881,7 +888,8 @@ Get_dfPersona <- function(group = NULL) {
       group_by(!!.group) |>
       
       # Maak een persona aan op basis van de overige variabelen: 
-      # kies de meest voorkomende waarden per variabele bij categorieën en de mediaan bij numerieke variabelen
+      # kies de meest voorkomende waarden per variabele bij categorieën 
+      # en de mediaan bij numerieke variabelen
       summarise(
         
         # Categorische variabelen
@@ -969,12 +977,12 @@ Get_dfPersona <- function(group = NULL) {
   return(dfPersona)
 }
 
-# Convert to data frame for ggplot
+# Functie om een breakdown plot te maken
 Get_dfBreakdown_Lf <- function(bd_lf) {
   
   dfBreakdown_lf <- as.data.frame(bd_lf) |>
     
-    ## Sorteer op basis van de position
+    ## Sorteer op basis van de position van de variabelene (aflopend)
     arrange(desc(position)) |>
     
     ## Hernoem variabelen (intercept en prediction)
@@ -1044,7 +1052,7 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
     mutate(label_color = case_when(
       sign == "1" ~ lColors_default[["sNegative_color"]], 
       sign == "-1" ~ lColors_default[["sPositive_color"]], 
-      .default = "black")) |>
+      .default = lColors_default[["sText_color"]])) |>
     
     ## Bepaal de positie van de labels
     rowwise() |>
@@ -1104,6 +1112,7 @@ Get_objFairness <- function(explainer, protected_var, privileged, verbose = FALS
   return(fobject)
 }
 
+## Functie om de fairness tabel te maken
 Get_dfFairness_Total <- function(fobject) {
   
   ## Maak een tabel van de fairness analyse
@@ -1119,7 +1128,9 @@ Get_dfFairness_Total <- function(fobject) {
                                               score > 1.2, "Ja", "Nee")) |> 
     ## Bereken per groep of er > 1 Ja is
     group_by(metric) |>
-    summarise(Metric_buiten_grenzen = ifelse(sum(Categorie_buiten_grenzen == "Ja") > 1, "Ja", "Nee"))
+    summarise(Metric_buiten_grenzen = ifelse(sum(Categorie_buiten_grenzen == "Ja") > 1, 
+                                             "Ja", 
+                                             "Nee"))
   
   ## Verrijk de tabel met variabele Metric_buiten_grenzen
   dfFairness_totaal <- dfFairness |>
@@ -1159,8 +1170,6 @@ Get_dfFairness_Total <- function(fobject) {
 Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
   theme_set(theme_minimal())
   theme_update(
-    ## Margins
-    ## plot.margin = margin(c(10, 10, 10, 10), "points"),
     
     ## Titel en caption
     plot.title = element_textbox_simple(
@@ -1222,10 +1231,13 @@ Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
 }
 
 ## Functie om LTA thema elementen toe te voegen
-Add_LTA_Theme_Elements <- function(title_subtitle = TRUE) {
+Add_LTA_Theme_Elements <- function(p,
+                                   title_subtitle = TRUE,
+                                   extended = FALSE) {
   
+  ## Pas het thema aan met of zonder titel en ondertitel
   if(title_subtitle) {
-      theme(
+    p <- p + theme(
         plot.title = element_text(size = 14, face = "bold"),
         plot.subtitle = element_markdown(),
         axis.text.y = element_text(size = 10),
@@ -1237,7 +1249,7 @@ Add_LTA_Theme_Elements <- function(title_subtitle = TRUE) {
         )
       ) 
     } else {
-        theme(
+      p <- p + theme(
           axis.text.y = element_text(size = 10),
           plot.caption = element_textbox_simple(
             size = 8,
@@ -1247,6 +1259,50 @@ Add_LTA_Theme_Elements <- function(title_subtitle = TRUE) {
           )
         )
     }
+  
+  ## Als het thema uitgebreid moet worden, voeg dan extra elementen toe
+  if(extended) {
+    
+    p <- p + 
+      
+      # Pas het thema verder aan
+      theme(
+        axis.title.x = element_text(margin = margin(t = 20))
+      ) +
+      
+      # Pas de positie van de legenda aan en verberg de titel
+      theme(legend.position = "bottom",
+            legend.title = element_blank()) +
+      
+      # Maak het grid iets rustiger
+      theme(panel.grid.minor = element_blank()) +
+      
+      # Maak de kopjes van de facetten groter
+      theme(strip.text = element_text(size = 12))
+  }
+  
+  return(p)
+  
+}
+
+## Functie om de y-as in te stellen
+Set_XY_Axis <- function(axis, breaks = 4) {
+  
+  if(axis == "x") {
+    lX_Axis <- list()
+    lX_Axis[["x_breaks"]] <- seq(0, 1, by = (1/breaks))
+    lX_Axis[["x_labels"]] <- paste0(seq(0, 100, by = (100/breaks)), "%")
+    
+    return(lX_Axis)
+  }
+  
+  if(axis == "y") {
+    lY_Axis <- list()
+    lY_Axis[["y_breaks"]] <- seq(0, 1, by = 0.25)
+    lY_Axis[["y_labels"]] <- paste0(seq(0, 100, by = 25), "%")
+    
+    return(lY_Axis)
+  }
   
 }
 
@@ -1270,11 +1326,22 @@ Get_sCaption <- function() {
   
 }
 
+## Functie om de waarden en labels te bepalen
+Get_Color_Values_and_Labels <- function(group, cp_lf_all) {
+  colors_list <- switch(group,
+                        "Geslacht"      = lColors_geslacht,
+                        "Vooropleiding" = lColors_toelaatgevende_vooropleiding,
+                        "Aansluiting"   = lColors_aansluiting)
+  
+  unique_values <- unique(cp_lf_all[[group]])
+  .values <- unname(colors_list[unique_values])
+  .labels <- names(colors_list[unique_values])
+  
+  return(list(values = .values, labels = .labels))
+}
+
 ## Functie om een ROC plot te maken
 Get_ROC_Plot <- function(models, position = NULL) {
-  
-  lColors <- c("#fc7d0b", "#1170aa",
-               "#c85200", "#a3cce9")
   
   ## Combineer eventueel meerdere modellen
   if(is.list(models)) {
@@ -1282,27 +1349,37 @@ Get_ROC_Plot <- function(models, position = NULL) {
   }
   
   if(!is.null(position)) {
-    lColors <- lColors[position]
+    lColors <- lColors_ROC_plots[position]
+  } else {
+    lColors <- lColors_ROC_plots
   }
   
-  plot <- models |>
-    ggplot(aes(x = 1 - specificity, y = sensitivity, col = model)) + 
+  ## Maak een ROC plot
+  roc_plot <- models |>
+    ggplot(aes(x = 1 - specificity, 
+               y = sensitivity, 
+               col = model)) + 
     geom_path(lwd = 1.5, alpha = 0.8) +
     geom_abline(lty = 3) + 
     coord_equal() + 
+    
+    ## Voeg meerdere kleuren toe bij meerdere modellen
     scale_color_manual(values = lColors) +
+    
+    ## Maak de labs
     labs(x = "1 - specificiteit", 
          y = "sensitiviteit", 
          color = "Model",
          caption = sCaption) +
     theme(
       axis.title.x = element_text(margin = margin(t = 20))
-    ) +
+    )
     
     ## Voeg LTA elementen toe
-    Add_LTA_Theme_Elements(title_subtitle = FALSE)
+    roc_plot <- Add_LTA_Theme_Elements(roc_plot,
+                                       title_subtitle = FALSE)
   
-  return(plot)
+  return(roc_plot)
   
 }
 
@@ -1313,7 +1390,8 @@ Get_Breakdown_Titles <- function(bd, df, j,
                                  debug = FALSE) {
   
   ## Bepaal de retentiekans, totalen en de titel/ondertitel
-  nRetentie   <- Change_Number_Marks(as.numeric(bd$cumulative[bd$variable == 'prediction']) * 100, digits = 1)
+  nRetentie   <- Change_Number_Marks(as.numeric(bd$cumulative[bd$variable == 'prediction']) * 100, 
+                                     digits = 1)
   nSubtotaal  <- Change_Number_Marks(as.numeric(df[j, 'Subtotaal']))
   nTotaal     <- Change_Number_Marks(as.numeric(df[j, 'Totaal']))
   nPercentage <- Change_Number_Marks(as.numeric(df[j, 'Percentage']) * 100, digits = 1)
@@ -1340,6 +1418,7 @@ Get_Breakdown_Titles <- function(bd, df, j,
     cli::cli_alert_info(student_current_title)
   }
   
+  ## Bepaal de ondertitel
   student_current_subtitle <- glue(
     " | kans op retentie: {nRetentie}%"
   )
@@ -1367,19 +1446,18 @@ Get_Breakdown_Titles <- function(bd, df, j,
 }
 
 ## Functie om een watervalplot te maken
-Get_Waterfall_Plot <- function(df, titles) {
+Get_Breakdown_Plot <- function(df, titles) {
    
-  # Bepaal de breaks voor de x-as
-  y_breaks <- seq(0, 1, by = 0.2)
-  y_labels <- paste0(seq(0, 100, by = 20), "%")
+  # Bepaal de breaks voor de x-as (y-as, maar wordt gekanteld)
+  lY_Axis  <- Set_XY_Axis(axis = "y")
   
   ## Maak een watervalplot
-  plot <- ggplot(df) +
+  breakdown_plot <- ggplot(df) +
     
     # Voeg horizontale lijnen toe om de 0.2
     geom_hline(
-      yintercept = y_breaks,
-      color = "#CBCBCB",
+      yintercept = lY_Axis[["y_breaks"]],
+      color = lColors_default[["sGridline_color"]],
       linetype = "solid",
       linewidth = 0.5
     ) +
@@ -1387,7 +1465,7 @@ Get_Waterfall_Plot <- function(df, titles) {
     # Voeg een horizontale lijn toe op de laagste waarde
     geom_hline(
       yintercept = df$cumulative[df$position == 1],
-      color = "black",
+      color = lColors_default[["sBreakdown_intercept_color"]],
       linetype = "dotted"
     ) +
     
@@ -1407,7 +1485,7 @@ Get_Waterfall_Plot <- function(df, titles) {
       y = end,
       yend = end
     ),
-    color = "darkgray") +
+    color = lColors_default[["sBreakdown_segment_color"]]) +
     
     # Flip de plot
     coord_flip() +
@@ -1433,24 +1511,26 @@ Get_Waterfall_Plot <- function(df, titles) {
       aes(x = position, y = label_position, label = label),
       hjust = -0.1,
       size = 4,
-      color = "black"
+      color = lColors_default[["sText_color"]]
     ) +
     
     # Pas het thema aan om de y-as labels weer te geven
     scale_x_continuous(breaks = df$position, labels = df$variable) +
-    scale_y_continuous(breaks = y_breaks,
-                       labels = y_labels,
+    scale_y_continuous(breaks = lY_Axis[["y_breaks"]],
+                       labels = lY_Axis[["y_labels"]],
                        limits = c(0, 1)) +
     
+    ## Verwijder de legenda en maak de plot rustiger
     theme(legend.position = "none") +
     theme(
-      axis.text.y = element_text(size = 10),
+      axis.text.y = element_text(size = 12),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank()
     ) +
   
     ## Maak de labels van Intercept en voorspelling vetgedrukt
-    ## suppressWarnings, omdat er een warning komt dat vectorized input in de toekomst niet mogelijk is
+    ## suppressWarnings, omdat er een warning komt dat vectorized input 
+    ## in de toekomst niet mogelijk is
     suppressWarnings(theme(axis.text.y = element_text(
       face = ifelse(
         df$variable %in% c("Intercept", "Voorspelling"),
@@ -1459,25 +1539,32 @@ Get_Waterfall_Plot <- function(df, titles) {
       )
     )))
   
-  return(plot)
+  return(breakdown_plot)
   
 }
-
 
 ## Functie om een Shapley plot te maken
 Get_Shapley_Plot <- function(data) {
   
-  p <- data |> 
+  shapley_plot <- data |> 
+    
+    ## Bouw de plot en vul de kleur op met positieve en negatieve waarden
     ggplot(aes(contribution, variable, fill = mean_val > 0)) +
+    
+    ## Maak een barplot en voeg een boxplot toe
     geom_col(data = ~distinct(., variable, mean_val), 
              aes(mean_val, variable), 
              alpha = 0.5) +
     geom_boxplot(width = 0.5) +
+    
+    ## Verwijder de legenda
     theme(legend.position = "none") +
+    
+    ## Bepaal de kleuren
     scale_fill_manual(values = c("TRUE" = lColors_default[["sPositive_color"]], 
                                  "FALSE" = lColors_default[["sNegative_color"]])) +
     
-    # Bepaal de title en ondertitel
+    # Bepaal de titel en ondertitel
     labs(
       title = "Shapley values",
       subtitle = "Bijdrage per variabele voor de meest voorkomende student",
@@ -1486,21 +1573,21 @@ Get_Shapley_Plot <- function(data) {
       y = NULL
     )
   
-  return(p)
+  return(shapley_plot)
   
 }
 
 ## Functie om de ceteris paribus plot te maken
 Get_Ceteris_Paribus_Plot <- function(cp_lf_all, group) {
   
-  ## Bepaal de y as
-  y_breaks <- seq(0, 1, by = 0.2)
-  y_labels <- paste0(seq(0, 100, by = 20), "%")
+  # Bepaal de y as
+  lY_Axis <- Set_XY_Axis(axis = "y")
   
   # Plot de ceteris paribus analyse
+  # Gebruik kleur voor _ids_
   cp_plot <- plot(
     cp_lf_all,
-    color = "_ids_",  # Gebruik kleur voor _ids_
+    color = "_ids_",  
     variables = c(
       "Leeftijd",
       "Cijfer_CE_VO",
@@ -1509,65 +1596,46 @@ Get_Ceteris_Paribus_Plot <- function(cp_lf_all, group) {
       "Aanmelding"
     )
   )
-  
-  ## Verwijder de bestaande kleurenschaal, 
+
+  ## Verwijder de bestaande kleurenschaal,
   ## zodat er geen waarschuwing komt over de bestaande kleurenschaal
   cp_plot$scales$scales <- list()
-  
+
   ## Bouw de kleurenschaal op basis van de variabele
-  if(group == "Geslacht") {
-    .values = unname(lColors_geslacht[unique(cp_lf_all$Geslacht)])
-    .labels = names(lColors_geslacht[unique(cp_lf_all$Geslacht)])
-  } else if (group == "Vooropleiding") {
-    .values = unname(lColors_toelaatgevende_vooropleiding[unique(cp_lf_all$Vooropleiding)])
-    .labels = names(lColors_toelaatgevende_vooropleiding[unique(cp_lf_all$Vooropleiding)])
-  } else if (group == "Aansluiting") {
-    .values = unname(lColors_aansluiting[unique(cp_lf_all$Aansluiting)])
-    .labels = names(lColors_aansluiting[unique(cp_lf_all$Aansluiting)])
-  }
+  ## Bepaal de waarden en labels
+  lColor_values_labels <- Get_Color_Values_and_Labels(group, cp_lf_all)
   
-  ## Bouw nu de plot verder op
-  cp_plot <- cp_plot +  
-    
+  # Bouw nu de plot verder op
+  cp_plot <- cp_plot +
+
     # Voeg een enkele schaal toe voor de fill
     scale_color_manual(
       name = group,
-      values = .values,
-      labels = .labels, 
+      values = lColor_values_labels$values,
+      labels = lColor_values_labels$labels,
     ) +
-    
+
     # Pas de y-as schaal aan
-    scale_y_continuous(breaks = y_breaks,
-                       labels = y_labels,
+    scale_y_continuous(breaks = lY_Axis[["y_breaks"]],
+                       labels = lY_Axis[["y_labels"]],
                        limits = c(0, 1)) +
-    
+
     # Pas de labels aan
     labs(title = "Ceteris-paribus profiel",
          subtitle = glue("Kans op retentie voor de meest voorkomende studenten naar **{tolower(group)}**"),
          y = NULL,
          caption = sCaption) +
+
+    # Pas het LTA thema toe
+    Set_LTA_Theme()
     
-    # Pas het thema aan
-    theme_minimal() +
-    theme(
-      axis.title.x = element_text(margin = margin(t = 20)),
-      axis.text.x = element_text(angle = 45, hjust = 1)
-    ) +
-    
-    Set_LTA_Theme() +
-    
-    # Voeg LTA elementen toe
-    Add_LTA_Theme_Elements(title_subtitle = TRUE) +
-    
-    # Pas de positie van de legenda aan
+  # Voeg LTA elementen toe
+  cp_plot <- Add_LTA_Theme_Elements(cp_plot, 
+                                    title_subtitle = TRUE, 
+                                    extended = TRUE) +
     theme(legend.position = "bottom",
           legend.title = element_blank()) +
-    
-    # Maak het grid iets rustiger
-    theme(panel.grid.minor = element_blank()) +
-    
-    # Maak de kopjes van de facetten groter
-    theme(strip.text = element_text(size = 12))
+    guides(colour = guide_legend(nrow = 1))
   
   # Geef de plot terug
   return(cp_plot)
@@ -1580,8 +1648,7 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
                                         show_profiles = TRUE) {
   
   ## Bepaal de y as
-  y_breaks <- seq(0, 1, by = 0.2)
-  y_labels <- paste0(seq(0, 100, by = 20), "%")
+  lY_Axis <- Set_XY_Axis(axis = "y")
   
   ## Bepaal per variabele de kleurenschalen
   if(group == "Geslacht") {
@@ -1601,7 +1668,8 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
     .subtitle <- glue("Kans op retentie naar **{tolower(group)}**")
   }
   
-  ## Verwijder in pdp_lf[["agr_profiles"]][["_label_"]] de naam van het model
+  ## Verwijder uit pdp_lf[["agr_profiles"]][["_label_"]] de naam van het model
+  ## zodat de labels matchen met de namen van de categorieen in de variabelen
   .model <- explain_lf$label
   pdp_lf[["agr_profiles"]][["_label_"]] <- gsub(paste0(.model, "_"),
                                                 "",
@@ -1628,8 +1696,8 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
     ) +
 
     # Pas de y-as schaal aan
-    scale_y_continuous(breaks = y_breaks,
-                       labels = y_labels,
+    scale_y_continuous(breaks = lY_Axis[["y_breaks"]],
+                       labels = lY_Axis[["y_labels"]],
                        limits = c(0, 1)) +
     
     # Pas de labels aan
@@ -1638,28 +1706,17 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
          y = NULL,
          caption = sCaption) +
     
-    # Pas het thema aan
-    theme_minimal() +
-    theme(
-      axis.title.x = element_text(margin = margin(t = 20)),
-      axis.text.x = element_text(angle = 45, hjust = 1)
-    ) +
-    
-    Set_LTA_Theme() +
+    # Pas het LTA thema toe
+    Set_LTA_Theme()
     
     # Voeg LTA elementen toe
-    Add_LTA_Theme_Elements(title_subtitle = TRUE) +
+    pdp_plot <- Add_LTA_Theme_Elements(pdp_plot, 
+                                       title_subtitle = TRUE, 
+                                       extended = TRUE) +
+      theme(legend.position = "bottom",
+            legend.title = element_blank()) +
+      guides(colour = guide_legend(nrow = 1))
     
-    # Pas de positie van de legenda aan en verberg de titel
-    theme(legend.position = "bottom",
-          legend.title = element_blank()) +
-    
-    # Maak het grid iets rustiger
-    theme(panel.grid.minor = element_blank()) +
-    
-    # Maak de kopjes van de facetten groter
-    theme(strip.text = element_text(size = 12))
-  
   # Geef de plot terug
   return(pdp_plot)
   
@@ -1668,9 +1725,8 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
 ## Functie om een fairness plot t emaken
 Get_Density_Plot <- function(fairness_object, group) {
   
-  ## Bepaal de y as
-  x_breaks <- seq(0, 1, by = 0.2)
-  x_labels <- paste0(seq(0, 100, by = 20), "%")
+  ## Bepaal de x as
+  lX_Axis <- Set_XY_Axis(axis = "x")
   
   ## Bepaal per variabele de kleurenschalen
   if(group == "Geslacht") {
@@ -1685,9 +1741,8 @@ Get_Density_Plot <- function(fairness_object, group) {
   
   ## Maak een density plot
   density_plot <- fairness_object |> 
+    
     plot_density() +
-    theme_minimal() +
-    Set_LTA_Theme() +
     
     ## Voeg titel en subtitel toe
     labs(
@@ -1696,35 +1751,56 @@ Get_Density_Plot <- function(fairness_object, group) {
       caption = sCaption,
       x = NULL,
       y = NULL)
-  
-  ## Verwijder de bestaande kleurenschaal, 
+    
+  ## Verwijder de bestaande kleurenschaal,
   ## zodat er geen waarschuwing komt over de bestaande kleurenschaal
   density_plot$scales$scales <- list()
   
-  # Bouw de plot verder op
+  ## Bepaal de kleur
   density_plot <- density_plot +
-    
-    ## Bepaal de kleur
+   
     # Voeg een enkele schaal toe voor de fill
     scale_fill_manual(
       name = NULL,
       values = .values
     ) +
     
-    # Pas de x-as schaal aan
-    scale_x_continuous(breaks = x_breaks,
-                       labels = x_labels,
+    ## Pas de x-as schaal aan
+    scale_x_continuous(breaks = lX_Axis[["x_breaks"]],
+                       labels = lX_Axis[["x_labels"]],
                        limits = c(0, 1)) +
     
-    ## Voeg LTA elementen toe
-    Add_LTA_Theme_Elements(title_subtitle = TRUE) +
+    ## Voeg een lijn toe op de 50% met als label "50%"
+    geom_vline(xintercept = 0.5,
+               linetype = "dotted",
+               color = lColors_default[["sPositive_color"]]) +
     
-    ## Pas een aantal thema elementen aan
+    ## Voeg het label "50%" toe
+    annotate(
+      "text",
+      x = 0.53,
+      y = 0.5,
+      label = "50%",
+      vjust = -0.3,
+      color = lColors_default[["sPositive_color"]]) +
+    
+    # Pas het LTA thema toe
+    Set_LTA_Theme()  +
+    
+    # Pas een aantal thema elementen aan
     theme(
       panel.grid.minor = element_blank(),
       legend.position = "none",
       strip.text = element_blank()
     )
+  
+  ## Voeg LTA elementen toe
+  density_plot <- Add_LTA_Theme_Elements(density_plot,
+                                         title_subtitle = TRUE) +
+    theme(legend.position = "bottom",
+          legend.title = element_blank()) +
+    guides(fill = guide_legend(nrow = 1))
+
   
   return(density_plot)
   
@@ -1735,7 +1811,6 @@ Get_Fairness_Plot <- function(fairness_object, group, privileged) {
   
   ## Bepaal de y as
   y_breaks <- seq(-100, 100, by = 0.2)
-  #y_labels <- paste0(seq(0, 100, by = 20), "%")
   
   ## Maak een fairness plot
   fairness_plot <- fairness_object |> 
@@ -1761,14 +1836,15 @@ Get_Fairness_Plot <- function(fairness_object, group, privileged) {
     
     ## Bepaal de kleur
     scale_fill_manual(
-      values = c("#466F9D")
+      values = c(lColors_default[["sPositive_color"]])
     ) +
       
     # Pas de y-as schaal aan
-    scale_y_continuous(breaks = y_breaks) +
+    scale_y_continuous(breaks = y_breaks)
     
     ## Voeg LTA elementen toe
-    Add_LTA_Theme_Elements(title_subtitle = TRUE) +
+    fairness_plot <- Add_LTA_Theme_Elements(fairness_plot,
+                                            title_subtitle = TRUE) +
     
     ## Pas een aantal thema elementen aan
     theme(
@@ -1781,8 +1857,8 @@ Get_Fairness_Plot <- function(fairness_object, group, privileged) {
   
 }
 
-## Op basis van het bbplot package gebouwd (vandaar de namen in lowercase,
-## zodat deze functies die van het bbplot package overschrijven)
+## Op basis van het bbplot package zijn gebouwd left_align ensave_plot
+## (vandaar de namen in lowercase, zodat deze functies die van het bbplot package overschrijven)
 
 ## Left align
 left_align <- function (plot_name, pieces) {
@@ -1800,14 +1876,14 @@ save_plot <- function (plot_grid, width, height, save_filepath) {
     plot = plot_grid,
     width = (width / 72),
     height = (height / 72),
-    bg = "white",
+    bg = lColors_default[["sBackground_color"]],
     device = ragg::agg_png,
     res = 300,
     create.dir = TRUE
   )
 }
 
-## Bewaar een afbeelding
+## Bewaar een plot
 Finalize_Plot <-
   function (plot_name,
             source_name,
@@ -1827,6 +1903,7 @@ Finalize_Plot <-
     )
     save_plot(plot_grid, width_pixels, height_pixels, save_filepath)
     
+    ## Als de plot getoond moet worden, toon deze dan
     if(show_plot) {
       invisible(plot_grid)
     }
@@ -1846,7 +1923,7 @@ Change_Number_Marks <- function(x, digits = 0) {
                  decimal.mark = ","))
 }
 
-## Haal de dataset (versie) op
+## Haal de versienaam van de dataset op
 Get_sDataset <- function(df) {
   unique(df$LTA_Dataset)
 }

@@ -1,5 +1,15 @@
 project:
   title: "No Fairness without Awareness"
+  type: book
+
+book:
+  title: "NFWA - test"
+  author: "Theo Bakker"
+  date: last-modified
+  chapters:
+    - H1_Index_basis.qmd
+    - H2_Index_verdieping_factoren.qmd
+    - H3_Index_verdieping_kansengelijkheid.qmd
 
 editor: visual
 

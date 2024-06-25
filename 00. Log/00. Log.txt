@@ -20,16 +20,19 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-[ ] Normalisatie
-  [ ] Functies aanvullen voor repeterende code
-  [ ] Afbeeldingen in andere repo zetten
-  
-[ ] Navigatie
-  [ ] Html wegschrijven naar separate report folder
-  [ ] Links naar H1, 2 en 3 van analyses opnemen aan rechterzijde
+[ ] Documentatie
+  [ ] News bijwerken
+  [ ] Readme bijwerken
+  [ ] Vignette bijwerken
+  [ ] Functies documenteren
+  [ ] Functies in aparte bestanden
 
+[ ] Navigatie
+  [ ] Book vorm maken
+  [ ] Html wegschrijven naar separate report folder
+  
 [ ] Plots
-  [ ] 50% lijn aan density plots toevoegen
+  [x] 50% lijn aan density plots toevoegen
   [ ] gam model uitproberen
     [ ] https://parsnip.tidymodels.org/reference/details_gen_additive_mod_mgcv.html
     [ ] https://forum.posit.co/t/how-to-define-smoothed-models-for-a-gam-using-tidymodels-and-recipe/144772
@@ -55,10 +58,22 @@
   [x] Beste model fits zoals op https://rpubs.com/mikek25/tidymodels_churn
   [ ] Teksten voor conclusies herzien
 
+[ ] Bugs
+  [ ] Metrics met NA's
+  
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[x] Normalisatie
+  [x] Alle kleuren configureerbaar maken
+  [x] Hoogte shapley plot dynamisch maken
+  [x] Functies aanvullen voor repeterende code
+  [-] Afbeeldingen in andere repo zetten
+  [x] lColors_toelaatgevende_vooropleiding > lColors[["Toelaatgevende_vooropleiding"]]
+  [-] Kopjes van lables > _ vervangen door " "
+  [-] Het woord retentie variabel maken
+  
 [x] Normalisatie
   [x] Namen van functies consistent maken
   [x] Colors naar settings overzetten

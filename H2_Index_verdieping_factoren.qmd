@@ -267,7 +267,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 ## Bereken de model parts op basis van de RMSE
 mp_rmse <- model_parts(explain_lf, loss_function = loss_root_mean_square)
 
-p_mp_rmse <- plot(mp_rmse) +
+mp_rmse_plot <- plot(mp_rmse) +
   
   ## Themes
   theme_minimal() +
@@ -285,18 +285,18 @@ p_mp_rmse <- plot(mp_rmse) +
   ## Verberg de legenda
   theme(
     legend.position = "none"
-  ) +
+  )
   
   ## Voeg LTA elementen toe
-  Add_LTA_Theme_Elements()
+  mp_rmse_plot <- Add_LTA_Theme_Elements(mp_rmse_plot)
 
 ## Print de plot
-suppressWarnings(print(p_mp_rmse))
+suppressWarnings(print(mp_rmse_plot))
 
 ## Bewaar de plot
 suppressWarnings(
   Finalize_Plot(
-    plot_name = p_mp_rmse,
+    plot_name = mp_rmse_plot,
     save_filepath = sPlotPath
   ))
 } else {
@@ -380,14 +380,14 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
                                   mode = "all")
   
   ## Bouw de basisplot
-  plot <- suppressWarnings(plot(breakdown_lf_all, plot_distributions = TRUE)) 
+  breakdown_plot <- suppressWarnings(plot(breakdown_lf_all, plot_distributions = TRUE)) 
 
   # Bepaal de breaks voor de x-as
-  y_breaks <- seq(0, 1, by = 0.2)
-  y_labels <- paste0(seq(0, 100, by = 20), "%")
+  y_breaks <- seq(0, 1, by = 0.25)
+  y_labels <- paste0(seq(0, 100, by = 25), "%")
   
   ## Maak de plot af op basis van de LTA vormgeving  
-  plot <- plot +
+  breakdown_plot <- breakdown_plot +
     
     ## Themes
     theme_minimal() +
@@ -403,7 +403,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
     )
   
   ## Pas de summary laag aan voor de gemiddelde kans (laag 3)
-  plot$layers[[3]] <- stat_summary(
+  breakdown_plot$layers[[3]] <- stat_summary(
       fun = mean,
       geom = "point",
       shape = 20,
@@ -414,7 +414,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
     
   
   ## Maak de plot af
-  plot <- plot +
+  breakdown_plot <- breakdown_plot +
       
     # Pas de y-as labels aan
     scale_y_continuous(breaks = y_breaks,
@@ -424,17 +424,17 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
     ## Verberg de legenda
     theme(
       legend.position = "none"
-    ) +
+    )
     
-    ## Voeg LTA elementen toe
-    Add_LTA_Theme_Elements()
+  ## Voeg LTA elementen toe
+  breakdown_plot <- Add_LTA_Theme_Elements(breakdown_plot)
     
   ## Sla de plot op
   suppressWarnings(
     Finalize_Plot(
-          plot_name = plot,
+          plot_name = breakdown_plot,
           save_filepath = sPlotPath,
-          height_pixels = 50 + (15 * nrow(dfBreakdown_lf_all))
+          height_pixels = 50 + (20 * nrow(dfBreakdown_lf_all))
         )
     )
   
@@ -549,14 +549,14 @@ for (group in names(lDfPersona)) {
                                       student_groep, student_categorie)
       
       # Watervalplot met ggplot
-      plot <- Get_Waterfall_Plot(dfBreakdown_lf, lTitles)
+      plot <- Get_Breakdown_Plot(dfBreakdown_lf, lTitles)
   
       ## Sla de plot op
       suppressWarnings(
         Finalize_Plot(
           plot_name = plot,
           save_filepath = sPlotPath,
-          height_pixels = 50 + (15 * nrow(dfBreakdown_lf))
+          height_pixels = 50 + (20 * nrow(dfBreakdown_lf))
         ))
       
       ## Toon de bestaande plot
@@ -618,7 +618,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
     Finalize_Plot(
       plot_name = shapley_plot,
       save_filepath = sPlotPath,
-      height_pixels = 50 + (15 * length(unique(dfShapley$variable_name)))
+      height_pixels = 50 + (20 * length(unique(dfShapley$variable_name)))
     ))
   
   ## Print de bestaande plot
@@ -664,8 +664,7 @@ Opnieuw kijken we naar geslacht, vooropleiding en aansluiting. Het kan zijn dat 
 
 library(ingredients)
 
-# names(dfPersona_all)
-
+## Bepaal de meest voorkomende studenten
 student_all <- dfPersona_all[1, ] |> as.data.frame()
 
 dfPersona_tmp <- bind_rows(lDfPersona)
@@ -736,16 +735,16 @@ for (group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
       new_observation = .new_observation,
       variable_splits = variable_splits
     )
-    
+
     ## Maak een Ceteris Paribus plot
     cp_plot <- Get_Ceteris_Paribus_Plot(cp_lf_all, group)
-    
+
     suppressWarnings(
           Finalize_Plot(
             plot_name = cp_plot,
             save_filepath = sPlotPath
           ))
-    
+
     ## Print de bestaande plot
     sPlot <- glue("![]({sPlotPath})")
     Knit_Print_Rule(sPlot)

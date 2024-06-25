@@ -668,10 +668,12 @@ lr_plot <-
     caption = sCaption,
     x = "Area under the ROC Curve",
     y = "Penalty"
-  ) +
+  )
   
   ## Voeg LTA elementen toe
-  Add_LTA_Theme_Elements(title_subtitle = FALSE)
+  lr_plot <- Add_LTA_Theme_Elements(lr_plot, title_subtitle = FALSE)
+  
+  print(lr_plot)
 
 # Zoek de penalty waarde met de max AUC
 max_auc_penalty <- lr_res |> 
@@ -896,15 +898,17 @@ rf_res |>
                              "Configuratie"))
 
 ## Plot de resultaten
-autoplot(rf_res) +
+autoplot <- autoplot(rf_res) +
   theme_minimal() +
   labs(
     y = "roc/auc",
     caption = sCaption
-  ) +
+  )
   
   ## Voeg LTA elementen toe
-  Add_LTA_Theme_Elements(title_subtitle = FALSE)
+  autoplot <- Add_LTA_Theme_Elements(autoplot, title_subtitle = FALSE)
+  
+  print(autoplot)
 
 ```
 
@@ -983,7 +987,6 @@ Eerst combineren we de AUC/ROC curves van de modellen om ze te vergelijken. We k
 
 ## Combineer de AUC/ROC curves om de modellen te vergelijken
 Get_ROC_Plot(list(lr_auc, rf_auc))
-
 
 ```
 
@@ -1181,10 +1184,10 @@ importance_plot <- dfVif |>
     axis.title.x = element_text(margin = margin(t = 20))
   ) +
   
-  coord_flip() +
+  coord_flip()
   
   ## Voeg LTA elementen toe
-  Add_LTA_Theme_Elements(title_subtitle = TRUE)
+  importance_plot <- Add_LTA_Theme_Elements(importance_plot, title_subtitle = TRUE)
 
 # Toon de plot
 print(importance_plot)
@@ -1381,28 +1384,30 @@ We passen de confusion matrix nu toe op het model dat als beste naar voren kwam.
 ```{r}
 #| label: confusion_matrix_plot
 
-plot_confusion_matrix(dfConf_matrix, 
-                      target_col = "Werkelijkheid", 
-                      prediction_col = "Prediction",
-                      counts_col = "n",
-                      palette = "Blues",
-                      add_sums = TRUE,
-                      theme_fn = ggplot2::theme_light,
-                      sums_settings = sum_tile_settings(
-                        palette = "Greens",
-                        label = "Totaal",
-                        tc_tile_border_color = "black"
-                      )) +
-  ## Pas de labels aan
-  labs(title = "Confusion Matrix",
-       x = "Werkelijke uitkost",
-       y = "Voorspelde uitkomst",
-       caption = sCaption) +
-  
-  Set_LTA_Theme() +
+confusion_plot <- plot_confusion_matrix(dfConf_matrix, 
+                          target_col = "Werkelijkheid", 
+                          prediction_col = "Prediction",
+                          counts_col = "n",
+                          palette = "Blues",
+                          add_sums = TRUE,
+                          theme_fn = ggplot2::theme_light,
+                          sums_settings = sum_tile_settings(
+                            palette = "Greens",
+                            label = "Totaal",
+                            tc_tile_border_color = "black"
+                          )) +
+        ## Pas de labels aan
+        labs(title = "Confusion Matrix",
+             x = "Werkelijke uitkost",
+             y = "Voorspelde uitkomst",
+             caption = sCaption) +
+        
+        Set_LTA_Theme()
   
   ## Voeg LTA elementen toe
-  Add_LTA_Theme_Elements(title_subtitle = TRUE)
+  confusion_plot <- Add_LTA_Theme_Elements(confusion_plot, title_subtitle = TRUE)
+  
+  print(confusion_plot)
 
 ```
 

@@ -46,10 +46,12 @@ lColors_default <- c(
   sText_inside_color     = "white",
   
   ## Intercept (0) en gridlines
-  sBaseline_color        = "black",
-  sGridline_color        = "#CBCBCB",
-  sDeadline_color        = "black",
-  sBaseline_color_ses    = "darkgray",
+  sBaseline_color             = "black",
+  sGridline_color             = "#CBCBCB",
+  sDeadline_color             = "black",
+  sBaseline_color_ses         = "darkgray",
+  sBreakdown_intercept_color  = "black",
+  sBreakdown_segment_color    = "darkgray",
   
   ## Vulkleur
   sFill_color            = "lightgray",
@@ -90,6 +92,9 @@ lColors_default <- c(
 lColors_geslacht <- c(
   "M" = "#1170AA",
   "V" = "#FC7D0B")
+
+lColors_ROC_plots <- c("#fc7d0b", "#1170aa",
+                       "#c85200", "#a3cce9")
 
 lColors_toelaatgevende_vooropleiding <- c(
   "MBO"      = "#1170AA",
