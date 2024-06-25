@@ -1279,31 +1279,36 @@ We passen de confusion matrix nu toe op het model dat als beste naar voren kwam.
 ```{r}
 #| label: confusion_matrix_plot
 
-confusion_plot <- plot_confusion_matrix(dfConf_matrix, 
-                          target_col = "Werkelijkheid", 
-                          prediction_col = "Prediction",
-                          counts_col = "n",
-                          palette = "Blues",
-                          add_sums = TRUE,
-                          theme_fn = ggplot2::theme_light,
-                          sums_settings = sum_tile_settings(
-                            palette = "Greens",
-                            label = "Totaal",
-                            tc_tile_border_color = "black"
-                          )) +
-        ## Pas de labels aan
-        labs(title = "Confusion Matrix",
-             x = "Werkelijke uitkost",
-             y = "Voorspelde uitkomst",
-             caption = sCaption) +
-        
-        Set_LTA_Theme()
+confusion_plot <- plot_confusion_matrix(
+    dfConf_matrix,
+    target_col = "Werkelijkheid",
+    prediction_col = "Prediction",
+    counts_col = "n",
+    palette = "Blues",
+    add_sums = TRUE,
+    theme_fn = ggplot2::theme_light,
+    sums_settings = sum_tile_settings(
+      palette = "Greens",
+      label = "Totaal",
+      tc_tile_border_color = "black"
+    )) +
+    
+    ## Pas de labels aan
+    labs(
+      title = "Confusion Matrix",
+      x = "Werkelijke uitkost",
+      y = "Voorspelde uitkomst",
+      caption = sCaption
+    ) +
+    
+    Set_LTA_Theme()
   
   ## Voeg LTA elementen toe
-  confusion_plot <- Add_LTA_Theme_Elements(confusion_plot, title_subtitle = TRUE)
+  confusion_plot <- Add_LTA_Theme_Elements(confusion_plot, 
+                                           title_subtitle = TRUE)
   
   print(confusion_plot)
-
+  
 ```
 
 ### Uitleggen of verklaren?

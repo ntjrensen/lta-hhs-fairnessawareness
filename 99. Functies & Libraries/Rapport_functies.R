@@ -682,6 +682,51 @@ Quarto_Render_Move <- function(input,
   
 }
 
+## Functie om een quarto bestand te renderen en te verplaatsen
+Quarto_Render_Book_Move <- function(input,
+                               output_file = NULL,
+                               output_dir = NULL,
+                               ...) {
+  
+  # Haal alle informatie op over de output van de quarto file
+  x <- quarto::quarto_inspect(input)
+  output_format <- names(x$formats)
+  output <- x$formats[[output_format]]$pandoc$`output-file`
+  if (is.null(output_file)) {
+    output_file <- output
+  }
+  input_dir <- dirname(input)
+  if (is.null(output_dir)) {
+    output_dir <- input_dir
+  }
+  output_path_from <- file.path(input_dir, output)
+  output_path_to   <- file.path(output_dir, output_file)
+  
+  # Render het qmd input-bestand naar de input_dir
+  quarto::quarto_render(input = input, ... = ...)
+  
+  # Als de output_dir verschilt van de input_dir, kopieer het gerenderde bestand
+  ## daarheen en verwijder het originele bestand
+  if (input_dir != output_dir) {
+    # Try to make the folder if it doesn't yet exist
+    if (!dir.exists(output_dir)) {
+      dir.create(output_dir)
+    }
+    
+    # Verplaats nu de uitvoer naar de output_dir en verwijder de originele uitvoer
+    file.copy(from = output_path_from,
+              to = output_path_to,
+              overwrite = TRUE)
+    file.remove(output_path_from)
+    
+    # Als de output_dir hetzelfde is als de input_dir, maar het gerenderde bestand
+    # een andere naam heeft dan het invoerbestand, hernoem het dan
+  } else if (output_file != output) {
+    file.rename(from = output_path_from, to = output_path_to)
+  }
+  
+}
+
 ## Functie om bestanden te kopieren naar de output directory van de repo buiten dit project
 Copy_Reports <- function(remove_orgials = F, debug = F) {
   
@@ -1383,6 +1428,71 @@ Get_ROC_Plot <- function(models, position = NULL) {
   
 }
 
+## Functie om een confusion plot te maken
+Get_Confusion_Plot <- function(dfConf_matrix) {
+ 
+  confusion_plot <- plot_confusion_matrix(
+    dfConf_matrix,
+    target_col = "Werkelijkheid",
+    prediction_col = "Prediction",
+    counts_col = "n",
+    palette = "Blues",
+    add_sums = TRUE,
+    theme_fn = ggplot2::theme_light,
+    sums_settings = sum_tile_settings(
+      palette = "Greens",
+      label = "Totaal",
+      tc_tile_border_color = "black"
+    )) +
+    
+    ## Pas de labels aan
+    labs(
+      title = "Confusion Matrix",
+      x = "Werkelijke uitkost",
+      y = "Voorspelde uitkomst",
+      caption = sCaption
+    ) +
+    
+    Set_LTA_Theme()
+  
+  ## Voeg LTA elementen toe
+  confusion_plot <- Add_LTA_Theme_Elements(confusion_plot, 
+                                           title_subtitle = TRUE)
+  
+  return(confusion_plot)
+   
+}
+
+## Functie om een RMSE plot te maken
+Get_RMSE_Plot <- function(mp_rmse) {
+  
+  ## Maak een RMSE plot
+  mp_rmse_plot <- plot(mp_rmse) +
+    
+    ## Themes
+    Set_LTA_Theme() +
+    
+    ## Titel, ondertitel en caption
+    labs(
+      title = "Meest voorspellende factoren",
+      subtitle = "Root Mean Square Error (RMSE) na permutaties",
+      caption = sCaption,
+      x = NULL,
+      y = NULL
+    ) +
+    
+    ## Verberg de legenda
+    theme(
+      legend.position = "none"
+    )
+  
+  ## Voeg LTA elementen toe
+  mp_rmse_plot <- Add_LTA_Theme_Elements(mp_rmse_plot)
+  
+  return(mp_rmse_plot)
+
+}
+
 ## Functie om de titels te bepalen
 Get_Breakdown_Titles <- function(bd, df, j, 
                                  student_groep, student_categorie, 
@@ -1443,6 +1553,60 @@ Get_Breakdown_Titles <- function(bd, df, j,
   
   return(list(student_current_title, 
               student_current_subtitle))
+}
+
+## Functie om een breakdown plot te maken (all)
+Get_Breakdown_Plot_All <- function(breakdown_lf_all, lTitles) {
+  
+  ## Bouw de basisplot
+  breakdown_plot <- suppressWarnings(plot(breakdown_lf_all, plot_distributions = TRUE)) 
+  
+  ## Bepaal de y as
+  lY_Axis <- Set_XY_Axis(axis = "y")
+
+  ## Maak de plot af op basis van de LTA vormgeving
+  breakdown_plot <- breakdown_plot +
+
+    ## Themes
+    Set_LTA_Theme() +
+
+    # Bepaal de titel, ondertitel en caption
+    labs(
+      title = lTitles[[1]],
+      subtitle = lTitles[[2]],
+      caption = sCaption,
+      x = NULL,
+      y = NULL
+    )
+
+  ## Pas de summary laag aan voor de gemiddelde kans (laag 3)
+  breakdown_plot$layers[[3]] <- stat_summary(
+    fun = mean,
+    geom = "point",
+    shape = 20,
+    size = 3,
+    color = lColors_default[["sNegative_color"]],
+    fill = lColors_default[["sNegative_color"]]
+  )
+
+  ## Maak de plot af
+  breakdown_plot <- breakdown_plot +
+
+    # Pas de y-as labels aan
+    scale_y_continuous(breaks = lY_Axis[["y_breaks"]],
+                       labels = lY_Axis[["y_labels"]],
+                       limits = c(0, 1)) +
+
+    ## Verberg de legenda
+    theme(
+      legend.position = "none"
+    )
+
+  ## Voeg LTA elementen toe
+  breakdown_plot <- Add_LTA_Theme_Elements(breakdown_plot)
+  
+  return(breakdown_plot)
+  
 }
 
 ## Functie om een watervalplot te maken

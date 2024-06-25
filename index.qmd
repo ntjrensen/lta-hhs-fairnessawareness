@@ -54,31 +54,24 @@ source("_Setup.R")
 
 <!-- Inleiding -->
 
-## Onderzoek naar kansengelijkheid - No Fairness without Awareness
+## Onderzoek naar kansengelijkheid
 
 Het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool heeft tot doel kansengelijkheid voor studenten ter verhogen met behulp van learning analytics en inzet van learning technology. 
 
-Het lectoraat werkt aan een methode om te kunnen analyseren of er sprake is van bias in de studiedata in relatie tot het succes van studenten en van een gebrek aan kansengelijkheid. Voor deze methode zetten we prognosemodellen in die we ontwikkelen met machine learning. Een prognosemodel is dus niet een doel op zich, maar het instrument voor een fairness analyse. Zie voor een verdere toelichting op het onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'. 
+Het lectoraat heeft een methode ontwikkeld om te kunnen analyseren of er sprake is van bias in studiedata in relatie tot het succes van studenten, wat een indicatie kan zijn van een gebrek aan kansengelijkheid. Voor deze methode zetten we prognosemodellen in die we ontwikkelen met machine learning. Een prognosemodel is dus niet een doel op zich, maar het instrument voor een analyse van kansengelijkheid, ook wel een *fairness* analyse genoemd. Zie voor een verdere toelichting op het onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'. 
 
 ## Het nut van prognosemodellen
 
-Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de **retentie** van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen. Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse de retentie na 1 jaar als uitkomstvariabele nemen.
+Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de **retentie** van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen. Denk aan een betere voorlichting, onboarding, begeleiding of toespitsing van het onderwijs. Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse de retentie na 1 jaar als uitkomstvariabele nemen.
 
 ## Toepassing 
-
-<!-- ## BRV:ORM DT -->
-<!--   faculteit: "BRV" -->
-<!--   opleidingsnaam: "B Bestuurskunde Overheidsmanagement" -->
-<!--   opleiding: "BO" -->
-<!--   opleidingsvorm: "duaal" -->
-<!--   opleidingsvorm_afkorting: "DU" -->
 
 In deze analyse passen we de methode toe op de opleiding `r params$faculteit` \| **`r params$opleidingsnaam`** (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
 ::: {.callout-warning appearance="default" icon="true"}
 ## Disclaimer
 
-De modellen die we in deze analyses ontwikkelen zijn bedoeld om de dynamiek in het studiesucces van studenten een opleiding beter te begrijpen om kansengelijkheid te bevorderen.
+De prognosemodellen die we in deze analyses ontwikkelen zijn bedoeld om de dynamiek in het studiesucces van studenten een opleiding beter te begrijpen om kansengelijkheid te bevorderen.
 
 **Deze modellen mogen op geen enkele wijze gebruikt worden om individuele studenten te beoordelen of hun succes te voorspellen.**
 :::

@@ -7,6 +7,7 @@ book:
   title: "No Fairness without Awareness"
   author: "Theo Bakker"
   date: last-modified
+  bread-crumbs: false
   navbar: 
     right:
       - icon: info-square
@@ -29,16 +30,6 @@ editor: visual
 # execute:
 #  keep-md: true
 
-website:
-  navbar:
-    tools:
-      - icon: github
-        menu:
-          - text: Source Code
-            href:  https://code.com
-          - text: Report a Bug
-            href:  https://bugs.com
-  
 ## Citaties
 link-citations: true
 bibliography: bibliography/references.bib

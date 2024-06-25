@@ -180,41 +180,23 @@ sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_model_parts_rmse"))
 ## Als de plot niet bestaat of als recreateplots - T, maak dan een nieuwe plot
 if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
-## Bereken de model parts op basis van de RMSE
-mp_rmse <- model_parts(explain_lf, loss_function = loss_root_mean_square)
+  ## Bereken de model parts op basis van de RMSE
+  mp_rmse <- model_parts(explain_lf, loss_function = loss_root_mean_square)
+  
+  ## Maak een plot van de RMSE
+  mp_rmse_plot <- Get_RMSE_Plot(mp_rmse)
+  
+  ## Bewaar de plot
+  suppressWarnings(
+    Finalize_Plot(
+      plot_name = mp_rmse_plot,
+      save_filepath = sPlotPath,
+      height_pixels = 50 + (15 * length(unique(mp_rmse$variable)))
+    ))
 
-mp_rmse_plot <- plot(mp_rmse) +
-  
-  ## Themes
-  theme_minimal() +
-  Set_LTA_Theme() +
-  
-  ## Titel, ondertitel en caption
-  labs(
-    title = "Meest voorspellende factoren",
-    subtitle = "Root Mean Square Error (RMSE) na permutaties",
-    caption = sCaption,
-    x = NULL,
-    y = NULL
-  ) +
-  
-  ## Verberg de legenda
-  theme(
-    legend.position = "none"
-  )
-  
-  ## Voeg LTA elementen toe
-  mp_rmse_plot <- Add_LTA_Theme_Elements(mp_rmse_plot)
-
-## Print de plot
-suppressWarnings(print(mp_rmse_plot))
-
-## Bewaar de plot
-suppressWarnings(
-  Finalize_Plot(
-    plot_name = mp_rmse_plot,
-    save_filepath = sPlotPath
-  ))
+  # ## Toon de bestaande plot
+  knitr::include_graphics(sPlotPath)
+      
 } else {
   
   ## Toon de bestaande plot
@@ -295,55 +277,9 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
                                   "Alle studenten", "Alle studenten",
                                   mode = "all")
   
-  ## Bouw de basisplot
-  breakdown_plot <- suppressWarnings(plot(breakdown_lf_all, plot_distributions = TRUE)) 
-
-  # Bepaal de breaks voor de x-as
-  y_breaks <- seq(0, 1, by = 0.25)
-  y_labels <- paste0(seq(0, 100, by = 25), "%")
-  
-  ## Maak de plot af op basis van de LTA vormgeving  
-  breakdown_plot <- breakdown_plot +
-    
-    ## Themes
-    theme_minimal() +
-    Set_LTA_Theme() +
-    
-    # Bepaal de titel, ondertitel en caption
-    labs(
-      title = lTitles[[1]],
-      subtitle = lTitles[[2]],
-      caption = sCaption,
-      x = NULL,
-      y = NULL
-    )
-  
-  ## Pas de summary laag aan voor de gemiddelde kans (laag 3)
-  breakdown_plot$layers[[3]] <- stat_summary(
-      fun = mean,
-      geom = "point",
-      shape = 20,
-      size = 3,
-      color = lColors_default[["sNegative_color"]],
-      fill = lColors_default[["sNegative_color"]]
-    ) 
-    
-  
-  ## Maak de plot af
-  breakdown_plot <- breakdown_plot +
-      
-    # Pas de y-as labels aan
-    scale_y_continuous(breaks = y_breaks,
-                       labels = y_labels,
-                       limits = c(0, 1)) +
-    
-    ## Verberg de legenda
-    theme(
-      legend.position = "none"
-    )
-    
-  ## Voeg LTA elementen toe
-  breakdown_plot <- Add_LTA_Theme_Elements(breakdown_plot)
+  ## Bouw de plot
+  breakdown_plot <- Get_Breakdown_Plot_All(breakdown_lf_all, 
+                                           lTitles)
     
   ## Sla de plot op
   suppressWarnings(
@@ -353,10 +289,10 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
           height_pixels = 50 + (20 * nrow(dfBreakdown_lf_all))
         )
     )
+
   
   ## Toon de bestaande plot
-  sPlot <- glue("![]({sPlotPath})")
-  Knit_Print_Rule(sPlot)
+  knitr::include_graphics(sPlotPath)
 
 } else {
 

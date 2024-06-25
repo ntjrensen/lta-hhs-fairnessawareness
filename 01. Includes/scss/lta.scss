@@ -13,10 +13,14 @@ $metrics-color-orange: #FFA500;
   border: none;
 }
 
+.navbar-title {
+  color: white;
+  font-family: GT Walsheim, Aktiv Grotesk, sans-serif;
+}
 
 h1 {
   color: $hhs-color-green;
-  font-family: Aktiv Grotesk,sans-serif;
+  font-family: GT Walsheim, Aktiv Grotesk,sans-serif;
 }
 
 h2#toc-title, .quarto-other-links h2 {

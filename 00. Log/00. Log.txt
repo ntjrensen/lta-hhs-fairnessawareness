@@ -20,7 +20,14 @@
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-[ ] RMSE plot hoger maken
+[ ] CBS
+  [ ] Gewichten toepassen
+
+[ ] book-werk
+  [ ] Meerdere opleidingen publiceren
+  [ ] Op een xterne site publiceren?
+  [ ] Een samenvattende pagina met de belangrijkste resultaten
+  [ ] Opleiding in zijbalk
 
 [ ] Documentatie
   [ ] News bijwerken
@@ -41,17 +48,15 @@
       [ ] te weinig observaties ondervangen
         [ ] voeg per opleiding het aantal eerstejaars toe en unieke collegejaren.
         [ ] als dit te weinig observaties of jaren zijn, dan next
-  [x] SWE model - Basis
-      [x] Factoranalyse voor RF werkend krijgen
 
 [ ] Modellen
-  [ ] Diplomarendement
-  [x] Uitval met en zonder prop
-    [x] SUC_P_aantal_jaar
   [ ] Aan het begin een klein staatje van het aantal retentie per jaar.
   [ ] Een workflow set uitproberen:
     [ ] https://workflowsets.tidymodels.org/
-    
+  [ ] Diplomarendement
+  [x] Uitval met en zonder prop
+    [x] SUC_P_aantal_jaar
+  
 [ ] Teksten
   [x] Beste model fits zoals op https://rpubs.com/mikek25/tidymodels_churn
   [ ] Teksten voor conclusies herzien
@@ -63,6 +68,15 @@
 ## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+[x] Normalisatie
+  [x] RMSE plot hoger maken
+  [x] Van alle plots een functie maken
+  [x] Van alle plots de optie hebben om deze van schijf te lezen
+
+[x] Andere opleidingen proberen
+  [x] SWE model - Basis
+      [x] Factoranalyse voor RF werkend krijgen
+      
 [x] Navigatie
   [x] Book vorm maken
   [-] Configuratie insluiten (params)
