@@ -1,9 +1,9 @@
 ---
-title: "1. Prognosemodel - `r params$succes` `r ifelse(params$propedeusediploma == 'Nvt', '', paste0(' - ', params$propedeusediploma))`"
+title: "Prognosemodel retentie na 1 jaar"
 subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
 
 ## Auteur en datum
-author: "`r params$author`, De HHs"
+author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
 date: last-modified
 
 ## LTA Template
@@ -18,37 +18,8 @@ params:
   succes: "Retentie na 1 jaar"
   propedeusediploma: "Nvt" ## Nvt/Met P/Zonder P
   
-  # GVS:HBO-V
-  # faculteit: "GVS"
-  # opleidingsnaam: "B Opleiding tot Verpleegkundige"
-  # opleiding: "HBO-V"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## GVS:MT
-  # faculteit: "GVS"
-  # opleidingsnaam: "B Mens en Techniek"
-  # opleiding: "MT"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## GVS:HDT
-  # faculteit: "GVS"
-  # opleidingsnaam: "B Huidtherapie"
-  # opleiding: "HDT"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: true
-  
-  ## BRV:ORM DT
-  # faculteit: "BRV"
-  # opleidingsnaam: "B Ondernemerschap Retail Management"
-  # opleiding: "ORM"
-  # opleidingsvorm: "deeltijd"
-  # opleidingsvorm_afkorting: "DT"
-  # selectie: false
+  ## Recreate plots
+  recreateplots: true
   
   ## BRV:ORM DT
   faculteit: "BRV"
@@ -57,62 +28,6 @@ params:
   opleidingsvorm: "duaal"
   opleidingsvorm_afkorting: "DU"
   selectie: false
-  
-  ## SWE:SW
-  # faculteit: "SWE"
-  # opleidingsnaam: "B Social Work"
-  # opleiding: "SW"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: true
-  
-  ## TIS:IPO
-  # faculteit: "TIS"
-  # opleidingsnaam: "B Industrieel Product Ontwerpen"
-  # opleiding: "IPO"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## TIS:EC
-  # faculteit: "TIS"
-  # opleidingsnaam: "B Elektrotechniek"
-  # opleiding: "E"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## TIS:B
-  # faculteit: "TIS"
-  # opleidingsnaam: "B Bouwkunde"
-  # opleiding: "B"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## BFM:AC
-  # faculteit: "BFM"
-  # opleidingsnaam: "B International Business"
-  # opleiding: "IB-ES-3"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## BFM:AC
-  # faculteit: "BFM"
-  # opleidingsnaam: "B Accountancy"
-  # opleiding: "AC"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## ITD:CMD
-  # faculteit: "ITD"
-  # opleidingsnaam: "B Communication and Multimedia Design"
-  # opleiding: "CMD"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
   
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"
@@ -151,32 +66,15 @@ dfModel_results <- data.frame(
 )
 ```
 
-<!-- Inleiding -->
+<!-- Methode -->
 
-::: {.content-hidden unless-meta="includes.inleiding"}
-# Inleiding
+## Methode, data en analyse
 
-## Het nut van prognosemodellen
+### Toelichting op de methode
 
-Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de retentie van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen.
+Voor de ontwikkeling van prognosemodellen gebruiken we de aanpak van [Tidymodels](https://www.tidymodels.org/). Tidymodels is een framework voor het bouwen van een prognosemodel. Hiermee verzekeren we ons van een systematische, herhaalbare en schaalbare aanpak.
 
-Het lectoraat Learning Technology & Analytics (LTA) heeft als doel te kunnen analyseren of er sprake is van bias in de data in relatie tot het succes van studenten en er mogelijk sprake is van een gebrek aan kansengelijkheid. Hiervoor zetten we machine learning in. Een prognosemodel is dus niet een doel op zicht, maar het instrument voor een fairness analyse. Zie voor een verdere toelichting het onderzoeksprogramma '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
-
-Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse de retentie als uitkomstvariabele nemen.
-
-::: {.callout-warning appearance="default" icon="true"}
-## Disclaimer
-
-De modellen die we in deze analyses ontwikkelen zijn bedoeld om de dynamiek in het studiesucces van studenten een opleiding beter te begrijpen om kansengelijkheid en te bevorderen.
-
-**Deze modellen mogen op geen enkele wijze gebruikt worden om individuele studenten te beoordelen of hun succes te voorspellen.**
-:::
-
-## Toelichting op de methode
-
-Voor de ontwikkeling van prognosemodellen gebruiken we de aanpak van [Tidymodels](https://www.tidymodels.org/). Tidymodels is een framework voor het bouwen van een prognosemodel. Hiermee verzekeren we ons van een systematische, herhaalbare en schaalbare aanpak voor het bouwen van prognosemodellen.
-
-## Toelichting op de data
+### Toelichting op de data
 
 De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verrijkt door het lectoraat LTA. De data bevat informatie over de inschrijvingen van studenten in het eerste jaar van de opleiding:
 
@@ -184,20 +82,19 @@ De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verr
 2.  *Vooropleidingskenmerken*: toelaatgevende vooropleiding, studiekeuzeprofiel, gemiddeld eindcijfer in de vooropleiding en eventuele deelname aan het Navitas programma.
 3.  *Aanmeldingskenmerken*: aansluiting (direct na diploma, tussenjaar, switch), dag van aanmelding, aantal parallelle studies aan De HHs en collegejaar.
 
-## Toelichting op de analyse
+### Toelichting op de analyse
 
 We toetsen in deze analyse *`r sSucces_model_text`*, voortaan **Retentie** genoemd.
 
 Retentie is gedefinieerd als ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt ook als retentie.
 
 Uitval is het tegenovergestelde van retentie: niet ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt *niet* als uitval.
-:::
 
 <!-- Data -->
 
-# Voorbereidingen
+## Voorbereidingen
 
-## Laad de data
+### Laad de data
 
 We laden een subset in van historische data specifiek voor:
 
@@ -253,7 +150,7 @@ if(opleiding == "HDT") {
 
 ```
 
-## Selecteer en inspecteer de data
+### Selecteer en inspecteer de data
 
 We selecteren eerst de relevante variabelen. We verwijderen daarbij variabelen die maar 1 waarde hebben. We bekijken de variabelen in een samenvatting in relatie tot retentie. Daarnaast bekijken we de kwaliteit van de data op missende waarden.
 
@@ -396,7 +293,7 @@ detach("package:dlookr", unload = TRUE)
 
 ```
 
-## Bewerk de data
+### Bewerk de data
 
 -   Uit de eerste diagnose blijkt dat niet alle variabelen goed genoeg zijn voor het bouwen van een prognosemodel: er zijn missende waarden en niet alle veldtypes zijn geschikt. We passen de variabelen aan zodat we in het model er goed mee kunnen werken.
 -   Prognosemodellen kunnen niet omgaan met missende waarden. Om bias te voorkomen verwijderen we geen rijen met missende waarden, maar vullen die op (*imputatie*). We bewerken de data zo dat alle missende waarden worden opgevuld: bij numerieke waarden met het gemiddelde en bij categorische variabelen met 'Onbekend'.
@@ -453,7 +350,7 @@ detach("package:dlookr", unload = TRUE)
 
 ```
 
-## Bekijk de onderlinge correlaties
+### Bekijk de onderlinge correlaties
 
 Het is verstandig om voorafgaand aan het bouwen van een model te kijken naar de onderlinge correlaties tussen numerieke variabelen. Dit geeft inzicht in de data en kan helpen bij het maken van keuzes voor het model of de duiding van de uitkomsten.
 
@@ -474,7 +371,7 @@ dfOpleiding_inschrijvingen |>
     diag = FALSE)
 ```
 
-## Bouw de trainingset, validatieset en testset
+### Bouw de trainingset, validatieset en testset
 
 -   De data is nu geschikt om een prognosemodel mee te bouwen.
 -   Om het model te bouwen, testen en valideren, splitsen we de data in drie delen van 60%, 20% en 20%. We doen dit op zo'n manier, dat elk deel ongeveer een gelijk aantal studenten bevat dat doorstudeert (dus niet uitvalt).
@@ -532,12 +429,12 @@ bind_rows(dfRetentie_train_prop,
 <!-- MODEL I: Penalized Logistic Regression -->
 
 ::: {.content-hidden unless-meta="includes.model_lr"}
-# Model I: Logistische Regressie
+## Model I: Logistische Regressie
 
 -   Het eerste model is een [logistische regressie met penalized likelihood](https://wikistatistiek.amc.nl/Logistische_regressie); we gebruiken de `glmnet` engine voor het bouwen van het model. Penalized likelihood is een techniek die helpt bij het voorkomen van overfitting. [Glmnet](https://glmnet.stanford.edu/articles/glmnet.html) is een populair package voor het bouwen van logistische regressiemodellen.
 -   We gebruiken de Area under the ROC Curve (AUC/ROC) als performance metric.
 
-## Maak het model
+### Maak het model
 
 Eerst bouwen we het model.
 
@@ -551,7 +448,7 @@ lr_mod <-
   set_engine("glmnet")
 ```
 
-## Maak de recipe
+### Maak de recipe
 
 Vervolgens zetten we meerdere stappen in een 'recipe':
 
@@ -607,7 +504,7 @@ knitr::kable(model_vars_matrix, caption = "Resterende variabelen na bewerkingen"
 
 ```
 
-## Maak de workflow
+### Maak de workflow
 
 Voor de uitvoering bouwen we een nieuwe workflow. Daaraan voegen we het model en de bewerkingen in de recipe toe.
 
@@ -625,7 +522,7 @@ lr_workflow <-
 lr_workflow
 ```
 
-## Tune en train het model
+### Tune en train het model
 
 Het model moet getuned worden. Dit houdt in dat we de beste parameters voor het model moeten vinden. We maken een grid met verschillende penalty waarden. Daarmee kunnen we vervolgens het beste model selecteren met de hoogste ROC/AUC. We plotten de resultaten van de tuning, zodat we hieruit het beste model kunnen kiezen.
 
@@ -673,8 +570,6 @@ lr_plot <-
   ## Voeg LTA elementen toe
   lr_plot <- Add_LTA_Theme_Elements(lr_plot, title_subtitle = FALSE)
   
-  print(lr_plot)
-
 # Zoek de penalty waarde met de max AUC
 max_auc_penalty <- lr_res |> 
   collect_metrics() |> 
@@ -691,12 +586,12 @@ max_auc_mean <- lr_res |>
   filter(mean == max(mean)) |> 
   pull(penalty)
 
-
+## Print de definitieve plot
 lr_plot_plus
 
 ```
 
-## Kies het beste model
+### Kies het beste model
 
 We evalueren modellen met een zo hoog mogelijke Area under the ROC Curve (AUC/ROC) en een zo laag mogelijke penalty. Zo kunnen we uit de resultaten het beste model kiezen. Tot slot maken we een ROC curve om de prestaties van het model te visualiseren.
 
@@ -776,12 +671,12 @@ dfModel_results <-
 <!-- MODEL II: Random Forest -->
 
 ::: {.content-hidden unless-meta="includes.model_rf"}
-# Model II: Tree-based ensemble
+## Model II: Tree-based ensemble
 
 -   Het tweede model is een [random forest](https://en.wikipedia.org/wiki/Random_forest): een ensemble van beslisbomen (decision trees). Het is een krachtig model dat goed om kan gaan met complexe data en veel variabelen.
 -   We gebruiken de `ranger` engine voor het bouwen van het model.
 
-## Bepaal het aantal PC-cores
+### Bepaal het aantal PC-cores
 
 Omdat een random forest model veel berekeningen vereist, willen we daarvoor alle computerkracht gebruiken die beschikbaar is. Het aantal CPU's (*cores*) van de computer bepaalt hoe snel het model getraind kan worden. Deze informatie gebruiken we bij het bouwen van het model.
 
@@ -793,7 +688,7 @@ cores <- parallel::detectCores()
 
 ```
 
-## Maak het model
+### Maak het model
 
 We bouwen eerst het model. We gebruiken de `rand_forest` functie om het model te bouwen. We tunen de `mtry` en `min_n` parameters. De `mtry` parameter bepaalt het aantal variabelen dat per boom wordt gebruikt. De `min_n` parameter bepaalt het minimum aantal observaties dat in een blad van de boom moet zitten. De functie `tune()` is hier nog een *placeholder* om de beste waarden voor deze parameters - die we later bepalen - daar in te stellen. We gebruiken 1.000 bomen c.q. versies van het model.
 
@@ -809,7 +704,7 @@ rf_mod <-
   set_mode("classification")
 ```
 
-## Maak de recipe
+### Maak de recipe
 
 We maken een recipe voor het random forest model. We verwijderen de student ID en het collegejaar uit de data, omdat deze niet moet worden gebruikt in het model. Overige stappen zijn bij een random forest minder relevant in tegenstelling tot een regressiemodel.
 
@@ -832,7 +727,7 @@ tidy(rf_recipe) |>
                              "ID"))
 ```
 
-## Maak de workflow
+### Maak de workflow
 
 We voegen het model en de recipe toe aan de workflow voor dit model.
 
@@ -850,7 +745,7 @@ rf_workflow <-
 rf_workflow
 ```
 
-## Tune en train het model
+### Tune en train het model
 
 We trainen en tunen het model in de workflow. We maken een grid met verschillende waarden voor de parameters `mtry` en `min_n`. We gebruiken de Area under the ROC Curve (AUC/ROC) als performance metric. Met de resultaten van de tuning kiezen we het beste model.
 
@@ -876,7 +771,7 @@ rf_res <-
             metrics = metric_set(roc_auc))
 ```
 
-## Kies het beste model
+### Kies het beste model
 
 We evalueren de beste modellen en maken een ROC curve om de performance van het model te visualiseren. Vervolgens vergelijken we de prestaties van de modellen en kiezen we het beste model.
 
@@ -973,12 +868,12 @@ dfModel_results <-
 
 <!-- Final Fit -->
 
-# De uiteindelijke fit
+## De uiteindelijke fit
 
 -   In de laatste stap van deze analyse maken we het model definitief.
 -   We testen het model op de testset en evalueren het model met metrieken en de Variable Importance Factor (VIF).
 
-## Combineer de AUC/ROC curves en kies het beste model
+### Combineer de AUC/ROC curves en kies het beste model
 
 Eerst combineren we de AUC/ROC curves van de modellen om ze te vergelijken. We kiezen het beste model op basis van de hoogste AUC/ROC.
 
@@ -1028,7 +923,7 @@ sText_best_model <-
 
 `r sText_best_model`
 
-## Maak het finale model
+### Maak het finale model
 
 ```{r, echo=FALSE, results='asis'}
 #| label: text_final_model
@@ -1072,7 +967,7 @@ last_rf_mod <-
 
 ```
 
-## Maak de workflow
+### Maak de workflow
 
 We voegen het model toe aan de workflow en updaten de workflow met het finale model.
 
@@ -1091,7 +986,7 @@ We voegen het model toe aan de workflow en updaten de workflow met het finale mo
 
 ```
 
-## Fit het finale model
+### Fit het finale model
 
 We voeren de finale fit uit. De functie `last_fit` past het model toe op de validatieset.
 
@@ -1133,7 +1028,7 @@ saveRDS(dfOpleiding_inschrijvingen, file = sData_outputpath)
 
 ```
 
-## Evalueer het finale model: metrieken en vif
+### Evalueer het finale model: metrieken en vif
 
 We evalueren het finale model op basis van 4 metrieken: 1) accuraatheid, 2) ROC/AUC en 3) de [Brier score](https://en.wikipedia.org/wiki/Brier_score) (de Mean Squared Error) en 4) de Variable Importance Factor (VIF). Uit de VIF is op te maken welke variabelen het meest bijdragen aan de voorspelling van de uitkomstvariabele.
 
@@ -1194,7 +1089,7 @@ print(importance_plot)
 
 ```
 
-## Plot de ROC curve
+### Plot de ROC curve
 
 Tot slot maken we een ROC curve om de prestaties van het definitieve model te visualiseren. De Sensitivity (True Positive Rate) en Specificity (True Negative Rate) worden hierin uitgezet. De Area under the ROC Curve (AUC/ROC) geeft de prestaties van het model weer. Het model scoort beter naarmate de AUC/ROC dichter bij de 1 ligt, de linker bovenhoek. De linker bovenhoek houdt in dat alle prognoses exact overeenstemmen met de werkelijkheid. Een AUC/ROC van 0,5 betekent dat het model niet beter presteert dan een willekeurige voorspelling.
 
@@ -1215,7 +1110,7 @@ Get_ROC_Plot(auc_lf, position = 3)
 <!-- Conclusies -->
 
 ::: {.content-hidden unless-meta="includes.conclusies"}
-# Conclusies
+## Conclusies
 
 ```{r, echo = FALSE}
 #| label: conclusions_accuracy
@@ -1335,13 +1230,13 @@ if(!("Eindcijfer_VO" %in% dfTop_vif$Variable[1:3])
 
 ```
 
-## Het beste prognosemodel voor deze opleiding
+### Het beste prognosemodel voor deze opleiding
 
 **Het beste prognosemodel blijkt het `r sBest_model` model te zijn.**
 
 -   Van de prognosemodellen die we hebben ontwikkeld om `r tolower(sSucces_model)` te voorspellen, had het `r sBest_model` model de hoogste AUC/ROC waarde (`r sBest_model_auc`).
 
-## Mate van accuraatheid en lift
+### Mate van accuraatheid en lift
 
 Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde op accuraatheid toe te voegen. Het base-model neemt de grootste klasse van de gemiddelde `r tolower(sSucces_model)` van de afgelopen jaren als basis. Stel we zouden tegen alle studenten zeggen dat ze hun studie gaan halen, dan is de mate van accuratesse gelijk aan dit base-model. Dit base-model is dus altijd hoger dan de 50% lijn van de AUC/ROC curve, tenzij het base-model toevallig precies 50% is.
 
@@ -1351,7 +1246,7 @@ Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde o
 -   **Accuratesse prognose: `r Last_fit_Accuracy`%** -- Het model voorspelt `r sSucces_model` met een accuratesse van `r Last_fit_Accuracy`%.
 -   **Lift: `r pAccuracy_verschil`** -- Het model scoort in de huidige opbouw met een verschil van `r pAccuracy_verschil` (de *lift*) `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van het base-model (`r Base_Model_Accuracy`%).
 
-## Confusion Matrix
+### Confusion Matrix
 
 ```{r}
 #| label: confusion_matrix_calculation
@@ -1411,7 +1306,7 @@ confusion_plot <- plot_confusion_matrix(dfConf_matrix,
 
 ```
 
-## Uitleggen of verklaren?
+### Uitleggen of verklaren?
 
 Naast de accuraatheid van het model is het ook belangrijk om te weten welke factoren het meest bijdragen aan de voorspelling van `r tolower(sSucces_model)`. Daarin gaat de vergelijking met de prestaties van het basemodel mank. Dat model geeft op geen enkele manier aan waarom een student een kans op succes heeft, anders dan - 'dit is gebruikelijk in deze opleiding'.
 
@@ -1425,14 +1320,14 @@ Ongeacht de mate van accuraatheid, is het voor ons onderzoek naar kansengelijkhe
 <!-- Next steps -->
 
 ::: {.content-hidden unless-meta="includes.nextsteps"}
-# Vervolgstappen: Factoranalyse
+## Vervolgstappen: Factoranalyse
 
 De volgende stap (stap 2) is een verdiepende analyse van de mate waarin de **factoren** die we gevonden hebben van invloed zijn op `r sSucces_model`. We kijken naar de rangorde, of ze `r sRetentie` verhogen of juist verlagen en hoe stabiel de factoren zijn als we in andere volgordes aan het model toevoegen. Om het concreet te maken zullen we het model toepassen op een aantal fictieve studenten, die we opbouwen uit de meeste voorkomende waarden in deze opleiding. Dit is het onderwerp van analyse 2: de Factoranalyse.
 :::
 
 <!-- Referenties -->
 
-# Literatuur {.unnumbered}
+## Literatuur {.unnumbered}
 
 ::: {#refs}
 :::

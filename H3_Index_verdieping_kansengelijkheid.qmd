@@ -1,9 +1,8 @@
 ---
-title: "3. Kansengelijkheid - `r params$succes` `r ifelse(params$propedeusediploma == 'Nvt', '', paste0(' - ', params$propedeusediploma))`"
 subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
 
 ## Auteur en datum
-author: "`r params$author`, De HHs"
+author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
 date: last-modified
 
 ## LTA Template
@@ -21,38 +20,6 @@ params:
   ## Recreate plots
   recreateplots: true
   
-  # GVS:HBO-V
-  # faculteit: "GVS"
-  # opleidingsnaam: "B Opleiding tot Verpleegkundige"
-  # opleiding: "HBO-V"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## GVS:MT
-  # faculteit: "GVS"
-  # opleidingsnaam: "B Mens en Techniek"
-  # opleiding: "MT"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## GVS:HDT
-  # faculteit: "GVS"
-  # opleidingsnaam: "B Huidtherapie"
-  # opleiding: "HDT"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: true
-  
-  ## BRV:ORM DT
-  # faculteit: "BRV"
-  # opleidingsnaam: "B Ondernemerschap Retail Management"
-  # opleiding: "ORM"
-  # opleidingsvorm: "deeltijd"
-  # opleidingsvorm_afkorting: "DT"
-  # selectie: false
-  
   ## BRV:ORM DT
   faculteit: "BRV"
   opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
@@ -60,62 +27,6 @@ params:
   opleidingsvorm: "duaal"
   opleidingsvorm_afkorting: "DU"
   selectie: false
-  
-  ## SWE:SW
-  # faculteit: "SWE"
-  # opleidingsnaam: "B Social Work"
-  # opleiding: "SW"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: true
-  
-  ## TIS:IPO
-  # faculteit: "TIS"
-  # opleidingsnaam: "B Industrieel Product Ontwerpen"
-  # opleiding: "IPO"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## TIS:EC
-  # faculteit: "TIS"
-  # opleidingsnaam: "B Elektrotechniek"
-  # opleiding: "E"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## TIS:B
-  # faculteit: "TIS"
-  # opleidingsnaam: "B Bouwkunde"
-  # opleiding: "B"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## BFM:AC
-  # faculteit: "BFM"
-  # opleidingsnaam: "B International Business"
-  # opleiding: "IB-ES-3"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## BFM:AC
-  # faculteit: "BFM"
-  # opleidingsnaam: "B Accountancy"
-  # opleiding: "AC"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## ITD:CMD
-  # faculteit: "ITD"
-  # opleidingsnaam: "B Communication and Multimedia Design"
-  # opleiding: "CMD"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
   
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"
@@ -134,8 +45,13 @@ includes:
   copyright:      true
 ---
 
+<!-- Title -->
+
+# Analyse van kansengelijkheid {#sec-kansengelijkheid}
+
 ```{r setup, include = FALSE}
 #| label: setup
+#| echo: false
 
 ## Sluit het _Setup.R bestand in
 source("_Setup.R")
@@ -145,7 +61,7 @@ source("_Setup.R")
 <!-- Inleiding -->
 
 ::: {.content-hidden unless-meta="includes.inleiding"}
-# Inleiding
+## Inleiding
 
 Na de factoranalyse van de data gaan we nu in op de onderwerpen bias, fairness en kansengelijkheid. Het doel is beter te begrijpen of er studenten zijn met minder kans op succes en of dit disproportioneel is. Dit kan duiden op kansenongelijkheid.
 
@@ -158,9 +74,9 @@ De analyse van kansengelijkheid heeft de volgende stappen:
 
 <!-- Data -->
 
-# Voorbereidingen
+## Voorbereidingen
 
-## Laad de data
+### Laad de data
 
 We laden de bewerkte data en het beste prognosemodel in voor:
 
@@ -196,7 +112,7 @@ dfPersona_all <- Get_dfPersona()
 
 ```
 
-## Maak een explainer
+### Maak een explainer
 
 We maken weer gebruik van de explainer van `DALEX`.
 
@@ -243,7 +159,7 @@ explain_lf <- DALEXtra::explain_tidymodels(
 
 <!-- Kansengelijkheid -->
 
-# Analyse van kansengelijkheid
+## Analyse van kansengelijkheid
 
 Tot slot onderzoeken we kansengelijkheid door te kijken naar bias in de data. Dit wordt ook wel een *fairness analyse* genoemd. Het leidende werk voor fairness analyses is [*Fairness and Machine Learning: Limitations and Opportunities*](https://fairmlbook.org/pdf/fairmlbook.pdf) [@Barocas.2023]. De methode die we in dit deel van de analyse hanteren is op dit gedachtengoed gebaseerd.
 
@@ -256,12 +172,12 @@ De volgende **definities** zijn van belang:
 
 In een onderwijssituatie kunnen deze groepen verschillen van andere maatschappelijke situatie. Zo hebben vrouwen in het onderwijs vaak een bevoorrechte positie omdat zij over het algemeen meer studiesucces hebben, terwijl in andere domeinen, bijvoorbeeld het vinden van werk, vrouwen vaak een beschermde groep zijn.
 
-## Ratio's om kansengelijkheid te beoordelen
+### Ratio's om kansengelijkheid te beoordelen
 
 Voor elke groep onderzoeken we **5 ratio's**, ook wel maatstaven of metrieken genoemd. Deze ratio's zijn afgeleid van verhoudingen in de confusion matrix; ze geven inzicht in de mate van bias en kansengelijkheid vanuit verschillende perspectieven van een prognosemodel. ![](01.%20Includes/img/confustion-matrix-fairness-lta-hhs.png)
 
 ::: panel-tabset
-## 1. Accuracy Equality
+### 1. Accuracy Equality
 
 `r kableExtra::text_spec("**1. Accuracy Equality Ratio**", color = lColors_hhs[["hhs-color-blue"]])`
 
@@ -287,7 +203,7 @@ $$ \text{ACC} = \frac{TP + TN}{TP + FP + TN + FN} $$
 
 [Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de nauwkeurigheid van het model voor havisten 80% is en voor mbo-ers 70%. De Accuracy Equality Ratio is dan 0,875 (70% / 80%). Dit betekent dat het model minder accuraat is voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).]{.example}
 
-## 2. Equal Opportunity
+### 2. Equal Opportunity
 
 `r kableExtra::text_spec("**2. Equal Opportunity Ratio**", color = lColors_hhs[["hhs-color-blue"]])`
 
@@ -316,7 +232,7 @@ $$ \text{TPR} = \frac{TP}{TP + FN} $$
 
 [Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de True Positive Rate voor havisten 70% is en voor mbo-ers 60%. De Equal Opportunity Ratio is dan 0,857 (60% / 70%). Dit betekent dat het model minder kans biedt aan de beschermde groep (mbo-ers) om correct positieve uitkomsten te voorspellen dan aan de bevoorrechte groep (havisten).]{.example}
 
-## 3. Predictive Equality
+### 3. Predictive Equality
 
 `r kableExtra::text_spec("**3. Predictive Equality Ratio**", color = lColors_hhs[["hhs-color-blue"]])`
 
@@ -345,7 +261,7 @@ $$ \text{FPR} = \frac{FP}{FP + TN} $$
 
 [Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de False Positive Rate voor havisten 20% is en voor mbo-ers 30%. De Predictive Equality Ratio is dan 1,5 (30% / 20%). Dit betekent dat het model meer kans heeft om vals-positieve voorspellingen te maken voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).]{.example}
 
-## 4. Predictive Parity
+### 4. Predictive Parity
 
 `r kableExtra::text_spec("**4. Predictive Parity Ratio**", color = lColors_hhs[["hhs-color-blue"]])`
 
@@ -372,7 +288,7 @@ $$ \text{PPV} = \frac{TP}{TP + FP} $$
 
 [Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de Positive Predictive Value voor havisten 80% is en voor mbo-ers 70%. De Predictive Parity Ratio is dan 0,875 (70% / 80%). Dit betekent dat het model minder nauwkeurig is in het voorspellen van positieve uitkomsten voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).]{.example}
 
-## 5. Statistical Parity
+### 5. Statistical Parity
 
 `r kableExtra::text_spec("**5. Statistical Parity Ratio**", color = lColors_hhs[["hhs-color-blue"]])`
 
@@ -403,7 +319,7 @@ Nu we deze begrippen hebben gedefinieerd, kunnen we de bias en kansengelijkheid 
 
 <!-- Verdeling van kansen per groep -->
 
-## Verdeling van kansen
+### Verdeling van kansen
 
 Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we eerst de *verdeling van de kansen* op retentie voor verschillende groepen studenten voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting`. De verdeling van deze kansen is uniek per opleiding.
 
@@ -423,7 +339,7 @@ Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we eerst
 for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
   ## Groep
-  Knit_Header(group, 3)
+  Knit_Header(group, 4)
   
   if(group == "Geslacht") {
     sPrivileged <- "V"
@@ -463,7 +379,7 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
 ```
 
-## Fairness checks
+### Fairness checks
 
 Nu we de verdeling van de kansen kennen, maken we tot slot een fairness analyse voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting`. Voor elke groep berekenen we de maatstaven die we eerder hebben behandeld.
 
@@ -472,7 +388,7 @@ We maken een plot van de fairness analyse, waarbij we per variabele één catego
 Het wijkt af als de balken verder buiten het groene vlak komen en in het rode vlak; dit is gebaseerd op een marge, *epsilon*, van 0,8. Deze marge is gebaseerd op het 4/5 principe: er is sprake van een te groot verschil als de maat voor een beschermde groep 4/5 of meer afwijkt van de bevoorrechte groep. Een epsilon van 0,8 leidt tot marges van -0,2 (epsilon/1) en +0,25 (1/espilon). Als er twee ratio's of meer buiten deze marges vallen, is er volgens dit criterium sprake van bias. Als een maatstaf naar links afwijkt is er sprake van bias naar de beschermde groep (ten nadele), als deze naar rechts afwijkt is er sprake van bias naar de bevoorrechte groep (ten voordele).
 
 ::: {.callout-warning appearance="default" icon="true"}
-## Nota Bene
+### Nota Bene
 
 Als de uitkomstmaat van een model negatief is (zoals uitval), dan moet de interpretatie precies andersom gemaakt worden. Dit geldt voor alle maatstaven van bias en fairness in dit hoofdstuk.
 :::
@@ -495,7 +411,7 @@ De keuze voor twee maatstaven als minimum baseren we op een combinatie van stati
 for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
   ## Groep
-  Knit_Header(group, 3)
+  Knit_Header(group, 4)
   
   if(group == "Geslacht") {
     sPrivileged <- "V"
@@ -546,14 +462,14 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 <!-- Conclusies -->
 
 ::: {.content-hidden unless-meta="includes.conclusies"}
-# Conclusies
+## Conclusies
 
 Hier komen de conclusies.
 :::
 
 <!-- Referenties -->
 
-# Literatuur {.unnumbered}
+## Literatuur {.unnumbered}
 
 ::: {#refs}
 :::

@@ -1,5 +1,28 @@
 project:
   title: "No Fairness without Awareness"
+  type: book
+  output-dir: _book
+
+book:
+  title: "No Fairness without Awareness"
+  author: "Theo Bakker"
+  date: last-modified
+  navbar: 
+    right:
+      - icon: info-square
+        href: https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics
+        aria-label: Over het lectoraat Learning Technology & Analytics
+  repo-url: https://github.com/LTA-HHs/lta-hhs-tidymodels-studiesucces/
+  repo-branch: main
+  repo-actions: [issue]
+  chapters:
+    - index.qmd
+    
+    - part: "Analyse"
+      chapters:
+        - H1_Index_basis.qmd
+        - H2_Index_verdieping_factoren.qmd
+        - H3_Index_verdieping_kansengelijkheid.qmd
 
 editor: visual
 
@@ -54,11 +77,9 @@ format:
     ## Links rechterzijde
     toc: true
     toc-title: Inhoudsopgave
-    toc-depth: 4
+    toc-depth: 3
     other-links:
       - text: "Over het lectoraat Learning Technology & Analytics"
         href: https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics
       - text: "Over het onderzoeksprogramma 'No Fairness without Awareness'"
         href: https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness
-      - text: "Github repository"
-        href: https://github.com/LTA-HHs/lta-hhs-tidymodels-uitval

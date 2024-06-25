@@ -1,9 +1,8 @@
 ---
-title: "2. Factoranalyse - `r params$succes` `r ifelse(params$propedeusediploma == 'Nvt', '', paste0(' - ', params$propedeusediploma))`"
 subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
 
 ## Auteur en datum
-author: "`r params$author`, De HHs"
+author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
 date: last-modified
 
 ## LTA Template
@@ -21,38 +20,6 @@ params:
   ## Recreate plots
   recreateplots: true
   
-  # GVS:HBO-V
-  # faculteit: "GVS"
-  # opleidingsnaam: "B Opleiding tot Verpleegkundige"
-  # opleiding: "HBO-V"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## GVS:MT
-  # faculteit: "GVS"
-  # opleidingsnaam: "B Mens en Techniek"
-  # opleiding: "MT"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## GVS:HDT
-  # faculteit: "GVS"
-  # opleidingsnaam: "B Huidtherapie"
-  # opleiding: "HDT"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: true
-  
-  ## BRV:ORM DT
-  # faculteit: "BRV"
-  # opleidingsnaam: "B Ondernemerschap Retail Management"
-  # opleiding: "ORM"
-  # opleidingsvorm: "deeltijd"
-  # opleidingsvorm_afkorting: "DT"
-  # selectie: false
-  
   ## BRV:ORM DT
   faculteit: "BRV"
   opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
@@ -60,62 +27,6 @@ params:
   opleidingsvorm: "duaal"
   opleidingsvorm_afkorting: "DU"
   selectie: false
-  
-  ## SWE:SW
-  # faculteit: "SWE"
-  # opleidingsnaam: "B Social Work"
-  # opleiding: "SW"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: true
-  
-  ## TIS:IPO
-  # faculteit: "TIS"
-  # opleidingsnaam: "B Industrieel Product Ontwerpen"
-  # opleiding: "IPO"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## TIS:EC
-  # faculteit: "TIS"
-  # opleidingsnaam: "B Elektrotechniek"
-  # opleiding: "E"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## TIS:B
-  # faculteit: "TIS"
-  # opleidingsnaam: "B Bouwkunde"
-  # opleiding: "B"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## BFM:AC
-  # faculteit: "BFM"
-  # opleidingsnaam: "B International Business"
-  # opleiding: "IB-ES-3"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## BFM:AC
-  # faculteit: "BFM"
-  # opleidingsnaam: "B Accountancy"
-  # opleiding: "AC"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## ITD:CMD
-  # faculteit: "ITD"
-  # opleidingsnaam: "B Communication and Multimedia Design"
-  # opleiding: "CMD"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
   
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"
@@ -134,8 +45,13 @@ includes:
   copyright:      true
 ---
 
+<!-- Title -->
+
+# Analyse van factoren {#sec-factoranalyse}
+
 ```{r setup, include = FALSE}
 #| label: setup
+#| echo: false
 
 ## Sluit het _Setup.R bestand in
 source("_Setup.R")
@@ -145,7 +61,7 @@ source("_Setup.R")
 <!-- Inleiding -->
 
 ::: {.content-hidden unless-meta="includes.inleiding"}
-# Inleiding
+## Inleiding
 
 Na de basis-analyse van de data en het bouwen van de prognosemodellen, gaan we in deze verdiepende analyse dieper in op de **factoren** van de modellen. Het doel is beter te begrijpen hoe de factoren precies de retentie verklaren. Deze verdiepende factoranalyse heeft 6 stappen:
 
@@ -159,9 +75,9 @@ Na de basis-analyse van de data en het bouwen van de prognosemodellen, gaan we i
 
 <!-- Data -->
 
-# Voorbereidingen
+## Voorbereidingen
 
-## Laad de data
+### Laad de data
 
 We laden de bewerkte data en prognosemodellen in voor:
 
@@ -197,13 +113,13 @@ dfPersona_all <- Get_dfPersona()
 
 ```
 
-# Verdiepende analyse van het model
+## Verdiepende analyse van het model
 
 We weten vanuit de basis-analyse welke variabelen van invloed zijn, maar niet hoe en in welke richting ze retentie verklaren: dragen ze sterk bij of juist niet, verhogen of verlagen ze retentie? Om het model beter te begrijpen en te kunnen uitleggen, maken met behulp van het [`DALEX` package](https://dalex.drwhy.ai) een *explainer*.
 
 DALEX is onder andere ontwikkeld om uit te kunnen leggen welke verklarende variabelen van belang zijn en wat deze voor een effect hebben in een model. Een explainer is een model-onafhankelijke *wrapper*, geeft inzicht in de voorspellingen van het model en de bijdrage van de variabelen aan de prognose. Een explainer maakt het verder mogelijk om modellen onderling te vergelijken en benchmarken.
 
-## Maak een explainer
+### Maak een explainer
 
 We gaan nu een stap verder met behulp van het `DALEX` package. Op basis van het tidymodels model extraheren we de informatie voor de explainer van Dalex.
 
@@ -245,7 +161,7 @@ explain_lf <- DALEX::explain(
 
 ```
 
-## Toets de Root Mean Square Error na permutaties
+### Toets de Root Mean Square Error na permutaties
 
 De eerste analyse is de Root Mean Square Error (RMSE) na permutaties. - De **RMSE(()) is een maatstaf voor de gemiddelde afwijking van de voorspellingen van een model ten opzichte van de werkelijke waarden. Het wordt berekend als de wortel van de gemiddelde kwadratische fout. -** RMSE na permutaties\*\* wil zeggen dat de RMSE is berekend na het herhaaldelijk willekeurig herschikken (permuteren) van de variabelen in de dataset en daarmee de voorspellingen. Deze techniek passen we toe om de robuustheid en betrouwbaarheid van het model te evalueren.
 
@@ -309,7 +225,7 @@ suppressWarnings(
 
 Het valt op dat de meest voorspellende variabelen ook een hoge RMSE hebben. Dit betekent dat deze variabelen een grote invloed hebben op de voorspelling van het model, maar per toepassing op een individuele student uit het verleden ook sterk kunnen variëren.
 
-## Inspecteer variabelen met de meeste invloed
+### Inspecteer variabelen met de meeste invloed
 
 Een volgende analyse is een toepassing van het model op de meest voorkomende student. We kijken eerst naar de meest voorkomende student in het algemeen. Vervolgens analyseren we de meest voorkomende student in meerdere groepen: naar vooropleiding, geslacht, leeftijd en aansluiting, etc. Om de meest voorkomende student te bepalen, gebruiken we de meeste frequente waarden van de verklarende variabelen in de dataset per groep.
 
@@ -337,7 +253,7 @@ sIntercept <- Change_Number_Marks(nIntercept, digits = 1)
 
 ```
 
-### Toelichting op de opbouw van de kans op retentie
+#### Toelichting op de opbouw van de kans op retentie
 
 De opbouw van het model bestaat uit een *intercept*, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de basiskans op retentie voor alle studenten. Deze kans is voor de `r params$opleidingsnaam` (`r params$opleiding`) `r params$opleidingsvorm` `r sIntercept`%. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de kans op retentie verhoogt, een negatieve bijdrage betekent dat het de kans op retentie verlaagt.
 
@@ -345,7 +261,7 @@ Het kan zijn dat nieuwe variabelen geen invloed meer hebben op de kans. Dit bete
 
 Uiteindelijk tellen alle verklarende variabelen op tot een definitieve voorspelling die per persoon verschilt, afhankelijk van hun persoonlijke kenmerken per variabele.
 
-### De meest voorkomende student (totaal)
+#### De meest voorkomende student (totaal)
 
 We kijken eerst naar de meest voorkomende student in de opleiding. We analyseren de kans op retentie voor deze *fictieve* student en de bijdrage van de variabelen aan die kans. Daarbij tonen we de verdeling van de voorspellingen voor deze student voor alle variabelen en per variabele. Dit laat zien welke variabelen belangrijk zijn, naar welke kant de verdeling neigt en welke spreiding de kansverdeling heeft. Wat betekent dit?
 
@@ -451,7 +367,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 ```
 
-### De meest voorkomende student (per groep)
+#### De meest voorkomende student (per groep)
 
 Nu de algemene opbouw van de kans op retentie bekend is voor de meest voorkomende student, gaan we verder met een analyse van de meest voorkomende studenten *per groep*.
 
@@ -469,7 +385,7 @@ for (group in names(lDfPersona)) {
   dfPersona <- lDfPersona[[group]]
 
   ## Print de naam van lDfPersona als header
-  Knit_Header(glue("Naar {tolower(group)}"), 3)
+  Knit_Header(glue("Naar {tolower(group)}"), 5)
 
   ## Bepaal of er in de dataset een groep is met minder dan 21 studenten;
   ## Zo ja, laat die buiten beschouwing en meld dit
@@ -542,7 +458,7 @@ for (group in names(lDfPersona)) {
       dfBreakdown_lf <- Get_dfBreakdown_Lf(breakdown_lf)
       
       ## Toon de header
-      Knit_Header(student_categorie, 4)
+      Knit_Header(student_categorie, 5)
         
       ## Functie om de titels te bepalen
       lTitles <- Get_Breakdown_Titles(breakdown_lf, dfPersona, j, 
@@ -566,7 +482,7 @@ for (group in names(lDfPersona)) {
     } else {
       
       ## Toon de header
-      Knit_Header(student_categorie, 4)
+      Knit_Header(student_categorie, 5)
         
       ## Toon de bestaande plot
       sPlot <- glue("![]({sPlotPath})")
@@ -583,7 +499,7 @@ for (group in names(lDfPersona)) {
 
 ```
 
-## Shapley
+### Shapley
 
 Na deze factorentanalyse kijken we naar de stabiliteit van de invloed van de verklarende variabelen. We gebruiken hiervoor *Shapley* waarden. Anders dan bij de vorige modellen, houdt Shapley rekening met een andere volgorde van de variabelen.
 
@@ -641,12 +557,12 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 <!-- Scenarios -->
 
-## What-if: een Ceteris Paribus analyse
+### What-if: een Ceteris Paribus analyse
 
 Vervolgens analyseren we een aantal scenario's (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de kans op retentie eruit zou zien als telkens een van de variabelen net wat anders was geweest.
 
 ::: {.callout-warning appearance="default" icon="true"}
-## Let op!
+### Let op!
 
 Dit is de invloed van de variabelen bij de unieke combinatie van deze meest voorkomende student per categorie. Zie voor de invloed van een variabelen ongeacht deze unieke combinatie de analyse van Partial Dependence Profielen in de volgende paragraaf.
 :::
@@ -703,7 +619,7 @@ for (group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
     ## Bewaar de plot
     sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_cp_", tolower(group))))
     
-    Knit_Header(group, 3)
+    Knit_Header(group, 4)
   
     ## Maak een breakdown van de meeste voorkomende student over alle data
     if(group == "Geslacht") {
@@ -763,7 +679,7 @@ for (group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
 <!-- Partial Dependence -->
 
-## Partial Dependence analyse
+### Partial Dependence analyse
 
 Tot slot analyseren we *Partial Dependence*. Hierbij onderzoeken we de invloed van individuele variabelen op de kans op retentie, ongeacht de combinatie van de meest voorkomende studenten. Per (numerieke) variabele analyseren we de variantie binnen de kansen op retentie. We gebruiken hiervoor het gemiddelde van alle Ceteris Paribus profielen. Vandaar dat we ook wel spreken over Partial Dependence profielen (PDP's). We gebruiken voor deze analyse weer het `DALEX` package.
 
@@ -793,7 +709,7 @@ for (group in c("Alle studenten", "Geslacht", "Vooropleiding", "Aansluiting")) {
     sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_pdp_",
                                                                  tolower(group))))
     ## Maak een header
-    Knit_Header(group, 3)
+    Knit_Header(group, 4)
 
     if(group == "Alle studenten") {
       
@@ -831,7 +747,7 @@ for (group in c("Alle studenten", "Geslacht", "Vooropleiding", "Aansluiting")) {
     } else {
       
       ## Maak een header
-      Knit_Header(group, 3)
+      Knit_Header(group, 4)
       
       ## Print de bestaande plot
       sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_pdp_",
@@ -847,7 +763,7 @@ for (group in c("Alle studenten", "Geslacht", "Vooropleiding", "Aansluiting")) {
 <!-- Next steps -->
 
 ::: {.content-hidden unless-meta="includes.nextsteps"}
-# Vervolgstappen: kansengelijkheid
+## Vervolgstappen: kansengelijkheid
 
 De volgende stap (stap 3) is te onderzoeken of er binnen deze opleiding binnen deze modellen **kansengelijkheid** bestaat.
 

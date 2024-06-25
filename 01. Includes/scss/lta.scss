@@ -8,6 +8,12 @@ $metrics-color-yellow: #FFD966;
 $metrics-color-orange: #FFA500;
 
 /*-- scss:rules --*/
+.navbar {
+  background-color: $hhs-color-blue;
+  border: none;
+}
+
+
 h1 {
   color: $hhs-color-green;
   font-family: Aktiv Grotesk,sans-serif;
@@ -52,4 +58,14 @@ h2, h3, h4, h5, h6 {
 
 .example {
   color: $hhs-color-blue;
+}
+
+.breadcrumb {
+  background-color: white;
+  border: none;
+  padding: 0 0 10px 0;
+}
+
+div.sidebar-item-container .active {
+    color: $hhs-color-blue;
 }
