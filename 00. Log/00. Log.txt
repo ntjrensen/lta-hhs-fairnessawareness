@@ -24,7 +24,7 @@
   [ ] Gewichten toepassen
 
 [ ] book-werk
-  [ ] Meerdere opleidingen publiceren
+  [x] Meerdere opleidingen publiceren
   [ ] Op een xterne site publiceren?
   [ ] Een samenvattende pagina met de belangrijkste resultaten
   [ ] Opleiding in zijbalk

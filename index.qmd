@@ -50,23 +50,25 @@ includes:
 
 ## Sluit het _Setup.R bestand in
 source("_Setup.R")
+
+## Bepaal de lange naam van de opleidingsvorm en faculteit
+opleidingsvorm_lang <- Get_Opleidingsvorm_Lang(params$opleidingsvorm_afkorting)
+faculteit_lang      <- Get_Faculteitsnaam_Lang(params$faculteit)
 ```
 
 <!-- Inleiding -->
 
+In deze analyse onderzoeken we **`r sSucces_model`** voor de opleiding **`r params$opleidingsnaam`** (`r params$opleiding`), `r opleidingsvorm_lang`, eerstejaars, van de faculteit `r Get_Faculteitsnaam_Lang(params$faculteit)` (`r params$faculteit`).
+
 ## Onderzoek naar kansengelijkheid
 
-Het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool heeft tot doel kansengelijkheid voor studenten ter verhogen met behulp van learning analytics en inzet van learning technology. 
+Het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool heeft tot doel kansengelijkheid voor studenten ter verhogen met behulp van learning analytics en inzet van learning technology.
 
-Het lectoraat heeft een methode ontwikkeld om te kunnen analyseren of er sprake is van bias in studiedata in relatie tot het succes van studenten, wat een indicatie kan zijn van een gebrek aan kansengelijkheid. Voor deze methode zetten we prognosemodellen in die we ontwikkelen met machine learning. Een prognosemodel is dus niet een doel op zich, maar het instrument voor een analyse van kansengelijkheid, ook wel een *fairness* analyse genoemd. Zie voor een verdere toelichting op het onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'. 
+Het lectoraat heeft een methode ontwikkeld voor de analyse van studiedata om te kunnen analyseren of er sprake is van bias in studiedata in relatie tot het succes van studenten, wat een indicatie kan zijn van een gebrek aan kansengelijkheid. Voor deze methode zetten we prognosemodellen in die we bouwen met machine learning. Een prognosemodel is dus niet een doel op zich, maar het instrument voor een analyse van kansengelijkheid, ook wel een *fairness* analyse genoemd. Zie voor een verdere toelichting op het onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
 
 ## Het nut van prognosemodellen
 
-Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de **retentie** van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen. Denk aan een betere voorlichting, onboarding, begeleiding of toespitsing van het onderwijs. Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse de retentie na 1 jaar als uitkomstvariabele nemen.
-
-## Toepassing 
-
-In deze analyse passen we de methode toe op de opleiding `r params$faculteit` \| **`r params$opleidingsnaam`** (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
+Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de **retentie** van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen. Denk aan een betere voorlichting, onboarding, begeleiding of ontwikkeling van het onderwijs. Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse de retentie na 1 jaar als uitkomstvariabele nemen.
 
 ::: {.callout-warning appearance="default" icon="true"}
 ## Disclaimer
@@ -78,12 +80,12 @@ De prognosemodellen die we in deze analyses ontwikkelen zijn bedoeld om de dynam
 
 ## Opbouw analyse en aanpak
 
-Deze analyse kent drie hoofdstukken met de drie stappen van de aanpak: 
+Deze analyse kent drie hoofdstukken met de drie stappen van de aanpak:
 
-- **Hoofdstuk 1: Prognosemodel retentie na 1 jaar** - De ontwikkeling van een aantal prognosemodellen om retentie na 1 jaar te voorspellen, waaruit het best presterende model wordt gekozen.
-- **Hoofdstuk 2: Factoranalyse** - Een verdiepende analyse op de factoren van het best presterende model.
-- **Hoofdstuk 3: Kansengelijkheid** - De analyse van de modellen op bias en kansengelijkheid.
+-   **Hoofdstuk 1: Prognosemodel retentie na 1 jaar** - De ontwikkeling van een aantal prognosemodellen om retentie na 1 jaar te voorspellen, waaruit het best presterende model wordt gekozen.
+-   **Hoofdstuk 2: Factoranalyse** - Een verdiepende analyse op de factoren van het best presterende model.
+-   **Hoofdstuk 3: Kansengelijkheid** - De analyse van de modellen op bias en kansengelijkheid.
 
 ## Vragen of suggesties
 
-Heb je vragen of suggesties over deze analyse? Neem dan contact op met Theo Bakker via 06-25637172 of per mail via [t.c.bakker@hhs.nl](mailto:t.c.bakker@hhs.nl). 
+Heb je vragen of suggesties over deze analyse? Neem dan contact op met Theo Bakker via 06-25637172 of per mail via [t.c.bakker\@hhs.nl](mailto:t.c.bakker@hhs.nl).

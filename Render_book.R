@@ -54,6 +54,10 @@ ltabase::load_lta_datasets(message = TRUE)
 ## Laad extra bibliotheken
 library(cli)         # voor cli teksten
 library(quarto)      # voor quarto bestanden
+library(tidyverse)   # voor make_clean_names
+library(conflicted)  # om conflicten op te lossen
+library(janitor)     # voor make_clean_names
+library(fs)          # voor file system functies
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.4 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
@@ -125,29 +129,22 @@ for(i in 1:nrow(dfRender)) {
   for (j in lSucces) {
   
     ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
-    current_render_opleiding <- Get_Current_opleiding(opleiding = .opleiding,
+    current_render_opleiding <- Get_Current_Opleiding(opleiding = .opleiding,
                                                       opleidingsvorm = .opleidingsvorm)
 
-    ## Bepaal de output file:
-    ## faculteit-opleiding-opleidingsvorm-succes.html
-    .succes <- janitor::make_clean_names(j)
-    .output_file <- paste(
+    ## Bepaal de output dir:
+    ## faculteit/opleiding-opleidingsvorm/retentie-na-1-jaar/index.html
+    
+    .output_dir <- tolower(file.path(
+      current_render_opleiding$INS_Faculteit,
       paste(
-        current_render_opleiding$INS_Faculteit,
         current_render_opleiding$INS_Opleidingstype_LTA,
         current_render_opleiding$INS_Opleiding,
         current_render_opleiding$INS_Opleidingsvorm,
         sep = "-"
       ),
-      "_",
-      .succes,
-      ".html",
-      sep = ""
-    )
-    
-    ## Bepaal de output directory
-    .output_dir <- file.path("10. Output",
-                             tolower(current_render_opleiding$INS_Faculteit))
+      .succes <- janitor::make_clean_names(j)
+    ))
     
     ## Bepaal de parameters voor de quarto file
     .execute_params <- list(
@@ -155,19 +152,41 @@ for(i in 1:nrow(dfRender)) {
       faculteit                = current_render_opleiding$INS_Faculteit,
       opleidingsnaam           = current_render_opleiding$INS_Opleidingsnaam_huidig,
       opleiding                = current_render_opleiding$INS_Opleiding,
-      opleidingsvorm           = Get_Opleidingsvorm_lang(current_render_opleiding$INS_Opleidingsvorm),
+      opleidingsvorm           = Get_Opleidingsvorm_Lang(current_render_opleiding$INS_Opleidingsvorm),
       opleidingsvorm_afkorting = current_render_opleiding$INS_Opleidingsvorm,
       selectie                 = ifelse(current_render_opleiding$INS_Opleiding == "HDT", 
                                         TRUE, 
                                         FALSE)
     )
     
-    ## Render de quarto file en verplaats deze naar de output directory
-    Quarto_Render_Move(input = "Index_basis.qmd",
-                       output_file = .output_file,
-                       output_dir = .output_dir,
-                       execute_params = .execute_params,
-                       output_format = 'html')
+    cli::cli_alert_info(
+      paste(
+        "Render de output voor de opleiding:",
+        .opleiding,
+        "en opleidingsvorm:",
+        .opleidingsvorm,
+        "en succes:",
+        j,
+        "\n naar de directory:",
+        .output_dir
+      )
+    )
+
+    ## Render de quarto files en verplaats deze naar de asset repo
+    for(k in c("index.qmd",
+               "H1_Index_basis.qmd",
+               "H2_Index_verdieping_factoren.qmd",
+               "H3_Index_verdieping_kansengelijkheid.qmd")) {
+
+      # Render het qmd input-bestand naar de input_dir
+      quarto::quarto_render(input = k,
+                            execute_params = .execute_params,
+                            output_format = 'html')
+    }
+
+
+    ## Kopieer de _book directory naar de output directory
+    Copy_Book_To_Assets(output_dir = .output_dir)
     
     ## Collect garbage
     invisible(gc())
@@ -176,12 +195,14 @@ for(i in 1:nrow(dfRender)) {
   
 }
 
+## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.2 Verplaats de output naar de output directory van de repo buiten dit project ####
+## 3. EINDE ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-bRemove_originals <- FALSE
+cli::cli_alert_success("Einde van het script")
 
-## Kopieer de gerenderde bestanden naar de output directory van de repo buiten dit project
-## Verwijder de originele bestanden indien bRemove_originals = TRUE
-Copy_Reports(remove_orgials = bRemove_originals)
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 

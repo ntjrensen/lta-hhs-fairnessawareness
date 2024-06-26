@@ -538,15 +538,30 @@ Mutate_Levels <- function(df, vars, levels) {
 ## Functie om de lange naam van de opleidingsvorm te bepalen
 Get_Opleidingsvorm_Lang <- function(opleidingsvorm) {
   
-  if (opleidingsvorm == "VT") {
-    return("voltijd")
-  } else if (opleidingsvorm == "DT") {
-    return("deeltijd")
-  } else if (opleidingsvorm == "DU") {
-    return("duaal")
-  } else {
-    return("onbekend")
-  }
+  return(switch(
+    opleidingsvorm,
+    "VT" = "voltijd",
+    "DT" = "deeltijd",
+    "DU" = "duaal",
+    "onbekend"
+  ))
+  
+}
+
+## Functie om de lange naam van de opleidingsvorm te bepalen
+Get_Faculteitsnaam_Lang <- function(faculteit) {
+  
+  return(switch(
+    faculteit,
+    "BFM" = "Business, Finance & Marketing",
+    "BRV" = "Bestuur, Recht & Veiligheid",
+    "GVS" = "Gezondheid, Voeding & Sport",
+    "ITD" = "IT & Design",
+    "MO"  = "Management & Organisatie",
+    "SWE" = "Sociaal Werk & Educatie",
+    "TIS" = "Technologie, Innovatie & Samenleving",
+    "onbekend"
+  ))
   
 }
 
@@ -682,47 +697,44 @@ Quarto_Render_Move <- function(input,
   
 }
 
-## Functie om een quarto bestand te renderen en te verplaatsen
-Quarto_Render_Book_Move <- function(input,
-                               output_file = NULL,
-                               output_dir = NULL,
-                               ...) {
+## Functie om de _book directory te kopieren 
+## naar de output directory van de repo buiten dit project
+Copy_Book_To_Assets <- function(output_dir, debug = FALSE) {
   
-  # Haal alle informatie op over de output van de quarto file
-  x <- quarto::quarto_inspect(input)
-  output_format <- names(x$formats)
-  output <- x$formats[[output_format]]$pandoc$`output-file`
-  if (is.null(output_file)) {
-    output_file <- output
+  ## Bepaal de asset repo
+  .asset_repo <- file.path("..", "lta-hhs-tidymodels-studiesucces-reports")
+  
+  ## Bepaal de output directory van de repo buiten dit project
+  output_dir_repo <- file.path(.asset_repo, output_dir)
+  
+  ## Bepaal de input directory
+  input_dir_book <- file.path("_book")
+  
+  ## Als de output directory van de repo buiten dit project niet bestaat, 
+  ## maak deze dan eerst aan
+  if (!dir.exists(output_dir_repo)) {
+    dir.create(output_dir_repo, recursive = TRUE)
   }
-  input_dir <- dirname(input)
-  if (is.null(output_dir)) {
-    output_dir <- input_dir
-  }
-  output_path_from <- file.path(input_dir, output)
-  output_path_to   <- file.path(output_dir, output_file)
   
-  # Render het qmd input-bestand naar de input_dir
-  quarto::quarto_render(input = input, ... = ...)
+  ## Kopieer de _book directory naar de output directory 
+  ## van de repo buiten dit project
+  fs::dir_copy(input_dir_book, output_dir_repo, overwrite = TRUE)
   
-  # Als de output_dir verschilt van de input_dir, kopieer het gerenderde bestand
-  ## daarheen en verwijder het originele bestand
-  if (input_dir != output_dir) {
-    # Try to make the folder if it doesn't yet exist
-    if (!dir.exists(output_dir)) {
-      dir.create(output_dir)
-    }
-    
-    # Verplaats nu de uitvoer naar de output_dir en verwijder de originele uitvoer
-    file.copy(from = output_path_from,
-              to = output_path_to,
-              overwrite = TRUE)
-    file.remove(output_path_from)
-    
-    # Als de output_dir hetzelfde is als de input_dir, maar het gerenderde bestand
-    # een andere naam heeft dan het invoerbestand, hernoem het dan
-  } else if (output_file != output) {
-    file.rename(from = output_path_from, to = output_path_to)
+  ## Test of de kopieeractie is gelukt
+  if (dir.exists(output_dir_repo)) {
+    cli::cli_alert_success(
+      c(
+        "De _book directory is gekopieerd naar {.var {(.asset_repo)}}: \n",
+        "{.file {output_dir_repo}}"
+      )
+    )
+  } else {
+    cli::cli_alert_error(
+      c(
+        "De _book directory is niet gekopieerd naar {.var {(.asset_repo)}}: \n",
+        "{.file {output_dir_repo}}"
+      )
+    )
   }
   
 }

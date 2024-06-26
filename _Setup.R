@@ -114,7 +114,9 @@ if(bSetup_executed == F) {
   
   library(fairmodels)   # voor fairness in modellen
   
-  library(quartostamp)  # voor extra quarto 
+  library(fs)          # voor file system functies
+  
+  library(quartostamp)  # voor extra quarto add-in functionaliteit
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.5 Fonts ####
