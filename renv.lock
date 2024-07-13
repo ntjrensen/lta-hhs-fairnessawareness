@@ -2574,6 +2574,16 @@
       ],
       "Hash": "a4b659bd0528226724d55034f11ed7cb"
     },
+    "mnormt": {
+      "Package": "mnormt",
+      "Version": "2.1.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R"
+      ],
+      "Hash": "c83992ef63553d1e4b97162a4a753470"
+    },
     "modeldata": {
       "Package": "modeldata",
       "Version": "1.4.0",
@@ -4154,6 +4164,21 @@
         "withr"
       ],
       "Hash": "390f9315bc0025be03012054103d227c"
+    },
+    "wCorr": {
+      "Package": "wCorr",
+      "Version": "1.9.8",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "Rcpp",
+        "RcppArmadillo",
+        "minqa",
+        "mnormt",
+        "stats"
+      ],
+      "Hash": "25b6ec4a3939ff975105fa2f8b12c411"
     },
     "warp": {
       "Package": "warp",

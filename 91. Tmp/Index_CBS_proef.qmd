@@ -352,7 +352,7 @@ tblSummary_srvy <- dfSummary_srvy |>
   ) |> 
   
   ## Richt de vormgeving van de table in
-  modify_header(all_stat_cols() ~ "**{level}**, N={Number_to_readable(n)} ({style_percent(p)}%)") |>
+  modify_header(all_stat_cols() ~ "**{level}**, N={Change_Number_Marks(n)} ({style_percent(p)}%)") |>
   modify_spanning_header(c("stat_1", "stat_2") ~ "**Uitval**") |>
   modify_header(label = "**Variabele**") |>
   bold_labels() |>
@@ -362,7 +362,7 @@ tblSummary_srvy <- dfSummary_srvy |>
       hide_p = FALSE,
       pattern = "{p.value}{stars}"
     ) |>
-  add_overall(last = TRUE, col_label = "**Totaal**, N = {Number_to_readable(N)}")
+  add_overall(last = TRUE, col_label = "**Totaal**, N = {Change_Number_Marks(N)}")
   
 
 ## Toon de tabel
@@ -404,7 +404,7 @@ tblSummary_srvy_2f <- dfSummary_srvy |>
     ) |> 
     
     ## Richt de vormgeving van de table in
-    modify_header(all_stat_cols() ~ "**{level}**, N={Number_to_readable(n)} ({style_percent(p)}%)") |>
+    modify_header(all_stat_cols() ~ "**{level}**, N={Change_Number_Marks(n)} ({style_percent(p)}%)") |>
     modify_header(label = "**Variabele**") |>
     bold_labels() |>
     modify_caption("**Studentkenmerken versus Geslacht en Uitval**") |>
@@ -413,7 +413,7 @@ tblSummary_srvy_2f <- dfSummary_srvy |>
         hide_p = FALSE,
         pattern = "{p.value}{stars}"
       ) |>
-    add_overall(last = TRUE, col_label = "**Totaal**, N = {Number_to_readable(N)}")
+    add_overall(last = TRUE, col_label = "**Totaal**, N = {Change_Number_Marks(N)}")
   ) #|> 
   #modify_spanning_header(all_stat_cols() ~ "**Uitval**")
     

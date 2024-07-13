@@ -116,10 +116,15 @@ assert_parity_metrics <- function(metric) {
 assert_equal_parameters <- function(x, parameter) {
   param_to_compare <- x[[1]][[parameter]]
   
-  for (obj in x) {
+  # for (obj in x) {
+  #   if (obj[[parameter]] != param_to_compare)
+  #     stop("Parameters have different values")
+  # }
+  
+  walk(x, function(obj) {
     if (obj[[parameter]] != param_to_compare)
       stop("Parameters have different values")
-  }
+  })
 }
 
 
@@ -144,15 +149,23 @@ assert_different_label <- function(x) {
 get_objects <- function(x, class) {
   stopifnot(class(x) == "list")
   
-  explainers <- list()
-  j <- 1
+  # explainers <- list()
+  # j <- 1
+  # 
+  # for (i in seq_along(x)) {
+  #   if (class(x[[i]]) == class) {
+  #     explainers[[j]] <- x[[i]]
+  #     j <- j + 1
+  #   }
+  # }
   
-  for (i in seq_along(x)) {
+  explainers <- list()
+  
+  walk(seq_along(x), function(i) {
     if (class(x[[i]]) == class) {
-      explainers[[j]] <- x[[i]]
-      j <- j + 1
+      explainers <<- append(explainers, list(x[[i]]))
     }
-  }
+  })
   
   return(explainers)
 }

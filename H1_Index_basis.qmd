@@ -258,7 +258,7 @@ dfSummary <- dfOpleiding_inschrijvingen |>
   ## Pas de labels van Retentie aan van True naar Ja, en van False naar Nee
   mutate(Retentie = fct_recode(Retentie, "Nee" = "FALSE", "Ja" = "TRUE")) |>
   
-  ## Pas de volgorde van de labels van Uitval aan
+  ## Pas de volgorde van de labels van Retentie aan
   mutate(Retentie = fct_relevel(Retentie, "Ja", "Nee"))
 
 ## Toon deze als een samenvattende tabel
@@ -905,13 +905,13 @@ sBest_model_auc <- round(dfModel_results$auc[dfModel_results$best == TRUE], 4)
 ## Bouw de tekst voor de beste modellen op
 sText_best_model <- ""
 
-for (i in 1:nrow(dfModel_results)) {
+walk(1:nrow(dfModel_results), function(i) {
   sText_best_model <-
     glue(
       sText_best_model,
       "Het {dfModel_results[i,]$model} model heeft een AUC van {round(dfModel_results[i,]$auc, 4)}. "
     )
-}
+})
 
 ## Herschik de uiteindelijke tekst voor een heldere samenvatting
 sText_best_model <-

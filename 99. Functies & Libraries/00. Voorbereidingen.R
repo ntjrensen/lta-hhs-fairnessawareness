@@ -66,11 +66,21 @@
 ## 0.1 Standaard algemene package die direct nodig zijn ####
 
 ## Installeer here, cli en icecream indien nodig
-for (i in c("here", "cli", "icecream")) {
-  if(!requireNamespace(i, quietly = TRUE)) {
-    install.packages(i)
+packages <- c("here", "cli", "icecream")
+
+purrr::walk(packages, function(pkg) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg)
   }
-}
+  library(pkg, character.only = TRUE)
+})
+
+# for (i in c("here", "cli", "icecream")) {
+#   if(!requireNamespace(i, quietly = TRUE)) {
+#     install.packages(i)
+#   }
+#   library(i, character.only = TRUE)
+# }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 0.2 ltabase package in (installeer indien nodig) ####

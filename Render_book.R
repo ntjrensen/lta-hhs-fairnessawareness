@@ -82,8 +82,9 @@ dfRender <- dfOpleidingen |>
   mutate(INS_Opleiding_en_Opleidingsvorm = paste(INS_Opleiding, INS_Opleidingsvorm, sep = "_")) |>
   dplyr::filter(
     INS_Opleiding_en_Opleidingsvorm %in% c(
-      "HBO-V_VT",
-      "BO_DU"
+      # "HBO-V_VT",
+      # "BO_DU",
+      # "ICT_VT"
       # "HBO-V_DT",
       # "CMD_VT", 
       # "IPO_VT",
@@ -94,7 +95,8 @@ dfRender <- dfOpleidingen |>
       # "SW_VT", 
       # "ORM_DT",
       # "ORM_VT",
-      # "AC_VT"
+      # "AC_VT",
+      "CMD_VT"
       ) 
   ) |> 
   dplyr::select(INS_Opleiding_en_Opleidingsvorm, 
@@ -159,6 +161,7 @@ for(i in 1:nrow(dfRender)) {
                                         FALSE)
     )
     
+    ## Meld de actie
     cli::cli_alert_info(
       paste(
         "Render de output voor de opleiding:",
@@ -184,9 +187,8 @@ for(i in 1:nrow(dfRender)) {
                             output_format = 'html')
     }
 
-
     ## Kopieer de _book directory naar de output directory
-    Copy_Book_To_Assets(output_dir = .output_dir)
+    Copy_Book_To_Reports(output_dir = .output_dir)
     
     ## Collect garbage
     invisible(gc())

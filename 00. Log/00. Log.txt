@@ -17,24 +17,44 @@
 ## Plotpagina van Dalex: https://github.com/ModelOriented/DALEX/blob/28a936b067abad5c3a3ff11b8a6b7a4bfdab1db8/R/plot_model_performance.R#L118
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## CBS ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[ ] Toevoegen een element van weging
+[ ] tidymodels met weging
+[ ] explainer met weging
+[ ] overige functies met weging
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[x] Hoogte van de afbeeldingen bij CMD is te laag.
+[x] Gemiddelde student anders opbouwen > hoofdklasse geslacht, dan vooropleiding, dan cijfer en skp of beschrijving anders maken!
+  [ ] Alternatieve persona > wel bestaande met cumulatief filter
+
+[ ] Variabelen
+  [ ] Ze in een loop kunnen gebruiken
+  [ ] APCG
+  [ ] Classificatie SES
+  [ ] Classificatie leeftijd
+  [ ] Lump voor profielen
+
+[ ] Purrrrify
+  [ ] Loops vervangen door purrr
 
 [ ] CBS
   [ ] Gewichten toepassen
 
 [ ] book-werk
+  [ ] Een samenvattende pagina met de belangrijkste resultaten
   [x] Meerdere opleidingen publiceren
   [ ] Op een xterne site publiceren?
-  [ ] Een samenvattende pagina met de belangrijkste resultaten
-  [ ] Opleiding in zijbalk
+  [-] Opleiding in zijbalk
 
 [ ] Documentatie
   [ ] News bijwerken
   [ ] Readme bijwerken
-  [ ] Vignette bijwerken
-  [ ] Functies documenteren
-  [ ] Functies in aparte bestanden
 
 [ ] Plots
   [x] 50% lijn aan density plots toevoegen

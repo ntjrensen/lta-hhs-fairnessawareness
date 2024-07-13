@@ -519,14 +519,24 @@ Set_Levels <- function(df = dfOpleiding_inschrijvingen_base) {
 
 ## Functie om de levels van een variabele te muteren
 Mutate_Levels <- function(df, vars, levels) {
-  for (i in seq_along(vars)) {
+  
+  walk(seq_along(vars), function(i) {
     df <- df |>
       mutate(
         !!rlang::sym(vars[i]) := fct_expand(!!rlang::sym(vars[i]), levels[[i]]),
         !!rlang::sym(vars[i]) := fct_relevel(!!rlang::sym(vars[i]), levels[[i]]),
         !!rlang::sym(vars[i]) := fct_drop(!!rlang::sym(vars[i]))
       )
-  }
+  })
+  
+  # for (i in seq_along(vars)) {
+  #   df <- df |>
+  #     mutate(
+  #       !!rlang::sym(vars[i]) := fct_expand(!!rlang::sym(vars[i]), levels[[i]]),
+  #       !!rlang::sym(vars[i]) := fct_relevel(!!rlang::sym(vars[i]), levels[[i]]),
+  #       !!rlang::sym(vars[i]) := fct_drop(!!rlang::sym(vars[i]))
+  #     )
+  # }
   return(df)
 }
 
@@ -699,10 +709,10 @@ Quarto_Render_Move <- function(input,
 
 ## Functie om de _book directory te kopieren 
 ## naar de output directory van de repo buiten dit project
-Copy_Book_To_Assets <- function(output_dir, debug = FALSE) {
+Copy_Book_To_Reports <- function(output_dir, debug = FALSE) {
   
   ## Bepaal de asset repo
-  .asset_repo <- file.path("..", "lta-hhs-tidymodels-studiesucces-reports")
+  .asset_repo <- file.path("../..", "LTA_Reports/lta-hhs-tidymodels-studiesucces-reports")
   
   ## Bepaal de output directory van de repo buiten dit project
   output_dir_repo <- file.path(.asset_repo, output_dir)
@@ -769,7 +779,7 @@ Copy_Reports <- function(remove_orgials = F, debug = F) {
     
     ## Kopieer de .html bestanden van de output directory 
     ## naar de output directory van de repo buiten dit project
-    for(f in file_list) {
+    walk(file_list, function(f) {
       
       ## Maak een output directory voor de bestanden: repo + faculteit
       .output_dir <- file.path(sOutput_directory,
@@ -786,7 +796,7 @@ Copy_Reports <- function(remove_orgials = F, debug = F) {
         recursive = FALSE,
         copy.mode = TRUE
       )
-    }
+    })
     
     cli::cli_alert("De bestanden zijn gekopieerd")
     
@@ -893,18 +903,18 @@ Get_dfPersona <- function(group = NULL) {
   
   ## Bepaal de categorische variabelen die gebruikt worden
   lSelect_categorical <- c(
-    "Aansluiting",
-    "APCG",
-    "Cijfer_CE_Engels_missing",
-    "Cijfer_CE_Natuurkunde_missing",
-    "Cijfer_CE_Nederlands_missing",
-    "Cijfer_CE_VO_missing",
-    "Cijfer_CE_Wiskunde_missing",
-    "Cijfer_SE_VO_missing",
-    "Dubbele_studie",
     "Geslacht",
+    "Vooropleiding",
+    "Aansluiting",
     "Studiekeuzeprofiel",
-    "Vooropleiding"
+    "APCG",
+    "Cijfer_CE_VO_missing",
+    "Cijfer_SE_VO_missing",
+    "Cijfer_CE_Nederlands_missing",
+    "Cijfer_CE_Engels_missing",
+    "Cijfer_CE_Wiskunde_missing",
+    "Cijfer_CE_Natuurkunde_missing",
+    "Dubbele_studie"
   ) 
   
   ## Verwijder de huidige groep variabele uit deze lijst
@@ -916,19 +926,18 @@ Get_dfPersona <- function(group = NULL) {
   
   ## Bepaal de numerieke variabelen die gebruikt worden
   lSelect_numerical <- c(
+    "Leeftijd",
     "Aanmelding",
+    "Reistijd",
+    "Cijfer_CE_VO",
+    "Cijfer_SE_VO",
+    "Cijfer_CE_Nederlands",
+    "Cijfer_CE_Wiskunde",
     "Cijfer_CE_Engels",
     "Cijfer_CE_Natuurkunde",
-    "Cijfer_CE_Nederlands",
-    "Cijfer_CE_VO",
-    "Cijfer_CE_Wiskunde",
-    "Cijfer_SE_VO",
-    "Leeftijd",
-    "Reistijd",
-    "SES_Arbeid",
-    "SES_Welvaart",
     "SES_Totaal",
-    "Retentie"
+    "SES_Welvaart",
+    "SES_Arbeid"
   )
   
   # Bereken het totaal voor deze opleiding
@@ -1028,6 +1037,124 @@ Get_dfPersona <- function(group = NULL) {
              Categorie = "Alle studenten") |>
       
       # Herorden
+      select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
+  }
+  
+  return(dfPersona)
+}
+
+Get_dfPersona_2 <- function(group = NULL) {
+  
+  ## Bepaal de categorische variabelen die gebruikt worden
+  lSelect_categorical <- c(
+    "Aansluiting",
+    "APCG",
+    "Cijfer_CE_Engels_missing",
+    "Cijfer_CE_Natuurkunde_missing",
+    "Cijfer_CE_Nederlands_missing",
+    "Cijfer_CE_VO_missing",
+    "Cijfer_CE_Wiskunde_missing",
+    "Cijfer_SE_VO_missing",
+    "Dubbele_studie",
+    "Geslacht",
+    "Studiekeuzeprofiel",
+    "Vooropleiding"
+  ) 
+  
+  ## Verwijder de huidige groep variabele uit deze lijst
+  if (!is.null(group)) {
+    .group <- as.name(group)
+    lSelect_categorical <- setdiff(lSelect_categorical, group)
+  }
+  
+  ## Bepaal de numerieke variabelen die gebruikt worden
+  lSelect_numerical <- c(
+    "Aanmelding",
+    "Cijfer_CE_Engels",
+    "Cijfer_CE_Natuurkunde",
+    "Cijfer_CE_Nederlands",
+    "Cijfer_CE_VO",
+    "Cijfer_CE_Wiskunde",
+    "Cijfer_SE_VO",
+    "Leeftijd",
+    "Reistijd",
+    "SES_Arbeid",
+    "SES_Welvaart",
+    "SES_Totaal",
+    "Retentie"
+  )
+  
+  # Helper functie om meest voorkomende waarde te vinden
+  Get_Mostcommon_Value <- function(x) {
+    if (is.numeric(x)) {
+      return(median(x, na.rm = TRUE))
+    } else {
+      return(names(sort(table(x), decreasing = TRUE))[1])
+    }
+  }
+  
+  if (!is.null(group)) {
+    
+    # Maak personas aan op basis van de opgegeven groep
+    dfPersona <- dfOpleiding_inschrijvingen |> 
+      group_by(!!.group) |> 
+      group_split()
+    
+    personas <- list()
+    
+    for (df in dfPersona) {
+      for (var in c(lSelect_categorical, lSelect_numerical)) {
+        most_common_value <- Get_Mostcommon_Value(df[[var]])
+        df <- df[df[[var]] == most_common_value, ]
+      }
+      
+      persona <- df |>
+        summarise(
+          across(all_of(lSelect_categorical), Get_Mostcommon_Category, .names = "{col}"),
+          across(all_of(lSelect_numerical), Get_Median_Rounded, .names = "{col}"),
+          Collegejaar = median(Collegejaar, na.rm = TRUE),
+          ID = NA,
+          Subtotaal = n(),
+          .groups = "drop"
+        )
+      
+      personas <- append(personas, list(persona))
+    }
+    
+    dfPersona <- bind_rows(personas) |>
+      mutate(
+        Totaal = .totaal,
+        Percentage = round(Subtotaal / .totaal, 3),
+        Groep = group,
+        Categorie = !!.group
+      ) |>
+      mutate(Leeftijd = as.integer(Leeftijd)) |>
+      select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
+    
+  } else {
+    
+    dfFiltered <- dfOpleiding_inschrijvingen
+    
+    for (var in c(lSelect_categorical, lSelect_numerical)) {
+      most_common_value <- Get_Mostcommon_Value(dfFiltered[[var]])
+      dfFiltered <- dfFiltered[dfFiltered[[var]] == most_common_value, ]
+    }
+    
+    dfPersona <- dfFiltered |>
+      summarise(
+        across(all_of(lSelect_categorical), Get_Mostcommon_Category, .names = "{col}"),
+        across(all_of(lSelect_numerical), Get_Median_Rounded, .names = "{col}"),
+        Collegejaar = median(Collegejaar, na.rm = TRUE),
+        ID = NA,
+        Subtotaal = n(),
+        .groups = "drop"
+      ) |>
+      mutate(
+        Totaal = .totaal,
+        Percentage = round(Subtotaal / .totaal, 3),
+        Groep = "Alle",
+        Categorie = "Alle studenten"
+      ) |>
       select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
   }
   

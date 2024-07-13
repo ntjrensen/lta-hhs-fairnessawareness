@@ -21,11 +21,19 @@ params:
   recreateplots: true
   
   ## BRV:ORM DT
-  faculteit: "BRV"
-  opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
-  opleiding: "BO"
-  opleidingsvorm: "duaal"
-  opleidingsvorm_afkorting: "DU"
+  # faculteit: "BRV"
+  # opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
+  # opleiding: "BO"
+  # opleidingsvorm: "duaal"
+  # opleidingsvorm_afkorting: "DU"
+  # selectie: false
+  
+  ## ITD:CMD VT
+  faculteit: "ITD"
+  opleidingsnaam: "Communication and Multimedia Design"
+  opleiding: "CMD"
+  opleidingsvorm: "voltijd"
+  opleidingsvorm_afkorting: "VT"
   selectie: false
   
   ## Author
@@ -163,11 +171,14 @@ explain_lf <- DALEX::explain(
 
 ### Toets de Root Mean Square Error na permutaties
 
-De eerste analyse is de Root Mean Square Error (RMSE) na permutaties. - De **RMSE(()) is een maatstaf voor de gemiddelde afwijking van de voorspellingen van een model ten opzichte van de werkelijke waarden. Het wordt berekend als de wortel van de gemiddelde kwadratische fout. -** RMSE na permutaties\*\* wil zeggen dat de RMSE is berekend na het herhaaldelijk willekeurig herschikken (permuteren) van de variabelen in de dataset en daarmee de voorspellingen. Deze techniek passen we toe om de robuustheid en betrouwbaarheid van het model te evalueren.
+De eerste analyse is de Root Mean Square Error (RMSE) na permutaties. 
+
+-   De **RMSE** is een maatstaf voor de gemiddelde afwijking van de voorspellingen van een model ten opzichte van de werkelijke waarden. Het wordt berekend als de wortel van de gemiddelde kwadratische fout. 
+-   **RMSE na permutaties** wil zeggen dat de RMSE is berekend na het herhaaldelijk willekeurig herschikken (permuteren) van de waarden van een variabele in de dataset en daarmee de voorspellingen. Deze techniek passen we toe om de robuustheid en betrouwbaarheid van het model te evalueren.
 
 **Waarom RMSE na permutaties?**
 
--   **Modelvalidatie**: Door de variabelen te permuteren en de RMSE te berekenen, kunnen we de prestatie van het model vergelijken met een willekeurige schatting. Een model dat significant beter presteert dan het gemiddelde RMSE na permutaties heeft waarschijnlijk voorspellende kracht.
+-   **Modelvalidatie**: Door de variabelen te permuteren en de RMSE te berekenen, kunnen we de prestatie van het model vergelijken met een willekeurige schatting. Variabelen die significant beter presteren dan de gemiddelde RMSE na permutaties hebben meer voorspellende kracht.
 -   **Overfit detectie**: Als de RMSE van het originele model niet veel beter is dan het RMSE na permutaties, kan dit een indicatie zijn dat het model overfit is op de trainingsdata en niet goed generaliseert naar nieuwe data.
 
 De meeste voorspellende factoren en hun RMSE zijn:
@@ -209,9 +220,11 @@ Het valt op dat de meest voorspellende variabelen ook een hoge RMSE hebben. Dit 
 
 ### Inspecteer variabelen met de meeste invloed
 
-Een volgende analyse is een toepassing van het model op de meest voorkomende student. We kijken eerst naar de meest voorkomende student in het algemeen. Vervolgens analyseren we de meest voorkomende student in meerdere groepen: naar vooropleiding, geslacht, leeftijd en aansluiting, etc. Om de meest voorkomende student te bepalen, gebruiken we de meeste frequente waarden van de verklarende variabelen in de dataset per groep.
+Een volgende analyse is een toepassing van het model op de meest voorkomende student. We kijken eerst naar de meest voorkomende student in het algemeen. Vervolgens analyseren we de meest voorkomende student in meerdere groepen: naar vooropleiding, geslacht, leeftijd en aansluiting, etc. Om de meest voorkomende student te bepalen, gebruiken we de meeste frequente waarden van de verklarende variabelen in de dataset per groep. 
 
-*Ter illustratie* Stel dat we een onderscheid maken tussen mbo en havo studenten, dan bepalen we de mediaan van numerieke variabelen en de frequentste waarde van categorische variabelen. Van de leeftijd kan misschien 20 het vaakst voorkomen, etc. De meest voorkomende student is dus geen daadwerkelijke student, maar een representatie van de groep op basis van de meeste frequente kenmerken.
+NB. Het kan goed zijn dat we combinaties krijgen van waarden van variabelen die niet kunnen voorkomen, bijv. een student van het mbo met een E&M profiel. Dit is wel correct: het is een fictieve student die de meest voorkomende kenmerken van de totale populatie van studenten van deze opleiding vertegenwoordigt.
+
+*Ter illustratie* Stel dat we een onderscheid maken tussen mbo en havo studenten, dan bepalen we de mediaan van numerieke variabelen en de frequentste waarde van categorische variabelen. Van de leeftijd kan misschien 20 het vaakst voorkomen, etc. 
 
 We kijken hiermee naar de voorspelling van het model per groep en de bijdrage van de verklarende variabelen aan die specifieke voorspelling. Dit geeft een verder inzicht in de werking van het model. Een categorie met 20 studenten of minder laten we buiten beschouwing.
 
@@ -286,7 +299,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
     Finalize_Plot(
           plot_name = breakdown_plot,
           save_filepath = sPlotPath,
-          height_pixels = 50 + (20 * nrow(dfBreakdown_lf_all))
+          height_pixels = 50 + (20 * length(breakdown_lf_all$variable))
         )
     )
 
@@ -315,28 +328,28 @@ De volgorde van de variabelen is zo gesorteerd dat per groep de meest voorspelle
 #| results: asis
 
 ## Loop over de persona's
-for (group in names(lDfPersona)) {
-
+for(group in names(lDfPersona)) {
+  
   ## Laad de dataset voor de huidige persona
   dfPersona <- lDfPersona[[group]]
-
+  
   ## Print de naam van lDfPersona als header
   Knit_Header(glue("Naar {tolower(group)}"), 5)
-
+  
   ## Bepaal of er in de dataset een groep is met minder dan 21 studenten;
   ## Zo ja, laat die buiten beschouwing en meld dit
   if (any(dfPersona$Subtotaal < 21)) {
-
+    
     ## Bepaal de categorieën met minder dan 21 studenten
     lCategorie_te_laag <- dfPersona |>
-        filter(Subtotaal < 21) |>
-        pull(Categorie) 
-
+      filter(Subtotaal < 21) |>
+      pull(Categorie) 
+    
     ## Bepaal de tekst voor de melding
     if(length(lCategorie_te_laag) > 1) {
       .categorieen  <- paste0(head(lCategorie_te_laag, 
-                                        length(lCategorie_te_laag) - 1), " en ", 
-                                   tail(lCategorie_te_laag, 1))
+                                   length(lCategorie_te_laag) - 1), " en ", 
+                              tail(lCategorie_te_laag, 1))
       .subtotalen   <- "De subtotalen voor de categorieën"
       .persoonsvorm <- "zijn"
     } else {
@@ -353,7 +366,7 @@ for (group in names(lDfPersona)) {
   Knit_Print_Rule(glue("::: {.panel-tabset}", 
                        .open = "{{", 
                        .close = "}}"))
-
+  
   ## Bepaal de sorteervolgorde van de variabelen
   if(group == "Geslacht") {
     lArrange <- c("M", "V")
@@ -368,8 +381,8 @@ for (group in names(lDfPersona)) {
     arrange(match(Categorie, lArrange))
   
   # Loop over de persona's
-  for (j in 1:nrow(dfPersona)) {
-
+  for(j in 1:nrow(dfPersona)) {
+    
     ## Bepaal de huidige student
     student_current   <- dfPersona[j, ]
     student_groep     <- student_current$Groep
@@ -382,7 +395,7 @@ for (group in names(lDfPersona)) {
     if (as.numeric(dfPersona[j, 'Subtotaal']) < 21) {
       next
     }
-      
+    
     ## Als recreateplots == T, maak dan een nieuwe plot
     if(params$recreateplots) {
       
@@ -390,47 +403,47 @@ for (group in names(lDfPersona)) {
       breakdown_lf <- predict_parts(explainer = explain_lf,
                                     new_observation = student_current,
                                     type = "break_down")
-  
+      
       dfBreakdown_lf <- Get_dfBreakdown_Lf(breakdown_lf)
       
       ## Toon de header
       Knit_Header(student_categorie, 5)
-        
+      
       ## Functie om de titels te bepalen
       lTitles <- Get_Breakdown_Titles(breakdown_lf, dfPersona, j, 
                                       student_groep, student_categorie)
       
       # Watervalplot met ggplot
       plot <- Get_Breakdown_Plot(dfBreakdown_lf, lTitles)
-  
+      
       ## Sla de plot op
       suppressWarnings(
         Finalize_Plot(
           plot_name = plot,
           save_filepath = sPlotPath,
-          height_pixels = 50 + (20 * nrow(dfBreakdown_lf))
+          height_pixels = 50 + (20 * length(breakdown_lf$variable))
         ))
       
       ## Toon de bestaande plot
       sPlot <- glue("![]({sPlotPath})")
       Knit_Print_Rule(sPlot)
-
+      
     } else {
       
       ## Toon de header
       Knit_Header(student_categorie, 5)
-        
+      
       ## Toon de bestaande plot
       sPlot <- glue("![]({sPlotPath})")
       Knit_Print_Rule(sPlot)
       
     }
-
-  } 
+    
+  }
   
   ## Sluit de panel-tabset
   Knit_Print_Rule(":::")
-
+  
 }
 
 ```

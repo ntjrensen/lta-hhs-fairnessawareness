@@ -104,11 +104,11 @@ lDfPersona <- list()
 
 ## Loop over de variabelen
 lDfPersona <- map(c("Geslacht", "Vooropleiding", "Aansluiting"),
-                  ~ Get_dfPersona(.x)) |>
+                  ~ Get_dfPersona_Cumulatief(.x)) |>
   set_names(c("Geslacht", "Vooropleiding", "Aansluiting"))
 
 ## Laad de persona's
-dfPersona_all <- Get_dfPersona()
+dfPersona_all <- Get_dfPersona_Cumulatief()
 
 ```
 
