@@ -17,17 +17,27 @@
 ## Plotpagina van Dalex: https://github.com/ModelOriented/DALEX/blob/28a936b067abad5c3a3ff11b8a6b7a4bfdab1db8/R/plot_model_performance.R#L118
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## CBS ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-[ ] Toevoegen een element van weging
-[ ] tidymodels met weging
-[ ] explainer met weging
-[ ] overige functies met weging
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## TODO / WERKVOORRAAD ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+## Tellingen voor intreerede
+
+[x] Fairness draaien voor alle opleidingen
+  [x] Onderdeel maken met tellingen per groep (aantal en percentages) in H3
+  [ ] Conclusies toevoegen aan H3
+[ ] Tellingen maken
+
+## Alternatieve modellen
+[ ] Zonder herinschrijvers
+[ ] Zonder studenten die vertrekken met hbo-propedeuse
+
+## Extra variabelen
+[ ] SES
+[ ] APCG
+[ ] Lump voor profielen
+
+## Overige
 
 [x] Hoogte van de afbeeldingen bij CMD is te laag.
 [x] Gemiddelde student anders opbouwen > hoofdklasse geslacht, dan vooropleiding, dan cijfer en skp of beschrijving anders maken!
@@ -38,13 +48,10 @@
   [ ] APCG
   [ ] Classificatie SES
   [ ] Classificatie leeftijd
-  [ ] Lump voor profielen
+  [ ] Lump voor profielen!
 
 [ ] Purrrrify
   [ ] Loops vervangen door purrr
-
-[ ] CBS
-  [ ] Gewichten toepassen
 
 [ ] book-werk
   [ ] Een samenvattende pagina met de belangrijkste resultaten
@@ -87,6 +94,12 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+[x] CBS
+  [x] Toevoegen een element van weging
+  [x] tidymodels met weging
+  [x] explainer met weging
+  [x] overige functies met weging
 
 [x] Normalisatie
   [x] RMSE plot hoger maken

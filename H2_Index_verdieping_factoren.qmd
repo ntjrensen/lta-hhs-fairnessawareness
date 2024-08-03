@@ -20,21 +20,45 @@ params:
   ## Recreate plots
   recreateplots: true
   
-  ## BRV:ORM DT
-  # faculteit: "BRV"
-  # opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
-  # opleiding: "BO"
+  # BRV:ORM DU
+  faculteit: "BRV"
+  opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
+  opleiding: "BO"
+  opleidingsvorm: "duaal"
+  opleidingsvorm_afkorting: "DU"
+  selectie: false
+  
+  ## GVS:HDT DT
+  # faculteit: "GVS"
+  # opleidingsnaam: "B Huidtherapie"
+  # opleiding: "HDT"
+  # opleidingsvorm: "deeltijd"
+  # opleidingsvorm_afkorting: "DT"
+  # selectie: false
+  
+  # ## MO:ES-ES-3 VT
+  # faculteit: "MO"
+  # opleidingsnaam: "B European Studies"
+  # opleiding: "ES-ES-3"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  # ## MO:FM DT
+  # faculteit: "MO"
+  # opleidingsnaam: "B Facility Management"
+  # opleiding: "FM"
+  # opleidingsvorm: "deeltijd"
+  # opleidingsvorm_afkorting: "DT"
+  # selectie: false
+  
+  # ## TIS:W DU
+  # faculteit: "TIS"
+  # opleidingsnaam: "B Werktuigbouwkunde"
+  # opleiding: "W"
   # opleidingsvorm: "duaal"
   # opleidingsvorm_afkorting: "DU"
   # selectie: false
-  
-  ## ITD:CMD VT
-  faculteit: "ITD"
-  opleidingsnaam: "Communication and Multimedia Design"
-  opleiding: "CMD"
-  opleidingsvorm: "voltijd"
-  opleidingsvorm_afkorting: "VT"
-  selectie: false
   
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"
@@ -171,9 +195,9 @@ explain_lf <- DALEX::explain(
 
 ### Toets de Root Mean Square Error na permutaties
 
-De eerste analyse is de Root Mean Square Error (RMSE) na permutaties. 
+De eerste analyse is de Root Mean Square Error (RMSE) na permutaties.
 
--   De **RMSE** is een maatstaf voor de gemiddelde afwijking van de voorspellingen van een model ten opzichte van de werkelijke waarden. Het wordt berekend als de wortel van de gemiddelde kwadratische fout. 
+-   De **RMSE** is een maatstaf voor de gemiddelde afwijking van de voorspellingen van een model ten opzichte van de werkelijke waarden. Het wordt berekend als de wortel van de gemiddelde kwadratische fout.
 -   **RMSE na permutaties** wil zeggen dat de RMSE is berekend na het herhaaldelijk willekeurig herschikken (permuteren) van de waarden van een variabele in de dataset en daarmee de voorspellingen. Deze techniek passen we toe om de robuustheid en betrouwbaarheid van het model te evalueren.
 
 **Waarom RMSE na permutaties?**
@@ -220,11 +244,11 @@ Het valt op dat de meest voorspellende variabelen ook een hoge RMSE hebben. Dit 
 
 ### Inspecteer variabelen met de meeste invloed
 
-Een volgende analyse is een toepassing van het model op de meest voorkomende student. We kijken eerst naar de meest voorkomende student in het algemeen. Vervolgens analyseren we de meest voorkomende student in meerdere groepen: naar vooropleiding, geslacht, leeftijd en aansluiting, etc. Om de meest voorkomende student te bepalen, gebruiken we de meeste frequente waarden van de verklarende variabelen in de dataset per groep. 
+Een volgende analyse is een toepassing van het model op de meest voorkomende student. We kijken eerst naar de meest voorkomende student in het algemeen. Vervolgens analyseren we de meest voorkomende student in meerdere groepen: naar vooropleiding, geslacht, leeftijd en aansluiting, etc. Om de meest voorkomende student te bepalen, gebruiken we de meeste frequente waarden van de verklarende variabelen in de dataset per groep.
 
 NB. Het kan goed zijn dat we combinaties krijgen van waarden van variabelen die niet kunnen voorkomen, bijv. een student van het mbo met een E&M profiel. Dit is wel correct: het is een fictieve student die de meest voorkomende kenmerken van de totale populatie van studenten van deze opleiding vertegenwoordigt.
 
-*Ter illustratie* Stel dat we een onderscheid maken tussen mbo en havo studenten, dan bepalen we de mediaan van numerieke variabelen en de frequentste waarde van categorische variabelen. Van de leeftijd kan misschien 20 het vaakst voorkomen, etc. 
+*Ter illustratie* Stel dat we een onderscheid maken tussen mbo en havo studenten, dan bepalen we de mediaan van numerieke variabelen en de frequentste waarde van categorische variabelen. Van de leeftijd kan misschien 20 het vaakst voorkomen, etc.
 
 We kijken hiermee naar de voorspelling van het model per groep en de bijdrage van de verklarende variabelen aan die specifieke voorspelling. Dit geeft een verder inzicht in de werking van het model. Een categorie met 20 studenten of minder laten we buiten beschouwing.
 
@@ -294,7 +318,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
   breakdown_plot <- Get_Breakdown_Plot_All(breakdown_lf_all, 
                                            lTitles)
     
-  ## Sla de plot op
+  ## Bewaar de plot
   suppressWarnings(
     Finalize_Plot(
           plot_name = breakdown_plot,
@@ -416,7 +440,7 @@ for(group in names(lDfPersona)) {
       # Watervalplot met ggplot
       plot <- Get_Breakdown_Plot(dfBreakdown_lf, lTitles)
       
-      ## Sla de plot op
+      ## Bewaar de plot
       suppressWarnings(
         Finalize_Plot(
           plot_name = plot,
@@ -478,7 +502,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
   ## Bouw de plot
   shapley_plot <- Get_Shapley_Plot(dfShapley)
   
-  ## Sla de plot op
+  ## Bewaar de plot
   suppressWarnings(
     Finalize_Plot(
       plot_name = shapley_plot,
@@ -682,7 +706,7 @@ for (group in c("Alle studenten", "Geslacht", "Vooropleiding", "Aansluiting")) {
       
     }
     
-    ## Sla de plot op
+    ## Bewaar de plot
     suppressWarnings(
           Finalize_Plot(
             plot_name = pdp_plot,

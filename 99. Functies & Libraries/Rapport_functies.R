@@ -184,6 +184,10 @@ Get_Current_Opleiding_Output_Dir <- function(current_opleiding,
     .output_dir <- file.path("10. Output",
                              .fac_opl_vorm,
                              "data")
+  } else if(mode == "fairness") {
+    .output_dir <- file.path("10. Output",
+                             .fac_opl_vorm,
+                             "fairness")
   } else if(mode == "html") {
     .output_dir <- file.path("10. Output",
                              .fac_opl_vorm)
@@ -200,7 +204,7 @@ Get_Current_Opleiding_Output_Dir <- function(current_opleiding,
 }
 
 ## Functie om de output directory te bepalen van de huidige opleiding
-Get_Current_Opleiding_Output_File <- function(df, mode, analyse = NULL) {
+Get_Current_Opleiding_Output_File <- function(df, mode, group = NULL, analyse = NULL) {
   
   ## Bepaal de beschrijving van de analyse
   if(is.null(analyse)) {
@@ -211,6 +215,8 @@ Get_Current_Opleiding_Output_File <- function(df, mode, analyse = NULL) {
   
   if(mode == "last-fits") {
     .suffix <- "_last-fits.rds"
+  } else if(mode == "fairness") {
+    .suffix <- paste0("_fairness_", tolower(group), ".rds")
   } else if(mode == "html") {
     .suffix <- ".html"
   } else if(mode == "modelresults") {
@@ -241,10 +247,10 @@ Get_Current_Opleiding_Output_File <- function(df, mode, analyse = NULL) {
 }
 
 ## Functie om de output path te bepalen voor de fitted models
-Get_Model_Outputpath <- function(mode) {
+Get_Model_Outputpath <- function(mode, group = NULL) {
   
   ## Bepaal de output file
-  .output_file <- Get_Current_Opleiding_Output_File(current_opleiding, mode)
+  .output_file <- Get_Current_Opleiding_Output_File(current_opleiding, mode, group)
   
   ## Bepaal de output directory
   .output_dir <- Get_Current_Opleiding_Output_Dir(current_opleiding, mode)
@@ -606,7 +612,9 @@ Get_tblSummary <- function(df) {
       hide_p = FALSE,
       pattern = "{p.value}{stars}"
     ) |>
-    add_overall(last = TRUE, col_label = "**Totaal**, N = {N}")
+    add_overall(last = TRUE, col_label = "**Totaal**, N = {N}") |> 
+    as_flex_table() |> 
+    set_table_properties(width = 0.8, layout = "autofit")
   
   return(dfSummary)
   
@@ -712,10 +720,11 @@ Quarto_Render_Move <- function(input,
 Copy_Book_To_Reports <- function(output_dir, debug = FALSE) {
   
   ## Bepaal de asset repo
-  .asset_repo <- file.path("../..", "LTA_Reports/lta-hhs-tidymodels-studiesucces-reports")
+  .asset_repo <- file.path("../..", 
+                           "LTA_Reports/lta-hhs-tidymodels-studiesucces-reports")
   
   ## Bepaal de output directory van de repo buiten dit project
-  output_dir_repo <- file.path(.asset_repo, output_dir)
+  output_dir_repo <- Get_Output_Dir_Repo(output_dir)
   
   ## Bepaal de input directory
   input_dir_book <- file.path("_book")
@@ -746,6 +755,20 @@ Copy_Book_To_Reports <- function(output_dir, debug = FALSE) {
       )
     )
   }
+  
+}
+
+## Functie om de _book directory te kopieren
+Get_Output_Dir_Repo <- function(output_dir) {
+  
+  ## Bepaal de asset repo
+  .asset_repo <- file.path("../..", 
+                           "LTA_Reports/lta-hhs-tidymodels-studiesucces-reports")
+  
+  ## Bepaal de output directory van de repo buiten dit project
+  output_dir_repo <- file.path(.asset_repo, output_dir)
+  
+  return(output_dir_repo)
   
 }
 
@@ -838,7 +861,7 @@ Knit_Header <- function(x, rep = 1) {
 ## Functie om een regel te knitten
 Knit_Print_Rule <- function(x) {
   
-  knit_print(glue("\n\n\n{x}\n\n"))
+  knitr::knit_print(glue("\n\n\n{x}\n\n"))
   
 }
 
@@ -924,6 +947,10 @@ Get_dfPersona <- function(group = NULL) {
     lSelect_categorical <- setdiff(lSelect_categorical, group)
   }
   
+  ## Verwijder variabelen die niet voorkomen in deze opleiding
+  lSelect_categorical <- intersect(lSelect_categorical, 
+                                   colnames(dfOpleiding_inschrijvingen))
+  
   ## Bepaal de numerieke variabelen die gebruikt worden
   lSelect_numerical <- c(
     "Leeftijd",
@@ -939,6 +966,15 @@ Get_dfPersona <- function(group = NULL) {
     "SES_Welvaart",
     "SES_Arbeid"
   )
+  
+  ## Als de opleiding gelijk is aan HDT, voeg dan Rangnummer toe
+  if(current_opleiding$INS_Opleiding == "HDT") {
+    lSelect_numerical <- c(lSelect_numerical, "Rangnummer")
+  }
+  
+  ## Verwijder variabelen die niet voorkomen in deze opleiding
+  lSelect_numerical <- intersect(lSelect_numerical, 
+                                 colnames(dfOpleiding_inschrijvingen))
   
   # Bereken het totaal voor deze opleiding
   .totaal <- dfOpleiding_inschrijvingen |> 
@@ -990,7 +1026,7 @@ Get_dfPersona <- function(group = NULL) {
              Categorie = !!.group) |>
       
       # Mutate leeftijd naar integer
-      mutate(Leeftijd = as.integer(Leeftijd)) |>
+      mutate(Leeftijd = as.integer(round(Leeftijd, 0))) |>
       
       # Herorden
       select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
@@ -1035,6 +1071,9 @@ Get_dfPersona <- function(group = NULL) {
       # Voeg de groep variabele toe en bepaal de categorie binnen de groep
       mutate(Groep = "Alle",
              Categorie = "Alle studenten") |>
+      
+      # Mutate leeftijd naar integer
+      mutate(Leeftijd = as.integer(round(Leeftijd, 0))) |>
       
       # Herorden
       select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
@@ -1296,6 +1335,21 @@ Get_objFairness <- function(explainer, protected_var, privileged, verbose = FALS
   return(fobject)
 }
 
+# Functie om de privileged (meerderheid)
+Get_Privileged <- function(df, group) {
+  # Bereken de frequenties van elke subgroep
+  tally <- table(df[[group]])
+  
+  # Bepaal de meest voorkomende subgroep(en)
+  max_frequency <- max(tally)
+  most_common_subgroups <- names(tally[tally == max_frequency])
+  
+  # Indien er meerdere zijn, kies de eerste (of bepaal een andere logica)
+  sPrivileged <- most_common_subgroups[1]
+  
+  return(sPrivileged)
+}
+
 ## Functie om de fairness tabel te maken
 Get_dfFairness_Total <- function(fobject) {
   
@@ -1344,6 +1398,38 @@ Get_dfFairness_Total <- function(fobject) {
   return(dfFairness_totaal)
   
 }
+
+## Functie om een dataframe te maken van de fairness check data
+Get_dfFairness_Check_Data <- function(fobject) {
+  df <- fobject |>
+    dplyr::mutate(
+      Fair_TF = ifelse(score < 0.8 | score > 1.25, FALSE, TRUE),
+      FRN_Metric = case_when(
+        grepl("Accuracy equality", metric)       ~ "Accuracy Equality",
+        grepl("Predictive parity ratio", metric) ~ "Predictive Parity",
+        grepl("Predictive equality", metric)     ~ "Predictive Equality",
+        grepl("Equal opportunity", metric)       ~ "Equal Opportunity",
+        grepl("Statistical parity", metric)      ~ "Statistical Parity"
+      ),
+      FRN_Group = group
+    ) |>
+    rename(
+      FRN_Score = score,
+      FRN_Subgroup = subgroup,
+      FRN_Fair = Fair_TF,
+      FRN_Model = model
+    ) |>
+    select(FRN_Model,
+           FRN_Group,
+           FRN_Subgroup,
+           FRN_Metric,
+           FRN_Score,
+           FRN_Fair)
+  
+  return(df)
+}
+
+
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

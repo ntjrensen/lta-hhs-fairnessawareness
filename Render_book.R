@@ -76,29 +76,38 @@ source("99. Functies & Libraries/Rapport_functies.R")
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.0 Bepaal de selectie ####
+## 2.1 Bepaal de selectie ####
 
 dfRender <- dfOpleidingen |>
+  
+  ## Combineer de opleiding en opleidingsvorm tot een nieuwe variabele
   mutate(INS_Opleiding_en_Opleidingsvorm = paste(INS_Opleiding, INS_Opleidingsvorm, sep = "_")) |>
-  dplyr::filter(
-    INS_Opleiding_en_Opleidingsvorm %in% c(
-      # "HBO-V_VT",
-      # "BO_DU",
-      # "ICT_VT"
-      # "HBO-V_DT",
-      # "CMD_VT", 
-      # "IPO_VT",
-      # "E_VT",
-      # "B_VT",
-      # "W_VT",
-      # "MT_VT", 
-      # "SW_VT", 
-      # "ORM_DT",
-      # "ORM_VT",
-      # "AC_VT",
-      "CMD_VT"
-      ) 
-  ) |> 
+  # dplyr::filter(
+  #   INS_Opleiding_en_Opleidingsvorm %in% c(
+  #     # "HBO-V_VT",
+  #     # "BO_DU",
+  #     # "ICT_VT"
+  #     # "HBO-V_DT",
+  #     # "CMD_VT", 
+  #     # "IPO_VT",
+  #     # "E_VT",
+  #     # "B_VT",
+  #     # "W_VT",
+  #     # "MT_VT", 
+  #     # "SW_VT", 
+  #     # "ORM_DT",
+  #     # "ORM_VT",
+  #     # "AC_VT",
+  #     "CMD_VT"
+  #     ) 
+  # ) |>
+  # dplyr::filter(INS_Faculteit %in% c("GVS","MO","SWE","TIS"),
+  #               INS_Opleiding %in% c("HDT")) |>
+  
+  ## Beperk de selectie tot opleidingen die in 2022 nog bestaan 
+  ## en meer dan 1 jaar hebben aan data
+  dplyr::filter(INS_Collegejaar_max == 2022,
+                INS_Collegejaar_min < 2022) |>
   dplyr::select(INS_Opleiding_en_Opleidingsvorm, 
                 INS_Faculteit,
                 INS_Opleiding,
@@ -106,7 +115,12 @@ dfRender <- dfOpleidingen |>
                 everything())
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.1 Loop over opleidingen en render de output ####
+## 2.2 Bepaal of een refresh nodig is ####
+
+bRefresh_books <- FALSE
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 2.3 Loop over opleidingen en render de output ####
 
 ## Bepaal de succes-variabelen
 lSucces <-  c("Retentie na 1 jaar")
@@ -118,18 +132,27 @@ for(i in 1:nrow(dfRender)) {
   .opleiding      <- dfRender$INS_Opleiding[i] 
   .opleidingsvorm <- dfRender$INS_Opleidingsvorm[i]
   
-  cli::cli_alert_info(
-    paste(
-      "Render de output voor de opleiding:",
-      .opleiding,
-      "en opleidingsvorm:",
-      .opleidingsvorm
-    )
-  )
-  
   ## Loop over de succes variabelen
   for (j in lSucces) {
-  
+    
+    ## Meld de actie
+    cli::cli_h1(
+      paste(
+        .opleiding,
+        .opleidingsvorm,
+        j
+      )
+    )
+    cli::cli_alert_info(
+      paste(
+        "Render de output voor de opleiding:",
+        .opleiding,
+        "en opleidingsvorm:",
+        .opleidingsvorm
+      )
+    )
+    
+    ## Als deze combinatie al bestaat, skip
     ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
     current_render_opleiding <- Get_Current_Opleiding(opleiding = .opleiding,
                                                       opleidingsvorm = .opleidingsvorm)
@@ -161,19 +184,41 @@ for(i in 1:nrow(dfRender)) {
                                         FALSE)
     )
     
-    ## Meld de actie
-    cli::cli_alert_info(
-      paste(
-        "Render de output voor de opleiding:",
-        .opleiding,
-        "en opleidingsvorm:",
-        .opleidingsvorm,
-        "en succes:",
-        j,
-        "\n naar de directory:",
-        .output_dir
+    ## Als de output directory van dit book al bestaat, skip
+    bBook_exists <- file.exists(Get_Output_Dir_Repo(.output_dir))
+    if(bBook_exists & !bRefresh_books) {
+      
+      cli::cli_alert_info(
+        paste(
+          "De output voor de opleiding:",
+          .opleiding,
+          "en opleidingsvorm:",
+          .opleidingsvorm,
+          "en succes:",
+          j,
+          "bestaat al in de directory:",
+          .output_dir
+        )
       )
-    )
+      
+      next
+      } else {
+    
+        ## Meld de actie
+        cli::cli_alert_info(
+          paste(
+            "Render de output voor de opleiding:",
+            .opleiding,
+            "en opleidingsvorm:",
+            .opleidingsvorm,
+            "en succes:",
+            j,
+            "\n naar de directory:",
+            .output_dir
+          )
+        ) 
+        
+        }
 
     ## Render de quarto files en verplaats deze naar de asset repo
     for(k in c("index.qmd",

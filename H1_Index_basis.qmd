@@ -21,13 +21,29 @@ params:
   ## Recreate plots
   recreateplots: true
   
-  ## BRV:ORM DT
+  # BRV:ORM DU
   faculteit: "BRV"
   opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
   opleiding: "BO"
   opleidingsvorm: "duaal"
   opleidingsvorm_afkorting: "DU"
   selectie: false
+  
+  # ## GVS:HDT DT
+  # faculteit: "GVS"
+  # opleidingsnaam: "B Huidtherapie"
+  # opleiding: "HDT"
+  # opleidingsvorm: "deeltijd"
+  # opleidingsvorm_afkorting: "DT"
+  # selectie: false
+  
+  ## MO:ES-ES-3 VT
+  # faculteit: "MO"
+  # opleidingsnaam: "B European Studies"
+  # opleiding: "ES-ES-3"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
   
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"
@@ -79,7 +95,7 @@ Voor de ontwikkeling van prognosemodellen gebruiken we de aanpak van [Tidymodels
 De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verrijkt door het lectoraat LTA. De data bevat informatie over de inschrijvingen van studenten in het eerste jaar van de opleiding:
 
 1.  *Demografische kenmerken*: geslacht, leeftijd, reistijd en SES totaalscore.
-2.  *Vooropleidingskenmerken*: toelaatgevende vooropleiding, studiekeuzeprofiel, gemiddeld eindcijfer in de vooropleiding en eventuele deelname aan het Navitas programma.
+2.  *Vooropleidingskenmerken*: toelaatgevende vooropleiding, studiekeuzeprofiel en gemiddeld eindcijfer in de vooropleiding.
 3.  *Aanmeldingskenmerken*: aansluiting (direct na diploma, tussenjaar, switch), dag van aanmelding, aantal parallelle studies aan De HHs en collegejaar.
 
 ### Toelichting op de analyse
@@ -167,7 +183,6 @@ lSelect <- c(
     "INS_Dagen_tussen_aanmelding_en_1_september",
     "INS_Dubbele_studie",
     "INS_Aansluiting_LTA",
-    "INS_Navitas_tf",
     "SES_Deelscore_arbeid",
     "SES_Deelscore_welvaart",
     "SES_Totaalscore",
@@ -203,7 +218,6 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen_base |>
     Collegejaar           = INS_Collegejaar,
     Aanmelding            = INS_Dagen_tussen_aanmelding_en_1_september,
     Aansluiting           = INS_Aansluiting_LTA,
-    Navitas               = INS_Navitas_tf,
     APCG                  = CBS_APCG_tf,
     SES_Arbeid            = SES_Deelscore_arbeid,
     SES_Welvaart          = SES_Deelscore_welvaart,
@@ -358,9 +372,11 @@ Het is verstandig om voorafgaand aan het bouwen van een model te kijken naar de 
 #| label: corplot_data
 
 ## Maak een plot van de onderlinge correlaties in numerieke variabelen
+## Verwijder de kolommen met een standaarddeviatie van 0
 dfOpleiding_inschrijvingen |> 
   select(-Collegejaar) |>
   select(where(is.numeric)) |> 
+  select_if(~ sd(.) != 0) |>
   cor() |> 
   corrplot::corrplot(
     order = 'hclust', 

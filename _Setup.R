@@ -80,6 +80,7 @@ if(bSetup_executed == F) {
   library(performance)  # voor performance metingen op lr modellen
   #library(dlookr)      # om data te inspecteren > geeft conflicten vanwege showtext_auto()
   library(gtsummary)    # voor beschrijvende summary tabellen
+  library(flextable)    # voor flextables
   library(gt)           # voor tabellen
   library(gtExtras)     # voor sparklines
   library(cli)          # voor cli teksten

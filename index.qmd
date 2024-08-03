@@ -17,13 +17,29 @@ params:
   ## Recreate plots
   recreateplots: true
   
-  ## BRV:ORM DT
+  # BRV:ORM DU
   faculteit: "BRV"
   opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
   opleiding: "BO"
   opleidingsvorm: "duaal"
   opleidingsvorm_afkorting: "DU"
   selectie: false
+  
+  # ## GVS:HDT DT
+  # faculteit: "GVS"
+  # opleidingsnaam: "B Huidtherapie"
+  # opleiding: "HDT"
+  # opleidingsvorm: "deeltijd"
+  # opleidingsvorm_afkorting: "DT"
+  # selectie: false
+  
+  # ## MO:ES-ES-3 VT
+  # faculteit: "MO"
+  # opleidingsnaam: "B European Studies"
+  # opleiding: "ES-ES-3"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
   
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"

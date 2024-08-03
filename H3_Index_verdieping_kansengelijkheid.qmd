@@ -20,13 +20,45 @@ params:
   ## Recreate plots
   recreateplots: true
   
-  ## BRV:ORM DT
+  # BRV:ORM DU
   faculteit: "BRV"
   opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
   opleiding: "BO"
   opleidingsvorm: "duaal"
   opleidingsvorm_afkorting: "DU"
   selectie: false
+  
+  ## GVS:HDT DT
+  # faculteit: "GVS"
+  # opleidingsnaam: "B Huidtherapie"
+  # opleiding: "HDT"
+  # opleidingsvorm: "deeltijd"
+  # opleidingsvorm_afkorting: "DT"
+  # selectie: false
+  
+  # ## MO:ES-ES-3 VT
+  # faculteit: "MO"
+  # opleidingsnaam: "B European Studies"
+  # opleiding: "ES-ES-3"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
+  
+  # ## MO:FM DT
+  # faculteit: "MO"
+  # opleidingsnaam: "B Facility Management"
+  # opleiding: "FM"
+  # opleidingsvorm: "deeltijd"
+  # opleidingsvorm_afkorting: "DT"
+  # selectie: false
+  
+  ## TIS:CT-ES-3 VT
+  # faculteit: "TIS"
+  # opleidingsnaam: "B Chemische Technologie"
+  # opleiding: "CT-ES-3"
+  # opleidingsvorm: "voltijd"
+  # opleidingsvorm_afkorting: "VT"
+  # selectie: false
   
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"
@@ -104,11 +136,11 @@ lDfPersona <- list()
 
 ## Loop over de variabelen
 lDfPersona <- map(c("Geslacht", "Vooropleiding", "Aansluiting"),
-                  ~ Get_dfPersona_Cumulatief(.x)) |>
+                  ~ Get_dfPersona(.x)) |>
   set_names(c("Geslacht", "Vooropleiding", "Aansluiting"))
 
 ## Laad de persona's
-dfPersona_all <- Get_dfPersona_Cumulatief()
+dfPersona_all <- Get_dfPersona()
 
 ```
 
@@ -317,6 +349,46 @@ $$ \text{SPR} = \frac{TP + FP}{TP + FP + TN + FN} $$
 
 Nu we deze begrippen hebben gedefinieerd, kunnen we de bias en kansengelijkheid van het model voor verschillende groepen studenten analyseren. Hiervoor gebruiken we het `fairmodels` package van `DALEX`.
 
+<!-- Aantallen en percentages per groep -->
+
+### Aantallen en percentages per groep
+
+Voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting` is de verdeling binnen deze opleiding als volgt:
+
+```{r}
+#| label: amount_and_numbers_per_group
+#| results: asis
+#| echo: false
+
+## Maak een tabel met aantallen en percentages voor de 3 variabelen `Geslacht`, `Vooropleiding` en `Aansluiting`
+
+tbl_summary <- dfOpleiding_inschrijvingen |> 
+  select(Retentie, Geslacht, Vooropleiding, Aansluiting) |> 
+  mutate(Retentie = ifelse(Retentie == 1, "Ja", "Nee")) |>
+  tbl_summary(by = Retentie) |> 
+  add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
+          test.args = list(
+            all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
+            all_tests("wilcox.test") ~ list(exact = FALSE)
+          )) |> 
+    add_significance_stars(
+      hide_p = FALSE,
+      pattern = "{p.value}{stars}"
+    ) |>
+  add_overall(col_label = "**Totaal**  \nN = {style_number(N)}") |>
+  add_n() |>
+  modify_header(label ~ "**Variabele**") |> 
+  modify_spanning_header(c("stat_1", "stat_2") ~ "**Retentie na 1 jaar**") |>
+  bold_labels() |> 
+  as_flex_table() |> 
+  set_table_properties(width = 0.8, layout = "autofit")
+
+
+# Print summary table
+tbl_summary
+
+```
+
 <!-- Verdeling van kansen per groep -->
 
 ### Verdeling van kansen
@@ -341,13 +413,8 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
   ## Groep
   Knit_Header(group, 4)
   
-  if(group == "Geslacht") {
-    sPrivileged <- "V"
-  } else if(group == "Vooropleiding") {
-    sPrivileged <- "HAVO"
-  } else if(group == "Aansluiting") {
-    sPrivileged <- "Direct"
-  }
+  # Bepaal de meest voorkomende subgroep = Privileged
+  sPrivileged <- Get_Privileged(dfOpleiding_inschrijvingen, group)
 
   ## Maak een fairness object
   fobject <- Get_objFairness(explain_lf, group, sPrivileged)
@@ -413,13 +480,8 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
   ## Groep
   Knit_Header(group, 4)
   
-  if(group == "Geslacht") {
-    sPrivileged <- "V"
-  } else if(group == "Vooropleiding") {
-    sPrivileged <- "HAVO"
-  } else if(group == "Aansluiting") {
-    sPrivileged <- "Direct"
-  }
+  # Bepaal de meest voorkomende subgroep = Privileged
+  sPrivileged <- Get_Privileged(dfOpleiding_inschrijvingen, group)
 
   ## Maak een fairness object
   fobject <- Get_objFairness(explain_lf, group, sPrivileged)
@@ -455,17 +517,111 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
   sPlot <- glue("![]({sPlotPath})")
   Knit_Print_Rule(sPlot)
   
+  ## Bewaar de fairness check data
+  sFairness_outputpath  <- Get_Model_Outputpath(mode = "fairness", group = group)
+  dfFairness_check_data <- Get_dfFairness_Check_Data(fobject[["fairness_check_data"]])
+  saveRDS(dfFairness_check_data, file = sFairness_outputpath)
+  
 }
 
 ```
 
 <!-- Conclusies -->
 
-::: {.content-hidden unless-meta="includes.conclusies"}
 ## Conclusies
 
-Hier komen de conclusies.
-:::
+Na de uitvoering van de fairness analyse kunnen we de volgende conclusies trekken:
+
+```{r}
+#| label: fairness_conclusions
+#| results: asis
+#| echo: false
+
+library(dplyr)
+library(tidyr)
+library(flextable)
+library(officer)
+
+lDfFairness <- list()
+
+for(i in c("Geslacht", "Vooropleiding", "Aansluiting")) {
+  sFairness_outputpath  <- Get_Model_Outputpath(mode = "fairness", group = i)
+  lDfFairness[[i]]      <- readRDS(sFairness_outputpath) |> 
+    mutate(FRN_Bias = case_when(FRN_Score < 0.8 ~ "Negatieve Bias",
+                                FRN_Score > 1.25 ~ "Positieve Bias", 
+                                .default = "Geen Bias")) 
+}
+
+## Maak een tabel van de fairness analyse
+dfFairness_wide <- bind_rows(lDfFairness) |> 
+  group_by(FRN_Group, 
+           FRN_Subgroup, 
+           FRN_Bias) |>
+  summarise(FRN_Bias_count = n(), .groups = "drop") |> 
+  pivot_wider(names_from = FRN_Bias, values_from = c(FRN_Bias_count)) |> 
+  
+  ## Vul missende waarden op met 0
+  replace_na(list(`Geen Bias` = 0, 
+                  `Negatieve Bias` = 0, 
+                  `Positieve Bias` = 0)) |> 
+  mutate(Bias = ifelse(`Negatieve Bias` > 1 | `Positieve Bias` > 1, 'Ja', 'Nee')) |> 
+  rename(Variabele = FRN_Group,
+         Groep = FRN_Subgroup) |>
+  select(Variabele, Groep, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) |> 
+  
+  ## Sorteer de Variabele en Groep
+  mutate(Variabele = factor(Variabele, 
+                            levels = c("Geslacht", "Vooropleiding", "Aansluiting"))) |> 
+  arrange(Variabele, Groep)
+
+# Create flextable
+ft <- flextable(dfFairness_wide)
+
+# Merge the 'Variabele' column for visual grouping
+# Apply conditional formatting
+ft <- ft |>
+  merge_v(j = ~ Variabele) |>
+  fix_border_issues() |>
+  theme_vanilla() |>
+  set_header_labels(
+    Variabele = "Variabele",
+    Groep = "Groep",
+    Bias = "Bias",
+    `Geen Bias` = "Geen Bias",
+    `Negatieve Bias` = "Negatieve Bias",
+    `Positieve Bias` = "Positieve Bias"
+  ) |>
+  autofit() |> 
+  italic(j = 1, italic = TRUE, part = "body") |> 
+  color(i = ~ `Negatieve Bias` > 1, 
+        j = c("Groep", "Bias", "Negatieve Bias"), 
+        color = "red") |>
+  color(i = ~ `Positieve Bias` > 1, 
+        j = c("Groep", "Bias", "Positieve Bias"), 
+        color = "darkgreen") |>
+  bg(i = ~ `Negatieve Bias` > 1, 
+        j = c("Groep", "Bias", "Negatieve Bias"), 
+        bg = "pink") |>
+  bg(i = ~ `Positieve Bias` > 1, 
+        j = c("Groep", "Bias", "Positieve Bias"), 
+        bg = "lightgreen") |>
+  bold(i = ~ `Negatieve Bias` > 1,
+       j = c("Groep", "Bias", "Negatieve Bias")) |>
+  bold(i = ~ `Positieve Bias` > 1,
+       j = c("Groep", "Bias", "Positieve Bias")) |> 
+  valign(j = 1, valign = "top", part = "all") |> 
+  align_text_col(align = "left") |> 
+  align_nottext_col(align = "center")
+
+# Print the flextable
+ft
+
+```
+<!-- Dit in tekst automatiseren -->
+
+1.  **Geslacht**: Er is geen sprake van bias in de voorspelling van retentie op basis van geslacht. De modelprestaties zijn even accuraat voor zowel mannen als vrouwen. De kansen op retentie zijn gelijk voor beide groepen.
+2. **Vooropleiding**: Er is geen sprake van bias in de voorspelling van retentie op basis van vooropleiding. Het model is even accuraat voor zowel havisten als mbo-ers. De kansen op retentie zijn gelijk voor beide groepen.
+3. **Aansluiting**: Er is geen sprake van bias in de voorspelling van retentie op basis van aansluiting. Het model is even accuraat voor zowel studenten die direct instromen als student.
 
 <!-- Referenties -->
 
