@@ -22,12 +22,12 @@ params:
   recreateplots: true
   
   # BRV:ORM DU
-  faculteit: "BRV"
-  opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
-  opleiding: "BO"
-  opleidingsvorm: "duaal"
-  opleidingsvorm_afkorting: "DU"
-  selectie: false
+  # faculteit: "BRV"
+  # opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
+  # opleiding: "BO"
+  # opleidingsvorm: "duaal"
+  # opleidingsvorm_afkorting: "DU"
+  # selectie: false
   
   # ## GVS:HDT DT
   # faculteit: "GVS"
@@ -44,6 +44,15 @@ params:
   # opleidingsvorm: "voltijd"
   # opleidingsvorm_afkorting: "VT"
   # selectie: false
+  
+  ## BRV:HBO-R
+  faculteit: "BRV"
+  opleidingsnaam: "B Hbo Rechten"
+  opleiding: "HBO-R"
+  opleidingsvorm: "deeltijd"
+  opleidingsvorm_afkorting: "DT"
+  selectie: false
+  
   
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"
@@ -273,11 +282,16 @@ dfSummary <- dfOpleiding_inschrijvingen |>
   mutate(Retentie = fct_recode(Retentie, "Nee" = "FALSE", "Ja" = "TRUE")) |>
   
   ## Pas de volgorde van de labels van Retentie aan
-  mutate(Retentie = fct_relevel(Retentie, "Ja", "Nee"))
+  mutate(Retentie = fct_relevel(Retentie, "Ja", "Nee")) |> 
+  
+  ## Pas studiekeuzeprofiel aan: als NA, dan onbekend
+  mutate(Studiekeuzeprofiel = coalesce(Studiekeuzeprofiel, "Onbekend")) |> 
+  
+  ## Maak van alle character variabelen een factor
+  mutate(across(where(is.character), as.factor))
 
-## Toon deze als een samenvattende tabel
-
-tbl_dfSummary <- Get_tblSummary(dfSummary)
+## Maak een tbl_df van de samenvatting
+tbl_dfSummary <- Get_tblSummary(dfSummary) 
 
 tbl_dfSummary
   

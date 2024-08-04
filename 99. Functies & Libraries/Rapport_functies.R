@@ -73,8 +73,6 @@ Get_Current_Opleiding <- function(opleiding, opleidingsvorm) {
 ## Fuctie om de variabelen van de huidige opleiding in te stellen
 Set_Current_Opleiding_Vars <- function(current_opleiding, debug = F){
   
-  Cli_Subheader("Instelling van de huidige opleiding")
-  
   opleiding               <<- current_opleiding$INS_Opleiding
   faculteit               <<- current_opleiding$INS_Faculteit
   opleidingstype          <<- current_opleiding$INS_Opleidingstype_LTA
@@ -89,6 +87,8 @@ Set_Current_Opleiding_Vars <- function(current_opleiding, debug = F){
                                                       opleidingsvorm)
   
   if(debug) {
+    Cli_Subheader("Instelling van de huidige opleiding")
+  
     Show_Current_Opleiding_Vars()
   }
   
@@ -490,6 +490,11 @@ Get_Levels <- function() {
     "Onbekend"
   )
   
+  lLevels_geslacht <<- c(
+    "M",
+    "V"
+  )
+  
 }
 
 ## Pas levels aan, zodat deze goed gesorteerd worden
@@ -520,6 +525,13 @@ Set_Levels <- function(df = dfOpleiding_inschrijvingen_base) {
       lLevels_vop,
       df,
       "VOP_Toelaatgevende_vooropleiding_soort"
+    )
+  
+  lLevels_geslacht <<-
+    Sort_Levels(
+      lLevels_geslacht,
+      df,
+      "INS_Geslacht"
     )
 }
 
@@ -595,26 +607,29 @@ Get_tblSummary <- function(df) {
       digits = all_continuous() ~ 2, 
       missing = "no",
       percent = "row"
-    ) |> 
+    ) #|> 
+  
+  
     
-    ## Richt de vormgeving van de table in
-    modify_header(all_stat_cols() ~ "**{level}**, N={n} ({style_percent(p)}%)") |>
-    modify_spanning_header(c("stat_1", "stat_2") ~ "**Retentie**") |>
-    modify_header(label = "**Variabele**") |>
-    bold_labels() |>
-    modify_caption("**Studentkenmerken versus Retentie**") |>
-    add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
-          test.args = list(
-            all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
-            all_tests("wilcox.test") ~ list(exact = FALSE)
-          )) |> 
-    add_significance_stars(
-      hide_p = FALSE,
-      pattern = "{p.value}{stars}"
-    ) |>
-    add_overall(last = TRUE, col_label = "**Totaal**, N = {N}") |> 
-    as_flex_table() |> 
-    set_table_properties(width = 0.8, layout = "autofit")
+    # ## Richt de vormgeving van de table in
+    # modify_header(all_stat_cols() ~ "**{level}**, N={n} ({style_percent(p)}%)") |>
+    # modify_spanning_header(c("stat_1", "stat_2") ~ "**Retentie**") |>
+    # modify_header(label = "**Variabele**") |>
+    # bold_labels() |>
+    # modify_caption("**Studentkenmerken versus Retentie**") |>
+    # add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
+    #       test.args = list(
+    #         all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
+    #         all_tests("wilcox.test") ~ list(exact = FALSE)
+    #       )) |> 
+    # add_significance_stars(
+    #   hide_p = FALSE,
+    #   pattern = "{p.value}{stars}"
+    # ) |>
+    # add_overall(last = TRUE, col_label = "**Totaal**, N = {N}") |> 
+    # as_flex_table() |> 
+    # flextable::border(border.top = fp_border(color = "grey")) |> 
+    # set_table_properties(width = 0.8, layout = "autofit")
   
   return(dfSummary)
   
@@ -715,13 +730,23 @@ Quarto_Render_Move <- function(input,
   
 }
 
+## Functie om de asset repo op te halen
+Get_Asset_Repo <- function() {
+  
+  ## Bepaal de asset repo
+  .asset_repo <- file.path(Sys.getenv("ONEDRIVE"), 
+                           "HHs_NFWA/lta-hhs-tidymodels-studiesucces-reports")
+  
+  return(.asset_repo)
+
+}
+
 ## Functie om de _book directory te kopieren 
 ## naar de output directory van de repo buiten dit project
 Copy_Book_To_Reports <- function(output_dir, debug = FALSE) {
   
   ## Bepaal de asset repo
-  .asset_repo <- file.path("../..", 
-                           "LTA_Reports/lta-hhs-tidymodels-studiesucces-reports")
+  .asset_repo <- Get_Asset_Repo()
   
   ## Bepaal de output directory van de repo buiten dit project
   output_dir_repo <- Get_Output_Dir_Repo(output_dir)
@@ -762,8 +787,7 @@ Copy_Book_To_Reports <- function(output_dir, debug = FALSE) {
 Get_Output_Dir_Repo <- function(output_dir) {
   
   ## Bepaal de asset repo
-  .asset_repo <- file.path("../..", 
-                           "LTA_Reports/lta-hhs-tidymodels-studiesucces-reports")
+  .asset_repo <- Get_Asset_Repo()
   
   ## Bepaal de output directory van de repo buiten dit project
   output_dir_repo <- file.path(.asset_repo, output_dir)
@@ -1337,15 +1361,39 @@ Get_objFairness <- function(explainer, protected_var, privileged, verbose = FALS
 
 # Functie om de privileged (meerderheid)
 Get_Privileged <- function(df, group) {
+  
   # Bereken de frequenties van elke subgroep
-  tally <- table(df[[group]])
+  dfTally <- table(df[[group]])
   
   # Bepaal de meest voorkomende subgroep(en)
-  max_frequency <- max(tally)
-  most_common_subgroups <- names(tally[tally == max_frequency])
+  max_frequency <- max(dfTally)
+  most_common_subgroups <- names(dfTally[dfTally == max_frequency])
   
   # Indien er meerdere zijn, kies de eerste (of bepaal een andere logica)
   sPrivileged <- most_common_subgroups[1]
+  
+  # ## Geslacht: M
+  # if(group == "Geslacht") {
+  #   sPrivileged <- "M"
+  # } 
+  # 
+  # ## Vooropleiding
+  # else if(group == "Vooropleiding") {
+  #   if(opleiding == "HDT") {
+  #     sPrivileged <- "VWO"
+  #     ## Als de opleiding het cijfer 3 bevat, dan is de vooropleiding VWO
+  #   } else if (grepl("3", opleiding)) {
+  #     sPrivileged <- "VWO"
+  #   } else {
+  #     sPrivileged <- "HAVO"
+  #   }
+  #   sPrivileged <- "HAVO"
+  # } 
+  # 
+  # ## Aansluiting
+  # else if(group == "Aansluiting") {
+  #   sPrivileged <- "Direct"
+  # }
   
   return(sPrivileged)
 }
@@ -1399,8 +1447,214 @@ Get_dfFairness_Total <- function(fobject) {
   
 }
 
+## Functie om de fairness analyse df om te zetten naar een wide df
+Get_dfFairness_Wide <- function(lDf) {
+  
+  dfVars <- tribble(
+    ~FRN_Group, ~FRN_Subgroup,
+    "Geslacht",      "M",
+    "Geslacht",      "V",
+    "Vooropleiding", "MBO",
+    "Vooropleiding", "HAVO",
+    "Vooropleiding", "VWO",
+    "Vooropleiding", "BD",
+    "Vooropleiding", "CD",
+    "Vooropleiding", "HO",
+    "Vooropleiding", "Overig",
+    "Vooropleiding", "Onbekend",
+    "Aansluiting",   "Direct",
+    "Aansluiting",   "Tussenjaar",
+    "Aansluiting",   "Switch extern",
+    "Aansluiting",   "Switch intern",
+    "Aansluiting",   "Na CD",
+    "Aansluiting",   "2e Studie",
+    "Aansluiting",   "Overig",
+    "Aansluiting",   "Onbekend"
+  )
+  
+  dfBias <- tibble(
+    FRN_Bias = c("Geen Bias", "Negatieve Bias", "Positieve Bias")
+  )
+  
+  ## Combineer dfVars en dfBias
+  dfVars_Bias <- dfVars |> 
+    crossing(dfBias)
+  
+  df <- bind_rows(lDf) |> 
+    group_by(FRN_Group, 
+             FRN_Subgroup, 
+             FRN_Bias) |>
+    summarise(FRN_Bias_count = n(), 
+              .groups = "drop") |> 
+    full_join(dfVars_Bias,
+              by = c("FRN_Group" = "FRN_Group", 
+                     "FRN_Subgroup" = "FRN_Subgroup",
+                     "FRN_Bias" = "FRN_Bias")) |>
+    
+    pivot_wider(names_from = FRN_Bias, 
+                values_from = c(FRN_Bias_count),
+                values_fill = list(FRN_Bias_count = 0)) |> 
+    replace_na(list(`Geen Bias` = 0,
+                   `Negatieve Bias` = 0,
+                   `Positieve Bias` = 0)) |>
+    
+    rename(Variabele = FRN_Group,
+           Groep = FRN_Subgroup) |>
+    select(Variabele, Groep, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) 
+  
+  dfTellingen <- dfOpleiding_inschrijvingen |>
+    select(Geslacht, Vooropleiding, Aansluiting) |>
+    pivot_longer(cols = c(Geslacht, Vooropleiding, Aansluiting)) |>
+    count(name, value, name = "N")
+  
+  ## Maak de df breed
+  dfWide <- df |>
+    
+    ## Pas de Bias aan
+    mutate(Bias = case_when(
+      `Negatieve Bias` > 1 | `Positieve Bias` > 1 ~ 'Ja',
+      `Geen Bias` == 0 & `Negatieve Bias` == 0 & `Positieve Bias` == 0 ~ 'NTB',
+      .default = "Nee")) |> 
+        
+    ## Sorteer de Variabele en Groep
+    mutate(Variabele = factor(Variabele, 
+                              levels = c("Geslacht", 
+                                         "Vooropleiding", 
+                                         "Aansluiting")),
+           Groep = factor(Groep,
+                          levels = c(lLevels_geslacht, 
+                                     ## Maak lLevels_vop uniek om Overig en onbekend niet te herhalen
+                                     setdiff(lLevels_vop, lLevels_aansluiting), 
+                                     lLevels_aansluiting))
+                          ) |> 
+    select(Variabele, Groep, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) |> 
+    arrange(Variabele, Groep)
+  
+  ## Voeg aantallen en percentages toe
+  dfWide2 <- dfWide |> 
+    left_join(dfTellingen, by = c("Variabele" = "name", "Groep" = "value")) |>
+    select(Variabele, Groep, N, everything()) |> 
+    replace_na(list(N = 0)) |> 
+    filter(N > 0)
+  
+  return(dfWide2)
+  
+}
+
+## Functie om de flextable te maken voor de fairness analyse
+Get_ftFairness <- function(ft) {
+  
+  sColor_Bias_Positive <- "#9DBF9E"
+  sColor_Bias_Negative <- "#A84268"
+  sColor_Bias_Neutral  <- "#FCB97D"
+  sColor_Bias_None     <- "#E5E5E5"
+  
+  # Voeg de kolom 'Variabele' samen voor visueel groeperen
+  # Pas voorwaardelijke opmaak toe
+  ft <- ft |>
+    merge_v(j = ~ Variabele) |>
+    fix_border_issues() |>
+    theme_vanilla() |>
+    set_header_labels(
+      Variabele = "Variabele",
+      Groep = "Groep",
+      Bias = "Bias",
+      `Geen Bias` = "Geen Bias",
+      `Negatieve Bias` = "Negatieve Bias",
+      `Positieve Bias` = "Positieve Bias"
+    ) |>
+    autofit() |> 
+    italic(j = 1, italic = TRUE, part = "body") |> 
+    color(i = ~ `Negatieve Bias` > 1,
+          j = c("Groep", "Bias", "Negatieve Bias"),
+          color = "white") |>
+    color(i = ~ `Positieve Bias` > 1,
+          j = c("Groep", "Bias", "Positieve Bias"),
+          color = "white") |>
+    bg(i = ~ `Negatieve Bias` > 1, 
+       j = c("Groep", "Bias", "Negatieve Bias"), 
+       bg = sColor_Bias_Negative) |>
+    bg(i = ~ `Positieve Bias` > 1, 
+       j = c("Groep", "Bias", "Positieve Bias"), 
+       bg = sColor_Bias_Positive) |>
+    bg(i = ~ `Negatieve Bias` > 1 & `Positieve Bias` > 1, 
+       j = c("Groep", "Bias"), 
+       bg = sColor_Bias_Neutral) |>
+    bg(i = ~ N < 15 & (`Negatieve Bias` > 1 | `Positieve Bias` > 1), 
+       j = c("Groep", "Bias"), 
+       bg = sColor_Bias_Neutral) |>
+    bg(i = ~ `Geen Bias` == 0 & `Positieve Bias` == 0 & `Negatieve Bias` == 0,
+       j = 2:7,
+       bg = sColor_Bias_None) |>
+    bold(i = ~ `Negatieve Bias` > 1,
+         j = c("Groep", "Bias", "Negatieve Bias")) |>
+    bold(i = ~ `Positieve Bias` > 1,
+         j = c("Groep", "Bias", "Positieve Bias")) |> 
+    # italic(i = ~ `Geen Bias` == 0 & `Positieve Bias` == 0 & `Negatieve Bias` == 0,
+    #        j = NULL) |>
+    valign(j = 1, valign = "top", part = "all") |> 
+    align_text_col(align = "left") |> 
+    align_nottext_col(align = "center") 
+  
+  return(ft)
+}
+
+## Functie om de fairness conclusies te bepalen
+Get_Fairness_Conclusies <- function(df, variabele, succes = "Retentie na 1 jaar") {
+  
+  sText <- ""
+  
+  ## Bepaal de groepen
+  dfVariabele <- df |>
+    filter(Variabele == variabele,
+           N > 14) 
+  
+  if(any(dfVariabele$Bias == "Ja")) {
+    sConclusie <- glue("Er is sprake van bias in {succes} op basis van {tolower(variabele)}.")
+  } else {
+    sConclusie <- glue("Er is geen sprake van bias in {succes} op basis van {tolower(variabele)}.")
+    return(sConclusie)
+  }
+  
+  ## Functie om de laatste , te vervangen door ' en '
+  Replace_comma_end <- function(x) {
+    gsub(",([^,]*)$", " en\\1", x)
+  }
+  
+  ## Bepaal de groepen met een negatieve bias
+  if(any(dfVariabele$`Negatieve Bias` > 1)) {
+    lNegatieve_Bias <- dfVariabele |>
+      filter(`Negatieve Bias` > 1) |> 
+      pull(Groep) |>
+      paste(collapse = ", ")
+    ## Vervang de laatste , door en
+    lNegatieve_Bias <- Replace_comma_end(lNegatieve_Bias)
+    sNegatieve_Bias <- glue("Er is een negatieve bias voor: {lNegatieve_Bias}.")
+  } else {
+    sNegatieve_Bias <- ""
+  }
+  
+  ## Bepaal de groepen met een positieve bias
+  if(any(dfVariabele$`Positieve Bias` > 1)) {
+    lPositieve_Bias <- dfVariabele |>
+      filter(`Positieve Bias` > 1) |> 
+      pull(Groep) |>
+      paste(collapse = ", ")
+    ## Vervang de laatste , door en
+    lPositieve_Bias <- Replace_comma_end(lPositieve_Bias)
+    sPositieve_Bias <- glue("Er is een positieve bias voor: {lPositieve_Bias}.")
+  } else {
+    sPositieve_Bias <- ""
+  }
+  
+  sText <- glue("{sConclusie} {sNegatieve_Bias} {sPositieve_Bias}")
+  
+  return(sText)
+  
+}
+
 ## Functie om een dataframe te maken van de fairness check data
-Get_dfFairness_Check_Data <- function(fobject) {
+Get_dfFairness_Check_Data <- function(fobject, group) {
   df <- fobject |>
     dplyr::mutate(
       Fair_TF = ifelse(score < 0.8 | score > 1.25, FALSE, TRUE),
@@ -1426,6 +1680,21 @@ Get_dfFairness_Check_Data <- function(fobject) {
            FRN_Score,
            FRN_Fair)
   
+  ## Maak een dataframe van de fairness check data
+  dfTellingen <- dfOpleiding_inschrijvingen |>
+    select(!!group) |>
+    pivot_longer(cols = c(!!group)) |>
+    count(name, value, name = "N")
+  
+  ## Combineer met aantallen
+  df <- df |>
+    left_join(dfTellingen, by = c("FRN_Group" = "name", "FRN_Subgroup" = "value")) |>
+    replace_na(list(N = 0)) |> 
+    mutate(FRN_Faculteit = faculteit,
+           FRN_Opleiding = opleiding,
+           FRN_Opleidingstype = opleidingstype,
+           FRN_Opleidingsvorm = opleidingsvorm) 
+    
   return(df)
 }
 

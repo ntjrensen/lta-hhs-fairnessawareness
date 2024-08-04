@@ -81,6 +81,7 @@ if(bSetup_executed == F) {
   #library(dlookr)      # om data te inspecteren > geeft conflicten vanwege showtext_auto()
   library(gtsummary)    # voor beschrijvende summary tabellen
   library(flextable)    # voor flextables
+  library(officer)      # voor opmaak in tabellen
   library(gt)           # voor tabellen
   library(gtExtras)     # voor sparklines
   library(cli)          # voor cli teksten
@@ -216,7 +217,7 @@ if(bSetup_executed == F) {
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 3.2 Settings ####
-
+  
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 3.2.1 Metadata ####
 

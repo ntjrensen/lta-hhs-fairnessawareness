@@ -65,13 +65,13 @@ library(quarto)      # voor quarto bestanden
 tidymodels_prefer(quiet = TRUE)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.4 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
+## 1.5 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
 
 ## Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
 ltabase::load_lta_datasets(message = TRUE)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.5 Laad extra functies ####
+## 1.6 Laad extra functies ####
 
 source("99. Functies & Libraries/Rapport_functies.R")
 

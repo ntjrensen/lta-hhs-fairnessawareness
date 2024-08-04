@@ -21,12 +21,12 @@ params:
   recreateplots: true
   
   # BRV:ORM DU
-  faculteit: "BRV"
-  opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
-  opleiding: "BO"
-  opleidingsvorm: "duaal"
-  opleidingsvorm_afkorting: "DU"
-  selectie: false
+  # faculteit: "BRV"
+  # opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
+  # opleiding: "BO"
+  # opleidingsvorm: "duaal"
+  # opleidingsvorm_afkorting: "DU"
+  # selectie: false
   
   ## GVS:HDT DT
   # faculteit: "GVS"
@@ -59,6 +59,14 @@ params:
   # opleidingsvorm: "voltijd"
   # opleidingsvorm_afkorting: "VT"
   # selectie: false
+  
+  ## BFM:FC-AD DT
+  faculteit: "BFM"
+  opleidingsnaam: "Ad Finance Control"
+  opleiding: "FC-AD"
+  opleidingsvorm: "deeltijd"
+  opleidingsvorm_afkorting: "DT"
+  selectie: false
   
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"
@@ -101,7 +109,8 @@ De analyse van kansengelijkheid heeft de volgende stappen:
 
 1.  We lezen de bewerkte dataset weer in en de modellen die we in de basis-analyse hebben gemaakt.
 2.  We maken weer een *explainer* om de modellen beter te begrijpen en te kunnen uitleggen.
-3.  Vervolgens berekenen we of er *bias* bestaat voor verschillende groepen studenten naar geslacht, vooropleiding en vorm van aansluiting. We analyseren daarvooor de verdeling van kansen en mate van fairness in het voorspelmodel dat we hebben ontwikkeld.
+3.  Vervolgens berekenen we of er *bias* bestaat voor verschillende groepen studenten naar geslacht, vooropleiding en vorm van aansluiting. We analyseren daarvoor de verdeling van kansen en mate van fairness in het voorspelmodel dat we hebben ontwikkeld.
+4.  Tot slot trekken we er conclusies uit over de mate van bias binnen de opleiding voor retentie na 1 jaar.
 :::
 
 <!-- Data -->
@@ -123,7 +132,10 @@ sFittedmodels_outputpath <- Get_Model_Outputpath(mode = "last-fits")
 sModelresults_outputpath <- Get_Model_Outputpath(mode = "modelresults")
 
 ## Laad de data voor de opleiding: data, last fits en model results
-dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE)
+dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE) |> 
+  mutate(Geslacht      = factor(Geslacht,      levels = lLevels_geslacht),
+         Vooropleiding = factor(Vooropleiding, levels = lLevels_vop),
+         Aansluiting   = factor(Aansluiting,   levels = lLevels_aansluiting))
 lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
 dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
 
@@ -381,6 +393,7 @@ tbl_summary <- dfOpleiding_inschrijvingen |>
   modify_spanning_header(c("stat_1", "stat_2") ~ "**Retentie na 1 jaar**") |>
   bold_labels() |> 
   as_flex_table() |> 
+  flextable::border(border.top = fp_border(color = "grey")) |> 
   set_table_properties(width = 0.8, layout = "autofit")
 
 
@@ -450,7 +463,9 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
 Nu we de verdeling van de kansen kennen, maken we tot slot een fairness analyse voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting`. Voor elke groep berekenen we de maatstaven die we eerder hebben behandeld.
 
-We maken een plot van de fairness analyse, waarbij we per variabele één categorie nemen als de bevoorrechte groep; voor Geslacht is dit 'Vrouw (V)', voor Vooropleiding is dit 'havo' en voor Aansluiting is dit 'Direct'. Als binnen een variabele een groep een ratio heeft die naar links of naar rechts afwijkt, kan dit duiden op een verschil in kansengelijkheid.
+We maken een plot van de fairness analyse, waarbij we per variabele één categorie nemen als de bevoorrechte groep; hiervoor hanteren we per variabele de meest frequente groep. De aanname is dat een opleiding op deze groep het beste is toegerust. Daarnaast speelt mee dat Dalex bij een te laag aantal studenten in een bevoorrechte groep geen fairness analyse kan berekenen.
+
+Als binnen een variabele een groep een ratio heeft die naar links of naar rechts afwijkt, kan dit duiden op een verschil in kansengelijkheid. Let erop dat de bevoorrechte groep zelf hier niet in is opgenomen. Mochten alle overige groepen naar links of rechts afwijken, dan is er sprake van een bias naar de bevoorrechte groep.
 
 Het wijkt af als de balken verder buiten het groene vlak komen en in het rode vlak; dit is gebaseerd op een marge, *epsilon*, van 0,8. Deze marge is gebaseerd op het 4/5 principe: er is sprake van een te groot verschil als de maat voor een beschermde groep 4/5 of meer afwijkt van de bevoorrechte groep. Een epsilon van 0,8 leidt tot marges van -0,2 (epsilon/1) en +0,25 (1/espilon). Als er twee ratio's of meer buiten deze marges vallen, is er volgens dit criterium sprake van bias. Als een maatstaf naar links afwijkt is er sprake van bias naar de beschermde groep (ten nadele), als deze naar rechts afwijkt is er sprake van bias naar de bevoorrechte groep (ten voordele).
 
@@ -519,7 +534,7 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
   
   ## Bewaar de fairness check data
   sFairness_outputpath  <- Get_Model_Outputpath(mode = "fairness", group = group)
-  dfFairness_check_data <- Get_dfFairness_Check_Data(fobject[["fairness_check_data"]])
+  dfFairness_check_data <- Get_dfFairness_Check_Data(fobject[["fairness_check_data"]], group = group)
   saveRDS(dfFairness_check_data, file = sFairness_outputpath)
   
 }
@@ -530,20 +545,23 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
 ## Conclusies
 
-Na de uitvoering van de fairness analyse kunnen we de volgende conclusies trekken:
+Na de uitvoering van de fairness analyse vatten we de conclusies samen in een tabel en tekst. 
+
+**Toelichting:**
+
+-   Bij rood is er sprake van een negatieve bias.
+-   Bij groen is er sprake van een positieve bias.
+-   Bij oranje is er sprake van een bias, maar zijn de aantallen studenten te laag om conclusies over een negatieve of positieve bias aan te verbinden. We hanteren een minimum van 15 studenten per categorie binnen een variabele. 
+-   De bevoorrechte groep is grijs. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
 
 ```{r}
 #| label: fairness_conclusions
 #| results: asis
 #| echo: false
 
-library(dplyr)
-library(tidyr)
-library(flextable)
-library(officer)
-
 lDfFairness <- list()
 
+## Loop over de variabelen
 for(i in c("Geslacht", "Vooropleiding", "Aansluiting")) {
   sFairness_outputpath  <- Get_Model_Outputpath(mode = "fairness", group = i)
   lDfFairness[[i]]      <- readRDS(sFairness_outputpath) |> 
@@ -553,75 +571,31 @@ for(i in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 }
 
 ## Maak een tabel van de fairness analyse
-dfFairness_wide <- bind_rows(lDfFairness) |> 
-  group_by(FRN_Group, 
-           FRN_Subgroup, 
-           FRN_Bias) |>
-  summarise(FRN_Bias_count = n(), .groups = "drop") |> 
-  pivot_wider(names_from = FRN_Bias, values_from = c(FRN_Bias_count)) |> 
-  
-  ## Vul missende waarden op met 0
-  replace_na(list(`Geen Bias` = 0, 
-                  `Negatieve Bias` = 0, 
-                  `Positieve Bias` = 0)) |> 
-  mutate(Bias = ifelse(`Negatieve Bias` > 1 | `Positieve Bias` > 1, 'Ja', 'Nee')) |> 
-  rename(Variabele = FRN_Group,
-         Groep = FRN_Subgroup) |>
-  select(Variabele, Groep, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) |> 
-  
-  ## Sorteer de Variabele en Groep
-  mutate(Variabele = factor(Variabele, 
-                            levels = c("Geslacht", "Vooropleiding", "Aansluiting"))) |> 
-  arrange(Variabele, Groep)
+dfFairness_wide  <- Get_dfFairness_Wide(lDfFairness)
 
-# Create flextable
-ft <- flextable(dfFairness_wide)
+# Maak een flextable
+ftFairness_table <- Get_ftFairness(flextable(dfFairness_wide))
 
-# Merge the 'Variabele' column for visual grouping
-# Apply conditional formatting
-ft <- ft |>
-  merge_v(j = ~ Variabele) |>
-  fix_border_issues() |>
-  theme_vanilla() |>
-  set_header_labels(
-    Variabele = "Variabele",
-    Groep = "Groep",
-    Bias = "Bias",
-    `Geen Bias` = "Geen Bias",
-    `Negatieve Bias` = "Negatieve Bias",
-    `Positieve Bias` = "Positieve Bias"
-  ) |>
-  autofit() |> 
-  italic(j = 1, italic = TRUE, part = "body") |> 
-  color(i = ~ `Negatieve Bias` > 1, 
-        j = c("Groep", "Bias", "Negatieve Bias"), 
-        color = "red") |>
-  color(i = ~ `Positieve Bias` > 1, 
-        j = c("Groep", "Bias", "Positieve Bias"), 
-        color = "darkgreen") |>
-  bg(i = ~ `Negatieve Bias` > 1, 
-        j = c("Groep", "Bias", "Negatieve Bias"), 
-        bg = "pink") |>
-  bg(i = ~ `Positieve Bias` > 1, 
-        j = c("Groep", "Bias", "Positieve Bias"), 
-        bg = "lightgreen") |>
-  bold(i = ~ `Negatieve Bias` > 1,
-       j = c("Groep", "Bias", "Negatieve Bias")) |>
-  bold(i = ~ `Positieve Bias` > 1,
-       j = c("Groep", "Bias", "Positieve Bias")) |> 
-  valign(j = 1, valign = "top", part = "all") |> 
-  align_text_col(align = "left") |> 
-  align_nottext_col(align = "center")
+# Print de flextable
+ftFairness_table
 
-# Print the flextable
-ft
+# Creeer op basis van de table nu een tekst per variabele
+lConclusies <- list()
+for(i in c("Geslacht", "Vooropleiding", "Aansluiting")) {
+  lConclusies[[i]] <- Get_Fairness_Conclusies(dfFairness_wide, i)
+}
+
+# print(lConclusies[["Geslacht"]])
+# print(lConclusies[["Vooropleiding"]])
+# print(lConclusies[["Aansluiting"]])
 
 ```
-<!-- Dit in tekst automatiseren -->
 
-1.  **Geslacht**: Er is geen sprake van bias in de voorspelling van retentie op basis van geslacht. De modelprestaties zijn even accuraat voor zowel mannen als vrouwen. De kansen op retentie zijn gelijk voor beide groepen.
-2. **Vooropleiding**: Er is geen sprake van bias in de voorspelling van retentie op basis van vooropleiding. Het model is even accuraat voor zowel havisten als mbo-ers. De kansen op retentie zijn gelijk voor beide groepen.
-3. **Aansluiting**: Er is geen sprake van bias in de voorspelling van retentie op basis van aansluiting. Het model is even accuraat voor zowel studenten die direct instromen als student.
+<!-- Conclusies in tekst -->
+
+1.  **Geslacht**: `r lConclusies[["Geslacht"]]`
+2.  **Vooropleiding**: `r lConclusies[["Vooropleiding"]]`
+3.  **Aansluiting**: `r lConclusies[["Aansluiting"]]`
 
 <!-- Referenties -->
 

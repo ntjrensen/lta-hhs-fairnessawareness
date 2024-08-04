@@ -25,8 +25,19 @@
 
 [x] Fairness draaien voor alle opleidingen
   [x] Onderdeel maken met tellingen per groep (aantal en percentages) in H3
-  [ ] Conclusies toevoegen aan H3
-[ ] Tellingen maken
+  [x] Uitbreiden met waarden die niet zijn opgenomen 
+  [x] Bevoorrechte groep ook waarden toekennen
+  [x] In de juiste volgorde zetten
+  [x] Hier een functie van maken
+  [x] Kleuren aanpassen conform landkaart kleuren plots
+  [x] Conclusies toevoegen aan H3
+  [x] Rekening houden met aantallen
+  [ ] Tellingen maken voor alle opleidingen
+[x] Bevoorrechte groepen anders opstellen?
+  [-] Vooropleiding: 3 > VWO of BD, anders HAVO
+  [-] Geslacht: M
+  [-] Aansluiting: Direct
+[x] Sortering van variabelen al eerder toevoegen  
 
 ## Alternatieve modellen
 [ ] Zonder herinschrijvers
