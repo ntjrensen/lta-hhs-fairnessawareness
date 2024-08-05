@@ -545,13 +545,13 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
 ## Conclusies
 
-Na de uitvoering van de fairness analyse vatten we de conclusies samen in een tabel en tekst. 
+Na de uitvoering van de fairness analyse vatten we de conclusies samen in een tabel en tekst.
 
 **Toelichting:**
 
 -   Bij rood is er sprake van een negatieve bias.
 -   Bij groen is er sprake van een positieve bias.
--   Bij oranje is er sprake van een bias, maar zijn de aantallen studenten te laag om conclusies over een negatieve of positieve bias aan te verbinden. We hanteren een minimum van 15 studenten per categorie binnen een variabele. 
+-   Bij oranje is er sprake van een bias, maar zijn de aantallen studenten te laag om conclusies over een negatieve of positieve bias aan te verbinden. We hanteren een minimum van 15 studenten per categorie binnen een variabele.
 -   De bevoorrechte groep is grijs. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
 
 ```{r}

@@ -419,70 +419,165 @@ dfFairness_HHs.7 <- dfFairness_HHs.6 |>
            "Groep" = "value")
   ) |>
   replace_na(list(N = 0))
+
+## Maak van de opleiding een korte versie
+dfFairness_HHs.8 <- dfFairness_HHs.7 |>
+  mutate(Opleidingsvorm = toupper(Opleidingsvorm),
+         Opleiding = paste0(Opleidingsnaam, " ", 
+                            Opleidingsvorm, 
+                            " (", Opleiding, ")")) |> 
+  select(-Opleidingsnaam, -Opleidingsvorm)
   
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 4. FAIRNESS FLEXTABLE ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+sColor_Bias_Positive      <- "#9DBF9E"
+sColor_Bias_Negative      <- "#A84268"
+sColor_Bias_Neutral       <- "#FCB97D"
+sColor_Bias_None          <- "#E5E5E5"
+sColor_Bias_Undetermined  <- "#FFFFFF"
+
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 4.1 Maak de tabel #### 
+## 4.1 Maak de tabel (versie 1 - long) #### 
 
-ft <- flextable(dfFairness_HHs.7 |> 
-                  dplyr::filter(N > 0))
-
-sColor_Bias_Positive <- "#9DBF9E"
-sColor_Bias_Negative <- "#A84268"
-sColor_Bias_Neutral  <- "#FCB97D"
-sColor_Bias_None     <- "#E5E5E5"
+ftFairness.1 <- flextable(dfFairness_HHs.8 |> 
+                            dplyr::filter(N > 0))
 
 # Voeg de kolom 'Variabele' samen voor visueel groeperen
 # Pas voorwaardelijke opmaak toe
-ft <- ft |>
-  merge_v(j = c("Faculteit",
-                "Opleidingsnaam",
-                "Opleiding",
-                "Opleidingsvorm",
-                "Variabele")) |>
+ftFairness.1 <- ftFairness.1 |>
+    merge_v(j = c("Faculteit",
+                  "Opleiding",
+                  "Variabele")) |>
+    fix_border_issues() |>
+    theme_vanilla() |>
+    set_header_labels(
+      Variabele = "Variabele",
+      Groep = "Groep",
+      Bias = "Bias",
+      `Geen Bias` = "Geen Bias",
+      `Negatieve Bias` = "Negatieve Bias",
+      `Positieve Bias` = "Positieve Bias"
+    ) |>
+    autofit() |> 
+    italic(j = 3, italic = TRUE, part = "body") |> 
+    color(i = ~ `Negatieve Bias` > 1,
+          j = c("Groep", "Bias", "Negatieve Bias"),
+          color = "white") |>
+    color(i = ~ `Positieve Bias` > 1,
+          j = c("Groep", "Bias", "Positieve Bias"),
+          color = "white") |>
+    bg(i = ~ `Negatieve Bias` > 1, 
+       j = c("Groep", "Bias", "Negatieve Bias"), 
+       bg = sColor_Bias_Negative) |>
+    bg(i = ~ `Positieve Bias` > 1, 
+       j = c("Groep", "Bias", "Positieve Bias"), 
+       bg = sColor_Bias_Positive) |>
+    bg(i = ~ `Negatieve Bias` > 1 & `Positieve Bias` > 1, 
+       j = c("Groep", "Bias"), 
+       bg = sColor_Bias_Neutral) |>
+    bg(i = ~ N < 15 & (`Negatieve Bias` > 1 | `Positieve Bias` > 1), 
+       j = c("Groep", "Bias"), 
+       bg = sColor_Bias_Neutral) |>
+    bg(i = ~ `Geen Bias` == 0 & `Positieve Bias` == 0 & `Negatieve Bias` == 0,
+       j = 4:5,
+       bg = sColor_Bias_None) |>
+    bold(i = ~ `Negatieve Bias` > 1,
+         j = c("Groep", "Bias", "Negatieve Bias")) |>
+    bold(i = ~ `Positieve Bias` > 1,
+         j = c("Groep", "Bias", "Positieve Bias")) |> 
+    valign(j = 1:3, valign = "top", part = "all") |> 
+    valign(i = 1, valign = "middle", part = "header") |> 
+    align_text_col(align = "left") |> 
+    align_nottext_col(align = "center") 
+  
+ftFairness.1
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 4.2 Maak de tabel (versie 2 - wide) #### 
+
+dfFairness_HHs.9 <- dfFairness_HHs.8 |> 
+  mutate(Bias = case_when(
+    N == 0 ~ 'Geen data',
+    N <= 15 ~ 'Onbeslist',
+    `Negatieve Bias` > 1 & `Positieve Bias` > 1 ~ 'Onbeslist',
+    `Negatieve Bias` > 1 ~ 'Negatief',
+    `Positieve Bias` > 1 ~ 'Positief',
+    `Geen Bias` == 0 & `Negatieve Bias` == 0 & `Positieve Bias` == 0 ~ 'NTB',
+    .default = "Nee")) |>
+  select(-c(`Negatieve Bias`, `Positieve Bias`, `Geen Bias`, N)) |> 
+  pivot_wider(names_from = c(Variabele, Groep), 
+              values_from = Bias) |> 
+  ## Verwijder de kolommen met 'Onbekend' en 'Overig'
+  select(-c(Vooropleiding_Onbekend, 
+            Aansluiting_Onbekend,
+            Vooropleiding_Overig, 
+            Aansluiting_Overig)) |> 
+  ## Hernoem de kolommen: bewaar alleen wat er achter een _ staat als er een _ voorkomt
+  rename_with(~ gsub(".*_", "", .x))
+
+ftFairness.2 <- flextable(dfFairness_HHs.9)
+
+ftFairness.2 <- ftFairness.2 |>
+  add_header_row(values = c("", "Geslacht", "Vooropleiding", "Aansluiting"), 
+                 colwidths = c(2, 2, 6, 6)) |>
+  merge_v(j = c("Faculteit")) |>
   fix_border_issues() |>
   theme_vanilla() |>
-  set_header_labels(
-    Variabele = "Variabele",
-    Groep = "Groep",
-    Bias = "Bias",
-    `Geen Bias` = "Geen Bias",
-    `Negatieve Bias` = "Negatieve Bias",
-    `Positieve Bias` = "Positieve Bias"
-  ) |>
   autofit() |> 
-  italic(j = 5, italic = TRUE, part = "body") |> 
-  color(i = ~ `Negatieve Bias` > 1,
-        j = c("Groep", "Bias", "Negatieve Bias"),
-        color = "white") |>
-  color(i = ~ `Positieve Bias` > 1,
-        j = c("Groep", "Bias", "Positieve Bias"),
-        color = "white") |>
-  bg(i = ~ `Negatieve Bias` > 1, 
-     j = c("Groep", "Bias", "Negatieve Bias"), 
-     bg = sColor_Bias_Negative) |>
-  bg(i = ~ `Positieve Bias` > 1, 
-     j = c("Groep", "Bias", "Positieve Bias"), 
-     bg = sColor_Bias_Positive) |>
-  bg(i = ~ `Negatieve Bias` > 1 & `Positieve Bias` > 1, 
-     j = c("Groep", "Bias"), 
-     bg = sColor_Bias_Neutral) |>
-  bg(i = ~ N < 15 & (`Negatieve Bias` > 1 | `Positieve Bias` > 1), 
-     j = c("Groep", "Bias"), 
-     bg = sColor_Bias_Neutral) |>
-  bg(i = ~ `Geen Bias` == 0 & `Positieve Bias` == 0 & `Negatieve Bias` == 0,
-     j = 6:7,
-     bg = sColor_Bias_None) |>
-  bold(i = ~ `Negatieve Bias` > 1,
-       j = c("Groep", "Bias", "Negatieve Bias")) |>
-  bold(i = ~ `Positieve Bias` > 1,
-       j = c("Groep", "Bias", "Positieve Bias")) |> 
-  valign(j = 1:5, valign = "top", part = "all") |> 
-  align_text_col(align = "left") |> 
-  align_nottext_col(align = "center") 
+  valign(i = 1:2, valign = "middle", part = "header") |> 
+  valign(j = 1:2, valign = "top", part = "body") |> 
+  align(j = 1:2, align = "left") |> 
+  align(j = 3:16, align = "center", part = "all")
 
-ft
+# Functie om de kleur van de achtergrond te bepalen
+Get_Fairness_Bg <- function(value) {
+  case_when(
+    value == "Negatief"  ~ sColor_Bias_Negative,
+    value == "Positief"  ~ sColor_Bias_Positive,
+    value == "Onbeslist" ~ sColor_Bias_Undetermined,
+    value == "Geen data" ~ "white",
+    value == "NTB"       ~ sColor_Bias_None,
+    TRUE ~ "white"
+  )
+}
+
+# Functie om de kleur van de tekst te bepalen
+Get_Fairness_Color <- function(value) {
+  case_when(
+    value == "Negatief"  ~ "white",
+    value == "Positief"  ~ "white",
+    value == "Onbeslist" ~ "black",
+    value == "Geen data" ~ "black",
+    value == "NTB"       ~ "black",
+    TRUE ~ "black"
+  )
+}
+
+# Toepassen van kleuren per kolom
+for (col in colnames(dfFairness_HHs.9)[-1]) {
+  
+  ## Pas de achtergrond aan
+  colors <- map_chr(dfFairness_HHs.9[[col]], Get_Fairness_Bg)
+  ftFairness.2 <- ftFairness.2 |>
+    bg(j = col, bg = colors)
+  
+  ## Pas de kleur aan
+  colors <- map_chr(dfFairness_HHs.9[[col]], Get_Fairness_Color)
+  ftFairness.2 <- ftFairness.2 |>
+    color(j = col, color = colors)
+}
+
+# Voeg verticale lijnen toe tussen de gewenste kolommen
+border_vline <- fp_border(color = "black", width = 1)
+
+ftFairness.2 <- ftFairness.2 |>
+  vline(j = c(2, 4, 10), border = border_vline)
+
+## Bewaar flextable 2
+ftFairness.2 |> 
+  save_as_image(path = "10. Output/all/Fairness_HHs_2.png")
+
+
