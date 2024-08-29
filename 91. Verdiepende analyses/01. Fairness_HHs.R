@@ -24,126 +24,10 @@
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1. LAAD LTABASE PACKAGE ####
+## 1. INCLUDE VOORBEREIDINGEN  ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.1 Standaard packages die direct nodig zijn ####
-
-## Installeer here, cli en icecream indien nodig
-for (i in c("here", "cli", "icecream")) {
-  if(!requireNamespace(i, quietly = TRUE)) {
-    install.packages(i)
-  }
-}
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.2 ltabase package in (installeer indien nodig) ####
-
-source("99. Functies & Libraries/Inladen_ltabase.R")
-source("99. Functies & Libraries/Fairness_functies.R")
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
-
-## Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
-ltabase::load_lta_datasets(message = TRUE)
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.4 Laad extra bibliotheken ####
-
-## Laad extra bibliotheken
-library(conflicted)   # om conflicten op te lossen
-library(tidymodels)   # voor machine learning
-
-library(vip)          # voor variable importance plots
-library(forcats)      # om factor variabelen te bewerken
-library(performance)  # voor performance metingen op lr modellen
-#library(dlookr)      # om data te inspecteren > geeft conflicten vanwege showtext_auto()
-library(gtsummary)    # voor beschrijvende summary tabellen
-library(flextable)    # voor flextables
-library(officer)      # voor opmaak in tabellen
-library(gt)           # voor tabellen
-library(gtExtras)     # voor sparklines
-library(cli)          # voor cli teksten
-library(glue)         # voor string interpolatie
-library(probably)     # voor probabilistische modellen
-library(discrim)      # discriminant analysis
-library(klaR)         # voor classificatie en visualisatie
-library(betacal)      # voor beta calibration
-
-library(doParallel)   # voor parallel processing
-library(DALEX)        # voor explainable AI
-library(DALEXtra)     # voor explainable AI
-library(lobstr)       # voor het meten van objecten
-library(butcher)      # voor het verkleinen van modellen
-library(iBreakDown)   # voor het uitleggen van modellen
-library(ggtext)       # voor het maken van opmaak in titels
-
-library(showtext)     # voor het instellen van lettertypes
-library(ggplot2)      # voor het maken van plots
-library(cvms)         # voor confusion matrices
-library(ggimage)      # voor confusion matrices
-library(rsvg)         # voor confusion matrices
-library(ggnewscale)   # voor confusion matrices
-
-library(ggpubr)       # voor het bewaren van plots
-library(bbplot)       # voor het bewaren van plots
-library(grid)         # voor het bewaren van plots
-
-library(gridGraphics) # voor het bewaren van plots
-library(extrafont)    # voor het bewaren van plots
-library(sysfonts)     # voor fonts
-
-library(fairmodels)   # voor fairness in modellen
-
-library(fs)          # voor file system functies
-
-library(quartostamp)  # voor extra quarto add-in functionaliteit
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.5 Fonts ####
-
-extrafont::loadfonts(quiet = TRUE)
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.6 Laad extra functies ####
-
-source("99. Functies & Libraries/Rapport_functies.R")
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.7 Kleuren ####
-
-source("01. Includes/Include_Colors.R")
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.8 Bepaal de voorkeur voor de thema's ####
-
-Set_LTA_Theme()
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.9 Laad extra functies ####
-
-source("99. Functies & Libraries/Rapport_functies.R")
-
-## Bepaal de volgorde van een aantal levels
-Get_Levels()
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.10 Conflicts ####
-
-conflicts_prefer(dplyr::select)
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.1 Netwerkpaden ####
-
-# Als LTA_ROOT, LTA_DATA of LTA_BOARD niet bestaan, dan wordt de omgeving opnieuw ingesteld
-ltabase::set_lta_sys_env()
-
-## Bepaal de netwerkdirectory
-Network_directory <- ltabase::get_lta_network_directory()
-
-
+source("91. Verdiepende analyses/Include_Voorbereidingen_Verdieping.R")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -162,10 +46,7 @@ lFiles <- list.files(path = dir, recursive = TRUE, pattern = "*.rds", full.names
 lFiles <- lFiles[grepl("fairness", lFiles)]
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.3 Laad en combineer de data ####
-
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.3.1 Basis ####
+## 2.3 Laad en combineer de data: dfFairness_HHs ####
 
 # Functie om de faculteit, opleiding, vorm en soort analyse te extraheren uit het pad
 dfFairness_HHs <- bind_rows(lapply(lFiles, function(file) {
@@ -185,6 +66,7 @@ dfFairness_HHs <- bind_rows(lapply(lFiles, function(file) {
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 3.1 Maak UUID en sub dataframes ####
 
+## Variabelen en hun waarden
 dfVars <- tribble(
   ~FRN_Group, ~FRN_Subgroup,
   "Geslacht",      "M",
@@ -207,32 +89,38 @@ dfVars <- tribble(
   "Aansluiting",   "Onbekend"
 )
 
+## Maak een FRN_UUID
 dfFairness_HHs <- dfFairness_HHs |> 
   mutate(FRN_UUID = paste(FRN_Faculteit, FRN_Opleidingstype, FRN_Opleiding, FRN_Opleidingsvorm, sep = "_")) |> 
   select(-c(FRN_Faculteit, FRN_Opleidingstype, FRN_Opleiding, FRN_Opleidingsvorm))
 
+## Model
 dfModel <- tibble(
   FRN_Model = unique(dfFairness_HHs$FRN_Model)
 )
 
+## Metrics
 dfMetrics <- tibble(
   FRN_Metric = unique(dfFairness_HHs$FRN_Metric)
 )
 
+## UUID
 dfUUID <- tibble(
   FRN_UUID = unique(dfFairness_HHs$FRN_UUID)
 )
 
+## Soorten analyes
 dfSoortAnalyse <- tibble(
   FRN_Analyse = unique(dfFairness_HHs$FRN_Analyse)
 )
 
-dfVars_Metrics <- expand_grid(dfVars, dfModel, dfMetrics, dfUUID, dfSoortAnalyse)
-
-
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 3.2 Join de dataframes ####
 
+## Maak een df met alle mogelijke combinaties
+dfVars_Metrics <- expand_grid(dfVars, dfModel, dfMetrics, dfUUID, dfSoortAnalyse)
+
+## Koppeld deze aan dfFairness_HHs
 dfFairness_HHs.2 <- dfFairness_HHs |>
   full_join(
     dfVars_Metrics,
@@ -249,7 +137,7 @@ dfFairness_HHs.2 <- dfFairness_HHs |>
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 3.3 Split FRN_UUID ####
 
-## Splits de FRN_UUID in Faculteit, Opleidingstype, Opleiding en Opleidingsvorm
+## Splits de FRN_UUID waar naar Faculteit, Opleidingstype, Opleiding en Opleidingsvorm
 dfFairness_HHs.3 <- dfFairness_HHs.2 |>
   separate(
     FRN_UUID, into = c("FRN_Faculteit", 
@@ -299,6 +187,8 @@ dfFairness_HHs.6 <- dfFairness_HHs.5 |>
   ## Tel het aantal Bias per groep
   summarise(FRN_Bias_count = n(), 
             .groups = "drop") |> 
+  
+  ## Bepaal de juist volgorde van de variabelen
   select(FRN_Faculteit,
          INS_Opleidingsnaam_huidig,
          FRN_Opleiding,
@@ -322,7 +212,7 @@ dfFairness_HHs.6 <- dfFairness_HHs.5 |>
     `Geen Bias` == 0 & `Negatieve Bias` == 0 & `Positieve Bias` == 0 ~ 'NTB',
     .default = "Nee")) |> 
   
-  ## Hernoem de kolommen
+  ## Hernoem de kolommen zodat deze in de tabel beter leesbaar zijn
   rename(Faculteit = FRN_Faculteit,
          Opleidingsnaam = INS_Opleidingsnaam_huidig,
          Opleiding = FRN_Opleiding,
@@ -342,7 +232,7 @@ dfFairness_HHs.6 <- dfFairness_HHs.5 |>
                                    lLevels_aansluiting))
   ) |> 
   
-  ## Selecteer de kolommen
+  ## Selecteer de nodige kolommen
   select(Faculteit, Opleidingsnaam, Opleiding, Opleidingsvorm,
          Variabele, Groep, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) |> 
   
@@ -351,13 +241,14 @@ dfFairness_HHs.6 <- dfFairness_HHs.5 |>
           Variabele, Groep)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3.7 Voeg tellingen toe
+## 3.7 Bepaal tellingen ####
 
 ## Maak een dataframe voor alle opleidingen
 tblOpleidingen <- dfFairness_HHs.6 |>
   select(Opleiding, Opleidingsvorm) |>
   distinct()
 
+## Maak een lijst van Inschrijvingen
 lInschrijvingen <- list()
 
 ## Loop over de opleidingen, haal de inschrijvingen op en voeg deze toe aan de lijst
@@ -391,7 +282,7 @@ for (i in 1:nrow(tblOpleidingen)) {
 ## Combineer de lijst met inschrijvingen
 dfInschrijvingen <- bind_rows(lInschrijvingen)
 
-## Maak een telling van de variabelen
+## Maak een df met tellingen van de variabelen
 dfTellingen <- dfInschrijvingen |>
   select(INS_Faculteit,
          INS_Opleiding,
@@ -420,7 +311,10 @@ dfFairness_HHs.7 <- dfFairness_HHs.6 |>
   ) |>
   replace_na(list(N = 0))
 
-## Maak van de opleiding een korte versie
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 3.8 Maak een korte versie van de opleidingen ####
+
+## Maak van de opleiding een korte versie voor de tabel
 dfFairness_HHs.8 <- dfFairness_HHs.7 |>
   mutate(Opleidingsvorm = toupper(Opleidingsvorm),
          Opleiding = paste0(Opleidingsnaam, " ", 
@@ -433,14 +327,24 @@ dfFairness_HHs.8 <- dfFairness_HHs.7 |>
 ## 4. FAIRNESS FLEXTABLE ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 4.1 Bepaal de kleuren #### 
+
 sColor_Bias_Positive      <- "#9DBF9E"
 sColor_Bias_Negative      <- "#A84268"
 sColor_Bias_Neutral       <- "#FCB97D"
 sColor_Bias_None          <- "#E5E5E5"
 sColor_Bias_Undetermined  <- "#FFFFFF"
 
+sColor_Bias_Positive      <- "#174D7C"
+sColor_Bias_Positive      <- "#4C7D8E"
+sColor_Bias_Negative      <- "#FD6D4E"
+
+sColor_Bias_Positive      <- "#1170AA"
+sColor_Bias_Negative      <- "#FC7D0B"
+
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 4.1 Maak de tabel (versie 1 - long) #### 
+## 4.2 Maak de tabel (versie 1 - long) #### 
 
 ftFairness.1 <- flextable(dfFairness_HHs.8 |> 
                             dplyr::filter(N > 0))
@@ -493,10 +397,11 @@ ftFairness.1 <- ftFairness.1 |>
     align_text_col(align = "left") |> 
     align_nottext_col(align = "center") 
   
+## Toon de flextable
 ftFairness.1
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 4.2 Maak de tabel (versie 2 - wide) #### 
+## 4.3 Maak de tabel (versie 2 - wide) #### 
 
 dfFairness_HHs.9 <- dfFairness_HHs.8 |> 
   mutate(Bias = case_when(
@@ -510,16 +415,38 @@ dfFairness_HHs.9 <- dfFairness_HHs.8 |>
   select(-c(`Negatieve Bias`, `Positieve Bias`, `Geen Bias`, N)) |> 
   pivot_wider(names_from = c(Variabele, Groep), 
               values_from = Bias) |> 
+  
   ## Verwijder de kolommen met 'Onbekend' en 'Overig'
   select(-c(Vooropleiding_Onbekend, 
             Aansluiting_Onbekend,
             Vooropleiding_Overig, 
             Aansluiting_Overig)) |> 
+  
   ## Hernoem de kolommen: bewaar alleen wat er achter een _ staat als er een _ voorkomt
-  rename_with(~ gsub(".*_", "", .x))
+  rename_with(~ gsub(".*_", "", .x)) 
 
-ftFairness.2 <- flextable(dfFairness_HHs.9)
+## Pas de waarden bij M/V aan op basis van afleiding bij V/M
+dfFairness_HHs.10 <- dfFairness_HHs.9 |> 
+  rowwise() |>
+  mutate(
+    M = case_when(
+      V == "Negatief" ~ "Positief",
+      V == "Positief" ~ "Negatief",
+      M == "NTB" ~ "Nee",
+      .default = M
+    ),
+    V = case_when(
+      M == "Negatief" ~ "Positief",
+      M == "Positief" ~ "Negatief",
+      V == "NTB" ~ "Nee",
+      .default = V
+    )
+  )
 
+## Maak een basis flextable op basis van dfFairness_HHs.9
+ftFairness.2 <- flextable(dfFairness_HHs.10)
+
+## Pas de basis layout aan
 ftFairness.2 <- ftFairness.2 |>
   add_header_row(values = c("", "Geslacht", "Vooropleiding", "Aansluiting"), 
                  colwidths = c(2, 2, 6, 6)) |>
@@ -556,16 +483,16 @@ Get_Fairness_Color <- function(value) {
   )
 }
 
-# Toepassen van kleuren per kolom
-for (col in colnames(dfFairness_HHs.9)[-1]) {
+# Pas de kleuren toe per kolom
+for (col in colnames(dfFairness_HHs.10)[-1]) {
   
   ## Pas de achtergrond aan
-  colors <- map_chr(dfFairness_HHs.9[[col]], Get_Fairness_Bg)
+  colors <- map_chr(dfFairness_HHs.10[[col]], Get_Fairness_Bg)
   ftFairness.2 <- ftFairness.2 |>
     bg(j = col, bg = colors)
   
   ## Pas de kleur aan
-  colors <- map_chr(dfFairness_HHs.9[[col]], Get_Fairness_Color)
+  colors <- map_chr(dfFairness_HHs.10[[col]], Get_Fairness_Color)
   ftFairness.2 <- ftFairness.2 |>
     color(j = col, color = colors)
 }
@@ -573,6 +500,7 @@ for (col in colnames(dfFairness_HHs.9)[-1]) {
 # Voeg verticale lijnen toe tussen de gewenste kolommen
 border_vline <- fp_border(color = "black", width = 1)
 
+# Pas de borderlines aan
 ftFairness.2 <- ftFairness.2 |>
   vline(j = c(2, 4, 10), border = border_vline)
 
@@ -580,4 +508,18 @@ ftFairness.2 <- ftFairness.2 |>
 ftFairness.2 |> 
   save_as_image(path = "10. Output/all/Fairness_HHs_2.png")
 
+## Toon de flextable
+ftFairness.2
 
+## Corrigeer beoordeling in de flextable voor Geslacht:
+## Als M = Negatief, dan V = Positief
+## Als V = Negatief, dan M = Positief
+## Als M = Positief, dan V = Negatief
+## Als V = Positief, dan M = Negatief
+
+## . ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 5. OPRUIMEN ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+rm(list = ls())

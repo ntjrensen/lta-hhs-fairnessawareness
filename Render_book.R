@@ -120,7 +120,12 @@ dfRender <- dfOpleidingen |>
 bRefresh_books <- FALSE
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.3 Loop over opleidingen en render de output ####
+## 2.3 Bepaal synthetische data gebruikt wordt ####
+
+bUse_Synthetic_data <- FALSE
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## 2.4 Loop over opleidingen en render de output ####
 
 ## Bepaal de succes-variabelen
 lSucces <-  c("Retentie na 1 jaar")
@@ -171,6 +176,10 @@ for(i in 1:nrow(dfRender)) {
       .succes <- janitor::make_clean_names(j)
     ))
     
+    if(bUse_Synthetic_data) {
+      .output_dir <- paste0(.output_dir, "-synth")
+    }
+    
     ## Bepaal de parameters voor de quarto file
     .execute_params <- list(
       succes                   = j,
@@ -181,7 +190,8 @@ for(i in 1:nrow(dfRender)) {
       opleidingsvorm_afkorting = current_render_opleiding$INS_Opleidingsvorm,
       selectie                 = ifelse(current_render_opleiding$INS_Opleiding == "HDT", 
                                         TRUE, 
-                                        FALSE)
+                                        FALSE),
+      use_synthetic_data       = bUse_Synthetic_data
     )
     
     ## Als de output directory van dit book al bestaat, skip

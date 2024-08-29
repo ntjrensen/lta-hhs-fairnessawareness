@@ -17,48 +17,35 @@ params:
   succes: "Retentie na 1 jaar"
   propedeusediploma: "Nvt" ## Nvt/Met P/Zonder P
   
+  ## Use synthetic data
+  use_synthetic_data: true
+  
   ## Recreate plots
   recreateplots: true
   
   # BRV:ORM DU
-  faculteit: "BRV"
-  opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
-  opleiding: "BO"
-  opleidingsvorm: "duaal"
-  opleidingsvorm_afkorting: "DU"
-  selectie: false
-  
-  ## GVS:HDT DT
-  # faculteit: "GVS"
-  # opleidingsnaam: "B Huidtherapie"
-  # opleiding: "HDT"
-  # opleidingsvorm: "deeltijd"
-  # opleidingsvorm_afkorting: "DT"
-  # selectie: false
-  
-  # ## MO:ES-ES-3 VT
-  # faculteit: "MO"
-  # opleidingsnaam: "B European Studies"
-  # opleiding: "ES-ES-3"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  # ## MO:FM DT
-  # faculteit: "MO"
-  # opleidingsnaam: "B Facility Management"
-  # opleiding: "FM"
-  # opleidingsvorm: "deeltijd"
-  # opleidingsvorm_afkorting: "DT"
-  # selectie: false
-  
-  # ## TIS:W DU
-  # faculteit: "TIS"
-  # opleidingsnaam: "B Werktuigbouwkunde"
-  # opleiding: "W"
+  # faculteit: "BRV"
+  # opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
+  # opleiding: "BO"
   # opleidingsvorm: "duaal"
   # opleidingsvorm_afkorting: "DU"
   # selectie: false
+  
+  # BRV:HBO-R VT
+  # faculteit: "BRV"
+  # opleidingsnaam: "B HBO-Rechten"
+  # opleiding: "HBO-R"
+  # opleidingsvorm: "deeltijd"
+  # opleidingsvorm_afkorting: "DT"
+  # selectie: false
+  
+  # ITD:CMD
+  faculteit: "ITD"
+  opleidingsnaam: "B Communication and Multimedia Design"
+  opleiding: "CMD"
+  opleidingsvorm: "voltijd"
+  opleidingsvorm_afkorting: "VT"
+  selectie: false
   
   ## Author
   author: "Theo Bakker, lector Learning Technology & Analytics"
@@ -113,7 +100,7 @@ Na de basis-analyse van de data en het bouwen van de prognosemodellen, gaan we i
 
 We laden de bewerkte data en prognosemodellen in voor:
 
-**Opleiding**: `r params$faculteit` \| `r params$opleidingsnaam` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
+**Opleiding**: `r params$faculteit` \| `r Get_Opleidingsnaam_Synth(params$opleidingsnaam)` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
 ```{r}
 #| label: load_data

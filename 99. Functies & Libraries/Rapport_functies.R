@@ -124,10 +124,15 @@ Get_sOpleiding <- function() {
     cli::cli_abort("current_opleiding is niet gedefinieerd")
   }
   
-  return(paste0(current_opleiding$INS_Opleidingsnaam_huidig, 
+  return(paste0(Get_Opleidingsnaam_Synth(current_opleiding$INS_Opleidingsnaam_huidig), 
                 " (", 
                 current_opleiding$INS_Opleiding, ") ", 
                 current_opleiding$INS_Opleidingsvorm))
+  
+  # return(paste0(current_opleiding$INS_Opleidingsnaam_huidig, 
+  #               " (", 
+  #               current_opleiding$INS_Opleiding, ") ", 
+  #               current_opleiding$INS_Opleidingsvorm))
   
 }
 
@@ -175,6 +180,11 @@ Get_Current_Opleiding_Output_Dir <- function(current_opleiding,
     "-",
     current_opleiding$INS_Opleidingsvorm
   ) |> tolower()
+  
+  ## Als er synthetische data gebruikt wordt, voeg -synth toe aan de directory
+  if(params$use_synthetic_data == T){
+    .fac_opl_vorm <- paste0(.fac_opl_vorm, "-synth")
+  }
   
   if(mode == "last-fits" | mode == "modelresults") {
     .output_dir <- file.path("10. Output",
@@ -300,6 +310,19 @@ Get_Breakdown_Plotpath <- function(student_groep, student_categorie) {
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 3. DATASET FUNCTIES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## Functie om synthetische data op te halen
+Get_Studyprogram_Enrollments_Synthetic <- function(studytrack,
+                                                       studyform) {
+  
+  sInput_path <- file.path(Network_directory, "LTA/Simulatiedataset")
+  
+  df <- readRDS(file.path(sInput_path, "dfOpleiding_inschrijvingen_syn.rds")) |> 
+    filter(INS_Opleiding == studytrack,
+           INS_Opleidingsvorm == studyform)
+  
+  return(df)
+}
 
 ## Functie om de Uitval variabele te maken
 Mutate_Uitval <- function(df, model = "Uitval na 1 jaar") {
@@ -562,6 +585,19 @@ Mutate_Levels <- function(df, vars, levels) {
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 4. RENDER FUNCTIES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## Functie om opleidingsnaam met of zonder synth op te halen
+Get_Opleidingsnaam_Synth <- function(opleidingsnaam) {
+  
+  if(params$use_synthetic_data == T){
+    sOpleidingsnaam <- paste(opleidingsnaam, "(Synth)")
+  } else {
+    sOpleidingsnaam <- opleidingsnaam
+  }
+  
+  return(sOpleidingsnaam)
+  
+}
 
 ## Functie om de lange naam van de opleidingsvorm te bepalen
 Get_Opleidingsvorm_Lang <- function(opleidingsvorm) {

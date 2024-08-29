@@ -17,6 +17,9 @@ params:
   succes: "Retentie na 1 jaar"
   propedeusediploma: "Nvt" ## Nvt/Met P/Zonder P
   
+  ## Use synthetic data
+  use_synthetic_data: true
+  
   ## Recreate plots
   recreateplots: true
   
@@ -28,44 +31,20 @@ params:
   # opleidingsvorm_afkorting: "DU"
   # selectie: false
   
-  ## GVS:HDT DT
-  # faculteit: "GVS"
-  # opleidingsnaam: "B Huidtherapie"
-  # opleiding: "HDT"
+  # BRV:HBO-R VT
+  # faculteit: "BRV"
+  # opleidingsnaam: "B HBO-Rechten"
+  # opleiding: "HBO-R"
   # opleidingsvorm: "deeltijd"
   # opleidingsvorm_afkorting: "DT"
   # selectie: false
   
-  # ## MO:ES-ES-3 VT
-  # faculteit: "MO"
-  # opleidingsnaam: "B European Studies"
-  # opleiding: "ES-ES-3"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  # ## MO:FM DT
-  # faculteit: "MO"
-  # opleidingsnaam: "B Facility Management"
-  # opleiding: "FM"
-  # opleidingsvorm: "deeltijd"
-  # opleidingsvorm_afkorting: "DT"
-  # selectie: false
-  
-  ## TIS:CT-ES-3 VT
-  # faculteit: "TIS"
-  # opleidingsnaam: "B Chemische Technologie"
-  # opleiding: "CT-ES-3"
-  # opleidingsvorm: "voltijd"
-  # opleidingsvorm_afkorting: "VT"
-  # selectie: false
-  
-  ## BFM:FC-AD DT
-  faculteit: "BFM"
-  opleidingsnaam: "Ad Finance Control"
-  opleiding: "FC-AD"
-  opleidingsvorm: "deeltijd"
-  opleidingsvorm_afkorting: "DT"
+  # ITD:CMD
+  faculteit: "ITD"
+  opleidingsnaam: "B Communication and Multimedia Design"
+  opleiding: "CMD"
+  opleidingsvorm: "voltijd"
+  opleidingsvorm_afkorting: "VT"
   selectie: false
   
   ## Author
@@ -121,7 +100,7 @@ De analyse van kansengelijkheid heeft de volgende stappen:
 
 We laden de bewerkte data en het beste prognosemodel in voor:
 
-**Opleiding**: `r params$faculteit` \| `r params$opleidingsnaam` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
+**Opleiding**: `r params$faculteit` \| `r Get_Opleidingsnaam_Synth(params$opleidingsnaam)` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
 ```{r}
 #| label: load_data
