@@ -326,7 +326,7 @@ detach("package:dlookr", unload = TRUE)
 
 ```
 
-### Bewerk de data
+Vs(p### Bewerk de data
 
 -   Uit de eerste diagnose blijkt dat niet alle variabelen goed genoeg zijn voor het bouwen van een prognosemodel: er zijn missende waarden en niet alle veldtypes zijn geschikt. We passen de variabelen aan zodat we in het model er goed mee kunnen werken.
 -   Prognosemodellen kunnen niet omgaan met missende waarden. Om bias te voorkomen verwijderen we geen rijen met missende waarden, maar vullen die op (*imputatie*). We bewerken de data zo dat alle missende waarden worden opgevuld: bij numerieke waarden met het gemiddelde en bij categorische variabelen met 'Onbekend'.
@@ -383,7 +383,7 @@ detach("package:dlookr", unload = TRUE)
 
 ```
 
-### Bekijk de onderlinge correlaties
+sse ### Bekijk de onderlinge correlaties
 
 Het is verstandig om voorafgaand aan het bouwen van een model te kijken naar de onderlinge correlaties tussen numerieke variabelen. Dit geeft inzicht in de data en kan helpen bij het maken van keuzes voor het model of de duiding van de uitkomsten.
 
@@ -451,7 +451,7 @@ dfRetentie_test_prop <- dfRetentie_test  |>
   mutate(Naam = "Testset",
          prop = n/sum(n)) 
 
-## Combineer de training- en validatieset om te tonen in een tabel
+## Combineer de training- en testmutaspkcap"set om te tonen in een tabel
 bind_rows(dfRetentie_train_prop,
           dfRetentie_test_prop) |> 
   mutate(prop = scales::percent(prop, accuracy = 0.1)) |>

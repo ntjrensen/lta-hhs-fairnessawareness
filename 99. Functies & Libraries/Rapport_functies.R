@@ -951,6 +951,14 @@ Cli_Subheader <- function(sText) {
 ## 6. QUERY FUNCTIES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+# Functie om de meest voorkomende waarde te vinden
+get_mode <- function(x) {
+  x |>
+    table() |>
+    which.max() |>
+    names()
+}
+
 ## Functie om de meest voorkomende categorie te bepalen
 Get_Mostcommon_Category <- function(x) {
   
@@ -1142,6 +1150,15 @@ Get_dfPersona <- function(group = NULL) {
   return(dfPersona)
 }
 
+# Helper functie om meest voorkomende waarde te vinden
+Get_Mostcommon_Value <- function(x) {
+  if (is.numeric(x)) {
+    return(median(x, na.rm = TRUE))
+  } else {
+    return(names(sort(table(x), decreasing = TRUE))[1])
+  }
+}
+
 Get_dfPersona_2 <- function(group = NULL) {
   
   ## Bepaal de categorische variabelen die gebruikt worden
@@ -1163,6 +1180,7 @@ Get_dfPersona_2 <- function(group = NULL) {
   ## Verwijder de huidige groep variabele uit deze lijst
   if (!is.null(group)) {
     .group <- as.name(group)
+    # Verwijder de groep variabele uit deze lijst
     lSelect_categorical <- setdiff(lSelect_categorical, group)
   }
   
@@ -1183,81 +1201,138 @@ Get_dfPersona_2 <- function(group = NULL) {
     "Retentie"
   )
   
-  # Helper functie om meest voorkomende waarde te vinden
-  Get_Mostcommon_Value <- function(x) {
-    if (is.numeric(x)) {
-      return(median(x, na.rm = TRUE))
-    } else {
-      return(names(sort(table(x), decreasing = TRUE))[1])
-    }
+  ## Als de opleiding gelijk is aan HDT, voeg dan Rangnummer toe
+  if(current_opleiding$INS_Opleiding == "HDT") {
+    lSelect_numerical <- c(lSelect_numerical, "Rangnummer")
   }
+  
+  ## Verwijder variabelen die niet voorkomen in deze opleiding
+  lSelect_numerical <- intersect(lSelect_numerical, 
+                                 colnames(dfOpleiding_inschrijvingen))
+  
+  # Bereken het totaal voor deze opleiding
+  .totaal <- dfOpleiding_inschrijvingen |> 
+    count() |> 
+    pull(n)
   
   if (!is.null(group)) {
     
     # Maak personas aan op basis van de opgegeven groep
-    dfPersona <- dfOpleiding_inschrijvingen |> 
-      group_by(!!.group) |> 
-      group_split()
-    
-    personas <- list()
-    
-    for (df in dfPersona) {
-      for (var in c(lSelect_categorical, lSelect_numerical)) {
-        most_common_value <- Get_Mostcommon_Value(df[[var]])
-        df <- df[df[[var]] == most_common_value, ]
+    dfPersona <<- dfOpleiding_inschrijvingen |> 
+      
+      group_by(!!.group)
+      
+      dfPersona_filtered <<- dfPersona 
+      
+      ## Filter recursief per variabele
+      for (var in c(lSelect_categorical)) {
+        print(var)
+        # if(is.numeric(dfPersona_filtered[[var]])) {
+        #   median_value <- Get_Median_Rounded(dfPersona_filtered[[var]])  # Bepaal de mediaan
+        #   dfPersona_filtered <- dfPersona_filtered |>
+        #     filter(!!sym(var) == median_value)  # Filter op de mediaan
+        # } else {
+          mode_value <- Get_Mostcommon_Category(dfPersona_filtered[[var]])  # Bepaal de meest voorkomende waarde
+          dfPersona_filtered <- dfPersona_filtered |>
+            filter(!!sym(var) == mode_value)  # Filter op de meest voorkomende waarde
+        # }
       }
       
-      persona <- df |>
-        summarise(
-          across(all_of(lSelect_categorical), Get_Mostcommon_Category, .names = "{col}"),
-          across(all_of(lSelect_numerical), Get_Median_Rounded, .names = "{col}"),
-          Collegejaar = median(Collegejaar, na.rm = TRUE),
-          ID = NA,
-          Subtotaal = n(),
-          .groups = "drop"
-        )
+      dfPersona_filtered_tmp <<- dfPersona_filtered
       
-      personas <- append(personas, list(persona))
-    }
-    
-    dfPersona <- bind_rows(personas) |>
-      mutate(
-        Totaal = .totaal,
-        Percentage = round(Subtotaal / .totaal, 3),
-        Groep = group,
-        Categorie = !!.group
-      ) |>
-      mutate(Leeftijd = as.integer(Leeftijd)) |>
+      dfPersona <<- dfPersona_filtered |> 
+      
+      # Maak een persona aan op basis van de overige variabelen: 
+      # kies de meest voorkomende waarden per variabele bij categorieën 
+      # en de mediaan bij numerieke variabelen
+      summarise(
+        
+        # Categorische variabelen
+        across(
+          all_of(lSelect_categorical), 
+          Get_Mostcommon_Category,
+          .names = "{col}"
+        ),
+        
+        # Numerieke variabelen
+        across(
+          all_of(lSelect_numerical),
+          Get_Median_Rounded,
+          .names = "{col}"
+        ), 
+        
+        # Overige variabelen
+        Collegejaar = median(Collegejaar, na.rm = TRUE),
+        ID = NA,
+        
+        # Subtotaal aantal studenten
+        Subtotaal = n(),
+        
+        .groups = "drop") |> 
+      
+      # Tel het aantal studenten per groep
+      mutate(Totaal = .totaal,
+             Percentage = round(Subtotaal/Totaal, 3)) |>
+      
+      # Voeg de groep variabele toe en bepaal de categorie binnen de groep
+      mutate(Groep = group,
+             Categorie = !!.group) |>
+      
+      # Mutate leeftijd naar integer
+      mutate(Leeftijd = as.integer(round(Leeftijd, 0))) |>
+      
+      # Herorden
       select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
     
   } else {
     
-    dfFiltered <- dfOpleiding_inschrijvingen
-    
-    for (var in c(lSelect_categorical, lSelect_numerical)) {
-      most_common_value <- Get_Mostcommon_Value(dfFiltered[[var]])
-      dfFiltered <- dfFiltered[dfFiltered[[var]] == most_common_value, ]
-    }
-    
-    dfPersona <- dfFiltered |>
+    # Maak persona voor alle studenten zonder groepering
+    dfPersona <- dfOpleiding_inschrijvingen |>
+      
+      # Maak een persona aan op basis van de overige variabelen: 
+      # kies de meest voorkomende waarden per variabele bij categorieën 
+      # en de mediaan bij numerieke variabelen
       summarise(
-        across(all_of(lSelect_categorical), Get_Mostcommon_Category, .names = "{col}"),
-        across(all_of(lSelect_numerical), Get_Median_Rounded, .names = "{col}"),
+        
+        # Categorische variabelen
+        across(
+          all_of(lSelect_categorical), 
+          Get_Mostcommon_Category,
+          .names = "{col}"
+        ),
+        
+        # Numerieke variabelen
+        across(
+          all_of(lSelect_numerical),
+          Get_Median_Rounded,
+          .names = "{col}"
+        ), 
+        
+        # Overige variabelen
         Collegejaar = median(Collegejaar, na.rm = TRUE),
         ID = NA,
+        
+        # Subtotaal aantal studenten
         Subtotaal = n(),
-        .groups = "drop"
-      ) |>
-      mutate(
-        Totaal = .totaal,
-        Percentage = round(Subtotaal / .totaal, 3),
-        Groep = "Alle",
-        Categorie = "Alle studenten"
-      ) |>
+        
+        .groups = "drop") |> 
+      
+      # Tel het aantal studenten per groep
+      mutate(Totaal = .totaal,
+             Percentage = round(Subtotaal/Totaal, 3)) |>
+      
+      # Voeg de groep variabele toe en bepaal de categorie binnen de groep
+      mutate(Groep = "Alle",
+             Categorie = "Alle studenten") |>
+      
+      # Mutate leeftijd naar integer
+      mutate(Leeftijd = as.integer(round(Leeftijd, 0))) |>
+      
+      # Herorden
       select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
-  }
   
   return(dfPersona)
+  }
 }
 
 # Functie om een breakdown plot te maken
