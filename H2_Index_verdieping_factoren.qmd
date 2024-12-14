@@ -130,7 +130,7 @@ lDfPersona <- map(c("Geslacht", "Vooropleiding", "Aansluiting"),
 dfPersona_per_group <- bind_rows(lDfPersona) 
 
 ## Bewaar dit bestand als excel
-sOutputPath <- file.path("92. Tmp", "dfPersona_per_group.xlsx")
+sOutputPath <- file.path("92_Tmp", "dfPersona_per_group.xlsx")
 writexl::write_xlsx(dfPersona_per_group, sOutputPath)
 
 ## Laad de persona's

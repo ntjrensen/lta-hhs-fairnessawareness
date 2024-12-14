@@ -27,7 +27,7 @@ book:
         - H2_Index_verdieping_factoren.qmd
         - H3_Index_verdieping_kansengelijkheid.qmd
 
-editor: visual
+editor: source
 
 # execute:
 #  keep-md: true

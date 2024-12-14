@@ -59,8 +59,8 @@ if(bSetup_executed == F) {
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.2 ltabase package in (installeer indien nodig) ####
   
-  source("99. Functies & Libraries/Inladen_ltabase.R")
-  source("99. Functies & Libraries/Fairness_functies.R")
+  source("99_Functies_Libraries/Inladen_ltabase.R")
+  source("99_Functies_Libraries/Fairness_functies.R")
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
@@ -128,7 +128,7 @@ if(bSetup_executed == F) {
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.6 Laad extra functies ####
 
-  source("99. Functies & Libraries/Rapport_functies.R")
+  source("99_Functies_Libraries/Rapport_functies.R")
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.7 Kleuren ####
