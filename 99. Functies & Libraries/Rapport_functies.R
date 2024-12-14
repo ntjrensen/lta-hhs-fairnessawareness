@@ -643,29 +643,29 @@ Get_tblSummary <- function(df) {
       digits = all_continuous() ~ 2, 
       missing = "no",
       percent = "row"
-    ) #|> 
-  
-  
+    ) |> 
     
-    # ## Richt de vormgeving van de table in
-    # modify_header(all_stat_cols() ~ "**{level}**, N={n} ({style_percent(p)}%)") |>
-    # modify_spanning_header(c("stat_1", "stat_2") ~ "**Retentie**") |>
-    # modify_header(label = "**Variabele**") |>
-    # bold_labels() |>
-    # modify_caption("**Studentkenmerken versus Retentie**") |>
-    # add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
-    #       test.args = list(
-    #         all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
-    #         all_tests("wilcox.test") ~ list(exact = FALSE)
-    #       )) |> 
-    # add_significance_stars(
-    #   hide_p = FALSE,
-    #   pattern = "{p.value}{stars}"
-    # ) |>
-    # add_overall(last = TRUE, col_label = "**Totaal**, N = {N}") |> 
-    # as_flex_table() |> 
-    # flextable::border(border.top = fp_border(color = "grey")) |> 
-    # set_table_properties(width = 0.8, layout = "autofit")
+    ## Richt de vormgeving van de table in
+    modify_header(all_stat_cols() ~ "**{level}**, N={n} ({style_percent(p)}%)") |>
+    modify_spanning_header(c("stat_1", "stat_2") ~ "**Retentie**") |>
+    modify_header(label = "**Variabele**") |>
+    bold_labels() |>
+    modify_caption("**Studentkenmerken versus Retentie**") |>
+    add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
+          test.args = list(
+            all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
+            all_tests("wilcox.test") ~ list(exact = FALSE)
+          )) |>
+    add_q(method = "bonferroni",
+          pvalue_fun = ~ style_pvalue(.x, digits = 2)) |>
+    add_significance_stars(
+      hide_p = FALSE,
+      pattern = "{q.value}{stars}"
+    ) |>
+    add_overall(last = TRUE, col_label = "**Totaal**, N = {N}") |>
+    as_flex_table() |>
+    flextable::border(border.top = fp_border(color = "grey")) |>
+    set_table_properties(width = 0.8, layout = "autofit")
   
   return(dfSummary)
   

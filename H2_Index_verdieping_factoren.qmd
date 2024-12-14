@@ -124,7 +124,7 @@ lDfPersona <- list()
 
 ## Loop over de variabelen
 lDfPersona <- map(c("Geslacht", "Vooropleiding", "Aansluiting"),
-                  ~ Get_dfPersona_2(.x)) |>
+                  ~ Get_dfPersona(.x)) |>
   set_names(c("Geslacht", "Vooropleiding", "Aansluiting"))
 
 dfPersona_per_group <- bind_rows(lDfPersona) 
@@ -134,7 +134,7 @@ sOutputPath <- file.path("92. Tmp", "dfPersona_per_group.xlsx")
 writexl::write_xlsx(dfPersona_per_group, sOutputPath)
 
 ## Laad de persona's
-dfPersona_all <- Get_dfPersona_2()
+dfPersona_all <- Get_dfPersona()
 
 ```
 
@@ -142,7 +142,7 @@ dfPersona_all <- Get_dfPersona_2()
 
 We weten vanuit de basis-analyse welke variabelen van invloed zijn, maar niet hoe en in welke richting ze retentie verklaren: dragen ze sterk bij of juist niet, verhogen of verlagen ze retentie? Om het model beter te begrijpen en te kunnen uitleggen, maken met behulp van het [`DALEX` package](https://dalex.drwhy.ai) een *explainer*.
 
-DALEX is onder andere ontwikkeld om uit te kunnen leggen welke verklarende variabelen van belang zijn en wat deze voor een effect hebben in een model. Een explainer is een model-onafhankelijke *wrapper*, geeft inzicht in de voorspellingen van het model en de bijdrage van de variabelen aan de prognose. Een explainer maakt het verder mogelijk om modellen onderling te vergelijken en benchmarken.
+DALEX is onder andere ontwikkeld om uit te kunnen leggen welke verklarende variabelen van belang zijn en wat deze voor een effect hebben in een model. Een explainer is een model-onafhankelijke *wrapper*, die inzicht geeft in de voorspellingen van het model en de bijdrage van de variabelen aan de prognose. Een explainer maakt het verder mogelijk om modellen onderling te vergelijken en benchmarken.
 
 ### Maak een explainer
 
@@ -193,10 +193,10 @@ De eerste analyse is de Root Mean Square Error (RMSE) na permutaties.
 -   De **RMSE** is een maatstaf voor de gemiddelde afwijking van de voorspellingen van een model ten opzichte van de werkelijke waarden. Het wordt berekend als de wortel van de gemiddelde kwadratische fout.
 -   **RMSE na permutaties** wil zeggen dat de RMSE is berekend na het herhaaldelijk willekeurig herschikken (permuteren) van de waarden van een variabele in de dataset en daarmee de voorspellingen. Deze techniek passen we toe om de robuustheid en betrouwbaarheid van het model te evalueren.
 
-**Waarom RMSE na permutaties?**
+**Waarom is RMSE na permutaties nodig?**
 
 -   **Modelvalidatie**: Door de variabelen te permuteren en de RMSE te berekenen, kunnen we de prestatie van het model vergelijken met een willekeurige schatting. Variabelen die significant beter presteren dan de gemiddelde RMSE na permutaties hebben meer voorspellende kracht.
--   **Overfit detectie**: Als de RMSE van het originele model niet veel beter is dan het RMSE na permutaties, kan dit een indicatie zijn dat het model overfit is op de trainingsdata en niet goed generaliseert naar nieuwe data.
+-   **Overfit detectie**: Als de RMSE van het originele model niet veel beter is dan het RMSE na permutaties, kan dit een indicatie zijn dat het model overfit op de trainingsdata en niet goed generaliseert naar nieuwe data.
 
 De meeste voorspellende factoren en hun RMSE zijn:
 
@@ -241,7 +241,9 @@ Een volgende analyse is een toepassing van het model op de meest voorkomende stu
 
 NB. Het kan goed zijn dat we combinaties krijgen van waarden van variabelen die niet kunnen voorkomen, bijv. een student van het mbo met een E&M profiel. Dit is wel correct: het is een fictieve student die de meest voorkomende kenmerken van de totale populatie van studenten van deze opleiding vertegenwoordigt.
 
-*Ter illustratie* Stel dat we een onderscheid maken tussen mbo en havo studenten, dan bepalen we de mediaan van numerieke variabelen en de frequentste waarde van categorische variabelen. Van de leeftijd kan misschien 20 het vaakst voorkomen, etc.
+::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
+Stel dat we een onderscheid maken tussen mbo en havo studenten, dan bepalen we de mediaan van numerieke variabelen en de meest frequente waarde van categorische variabelen. Van de leeftijd kan misschien 20 het vaakst voorkomen, etc.
+:::
 
 We kijken hiermee naar de voorspelling van het model per groep en de bijdrage van de verklarende variabelen aan die specifieke voorspelling. Dit geeft een verder inzicht in de werking van het model. Een categorie met 20 studenten of minder laten we buiten beschouwing.
 
@@ -267,15 +269,21 @@ sIntercept <- Change_Number_Marks(nIntercept, digits = 1)
 
 #### Toelichting op de opbouw van de kans op retentie
 
-De opbouw van het model bestaat uit een *intercept*, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de basiskans op retentie voor alle studenten. Deze kans is voor de `r params$opleidingsnaam` (`r params$opleiding`) `r params$opleidingsvorm` `r sIntercept`%. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de kans op retentie verhoogt, een negatieve bijdrage betekent dat het de kans op retentie verlaagt.
+De opbouw van het model bestaat uit een *intercept*, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de **basiskans op retentie** voor alle studenten. Deze kans is voor de `r params$opleidingsnaam` (`r params$opleiding`) `r params$opleidingsvorm` **`r sIntercept`%**. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de kans op retentie verhoogt, een negatieve bijdrage betekent dat het de kans op retentie verlaagt.
 
-Het kan zijn dat nieuwe variabelen geen invloed meer hebben op de kans. Dit betekent niet per se dat ze niet belangrijk zijn. Het kan zijn dat de invloed die ze hebben op de kans al is 'afgevangen' door variabelen die eerder in het model zijn opgenomen. Een voorbeeld: de variabele `Cijfer_CE_VO_missing = Ja` betekent dat een student geen VO cijfers heeft voor het centraal schriftelijk examen. Dit geldt voor vrijwel alle MBO studenten. Doordat de variabele Cijfer_CE_VO_missing de kans op retentie net wat sterker beïnvloedt, komt `Vooropleiding = MBO` niet meer voor als invloedrijke variabele, maar is dit wel de achterliggende reden dat het cijfer ontbreekt.
+Het kan zijn dat nieuwe variabelen geen invloed meer hebben op de kans. Dit betekent niet per se dat ze niet belangrijk zijn. Het kan zijn dat de invloed die ze hebben op de kans al is 'afgevangen' door variabelen die eerder in het model zijn opgenomen.
 
-Uiteindelijk tellen alle verklarende variabelen op tot een definitieve voorspelling die per persoon verschilt, afhankelijk van hun persoonlijke kenmerken per variabele.
+::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
+De variabele `Cijfer_CE_VO_missing = Ja` betekent dat een student geen VO cijfers heeft voor het centraal schriftelijk examen. Dit geldt voor vrijwel alle MBO studenten. Doordat de variabele `Cijfer_CE_VO_missing` de kans op retentie net wat sterker beïnvloedt, komt `Vooropleiding = MBO` niet meer voor als invloedrijke variabele, maar is dit wel de achterliggende reden dat het cijfer ontbreekt.
+:::
+
+Uiteindelijk tellen alle verklarende variabelen op tot een definitieve voorspelling die per persoon verschilt, afhankelijk van hun persoonlijke verschillen per variabele.
 
 #### De meest voorkomende student (totaal)
 
-We kijken eerst naar de meest voorkomende student in de opleiding. We analyseren de kans op retentie voor deze *fictieve* student en de bijdrage van de variabelen aan die kans. Daarbij tonen we de verdeling van de voorspellingen voor deze student voor alle variabelen en per variabele. Dit laat zien welke variabelen belangrijk zijn, naar welke kant de verdeling neigt en welke spreiding de kansverdeling heeft. Wat betekent dit?
+We kijken eerst naar de meest voorkomende student in de opleiding. We analyseren de kans op retentie voor deze *fictieve* student en de bijdrage van de variabelen aan die kans. Daarbij tonen we de verdeling van de voorspellingen voor deze student voor alle variabelen en per variabele. Dit laat zien welke variabelen belangrijk zijn, naar welke kant de verdeling neigt en welke spreiding de kansverdeling heeft.
+
+**Toelichting**
 
 -   **All data** - De eerste variabele `all data` is eigenlijk geen variabele, maar geeft aan wat alle data samen aan kans op retentie voorspellen. Variabelen die daarna bovenaan staan, wegen het zwaarst in de voorspelling van de kans.
 -   **Richting** - Als de verdeling van de kansen naar de linkerkant van de x-as gaat, draagt deze variabele meer bij aan een toename op de kans op retentie; als deze naar de rechterkant beweegt, draagt deze variabele juist bij aan een afname op de kans op retentie
@@ -533,11 +541,13 @@ Vervolgens analyseren we een aantal scenario's (wat als...). We nemen opnieuw de
 Dit is de invloed van de variabelen bij de unieke combinatie van deze meest voorkomende student per categorie. Zie voor de invloed van een variabelen ongeacht deze unieke combinatie de analyse van Partial Dependence Profielen in de volgende paragraaf.
 :::
 
-Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde kans op retentie Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
+Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde kans op retentie. Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
 
-*Ter illustratie*: Stel dat de student in dit model net een wat hoger eindexamencijfer zou hebben gehad op de middelbare school, wat zou dan de kans op retentie zijn geweest? Het is waarschijnlijk dat de kans op retentie dan hoger zou zijn geweest.
+::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
+Stel dat de student in dit model net een wat hoger eindexamencijfer zou hebben gehad op de middelbare school, wat zou dan de kans op retentie zijn geweest? Het is waarschijnlijk dat de kans op retentie dan hoger zou zijn geweest. Bij hbo-opleidingen die goed aansluiten hebben met een opleiding aan een universiteit, zou de kans op retentie juist lager zijn geweest omdat studenten dan na een hbo-diploma vaak doorstromen naar een universiteit.
+:::
 
-Opnieuw kijken we naar geslacht, vooropleiding en aansluiting. Het kan zijn dat een van de categorieën niet zichtbaar is, dit komt doordat deze dan over elkaar heen vallen.
+Opnieuw kijken we naar geslacht, vooropleiding en aansluiting. N.B. Het kan zijn dat een van de categorieën niet zichtbaar is, dit komt doordat deze dan over elkaar heen vallen.
 
 ```{r}
 #| label: lf_cp_all
@@ -733,36 +743,19 @@ for (group in c("Alle studenten", "Geslacht", "Vooropleiding", "Aansluiting")) {
 
 De volgende stap (stap 3) is te onderzoeken of er binnen deze opleiding binnen deze modellen **kansengelijkheid** bestaat.
 
-Dit doen we door de metrieken van de modellen te evalueren voor verschillende groepen studenten, zoals accuraatheid. Als de metrieken van de voorspellingen van het model voor verschillende groepen studenten sterk uiteenloopt kan er sprake zijn van een bias en duiden op kansenongelijkheid. Dit is het onderwerp van de volgende en laatste analyse.
+Dit doen we door voor verschillende groepen studenten de metrieken van de modellen te evalueren, zoals accuraatheid. Als de metrieken van de voorspellingen van het model voor verschillende groepen studenten sterk uiteenlopen kan er sprake zijn van een bias, wat kan duiden op kansenongelijkheid. Dit is het onderwerp van de volgende en laatste analyse.
 :::
 
 <!-- Verantwoording -->
 
 ::: {.content-hidden unless-meta="includes.verantwoording"}
-```{r, echo=FALSE, results='asis'}
-sQuarto_version <- quarto::quarto_version()
-```
-
- 
-
-**Verantwoording**
-
-Deze analyse maakt deel uit van het onderzoek naar kansengelijkheid van het lectoraat Learning Technology & Analytics van De Haagse Hogeschool: [No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness) \| Het rapport is door het lectoraat ontwikkeld in [Quarto](https://quarto.org/) `r sQuarto_version`. \| Template versie: `r rmarkdown::metadata$ltatemplate`
+{{< include 01_Includes/Include_Verantwoording.qmd >}}
 :::
 
 <!-- Copyright -->
 
-::: {.content-hidden unless-meta="includes.copyright"}
-```{r, echo=FALSE, results='asis'}
-nCurrent_year   <- as.numeric(format(Sys.Date(), "%Y"))
-```
+{{< include 01_Includes/Include_Copyright.qmd >}}
 
- 
-
-**Copyright**
-
-Dr. Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool © 2023-`r nCurrent_year`. Alle rechten voorbehouden.
-:::
 
 <!-- Opschonen -->
 

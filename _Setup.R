@@ -133,7 +133,7 @@ if(bSetup_executed == F) {
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.7 Kleuren ####
   
-  source("01. Includes/Include_Colors.R")
+  source("01_Includes/Include_Colors.R")
 
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.8 Bepaal de voorkeur voor de thema's ####
@@ -239,5 +239,5 @@ if(bSetup_executed == F) {
   ## Bepaal de hoogte en breedte van afbeeldingen
   nPlotWidth  <- 640
   nPlotHeight <- 550
-  
+
 }

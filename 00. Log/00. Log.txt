@@ -23,6 +23,66 @@
 
 ## Tellingen voor intreerede
 
+## Alternatieve modellen
+ECDA [ ] Zonder herinschrijvers
+ECDA [ ] Zonder studenten die vertrekken met hbo-propedeuse
+
+## Extra variabelen
+ECDA [ ] SES
+ECDA [ ] APCG
+ECDA [ ] SKP met Lump
+
+## Overige
+
+[x] Hoogte van de afbeeldingen bij CMD is te laag.
+[x] Gemiddelde student anders opbouwen > hoofdklasse geslacht, dan vooropleiding, dan cijfer en skp of beschrijving anders maken!
+  ECDA [ ] Alternatieve persona > wel bestaande met cumulatief filter
+
+[ ] Purrrrify
+  ECDA [ ] Loops vervangen door purrr
+
+[ ] book-werk
+  ECDA [ ] Een samenvattende pagina met de belangrijkste resultaten
+  [x] Meerdere opleidingen publiceren
+  [-] Op een xterne site publiceren?
+  [-] Opleiding in zijbalk
+
+[ ] Documentatie
+  ECDA [ ] News bijwerken
+  ECDA [ ] Readme bijwerken
+
+[ ] Plots
+  [x] 50% lijn aan density plots toevoegen
+  ECDA [ ] gam model uitproberen
+    [ ] https://parsnip.tidymodels.org/reference/details_gen_additive_mod_mgcv.html
+    [ ] https://forum.posit.co/t/how-to-define-smoothed-models-for-a-gam-using-tidymodels-and-recipe/144772
+
+[ ] Andere opleidingen proberen
+  [ ] ORM_DT
+      [ ] select_inspect_data   
+      ECDA [ ] te weinig observaties ondervangen
+        [ ] voeg per opleiding het aantal eerstejaars toe en unieke collegejaren.
+        [ ] als dit te weinig observaties of jaren zijn, dan next
+
+[ ] Modellen
+  ECDA [ ] Aan het begin een klein staatje van het aantal retentie per jaar.
+  ECDA [ ] Een workflow set uitproberen:
+    [ ] https://workflowsets.tidymodels.org/
+  ECDA [ ] Diplomarendement
+  [x] Uitval met en zonder prop
+    [x] SUC_P_aantal_jaar
+  
+[ ] Teksten
+  [x] Beste model fits zoals op https://rpubs.com/mikek25/tidymodels_churn
+  ECDA [ ] Teksten voor conclusies herzien
+
+[ ] Bugs
+  ECDA [ ] Metrics met NA's
+  
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## GEDAAN ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 [x] Fairness draaien voor alle opleidingen
   [x] Onderdeel maken met tellingen per groep (aantal en percentages) in H3
   [x] Uitbreiden met waarden die niet zijn opgenomen 
@@ -32,79 +92,12 @@
   [x] Kleuren aanpassen conform landkaart kleuren plots
   [x] Conclusies toevoegen aan H3
   [x] Rekening houden met aantallen
-  [ ] Tellingen maken voor alle opleidingen
+  [x] Tellingen maken voor alle opleidingen
 [x] Bevoorrechte groepen anders opstellen?
-  [-] Vooropleiding: 3 > VWO of BD, anders HAVO
-  [-] Geslacht: M
-  [-] Aansluiting: Direct
+  [x] Vooropleiding: 3 > VWO of BD, anders HAVO
+  [x] Geslacht: M
+  [x] Aansluiting: Direct
 [x] Sortering van variabelen al eerder toevoegen  
-
-## Alternatieve modellen
-[ ] Zonder herinschrijvers
-[ ] Zonder studenten die vertrekken met hbo-propedeuse
-
-## Extra variabelen
-[ ] SES
-[ ] APCG
-[ ] Lump voor profielen
-
-## Overige
-
-[x] Hoogte van de afbeeldingen bij CMD is te laag.
-[x] Gemiddelde student anders opbouwen > hoofdklasse geslacht, dan vooropleiding, dan cijfer en skp of beschrijving anders maken!
-  [ ] Alternatieve persona > wel bestaande met cumulatief filter
-
-[ ] Variabelen
-  [ ] Ze in een loop kunnen gebruiken
-  [ ] APCG
-  [ ] Classificatie SES
-  [ ] Classificatie leeftijd
-  [ ] Lump voor profielen!
-
-[ ] Purrrrify
-  [ ] Loops vervangen door purrr
-
-[ ] book-werk
-  [ ] Een samenvattende pagina met de belangrijkste resultaten
-  [x] Meerdere opleidingen publiceren
-  [ ] Op een xterne site publiceren?
-  [-] Opleiding in zijbalk
-
-[ ] Documentatie
-  [ ] News bijwerken
-  [ ] Readme bijwerken
-
-[ ] Plots
-  [x] 50% lijn aan density plots toevoegen
-  [ ] gam model uitproberen
-    [ ] https://parsnip.tidymodels.org/reference/details_gen_additive_mod_mgcv.html
-    [ ] https://forum.posit.co/t/how-to-define-smoothed-models-for-a-gam-using-tidymodels-and-recipe/144772
-
-[ ] Andere opleidingen proberen
-  [ ] ORM_DT
-      [ ] select_inspect_data   
-      [ ] te weinig observaties ondervangen
-        [ ] voeg per opleiding het aantal eerstejaars toe en unieke collegejaren.
-        [ ] als dit te weinig observaties of jaren zijn, dan next
-
-[ ] Modellen
-  [ ] Aan het begin een klein staatje van het aantal retentie per jaar.
-  [ ] Een workflow set uitproberen:
-    [ ] https://workflowsets.tidymodels.org/
-  [ ] Diplomarendement
-  [x] Uitval met en zonder prop
-    [x] SUC_P_aantal_jaar
-  
-[ ] Teksten
-  [x] Beste model fits zoals op https://rpubs.com/mikek25/tidymodels_churn
-  [ ] Teksten voor conclusies herzien
-
-[ ] Bugs
-  [ ] Metrics met NA's
-  
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## GEDAAN ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 [x] CBS
   [x] Toevoegen een element van weging

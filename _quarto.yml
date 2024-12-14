@@ -2,6 +2,8 @@ project:
   title: "No Fairness without Awareness"
   type: book
   output-dir: _book
+  
+brand: brand/_brand.yml  
 
 book:
   title: "No Fairness without Awareness"
@@ -51,6 +53,9 @@ format:
     link-external-icon: true
     html-math-method: katex
     
+    ## Include instellingen voor footer
+    # include-after-body: "01_Includes/Include_Copyright.qmd"
+    
     ## Code instellingen
     code-fold: true
     code-summary: "Toon code"
@@ -58,7 +63,8 @@ format:
     ## Theme instellingen
     theme: 
     - lumen
-    - "01. Includes/scss/lta.scss"
+    - brand
+    - "01_Includes/scss/lta.scss"
     
     ## Output instellingen
     self-contained: true

@@ -38,7 +38,7 @@ Het template is opgebouwd uit de volgende **bestanden**:
 
 Het bevat de volgende **folders**:
 
--   `01. Includes` met bestanden die worden ingesloten (afbeeldingen en scss files)
+-   `01_Includes` met bestanden die worden ingesloten (afbeeldingen en scss files)
 -   `10. Output` met de rapporten die bij een automatische rendering worden gemaakt.
 -   `99. Functies & Libraries` met de standaard voorbereidingen, het ltabase package en extra functies
 -   `02_Plots` met de afbeeldingen

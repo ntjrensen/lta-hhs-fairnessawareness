@@ -101,13 +101,13 @@ De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verr
 2.  *Vooropleidingskenmerken*: toelaatgevende vooropleiding, studiekeuzeprofiel en gemiddeld eindcijfer in de vooropleiding.
 3.  *Aanmeldingskenmerken*: aansluiting (direct na diploma, tussenjaar, switch), dag van aanmelding, aantal parallelle studies aan De HHs en collegejaar.
 
+Zie voor een volledig overzicht van variabelen xyz. \[TODO: document toevoegen\].
+
 ### Toelichting op de analyse
 
 We toetsen in deze analyse *`r sSucces_model_text`*, voortaan **Retentie** genoemd.
 
-Retentie is gedefinieerd als ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt ook als retentie.
-
-Uitval is het tegenovergestelde van retentie: niet ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijv. van voltijd in jaar 1 naar duaal in jaar 2, geldt *niet* als uitval.
+Retentie is gedefinieerd als ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijvoorbeeld van voltijd in jaar 1 naar duaal in jaar 2, geldt ook als retentie. Uitval is het tegenovergestelde van retentie: niet ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijvoorbeeld van voltijd in jaar 1 naar duaal in jaar 2, geldt *niet* als uitval.
 
 <!-- Data -->
 
@@ -326,13 +326,13 @@ detach("package:dlookr", unload = TRUE)
 
 ```
 
-Vs(p### Bewerk de data
+### Bewerk de data
 
--   Uit de eerste diagnose blijkt dat niet alle variabelen goed genoeg zijn voor het bouwen van een prognosemodel: er zijn missende waarden en niet alle veldtypes zijn geschikt. We passen de variabelen aan zodat we in het model er goed mee kunnen werken.
--   Prognosemodellen kunnen niet omgaan met missende waarden. Om bias te voorkomen verwijderen we geen rijen met missende waarden, maar vullen die op (*imputatie*). We bewerken de data zo dat alle missende waarden worden opgevuld: bij numerieke waarden met het gemiddelde en bij categorische variabelen met 'Onbekend'.
--   We passen sommige variabelen aan, zodat ze in het model gebruikt kunnen worden: tekstvelden zetten we om naar factor (een categorische variabele); logische variabelen (Ja/Nee) zetten we om naar een numerieke variabele (1/0).
+-   Uit de eerste diagnose blijkt dat niet alle variabelen goed genoeg zijn voor het bouwen van een prognosemodel: er zijn missende waarden en niet alle veldtypes zijn geschikt.
+-   Om bias te voorkomen verwijderen we geen rijen met missende waarden, maar vullen die op (*imputatie*). We bewerken de data zo dat alle missende waarden worden opgevuld: bij numerieke waarden met het gemiddelde en bij categorische variabelen met 'Onbekend'.
+-   We passen het type van sommige variabelen aan, zodat ze in het model gebruikt kunnen worden: tekstvelden zetten we om naar factor (een categorische variabele); logische variabelen (Ja/Nee) zetten we om naar een numerieke variabele (1/0).
 -   De uitkomstvariabele, `Retentie`, leiden we af van de variabele `SUC_Uitval_aantal_jaar_LTA`. Als de waarde daar 1 is, is de student na 1 jaar uitgevallen, 2 na 2 jaar, etc. Zolang de waarde daar 0 is, is de student niet uitgevallen.
--   Een fictief studentnummer (`INS_Student_UUID_opleiding_vorm`) gebruiken we, zodat we - als er afwijkende resultaten zijn - de dataset gericht kunnen onderzoeken indien nodig.
+-   Een fictief studentnummer (`INS_Student_UUID_opleiding_vorm`) gebruiken we, zodat we - als er afwijkende resultaten zijn - de dataset gericht kunnen onderzoeken als dat nodig is.
 
 ```{r}
 #| label: mutate_data
@@ -383,7 +383,7 @@ detach("package:dlookr", unload = TRUE)
 
 ```
 
-sse ### Bekijk de onderlinge correlaties
+### Bekijk de onderlinge correlaties
 
 Het is verstandig om voorafgaand aan het bouwen van een model te kijken naar de onderlinge correlaties tussen numerieke variabelen. Dit geeft inzicht in de data en kan helpen bij het maken van keuzes voor het model of de duiding van de uitkomsten.
 
@@ -456,7 +456,7 @@ bind_rows(dfRetentie_train_prop,
           dfRetentie_test_prop) |> 
   mutate(prop = scales::percent(prop, accuracy = 0.1)) |>
   select(Naam, Retentie, n, prop) |> 
-  knitr::kable(caption = "Verhouding training- en testset",
+  knitr::kable(caption = "Verhouding van de uitkomstvariabele in de training- en testset",
                col.names = c("Naam", "Retentie", "Aantal", "Proportie"))
 
 ```
@@ -466,8 +466,8 @@ bind_rows(dfRetentie_train_prop,
 ::: {.content-hidden unless-meta="includes.model_lr"}
 ## Model I: Logistische Regressie
 
--   Het eerste model is een [logistische regressie met penalized likelihood](https://wikistatistiek.amc.nl/Logistische_regressie); we gebruiken de `glmnet` engine voor het bouwen van het model. Penalized likelihood is een techniek die helpt bij het voorkomen van overfitting. [Glmnet](https://glmnet.stanford.edu/articles/glmnet.html) is een populair package voor het bouwen van logistische regressiemodellen.
--   We gebruiken de Area under the ROC Curve (AUC/ROC) als performance metric.
+-   Het eerste model is een [logistische regressie met penalized likelihood](https://wikistatistiek.amc.nl/Logistische_regressie); we gebruiken de `glmnet` engine voor het bouwen van het model. Penalized likelihood is een techniek die helpt bij het voorkomen van overfitting: het voegt voor elke extra variabele een strafterm toe om eenvoudige modellen te belonen. [Glmnet](https://glmnet.stanford.edu/articles/glmnet.html) is een veelgebruikt package voor het bouwen van logistische regressiemodellen.
+-   We gebruiken de [Area under the ROC Curve (AUC/ROC)](https://nl.wikipedia.org/wiki/ROC-curve) als performance metric. De ROC-curve (Receiver Operating Characteristic) is een grafiek die de prestaties van een classificatiemodel afbeeldt door de verhouding tussen de *true positives* (gevoeligheid = sensitiviteit) en de *false positives* (aspecficiteit = 1-specificiteit) te plotten bij verschillende drempelwaarden. De oppervlakte onder deze curve, bekend als de AUC (Area Under the Curve), kwantificeert het onderscheidingsvermogen van het model; een AUC van 1 duidt op een perfect onderscheidend vermogen, terwijl een AUC van 0,5 wijst op een model zonder onderscheidend vermogen.
 
 ### Maak het model
 
@@ -489,9 +489,9 @@ Vervolgens zetten we meerdere stappen in een 'recipe':
 
 -   We definiëren de student-ID als ID variabele. Daarmee krijgt deze variabele de rol van uniek rij-kenmerk.
 -   We verwijderen vervolgens de oorspronkelijke student-ID en het collegejaar uit de data, omdat deze verder niet gebruikt moeten worden in het model.
--   We converteren factoren naar dummy variabelen.
--   We verwijderen variabelen die geen waarde toevoegen: variabelen met enkel nullen.
--   We transformeren numerieke variabelen om ze met elkaar te kunnen vergelijken door ze te centreren en schalen.
+-   We converteren factoren naar dummy variabelen: voor elke categorie wordt er een nieuwe logische variabele (Ja/Nee) aangemaakt.
+-   We verwijderen variabelen die geen waarde toevoegen: variabelen met uitsluitend nullen.
+-   We normaliseren numerieke variabelen om ze met elkaar te kunnen vergelijken door ze te centreren en schalen.
 -   Sterk gecorreleerde waarden verwijderen we nu niet, omdat we later in de analyse de eventuele samenhang met andere variabelen in een prognosemodel nog willen kunnen visualiseren.
 
 ```{r}
@@ -517,7 +517,7 @@ tidy(lr_recipe) |>
                              "ID"))
 ```
 
-De variabelen die nu nog resteren zijn:
+De variabelen die nu nog overblijven zijn:
 
 ```{r, echo=FALSE}
 #| label: lr_recipe_tbl
@@ -541,7 +541,7 @@ knitr::kable(model_vars_matrix, caption = "Resterende variabelen na bewerkingen"
 
 ### Maak de workflow
 
-Voor de uitvoering bouwen we een nieuwe workflow. Daaraan voegen we het model en de bewerkingen in de recipe toe.
+Voor de uitvoering bouwen we een workflow. Daaraan voegen we het model en de bewerkingen in de recipe toe.
 
 ```{r}
 #| label: lr_workflow
@@ -708,12 +708,12 @@ dfModel_results <-
 ::: {.content-hidden unless-meta="includes.model_rf"}
 ## Model II: Tree-based ensemble
 
--   Het tweede model is een [random forest](https://en.wikipedia.org/wiki/Random_forest): een ensemble van beslisbomen (decision trees). Het is een krachtig model dat goed om kan gaan met complexe data en veel variabelen.
--   We gebruiken de `ranger` engine voor het bouwen van het model.
+-   Het tweede model is een [random forest](https://en.wikipedia.org/wiki/Random_forest): een ensemble van beslisbomen (*decision trees*). Het is een krachtig model dat goed om kan gaan met complexe data en veel variabelen.
+-   We gebruiken de [`ranger` engine](https://cran.r-project.org/web/packages/ranger/index.html) voor het bouwen van het model.
 
 ### Bepaal het aantal PC-cores
 
-Omdat een random forest model veel berekeningen vereist, willen we daarvoor alle computerkracht gebruiken die beschikbaar is. Het aantal CPU's (*cores*) van de computer bepaalt hoe snel het model getraind kan worden. Deze informatie gebruiken we bij het bouwen van het model.
+Omdat een random forest model veel berekeningen vereist, willen we daarvoor alle computerkracht gebruiken die beschikbaar is. Het aantal CPU's (*cores*), wat verschilt per computer, bepaalt hoe snel het model getraind kan worden. We bepalen het aantal cores en gebruiken dat bij het bouwen van het model.
 
 ```{r}
 #| label: cores
@@ -725,7 +725,7 @@ cores <- parallel::detectCores()
 
 ### Maak het model
 
-We bouwen eerst het model. We gebruiken de `rand_forest` functie om het model te bouwen. We tunen de `mtry` en `min_n` parameters. De `mtry` parameter bepaalt het aantal variabelen dat per boom wordt gebruikt. De `min_n` parameter bepaalt het minimum aantal observaties dat in een blad van de boom moet zitten. De functie `tune()` is hier nog een *placeholder* om de beste waarden voor deze parameters - die we later bepalen - daar in te stellen. We gebruiken 1.000 bomen c.q. versies van het model.
+We bouwen eerst het model. We gebruiken de `rand_forest` functie om het model te bouwen. We tunen de `mtry` en `min_n` parameters. De `mtry` parameter bepaalt het aantal variabelen dat per boom wordt gebruikt. De `min_n` parameter bepaalt het minimum aantal observaties dat in een blad van de boom moet zitten. De functie `tune()` is hier nog een *placeholder* om de beste waarden voor deze parameters - die we later bepalen - in te kunnen stellen. We gebruiken 1.000 bomen c.q. versies van het model.
 
 ```{r}
 #| label: rf_mod
@@ -808,7 +808,7 @@ rf_res <-
 
 ### Kies het beste model
 
-We evalueren de beste modellen en maken een ROC curve om de performance van het model te visualiseren. Vervolgens vergelijken we de prestaties van de modellen en kiezen we het beste model.
+We evalueren de beste modellen en maken een ROC curve om de performance van het model te visualiseren. Vervolgens vergelijken we de prestaties van de modellen en kiezen daaruit het beste model.
 
 ```{r}
 #| label: rf_results
@@ -906,7 +906,7 @@ dfModel_results <-
 ## De uiteindelijke fit
 
 -   In de laatste stap van deze analyse maken we het model definitief.
--   We testen het model op de testset en evalueren het model met metrieken en de Variable Importance Factor (VIF).
+-   We testen het model op de testset en evalueren het model met metrieken en de Variable Importance Factor (VIF). \[ TODO: Uitleggen wat VIF is \]
 
 ### Combineer de AUC/ROC curves en kies het beste model
 
@@ -1126,7 +1126,7 @@ print(importance_plot)
 
 ### Plot de ROC curve
 
-Tot slot maken we een ROC curve om de prestaties van het definitieve model te visualiseren. De Sensitivity (True Positive Rate) en Specificity (True Negative Rate) worden hierin uitgezet. De Area under the ROC Curve (AUC/ROC) geeft de prestaties van het model weer. Het model scoort beter naarmate de AUC/ROC dichter bij de 1 ligt, de linker bovenhoek. De linker bovenhoek houdt in dat alle prognoses exact overeenstemmen met de werkelijkheid. Een AUC/ROC van 0,5 betekent dat het model niet beter presteert dan een willekeurige voorspelling.
+Tot slot maken we een ROC curve om de prestaties van het definitieve model te visualiseren. De Sensitivity (True Positive Rate) en Specificity (True Negative Rate) worden hierin uitgezet. De Area under the ROC Curve (AUC/ROC) geeft de prestaties van het model weer. Het model scoort beter naarmate de AUC/ROC dichter bij de 1 ligt, de linker bovenhoek. De linker bovenhoek houdt in dat alle prognoses exact overeenstemmen met de werkelijkheid. Een AUC/ROC van 0,5 betekent dat het model niet beter presteert dan een willekeurige voorspelling. \[ TODO Dit naar boven \]
 
 ```{r}
 #| label: last_fit_roc
@@ -1157,8 +1157,8 @@ Last_fit_Accuracy   <- last_fit |>
   filter(.metric == "accuracy") |>
   pull(.estimate) |>
   round(4) * 100
-Avg_Retentie        <- round(mean(dfOpleiding_inschrijvingen$Retentie == TRUE) * 100, 2) 
-Base_Model_Accuracy <- round(100 - Avg_Retentie, 2)
+Avg_Retentie        <- round(mean(dfOpleiding_inschrijvingen$Retentie == TRUE) * 100, 2)
+Avg_Non_Retentie    <- round(100 - Avg_Retentie, 2)
 
 if(Avg_Retentie < 50) {
   Base_Model_Accuracy <- round(100 - Avg_Retentie, 2)
@@ -1273,11 +1273,11 @@ if(!("Eindcijfer_VO" %in% dfTop_vif$Variable[1:3])
 
 ### Mate van accuraatheid en lift
 
-Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde op accuraatheid toe te voegen. Het base-model neemt de grootste klasse van de gemiddelde `r tolower(sSucces_model)` van de afgelopen jaren als basis. Stel we zouden tegen alle studenten zeggen dat ze hun studie gaan halen, dan is de mate van accuratesse gelijk aan dit base-model. Dit base-model is dus altijd hoger dan de 50% lijn van de AUC/ROC curve, tenzij het base-model toevallig precies 50% is.
+Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde op basis van accuraatheid toe te voegen. Het base-model neemt als basis de grootste klasse van de gemiddelde `r tolower(sSucces_model)` van de afgelopen jaren. Stel we zouden tegen alle studenten zeggen dat ze hun studie gaan halen, dan is de mate van accuratesse gelijk aan dit base-model. Dit base-model is dus altijd hoger dan de 50% lijn van de AUC/ROC curve, tenzij het base-model toevallig precies 50% is.
 
-**De mate van accuraatheid van de toepassing van het model is `r sAccuracy_niveau` (`r Last_fit_Accuracy`%).**
+**De mate van accuraatheid van het prognosemodel is `r sAccuracy_niveau` (`r Last_fit_Accuracy`%).**
 
--   **Base-model: `r Base_Model_Accuracy`%** -- Voor deze opleiding bereken we het base-model als volgt. Van alle studenten studeerde `r Avg_Retentie`% door. De grootste klasse (en de accuratesse) van het base-model is daarmee (100% - `r Avg_Retentie`% = ) `r Base_Model_Accuracy`% `r sRetentie`.
+-   **Base-model: `r Base_Model_Accuracy`%** -- Voor deze opleiding bereken we het base-model als volgt. Van alle studenten studeerde `r Avg_Retentie`% door; 100% - `r Avg_Retentie`% = `r Avg_Non_Retentie`% studeerde *niet* door. De grootste klasse van deze twee, `r Base_Model_Accuracy`%, is daarmee de accuratesse van het model.
 -   **Accuratesse prognose: `r Last_fit_Accuracy`%** -- Het model voorspelt `r sSucces_model` met een accuratesse van `r Last_fit_Accuracy`%.
 -   **Lift: `r pAccuracy_verschil`** -- Het model scoort in de huidige opbouw met een verschil van `r pAccuracy_verschil` (de *lift*) `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van het base-model (`r Base_Model_Accuracy`%).
 
@@ -1296,10 +1296,10 @@ dfConf_matrix <- as_tibble(confusion_matrix$table) |>
   mutate(Werkelijkheid = ifelse(Werkelijkheid == "TRUE", "Retentie", "Geen retentie"),
          Prediction    = ifelse(Prediction == "TRUE", "Retentie", "Geen retentie"))
 
-pTP <- Change_Number_Marks((dfConf_matrix$n[4]/sum(dfConf_matrix$n)*100),1)
-pFP <- Change_Number_Marks((dfConf_matrix$n[2]/sum(dfConf_matrix$n)*100),1)
-pTN <- Change_Number_Marks((dfConf_matrix$n[1]/sum(dfConf_matrix$n)*100),1)
-pFN <- Change_Number_Marks((dfConf_matrix$n[3]/sum(dfConf_matrix$n)*100),1)
+pTP  <- Change_Number_Marks((dfConf_matrix$n[4]/sum(dfConf_matrix$n)*100),1)
+pFP  <- Change_Number_Marks((dfConf_matrix$n[2]/sum(dfConf_matrix$n)*100),1)
+pTN  <- Change_Number_Marks((dfConf_matrix$n[1]/sum(dfConf_matrix$n)*100),1)
+pFN  <- Change_Number_Marks((dfConf_matrix$n[3]/sum(dfConf_matrix$n)*100),1)
 pACC <- Change_Number_Marks(Last_fit_Accuracy,1)
 
 
@@ -1350,7 +1350,7 @@ confusion_plot <- plot_confusion_matrix(
 
 Naast de accuraatheid van het model is het ook belangrijk om te weten welke factoren het meest bijdragen aan de voorspelling van `r tolower(sSucces_model)`. Daarin gaat de vergelijking met de prestaties van het basemodel mank. Dat model geeft op geen enkele manier aan waarom een student een kans op succes heeft, anders dan - 'dit is gebruikelijk in deze opleiding'.
 
-Ongeacht de mate van accuraatheid, is het voor ons onderzoek naar kansengelijkheid essentieel om te weten welke factoren het meest bijdragen aan de voorspelling van `r tolower(sSucces_model)`. Het gaat erom dat we het belang van de factoren in de voorspellingen kunnen begrijpen en duiden. Machine Learning is hiervoor uitstekend geschikt, omdat het de mogelijkheid biedt om de belangrijkste factoren en hun invloed te leren kennen [@Shmueli.2010; @Shmueli.2011].
+Ongeacht de mate van accuraatheid, is het voor onderzoek naar kansengelijkheid essentieel om te weten welke factoren het meest bijdragen aan de voorspelling van `r tolower(sSucces_model)`. Het gaat erom dat we het belang van de factoren in de voorspellingen kunnen begrijpen en duiden. Machine Learning is hiervoor uitstekend geschikt, omdat het de mogelijkheid biedt om de belangrijkste factoren en hun invloed te leren kennen [@Shmueli.2010; @Shmueli.2011].
 
 <!-- ## Factoren -->
 
@@ -1362,7 +1362,7 @@ Ongeacht de mate van accuraatheid, is het voor ons onderzoek naar kansengelijkhe
 ::: {.content-hidden unless-meta="includes.nextsteps"}
 ## Vervolgstappen: Factoranalyse
 
-De volgende stap (stap 2) is een verdiepende analyse van de mate waarin de **factoren** die we gevonden hebben van invloed zijn op `r sSucces_model`. We kijken naar de rangorde, of ze `r sRetentie` verhogen of juist verlagen en hoe stabiel de factoren zijn als we in andere volgordes aan het model toevoegen. Om het concreet te maken zullen we het model toepassen op een aantal fictieve studenten, die we opbouwen uit de meeste voorkomende waarden in deze opleiding. Dit is het onderwerp van analyse 2: de Factoranalyse.
+De volgende stap (stap 2) is een verdiepende analyse van de mate waarin de **factoren** die we gevonden hebben van invloed zijn op `r sSucces_model`. We kijken naar de rangorde, of ze `r tolower(sSucces_model)` verhogen of juist verlagen en hoe stabiel de factoren zijn als we in andere volgordes aan het model toevoegen. Om het concreet te maken zullen we het model toepassen op een aantal fictieve studenten, die we opbouwen uit de meeste voorkomende waarden in deze opleiding. Dit is het onderwerp van analyse 2: de Factoranalyse.
 :::
 
 <!-- Referenties -->
@@ -1375,30 +1375,12 @@ De volgende stap (stap 2) is een verdiepende analyse van de mate waarin de **fac
 <!-- Verantwoording -->
 
 ::: {.content-hidden unless-meta="includes.verantwoording"}
-```{r, echo=FALSE, results='asis'}
-sQuarto_version <- quarto::quarto_version()
-```
-
- 
-
-**Verantwoording**
-
-Deze analyse maakt deel uit van het onderzoek naar kansengelijkheid van het lectoraat Learning Technology & Analytics van De Haagse Hogeschool: [No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness) \| Het rapport is door het lectoraat ontwikkeld in [Quarto](https://quarto.org/) `r sQuarto_version`. \| Template versie: `r rmarkdown::metadata$ltatemplate`
+{{< include 01_Includes/Include_Verantwoording.qmd >}}
 :::
 
 <!-- Copyright -->
 
-::: {.content-hidden unless-meta="includes.copyright"}
-```{r, echo=FALSE, results='asis'}
-nCurrent_year   <- as.numeric(format(Sys.Date(), "%Y"))
-```
-
- 
-
-**Copyright**
-
-Dr. Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool © 2023-`r nCurrent_year`. Alle rechten voorbehouden.
-:::
+{{< include 01_Includes/Include_Copyright.qmd >}}
 
 <!-- Opschonen -->
 

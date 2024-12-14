@@ -81,9 +81,11 @@ In deze analyse onderzoeken we **`r sSucces_model`** voor de opleiding **`r Get_
 
 ## Onderzoek naar kansengelijkheid
 
-Het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool heeft tot doel kansengelijkheid voor studenten ter verhogen met behulp van learning analytics en inzet van learning technology.
+Het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool heeft tot doel kansengelijkheid voor studenten te verhogen met behulp van learning analytics en inzet van learning technology.
 
-Het lectoraat heeft een methode ontwikkeld voor de analyse van studiedata om te kunnen analyseren of er sprake is van bias in studiedata in relatie tot het succes van studenten, wat een indicatie kan zijn van een gebrek aan kansengelijkheid. Voor deze methode zetten we prognosemodellen in die we bouwen met machine learning. Een prognosemodel is dus niet een doel op zich, maar het instrument voor een analyse van kansengelijkheid, ook wel een *fairness* analyse genoemd. Zie voor een verdere toelichting op het onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
+Het lectoraat heeft een onderzoeksmethode ontwikkeld om te kunnen analyseren of er sprake is van bias in studiedata in relatie tot het succes van studenten, wat een indicatie kan zijn van een gebrek aan kansengelijkheid. Deze methode gebruikt prognosemodellen op basis van machine learning. Een prognosemodel is dus niet een doel op zich, maar het instrument voor een analyse van kansengelijkheid, ook wel een *fairness* analyse genoemd.
+
+Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken op 21 november 2024, getiteld: '[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)' [@Bakker.2024]. Zie voor een verdere toelichting op het gehele onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
 
 ## Het nut van prognosemodellen
 
@@ -108,3 +110,13 @@ Deze analyse kent drie hoofdstukken met de drie stappen van de aanpak:
 ## Vragen of suggesties
 
 Heb je vragen of suggesties over deze analyse? Neem dan contact op met Theo Bakker via 06-25637172 of per mail via [t.c.bakker\@hhs.nl](mailto:t.c.bakker@hhs.nl).
+
+<!-- Copyright -->
+
+{{< include 01_Includes/Include_Copyright.qmd >}}
+
+<!-- Opschonen -->
+
+```{r, echo = FALSE}
+#| label: cleanup
+```
