@@ -1,57 +1,34 @@
 ---
-title: "Prognosemodel retentie na 1 jaar"
+title: "Prognosemodel {{< meta params.model >}}"
 subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
 
-## Auteur en datum
+# Auteur en datum
 author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
 date: last-modified
 
-## LTA Template
+# LTA Template
 ltatemplate: 0.9.1.9000
 
-## Format en output
-output-file: "lta-hhs-tidymodels-retentie-basis.html"
-
-## Parameters        
+# Parameters
 params:
   versie: "1.0"
   succes: "Retentie na 1 jaar"
-  propedeusediploma: "Nvt" ## Nvt/Met P/Zonder P
-  
-  ## Use synthetic data
+  model: "Retentie na 1 jaar"
+  propedeusediploma: "Nvt"
   use_synthetic_data: true
-  
-  ## Recreate plots
-  recreateplots: true
-  
-  # BRV:ORM DU
-  # faculteit: "BRV"
-  # opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
-  # opleiding: "BO"
-  # opleidingsvorm: "duaal"
-  # opleidingsvorm_afkorting: "DU"
-  # selectie: false
-  
-  # BRV:HBO-R VT
-  # faculteit: "BRV"
-  # opleidingsnaam: "B HBO-Rechten"
-  # opleiding: "HBO-R"
-  # opleidingsvorm: "deeltijd"
-  # opleidingsvorm_afkorting: "DT"
-  # selectie: false
-  
-  # ITD:CMD
+  recreateplots: false
+
   faculteit: "ITD"
   opleidingsnaam: "B Communication and Multimedia Design"
   opleiding: "CMD"
   opleidingsvorm: "voltijd"
   opleidingsvorm_afkorting: "VT"
   selectie: false
-  
-  ## Author
-  author: "Theo Bakker, lector Learning Technology & Analytics"
-  
-## Content
+
+# Format en output
+output-file: "lta-hhs-tidymodels-h1-basis.html"
+
+# Content
 includes:
   inleiding:      true
   data:           true
@@ -65,20 +42,21 @@ includes:
   copyright:      true
 ---
 
+<!-- Title -->
+
 ```{r setup, include = FALSE}
 #| label: setup
 
-## Sluit het _Setup.R bestand in
-source("_Setup.R")
+prognose_titel <- paste("Prognosemodel", tolower(params$model)) ## Set the title
 
-## Bepaal op onderdelen of deze getoond moeten worden
+source("_Setup.R") ## Sluit het _Setup.R bestand in
+
 bInclude_Model_LR    <- rmarkdown::metadata$includes$model_lr    ## Penalized Logistic Regression
 bInclude_Model_RF    <- rmarkdown::metadata$includes$model_rf    ## Random Forest
 bInclude_Model_SVM   <- rmarkdown::metadata$includes$model_svm   ## Support Vector Machine
 bInclude_Final_fit   <- rmarkdown::metadata$includes$final_fit   ## Final Fit
 bInclude_Conclusies  <- rmarkdown::metadata$includes$conclusies  ## Conclusies
 
-## Maak een df om de resultaten per model in op te slaan
 dfModel_results <- data.frame(
   model = character(),
   auc = numeric()
@@ -101,7 +79,20 @@ De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verr
 2.  *Vooropleidingskenmerken*: toelaatgevende vooropleiding, studiekeuzeprofiel en gemiddeld eindcijfer in de vooropleiding.
 3.  *Aanmeldingskenmerken*: aansluiting (direct na diploma, tussenjaar, switch), dag van aanmelding, aantal parallelle studies aan De HHs en collegejaar.
 
-Zie voor een volledig overzicht van variabelen xyz. \[TODO: document toevoegen\].
+Deze variabelen zijn gekozen omdat we uit eerder onderzoek weten dat ze voorspellende waarde kunnen hebben voor studiesucces [@Bakker.2022] of omdat ze behoren tot sensitieve kenmerken die in fairness analyse gebruikt worden.
+
+```{r}
+#| label: tbl-data-dictionary
+#| tbl-cap: "Variabelen en mogelijke waarden"
+
+# Lees de data dictionary in
+dfData_dictionary <- Get_Data_Dictionary()
+
+# Toon de data dictionary
+Get_tblData_Dictionary(dfData_dictionary)
+  
+
+```
 
 ### Toelichting op de analyse
 
@@ -120,7 +111,7 @@ We laden een subset in van historische data specifiek voor:
 **Opleiding**: `r params$faculteit` \| `r Get_Opleidingsnaam_Synth(params$opleidingsnaam)` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
 ```{r}
-#| label: load_data
+#| label: load-data
 
 ## Laad de data voor de opleiding
 if(params$use_synthetic_data) {
@@ -182,10 +173,10 @@ if(opleiding == "HDT") {
 
 ### Selecteer en inspecteer de data
 
-We selecteren eerst de relevante variabelen. We verwijderen daarbij variabelen die maar 1 waarde hebben. We bekijken de variabelen in een samenvatting in relatie tot retentie. Daarnaast bekijken we de kwaliteit van de data op missende waarden.
+We selecteren eerst de relevante variabelen. We verwijderen daarbij variabelen die maar 1 waarde hebben. We inspecteren de variabelen in een samenvatting in relatie tot retentie en corrigeren daarbij voor multiple testing; de gecorrigeerde significantie-waarden staan vermeld als *q-value*. Daarnaast inspecteren we de kwaliteit van de data op missende waarden.
 
 ```{r}
-#| label: select_inspect_data
+#| label: select-inspect-data
 
 lSelect <- c(
     "INS_Student_UUID_opleiding_vorm",
@@ -275,7 +266,8 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |>
 ```
 
 ```{r, echo=FALSE, results='asis'}
-#| label: summary_data
+#| label: tbl-summary-data
+#| tbl-cap: "Variabelen in relatie tot de uitkomstmaat: params$succes"
 
 ## Maak een samenvatting van de data
 dfSummary <- dfOpleiding_inschrijvingen |>
@@ -303,7 +295,8 @@ tbl_dfSummary
 ```
 
 ```{r}
-#| label: summarize_data
+#| label: tbl-summarizy-missing-before
+#| tbl-cap: "Kwaliteit van de data voor bewerkingen (gesorteerd op missende waarden)"
 
 ## Laad dlookr
 suppressMessages(library(dlookr))
@@ -313,8 +306,7 @@ diagnose(dfOpleiding_inschrijvingen) |>
   mutate(missing_percent = round(missing_percent, 2),
          unique_rate = round(missing_percent, 2)) |>
   arrange(desc(missing_percent)) |>
-  knitr::kable(caption = "Kwaliteit van de data voor bewerkingen (gesorteerd op missende waarden)",
-               col.names = c("Variabelen",
+  knitr::kable(col.names = c("Variabelen",
                            "Type",
                            "# Missende waarden",
                            "% Missende waarden",
@@ -335,7 +327,8 @@ detach("package:dlookr", unload = TRUE)
 -   Een fictief studentnummer (`INS_Student_UUID_opleiding_vorm`) gebruiken we, zodat we - als er afwijkende resultaten zijn - de dataset gericht kunnen onderzoeken als dat nodig is.
 
 ```{r}
-#| label: mutate_data
+#| label: tbl-summarizy-missing-after
+#| tbl-cap: "Kwaliteit van de data na bewerkingen (gesorteerd op missende waarden)"
 
 ## Bewerk de data
 dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |> 
@@ -371,8 +364,7 @@ suppressMessages(library(dlookr))
 diagnose(dfOpleiding_inschrijvingen) |> 
   mutate(missing_percent = round(missing_percent, 2),
          unique_rate = round(unique_rate, 2)) |>
-  knitr::kable(caption = "Kwaliteit van de data na bewerkingen",
-               col.names = c("Variabelen",
+  knitr::kable(col.names = c("Variabelen",
                            "Type",
                            "# Missende waarden",
                            "% Missende waarden",
@@ -388,7 +380,8 @@ detach("package:dlookr", unload = TRUE)
 Het is verstandig om voorafgaand aan het bouwen van een model te kijken naar de onderlinge correlaties tussen numerieke variabelen. Dit geeft inzicht in de data en kan helpen bij het maken van keuzes voor het model of de duiding van de uitkomsten.
 
 ```{r}
-#| label: corplot_data
+#| label: fig-corplot-data
+#| fig-cap: "Correlatiematrix"
 
 ## Maak een plot van de onderlinge correlaties in numerieke variabelen
 ## Verwijder de kolommen met een standaarddeviatie van 0
@@ -415,10 +408,16 @@ dfOpleiding_inschrijvingen |>
 -   Als het model klaar is, testen we het op de 20% studenten uit de testset. De testset blijft dus de gehele tijd ongemoeid, zodat we overfitting - een te goed model op bekende data, maar slechte presetaties (*performance*) op onbekende data - voorkomen.
 -   Een willekeurig, maar vaststaand *seed*-getal voorkomt dat we bij elke run van het model c.q. deze code een net iets andere uitkomst krijgen.
 
-![](01.%20Includes/img/voorspelmodel-dataset-lta-hhs.png){width="80%" fig-align="center"}
+```{r}
+#| label: fig-dataset-split
+#| fig-cap: "Splitsing van de dataset in trainingset, validatieset en testset"
+#| out-width: 80%
+knitr::include_graphics(here::here("01_Includes/img", "voorspelmodel-dataset-lta-hhs.png"))
+```
+
 
 ```{r}
-#| label: split_data
+#| label: split-data
 
 set.seed(0821)
 
@@ -437,7 +436,8 @@ dfRetentie_resamples  <- vfold_cv(dfRetentie_train, strata = Retentie)
 ```
 
 ```{r, echo=FALSE}
-#| label: split_data_tbl
+#| label: tbl-split-data
+#| tbl-cap: "Verhouding van de uitkomstvariabele in de training- en testset"
 
 ## Training set proporties
 dfRetentie_train_prop <- dfRetentie_train |> 
@@ -456,8 +456,7 @@ bind_rows(dfRetentie_train_prop,
           dfRetentie_test_prop) |> 
   mutate(prop = scales::percent(prop, accuracy = 0.1)) |>
   select(Naam, Retentie, n, prop) |> 
-  knitr::kable(caption = "Verhouding van de uitkomstvariabele in de training- en testset",
-               col.names = c("Naam", "Retentie", "Aantal", "Proportie"))
+  knitr::kable(col.names = c("Naam", "Retentie", "Aantal", "Proportie"))
 
 ```
 
@@ -467,14 +466,14 @@ bind_rows(dfRetentie_train_prop,
 ## Model I: Logistische Regressie
 
 -   Het eerste model is een [logistische regressie met penalized likelihood](https://wikistatistiek.amc.nl/Logistische_regressie); we gebruiken de `glmnet` engine voor het bouwen van het model. Penalized likelihood is een techniek die helpt bij het voorkomen van overfitting: het voegt voor elke extra variabele een strafterm toe om eenvoudige modellen te belonen. [Glmnet](https://glmnet.stanford.edu/articles/glmnet.html) is een veelgebruikt package voor het bouwen van logistische regressiemodellen.
--   We gebruiken de [Area under the ROC Curve (AUC/ROC)](https://nl.wikipedia.org/wiki/ROC-curve) als performance metric. De ROC-curve (Receiver Operating Characteristic) is een grafiek die de prestaties van een classificatiemodel afbeeldt door de verhouding tussen de *true positives* (gevoeligheid = sensitiviteit) en de *false positives* (aspecficiteit = 1-specificiteit) te plotten bij verschillende drempelwaarden. De oppervlakte onder deze curve, bekend als de AUC (Area Under the Curve), kwantificeert het onderscheidingsvermogen van het model; een AUC van 1 duidt op een perfect onderscheidend vermogen, terwijl een AUC van 0,5 wijst op een model zonder onderscheidend vermogen.
+-   We gebruiken de [Area under the ROC Curve (AUC/ROC)](https://nl.wikipedia.org/wiki/ROC-curve) als performance metric. De ROC-curve (Receiver Operating Characteristic) is een grafiek die de prestaties van een classificatiemodel afbeeldt door de verhouding tussen de *true positives* (sensitiviteit) en de *false positives* (aspecficiteit = 1-specificiteit) te plotten bij verschillende drempelwaarden. De oppervlakte onder deze curve, bekend als de AUC (Area Under the Curve), kwantificeert het onderscheidingsvermogen van het model; een AUC van 1 duidt op een perfect onderscheidend vermogen, terwijl een AUC van 0,5 wijst op een model zonder onderscheidend vermogen.
 
 ### Maak het model
 
 Eerst bouwen we het model.
 
 ```{r}
-#| label: lr_mod
+#| label: lr-mod
 #| code-fold: false
 
 ## Bouw het model: logistische regressie
@@ -495,7 +494,7 @@ Vervolgens zetten we meerdere stappen in een 'recipe':
 -   Sterk gecorreleerde waarden verwijderen we nu niet, omdat we later in de analyse de eventuele samenhang met andere variabelen in een prognosemodel nog willen kunnen visualiseren.
 
 ```{r}
-#| label: lr_recipe
+#| label: lr-recipe
 #| code-fold: false
 
 ## Bouw de recipe: logistische regressie
@@ -506,6 +505,12 @@ lr_recipe <-
   step_dummy(all_nominal_predictors()) |>       ## Maak dummy variabelen van categorische variabelen
   step_zv(all_predictors()) |>                  ## Verwijder zero values
   step_normalize(all_numeric_predictors())      ## Centreer en schaal numerieke variabelen
+
+```
+
+```{r}
+#| label: tbl-lr-recipe-steps
+#| tbl-cap: "Recipesteps voor logistische regressie"
 
 ## Toon de recipe
 tidy(lr_recipe) |> 
@@ -520,7 +525,8 @@ tidy(lr_recipe) |>
 De variabelen die nu nog overblijven zijn:
 
 ```{r, echo=FALSE}
-#| label: lr_recipe_tbl
+#| label: tbl-lr-recipe-final
+#| tbl-cap: "Resterende variabelen voor logistische regressie na bewerkingen"
 
 ## Toon de variabelen die nog resteren
 model_vars <- lr_recipe |> 
@@ -535,7 +541,7 @@ while (length(model_vars) %% 3 != 0) {
 
 model_vars_matrix <- matrix(model_vars, ncol = 3, byrow = FALSE)
 
-knitr::kable(model_vars_matrix, caption = "Resterende variabelen na bewerkingen")
+knitr::kable(model_vars_matrix)
 
 ```
 
@@ -544,7 +550,7 @@ knitr::kable(model_vars_matrix, caption = "Resterende variabelen na bewerkingen"
 Voor de uitvoering bouwen we een workflow. Daaraan voegen we het model en de bewerkingen in de recipe toe.
 
 ```{r}
-#| label: lr_workflow
+#| label: lr-workflow
 #| code-fold: false
 
 ## Maak de workflow: logistische regressie
@@ -562,7 +568,7 @@ lr_workflow
 Het model moet getuned worden. Dit houdt in dat we de beste parameters voor het model moeten vinden. We maken een grid met verschillende penalty waarden. Daarmee kunnen we vervolgens het beste model selecteren met de hoogste ROC/AUC. We plotten de resultaten van de tuning, zodat we hieruit het beste model kunnen kiezen.
 
 ```{r}
-#| label: lr_reg_grid
+#| label: lr-reg-grid
 #| code-fold: false
 
 ## Maak een grid: logistische regressie
@@ -579,7 +585,8 @@ lr_res <-
 ```
 
 ```{r}
-#| label: lr_plot
+#| label: fig-lr-plot
+#| fig-cap: "Tuning resultaten logistische regressie"
 
 ## Plot de resultaten + een rode verticale lijn voor de max AUC
 lr_plot <- 
@@ -628,10 +635,12 @@ lr_plot_plus
 
 ### Kies het beste model
 
-We evalueren modellen met een zo hoog mogelijke Area under the ROC Curve (AUC/ROC) en een zo laag mogelijke penalty. Zo kunnen we uit de resultaten het beste model kiezen. Tot slot maken we een ROC curve om de prestaties van het model te visualiseren.
+De prestaties van een model gevisualiseerd met behulp van een ROC curve. De sensitiviteit (True Positive Rate) en specificiteit (True Negative Rate) worden hierin tegenover elkaar uitgezet. De Area under the ROC Curve (AUC/ROC) geeft de prestaties van het model weer. Het model scoort beter naarmate de AUC/ROC dichter bij de 1 ligt, de linker bovenhoek. De linker bovenhoek houdt in dat alle prognoses exact overeenstemmen met de werkelijkheid. Een AUC/ROC van 0,5 betekent dat het model niet beter presteert dan een willekeurige voorspelling.
+
+We gebruiken modellen met een zo hoog mogelijke Area under the ROC Curve (AUC/ROC) en een zo laag mogelijke penalty. Zo kunnen we uit de resultaten het beste model kiezen en visualiseren.
 
 ```{r}
-#| label: lr_top_models
+#| label: lr-top-models
 #| code-fold: false
 
 ## Toon het beste model
@@ -640,6 +649,11 @@ top_models <-
   show_best(metric = "roc_auc", n = 10) |> 
   mutate(mean = round(mean, 6)) |>
   arrange(penalty) 
+```
+
+```{r}
+#| label: tbl-lr-top-models
+#| tbl-cap: "Model performance voor logistische regressie"
 
 top_models|> 
   knitr::kable(col.names = c("Penalty", 
@@ -653,7 +667,7 @@ top_models|>
 ```
 
 ```{r}
-#| label: lr_best
+#| label: lr-best
 #| code-fold: false
 
 ## Selecteer het beste model: logistische regressie
@@ -662,6 +676,11 @@ lr_best <-
   collect_metrics() |> 
   filter(mean == max(mean)) |>
   slice(1) 
+```
+
+```{r}
+#| label: tbl-lr-best
+#| tbl-cap: "Hoogste model performance voor logistische regressie"
 
 lr_best|> 
   mutate(mean = round(mean, 6)) |>
@@ -676,7 +695,7 @@ lr_best|>
 ```
 
 ```{r}
-#| label: lr_auc
+#| label: lr-auc
 #| code-fold: false
 
 ## Verzamel de predicties en evalueer het model (AUC/ROC): logistische regressie
@@ -685,9 +704,17 @@ lr_auc <-
   collect_predictions(parameters = lr_best) |> 
   roc_curve(Retentie, .pred_FALSE) |> 
   mutate(model = "Logistisch Regressie")
+```
+```{r}
+#| label: fig-lrauc
+#| fig-cap: "ROC curve voor logistische regressie"
 
 ## Plot de ROC curve
 Get_ROC_Plot(lr_auc, position = 1)
+```
+
+```{r}
+#| label: lr-auc-highest
 
 ## Bepaal de AUC van het beste model
 lr_auc_highest   <-
@@ -728,7 +755,7 @@ cores <- parallel::detectCores()
 We bouwen eerst het model. We gebruiken de `rand_forest` functie om het model te bouwen. We tunen de `mtry` en `min_n` parameters. De `mtry` parameter bepaalt het aantal variabelen dat per boom wordt gebruikt. De `min_n` parameter bepaalt het minimum aantal observaties dat in een blad van de boom moet zitten. De functie `tune()` is hier nog een *placeholder* om de beste waarden voor deze parameters - die we later bepalen - in te kunnen stellen. We gebruiken 1.000 bomen c.q. versies van het model.
 
 ```{r}
-#| label: rf_mod
+#| label: rf-mod
 #| code-fold: false
 
 ## Bouw het model: random forest
@@ -744,14 +771,19 @@ rf_mod <-
 We maken een recipe voor het random forest model. We verwijderen de student ID en het collegejaar uit de data, omdat deze niet moet worden gebruikt in het model. Overige stappen zijn bij een random forest minder relevant in tegenstelling tot een regressiemodel.
 
 ```{r}
-#| label: rf_recipe
+#| label: rf-recipe
 #| code-fold: false
 
 ## Maak de recipe: random forest
 rf_recipe <- 
   recipe(Retentie ~ ., data = dfRetentie_train) |> 
   step_rm(ID, Collegejaar)                      ## Verwijder ID en Collegejaar uit het model
-  
+```
+
+```{r}
+#| label: tbl-rf-recipe
+#| tbl-cap: "Recipesteps voor random forest"
+
 ## Toon de recipe
 tidy(rf_recipe) |> 
   knitr::kable(col.names = c("Nummer", 
@@ -767,7 +799,7 @@ tidy(rf_recipe) |>
 We voegen het model en de recipe toe aan de workflow voor dit model.
 
 ```{r}
-#| label: rf_workflow
+#| label: rf-workflow
 #| code-fold: false
 
 ## Maak de workflow: random forest
@@ -785,7 +817,7 @@ rf_workflow
 We trainen en tunen het model in de workflow. We maken een grid met verschillende waarden voor de parameters `mtry` en `min_n`. We gebruiken de Area under the ROC Curve (AUC/ROC) als performance metric. Met de resultaten van de tuning kiezen we het beste model.
 
 ```{r}
-#| label: rf_tune
+#| label: rf-tune
 #| code-fold: false
 
 ## Toon de parameters die getuned kunnen worden
@@ -811,7 +843,8 @@ rf_res <-
 We evalueren de beste modellen en maken een ROC curve om de performance van het model te visualiseren. Vervolgens vergelijken we de prestaties van de modellen en kiezen daaruit het beste model.
 
 ```{r}
-#| label: rf_results
+#| label: tbl-rf-results
+#| tbl-cap: "Model performance voor random forest"
 #| code-fold: false
 
 ## Toon de beste modellen
@@ -826,6 +859,11 @@ rf_res |>
                              "Aantal",
                              "SE",
                              "Configuratie"))
+
+```
+```{r}
+#| label: fig-rf-results
+#| fig-cap: "Model performance random forest"
 
 ## Plot de resultaten
 autoplot <- autoplot(rf_res) +
@@ -843,13 +881,19 @@ autoplot <- autoplot(rf_res) +
 ```
 
 ```{r}
-#| label: rf_best
+#| label: rf-best
 #| code-fold: false
 
 ## Selecteer het beste model
 rf_best <- 
   rf_res |> 
   select_best(metric = "roc_auc")
+
+```
+
+```{r}
+#| label: tbl-ref-best
+#| tbl-cap: "Hoogste model performance voor random forest"
 
 rf_best|> 
   knitr::kable(col.names = c("Mtry", 
@@ -859,7 +903,8 @@ rf_best|>
 ```
 
 ```{r}
-#| label: rf_auc
+#| label: tbl-rf-predictions
+#| tbl-cap: "Predicties voor random forest"
 #| code-fold: true
 
 ## Verzamel de predicties
@@ -876,7 +921,12 @@ rf_res |>
                              "Min. aantal", 
                              "Retentie",
                              "Configuratie"))
+```
 
+```{r}
+#| label: fig-rf-auc
+#| fig-cap: "ROC curve voor random forest"
+ 
 ## Bepaal de AUC/ROC curve
 rf_auc <- 
   rf_res |> 
@@ -906,14 +956,15 @@ dfModel_results <-
 ## De uiteindelijke fit
 
 -   In de laatste stap van deze analyse maken we het model definitief.
--   We testen het model op de testset en evalueren het model met metrieken en de Variable Importance Factor (VIF). \[ TODO: Uitleggen wat VIF is \]
+-   We testen het model op de testset en evalueren het model met metrieken en de Variable Importance (VI). De VI kwantificeert de bijdrage van elke variabele aan de voorspellende kracht van een model. Het identificeert welke variabelen significant zijn voor de modelprestaties, wat essentieel is voor het interpreteren en optimaliseren van een model [@VanderLaan.2006]. Methoden zoals de Shapley-waarde en permutation importance worden vaak toegepast om dit belang te meten. Op deze methoden komen we terug in het volgende hoofdstuk.
 
 ### Combineer de AUC/ROC curves en kies het beste model
 
 Eerst combineren we de AUC/ROC curves van de modellen om ze te vergelijken. We kiezen het beste model op basis van de hoogste AUC/ROC.
 
 ```{r}
-#| label: bind_rows_auc_roc
+#| label: fig-bind-rows-auc-roc
+#| fig-cap: "Gecombineerde ROC curves"
 
 ## Combineer de AUC/ROC curves om de modellen te vergelijken
 Get_ROC_Plot(list(lr_auc, rf_auc))
@@ -921,7 +972,7 @@ Get_ROC_Plot(list(lr_auc, rf_auc))
 ```
 
 ```{r}
-#| label: best_model_auc_roc
+#| label: best-model-auc-roc
 
 ## Bepaal welke van de modellen het beste is op basis van de hoogste AUC/ROC
 dfModel_results <- dfModel_results |>
@@ -935,7 +986,7 @@ sBest_model_auc <- round(dfModel_results$auc[dfModel_results$best == TRUE], 4)
 ```
 
 ```{r, echo=FALSE, results='asis'}
-#| label: best_model_auc_roc_text
+#| label: best-model-auc-roc-text
 
 ## Bouw de tekst voor de beste modellen op
 sText_best_model <- ""
@@ -961,7 +1012,7 @@ sText_best_model <-
 ### Maak het finale model
 
 ```{r, echo=FALSE, results='asis'}
-#| label: text_final_model
+#| label: text-final-model
 
 ## Bouw de tekst voor het laatste model op
 if(sBest_model == "Logistisch Regressie") {
@@ -980,7 +1031,7 @@ if(sBest_model == "Logistisch Regressie") {
 We maken het finale model op basis van de beste parameters die we hebben gevonden. Door in de engine bij `importance` de `impurity` op te geven, wordt het beste random forest model gekozen om de data definitief mee te classificeren.
 
 ```{r}
-#| label: last_mod
+#| label: last-mod
 #| code-fold: false
 
 ## Test het ontwikkelde model op de testset
@@ -1007,7 +1058,7 @@ last_rf_mod <-
 We voegen het model toe aan de workflow en updaten de workflow met het finale model.
 
 ```{r}
-#| label: last_workflow
+#| label: last-workflow
 #| code-fold: false
 
 ## Update de workflows
@@ -1026,7 +1077,7 @@ We voegen het model toe aan de workflow en updaten de workflow met het finale mo
 We voeren de finale fit uit. De functie `last_fit` past het model toe op de validatieset.
 
 ```{r}
-#| label: last_fit
+#| label: last-fit
 #| code-fold: false
 
 ## Voer de laatste fit uit
@@ -1063,12 +1114,12 @@ saveRDS(dfOpleiding_inschrijvingen, file = sData_outputpath)
 
 ```
 
-### Evalueer het finale model: metrieken en vif
+### Evalueer het finale model: metrieken en variable importance
 
-We evalueren het finale model op basis van 4 metrieken: 1) accuraatheid, 2) ROC/AUC en 3) de [Brier score](https://en.wikipedia.org/wiki/Brier_score) (de Mean Squared Error) en 4) de Variable Importance Factor (VIF). Uit de VIF is op te maken welke variabelen het meest bijdragen aan de voorspelling van de uitkomstvariabele.
+We evalueren het finale model op basis van 4 metrieken: 1) accuraatheid, 2) ROC/AUC en 3) de [Brier score](https://en.wikipedia.org/wiki/Brier_score) (de Mean Squared Error) en 4) de Variable Importance (VI). Uit de VI is op te maken welke variabelen het meest bijdragen aan de voorspelling van de uitkomstvariabele.
 
 ```{r}
-#| label: last_fit_metrics_vif
+#| label: last-fit-metrics-vi
 #| code-fold: false
 
 ## Verzamel de metrieken
@@ -1083,28 +1134,27 @@ last_fit |>
 ```
 
 ```{r}
-#| label: last_fit_metrics_vif_plot
+#| label: fig-last-fit-metrics-vi
+#| fig-cap: "Meest voorspellende factoren op basis van de Variable Importance (VI)"
 #| code-fold: true
 
 # Extraheer de feature importance
-dfVif <- last_fit |>
+dfVi <- last_fit |>
   extract_fit_parsnip() |>
   vip::vi() |> 
   arrange(desc(Importance)) |>
   head(20)
   
 # Maak de plot met fill op de variabele 'Importance'
-importance_plot <- dfVif |> 
+importance_plot <- dfVi |> 
   ggplot(aes(x = reorder(Variable, Importance), 
              y = Importance, 
              fill = Importance)) +
   geom_col(show.legend = FALSE) +
   
   ## Maak de titel en caption
-  labs(title = "Meest voorspellende factoren",
-       subtitle = "Op basis van de Variable Importance Factor (VIF)",
-       x = NULL,
-       y = "VIF-score",
+  labs(x = NULL,
+       y = "VI-score",
        caption = sCaption) +
   
   theme_minimal() +
@@ -1126,10 +1176,11 @@ print(importance_plot)
 
 ### Plot de ROC curve
 
-Tot slot maken we een ROC curve om de prestaties van het definitieve model te visualiseren. De Sensitivity (True Positive Rate) en Specificity (True Negative Rate) worden hierin uitgezet. De Area under the ROC Curve (AUC/ROC) geeft de prestaties van het model weer. Het model scoort beter naarmate de AUC/ROC dichter bij de 1 ligt, de linker bovenhoek. De linker bovenhoek houdt in dat alle prognoses exact overeenstemmen met de werkelijkheid. Een AUC/ROC van 0,5 betekent dat het model niet beter presteert dan een willekeurige voorspelling. \[ TODO Dit naar boven \]
+Tot slot visualiseren we de prestaties weer met een ROC curve van het beste model.
 
 ```{r}
-#| label: last_fit_roc
+#| label: fig-last-fit-roc
+#| fig-cap: "ROC curve finale model"
 #| code-fold: false
 
 ## Toon de roc curve
@@ -1148,7 +1199,7 @@ Get_ROC_Plot(auc_lf, position = 3)
 ## Conclusies
 
 ```{r, echo = FALSE}
-#| label: conclusions_accuracy
+#| label: conclusions-accuracy
 #| code-fold: false
 
 ## Bepaal de accuraatheid van het model, het gemiddelde retentiepercentage en het base-model
@@ -1221,13 +1272,13 @@ sAccuracy_vergelijking <- Get_Accuracy_vergelijking(Last_fit_Accuracy, Base_Mode
 sAccuracy_niveau       <- Get_Accuracy_niveau(Last_fit_Accuracy)
 sAccuracy_verschil     <- Get_Accuracy_verschil(nAccuracy_verschil)
 
-## Bepaal de top 3 en top 5 variabelen op basis van de VIF
-dfTop_vif   <- last_fit |> 
+## Bepaal de top 3 en top 5 variabelen op basis van de VI
+dfTop_vi   <- last_fit |> 
   extract_fit_parsnip() |> 
   vip::vi() |> 
   arrange(desc(Importance)) 
 
-lTop3_vif <- dfTop_vif |>
+lTop3_vi <- dfTop_vi |>
   slice(1:3) |>
   pull(Variable) |>
   ## Pas de variabelen aan zodat ze tussen backticks staan
@@ -1235,7 +1286,7 @@ lTop3_vif <- dfTop_vif |>
   ## Maak er een zin van
   Special_Paste()  
 
-lTop45_vif <- dfTop_vif |>
+lTop45_vi <- dfTop_vi |>
   ## Regel 4 en 5
   slice(4:5) |>
   pull(Variable) |>
@@ -1246,18 +1297,18 @@ lTop45_vif <- dfTop_vif |>
 
 sConclusie_text <- ""
 
-if(!("Eindcijfer_VO" %in% dfTop_vif$Variable[1:3]) 
-   & "Eindcijfer_VO" %in% dfTop_vif$Variable[4:5]) {
+if(!("Eindcijfer_VO" %in% dfTop_vi$Variable[1:3]) 
+   & "Eindcijfer_VO" %in% dfTop_vi$Variable[4:5]) {
   sConclusie_text <- glue::glue(
     sConclusie_text,
     "**Het model toont wel aan dat de herkomst van studenten sterker is gecorreleerd met {tolower(sSucces_model)} dan eerdere prestaties of vooropleiding.** ",
-    "De _Variable Importance Factor_ (VIF) laat namelijk zien dat de variabelen {lTop3_vif} de 3 belangrijkste variabelen zijn voor het voorspellen van {tolower(sUitval_model)}, gevolgd door {lTop45_vif}."
+    "De _Variable Importance Factor_ (VI) laat namelijk zien dat de variabelen {lTop3_vi} de 3 belangrijkste variabelen zijn voor het voorspellen van {tolower(sUitval_model)}, gevolgd door {lTop45_vi}."
   )
-} else if ("Eindcijfer_VO" %in% dfTop_vif$Variable[1:3]) {
+} else if ("Eindcijfer_VO" %in% dfTop_vi$Variable[1:3]) {
   sConclusie_text <- glue::glue(
     sConclusie_text,
     "**Het model toont aan dat eerdere prestaties van studenten sterker zijn gecorreleerd met {tolower(sSucces_model)} dan herkomst.** ",
-    "De _Variable Importance Factor_ (VIF) laat namelijk zien dat de variabelen {lTop3_vif} de 3 belangrijkste variabelen zijn voor het voorspellen van {tolower(sSucces_model)}, gevolgd door {lTop45_vif}."
+    "De _Variable Importance_ (VI) laat namelijk zien dat de variabelen {lTop3_vi} de 3 belangrijkste variabelen zijn voor het voorspellen van {tolower(sSucces_model)}, gevolgd door {lTop45_vi}."
   )
 } else {
   sConclusie_text <- "**Vooralsnog geen nadere bijzonderheden.**"
@@ -1275,16 +1326,24 @@ if(!("Eindcijfer_VO" %in% dfTop_vif$Variable[1:3])
 
 Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde op basis van accuraatheid toe te voegen. Het base-model neemt als basis de grootste klasse van de gemiddelde `r tolower(sSucces_model)` van de afgelopen jaren. Stel we zouden tegen alle studenten zeggen dat ze hun studie gaan halen, dan is de mate van accuratesse gelijk aan dit base-model. Dit base-model is dus altijd hoger dan de 50% lijn van de AUC/ROC curve, tenzij het base-model toevallig precies 50% is.
 
+
+```{r}
+#| label: fig-basemodel-lift
+#| fig-cap: "Lift afhankelijk van base-model en accuraatheid"
+#| out-width: 80%
+knitr::include_graphics(here::here("01_Includes/img", "basemodel-lift.png"))
+```
+
 **De mate van accuraatheid van het prognosemodel is `r sAccuracy_niveau` (`r Last_fit_Accuracy`%).**
 
--   **Base-model: `r Base_Model_Accuracy`%** -- Voor deze opleiding bereken we het base-model als volgt. Van alle studenten studeerde `r Avg_Retentie`% door; 100% - `r Avg_Retentie`% = `r Avg_Non_Retentie`% studeerde *niet* door. De grootste klasse van deze twee, `r Base_Model_Accuracy`%, is daarmee de accuratesse van het model.
+-   **Base-model: `r Base_Model_Accuracy`%** -- Voor deze opleiding berekenen we het base-model als volgt. Van alle studenten studeerde `r Avg_Retentie`% door; 100% - `r Avg_Retentie`% = `r Avg_Non_Retentie`% studeerde *niet* door. De grootste klasse van deze twee, `r Base_Model_Accuracy`%, is daarmee de accuratesse van het base-model.
 -   **Accuratesse prognose: `r Last_fit_Accuracy`%** -- Het model voorspelt `r sSucces_model` met een accuratesse van `r Last_fit_Accuracy`%.
--   **Lift: `r pAccuracy_verschil`** -- Het model scoort in de huidige opbouw met een verschil van `r pAccuracy_verschil` (de *lift*) `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van het base-model (`r Base_Model_Accuracy`%).
+-   **Lift: `r pAccuracy_verschil`** -- Het model scoort in de huidige opbouw met een verschil van `r pAccuracy_verschil` (de *lift*) `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van het base-model.
 
 ### Confusion Matrix
 
 ```{r}
-#| label: confusion_matrix_calculation
+#| label: confusion-matrix-calculation
 
 ## Bepaal de confusion matrix
 confusion_matrix <- last_fit |>
@@ -1307,13 +1366,18 @@ pACC <- Change_Number_Marks(Last_fit_Accuracy,1)
 
 De prestaties van het model kunnen we verder uitdrukken in een *confusion matrix*. Hierin zien we de voorspellingen van het model en de werkelijke uitkomsten. De matrix geeft inzicht in de mate van correcte en incorrecte voorspellingen. Ter illustratie werken we de matrix uit voor een voorspelling waarop een bindend studieadvies (BSA) gebaseerd zou kunnen zijn.
 
-![](01.%20Includes/img/confustion-matrix-retention-lta-hhs.png)
+```{r}
+#| label: fig-confusion-matrix-explanation
+#| fig-cap: "Confusion matrix in relatie tot BSA"
+knitr::include_graphics(here::here("01_Includes/img", "confusion-matrix-retention-lta-hhs.png"))
+```
 
 We passen de confusion matrix nu toe op het model dat als beste naar voren kwam. De **accuraatheid** van dit model is **`r pACC`%**. De accuraatheid van het model berekenen we door de som van de diagonaal te berekenen: het aandeel goed voorspelde uitkomsten, Retentie = Retentie (*True Positive*) en Geen retentie = Geen retentie (*True Negative*), af te zetten tegen het totaal aantal voorspellingen: `r pTP`% + `r pTN`% = `r pACC`%. (NB. De weergave in deze confusion matrix is diagonaal gespiegeld vergeleken met het voorbeeld.)
 
 ```{r}
-#| label: confusion_matrix_plot
-
+#| label: fig-confusion-matrix-actual
+#| fig-cap: !expr 'paste("Confusion matrix ten opzichte van", params$succes)'
+ 
 confusion_plot <- plot_confusion_matrix(
     dfConf_matrix,
     target_col = "Werkelijkheid",
@@ -1330,7 +1394,6 @@ confusion_plot <- plot_confusion_matrix(
     
     ## Pas de labels aan
     labs(
-      title = "Confusion Matrix",
       x = "Werkelijke uitkost",
       y = "Voorspelde uitkomst",
       caption = sCaption
@@ -1363,13 +1426,6 @@ Ongeacht de mate van accuraatheid, is het voor onderzoek naar kansengelijkheid e
 ## Vervolgstappen: Factoranalyse
 
 De volgende stap (stap 2) is een verdiepende analyse van de mate waarin de **factoren** die we gevonden hebben van invloed zijn op `r sSucces_model`. We kijken naar de rangorde, of ze `r tolower(sSucces_model)` verhogen of juist verlagen en hoe stabiel de factoren zijn als we in andere volgordes aan het model toevoegen. Om het concreet te maken zullen we het model toepassen op een aantal fictieve studenten, die we opbouwen uit de meeste voorkomende waarden in deze opleiding. Dit is het onderwerp van analyse 2: de Factoranalyse.
-:::
-
-<!-- Referenties -->
-
-## Literatuur {.unnumbered}
-
-::: {#refs}
 :::
 
 <!-- Verantwoording -->
@@ -1445,9 +1501,9 @@ if(bInclude_Final_fit) {
 if(bInclude_Conclusies) {
   rm(
     top_models,
-    dfTop_vif,
-    lTop3_vif,
-    lTop45_vif
+    dfTop_vi,
+    lTop3_vi,
+    lTop45_vi
     )
 }
 

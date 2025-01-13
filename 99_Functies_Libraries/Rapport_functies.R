@@ -311,6 +311,37 @@ Get_Breakdown_Plotpath <- function(student_groep, student_categorie) {
 ## 3. DATASET FUNCTIES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+## Functie om de data dictionary in te lezen
+Get_Data_Dictionary <- function() {
+  
+  sInput_path <- "01_Includes/vars"
+  
+  df <- rio::import(file.path(sInput_path, "data_dictionary.xlsx")) 
+  
+  return(df)
+}
+
+## Functie om een table te maken van de data dictionary
+Get_tblData_Dictionary <- function(df) {
+  
+  tbl <- 
+    df |> 
+    flextable() |> 
+    theme_vanilla() |>  
+    set_table_properties(width = 1, layout = "autofit") |>  
+    bg(i = ~ seq_len(nrow(dfData_dictionary)) %% 2 == 0, bg = "gray95") |>  
+    align(align = "left", part = "all") |>  
+    border_remove() |>  
+    border_inner_h(border = fp_border(color = "gray", width = 0.5)) |>  
+    border_inner_v(border = fp_border(color = "gray", width = 0.5)) |>  
+    bold(part = "header") |>  
+    fontsize(size = 11, part = "all") |>  
+    color(part = "header", color = "black") |>  
+    set_caption(caption = "Overzicht van variabelen")  
+  
+  return(tbl)
+}
+
 ## Functie om synthetische data op te halen
 Get_Studyprogram_Enrollments_Synthetic <- function(studytrack,
                                                        studyform) {

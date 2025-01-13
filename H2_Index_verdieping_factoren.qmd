@@ -1,45 +1,25 @@
 ---
 subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
 
-## Auteur en datum
+# Auteur en datum
 author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
 date: last-modified
 
-## LTA Template
+# LTA Template
 ltatemplate: 0.9.1.9000
 
-## Format en output
-output-file: "lta-hhs-tidymodels-retentie-verdieping-factoren.html"
+# Format en output
+output-file: "lta-hhs-tidymodels-h2-verdieping-factoren.html"
 
-## Parameters        
+# Parameters
 params:
   versie: "1.0"
   succes: "Retentie na 1 jaar"
-  propedeusediploma: "Nvt" ## Nvt/Met P/Zonder P
-  
-  ## Use synthetic data
+  model: "Retentie na 1 jaar"
+  propedeusediploma: "Nvt"
   use_synthetic_data: true
-  
-  ## Recreate plots
-  recreateplots: true
-  
-  # BRV:ORM DU
-  # faculteit: "BRV"
-  # opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
-  # opleiding: "BO"
-  # opleidingsvorm: "duaal"
-  # opleidingsvorm_afkorting: "DU"
-  # selectie: false
-  
-  # BRV:HBO-R VT
-  # faculteit: "BRV"
-  # opleidingsnaam: "B HBO-Rechten"
-  # opleiding: "HBO-R"
-  # opleidingsvorm: "deeltijd"
-  # opleidingsvorm_afkorting: "DT"
-  # selectie: false
-  
-  # ITD:CMD
+  recreateplots: false
+
   faculteit: "ITD"
   opleidingsnaam: "B Communication and Multimedia Design"
   opleiding: "CMD"
@@ -47,10 +27,7 @@ params:
   opleidingsvorm_afkorting: "VT"
   selectie: false
   
-  ## Author
-  author: "Theo Bakker, lector Learning Technology & Analytics"
-  
-## Content
+# Content
 includes:
   inleiding:      true
   data:           true
@@ -103,7 +80,7 @@ We laden de bewerkte data en prognosemodellen in voor:
 **Opleiding**: `r params$faculteit` \| `r Get_Opleidingsnaam_Synth(params$opleidingsnaam)` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
 ```{r}
-#| label: load_data
+#| label: load-data
 
 ## Bepaal de paden
 sData_outputpath           <- Get_Model_Outputpath(mode = "data")
@@ -149,7 +126,7 @@ DALEX is onder andere ontwikkeld om uit te kunnen leggen welke verklarende varia
 We gaan nu een stap verder met behulp van het `DALEX` package. Op basis van het tidymodels model extraheren we de informatie voor de explainer van Dalex.
 
 ```{r, include=FALSE}
-#| label: fitted_model
+#| label: fitted-model
 
 sBest_model <- dfModel_results$model[dfModel_results$number == 1]
 last_fit    <- lLast_fits[[sBest_model]]
@@ -168,7 +145,7 @@ if (!is.numeric(coefs)) {
 ```
 
 ```{r}
-#| label: lf_explainer
+#| label: lf-explainer
 
 ## Extraheer het fitted model en de workflow
 fitted_model <- last_fit |>
@@ -201,7 +178,8 @@ De eerste analyse is de Root Mean Square Error (RMSE) na permutaties.
 De meeste voorspellende factoren en hun RMSE zijn:
 
 ```{r}
-#| label: lf_model_parts
+#| label: fig-lf-model-parts
+#| fig-cap: "Meest voorspellende factoren - RMSE"
 
 sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_model_parts_rmse"))
 
@@ -248,7 +226,7 @@ Stel dat we een onderscheid maken tussen mbo en havo studenten, dan bepalen we d
 We kijken hiermee naar de voorspelling van het model per groep en de bijdrage van de verklarende variabelen aan die specifieke voorspelling. Dit geeft een verder inzicht in de werking van het model. Een categorie met 20 studenten of minder laten we buiten beschouwing.
 
 ```{r}
-#| label: lf_break_down_all
+#| label: lf-break-down-all
 #| echo: false
 #| results: asis
 
@@ -291,7 +269,8 @@ We kijken eerst naar de meest voorkomende student in de opleiding. We analyseren
 -   **Vorm** - De vorm achter de variabele (een viool) geeft de verdeling van de kans op retentie weer. Hoe breder de viool-vorm, hoe meer studenten op die locatie een kans op retentie hebben.
 
 ```{r}
-#| label: lf_break_down_distribution_all
+#| label: fig-lf-break-down-distribution-all
+#| fig-cap: "Opbouw van de kans op retentie"
 #| echo: false
 #| results: asis
 
@@ -348,7 +327,7 @@ Nu de algemene opbouw van de kans op retentie bekend is voor de meest voorkomend
 De volgorde van de variabelen is zo gesorteerd dat per groep de meest voorspellende variabelen bovenaan staat. De volgorde verschilt per groep en geeft inzicht in wat er per groep speelt. De variabelen zijn vaak proxies voor onderliggende verschillen.
 
 ```{r}
-#| label: lf_break_down
+#| label: lf-break-down
 #| echo: false
 #| results: asis
 
@@ -450,8 +429,9 @@ for(group in names(lDfPersona)) {
         ))
       
       ## Toon de bestaande plot
-      sPlot <- glue("![]({sPlotPath})")
+      sPlot <- glue("![Breakdown naar {tolower(student_groep)}: {student_categorie}]({sPlotPath}){{#fig-breakdown-{gsub(' ', '-', tolower(student_groep))}-{gsub(' ', '-', tolower(student_categorie))}}}")
       Knit_Print_Rule(sPlot)
+      
       
     } else {
       
@@ -459,7 +439,7 @@ for(group in names(lDfPersona)) {
       Knit_Header(student_categorie, 5)
       
       ## Toon de bestaande plot
-      sPlot <- glue("![]({sPlotPath})")
+      sPlot <- glue("![Breakdown naar {tolower(student_groep)}: {student_categorie}]({sPlotPath}){{#fig-breakdown-{gsub(' ', '-', tolower(student_groep))}-{gsub(' ', '-', tolower(student_categorie))}}}")
       Knit_Print_Rule(sPlot)
       
     }
@@ -480,7 +460,8 @@ Na deze factorentanalyse kijken we naar de stabiliteit van de invloed van de ver
 De volgorde van de variabelen is cumulatief (additief) en maakt dus uit voor de bijdrage aan het model: als er een andere variabele al in het model is toegevoegd, heeft dat invloed op de daaropvolgende variabele. Een Shapley analyse permuteert de volgorde van de variabelen om daarmee de verschillen te berekenen in de bijdrage aan de voorspelling. Zo krijgen we nog beter zicht op het belang en de invloed van de individuele variabelen in het voorspelmodel. Variabelen zonder bijdrage hebben we verwijderd.
 
 ```{r}
-#| label: lf_shapley
+#| label: fig-lf-shapley
+#| fig-cap: "Shapley values"
 
 ## Bewaar de plot
 sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_shapley"))
@@ -550,7 +531,7 @@ Stel dat de student in dit model net een wat hoger eindexamencijfer zou hebben g
 Opnieuw kijken we naar geslacht, vooropleiding en aansluiting. N.B. Het kan zijn dat een van de categorieën niet zichtbaar is, dit komt doordat deze dan over elkaar heen vallen.
 
 ```{r}
-#| label: lf_cp_all
+#| label: lf-cp-all
 #| echo: false
 #| results: asis
 
@@ -638,14 +619,14 @@ for (group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
           ))
 
     ## Print de bestaande plot
-    sPlot <- glue("![]({sPlotPath})")
+    sPlot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({sPlotPath}){{#fig-cp-{tolower(group)}}}")
     Knit_Print_Rule(sPlot)
     
     } else {
       
       ## Print de bestaande plot
       sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_cp_", tolower(group))))
-      sPlot <- glue("![]({sPlotPath})")
+      sPlot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({sPlotPath}){{#fig-cp-{tolower(group)}}}")
       Knit_Print_Rule(sPlot)
   
   } 
@@ -669,7 +650,7 @@ We analyseren eerst de variabelen voor alle studenten. We tonen niet alleen de g
 -   Doordat lijnen kunnen overlappen kan het zijn dat sommige lijnen niet zichtbaar zijn. De legenda geeft aan welke mogelijke categorieën voorkomen in de analyse.
 
 ```{r}
-#| label: lf_pdp_all
+#| label: lf-pdp-all
 #| echo: false
 #| results: asis
 
@@ -717,7 +698,7 @@ for (group in c("Alle studenten", "Geslacht", "Vooropleiding", "Aansluiting")) {
           ))
 
     ## Print de bestaande plot
-    sPlot <- glue("![]({sPlotPath})")
+    sPlot <- glue("![Partial Dependence profiel naar {tolower(group)}]({sPlotPath}){{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
     Knit_Print_Rule(sPlot)
     
     } else {
@@ -728,7 +709,7 @@ for (group in c("Alle studenten", "Geslacht", "Vooropleiding", "Aansluiting")) {
       ## Print de bestaande plot
       sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_pdp_",
                                                                    tolower(group))))
-      sPlot <- glue("![]({sPlotPath})")
+      sPlot <- glue("![Partial Dependence profiel naar {tolower(group)}]({sPlotPath}){{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
       Knit_Print_Rule(sPlot)
       
     }

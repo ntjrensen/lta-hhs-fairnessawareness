@@ -23,66 +23,86 @@
 
 ## Tellingen voor intreerede
 
+
+
 ## Alternatieve modellen
-ECDA [ ] Zonder herinschrijvers
-ECDA [ ] Zonder studenten die vertrekken met hbo-propedeuse
+CEDA [ ] Zonder herinschrijvers
+CEDA [ ] Zonder studenten die vertrekken met hbo-propedeuse
 
 ## Extra variabelen
-ECDA [ ] SES
-ECDA [ ] APCG
-ECDA [ ] SKP met Lump
+CEDA [ ] SES
+CEDA [ ] APCG
+CEDA [ ] SKP met Lump
 
 ## Overige
 
 [x] Hoogte van de afbeeldingen bij CMD is te laag.
 [x] Gemiddelde student anders opbouwen > hoofdklasse geslacht, dan vooropleiding, dan cijfer en skp of beschrijving anders maken!
-  ECDA [ ] Alternatieve persona > wel bestaande met cumulatief filter
+  CEDA [ ] Alternatieve persona > wel bestaande met cumulatief filter
 
 [ ] Purrrrify
-  ECDA [ ] Loops vervangen door purrr
+  CEDA [ ] Loops vervangen door purrr
 
 [ ] book-werk
-  ECDA [ ] Een samenvattende pagina met de belangrijkste resultaten
+  CEDA [ ] Een samenvattende pagina met de belangrijkste resultaten
   [x] Meerdere opleidingen publiceren
   [-] Op een xterne site publiceren?
   [-] Opleiding in zijbalk
 
 [ ] Documentatie
-  ECDA [ ] News bijwerken
-  ECDA [ ] Readme bijwerken
+  CEDA [ ] News bijwerken
+  CEDA [ ] Readme bijwerken
 
 [ ] Plots
   [x] 50% lijn aan density plots toevoegen
-  ECDA [ ] gam model uitproberen
+  CEDA [ ] gam model uitproberen
     [ ] https://parsnip.tidymodels.org/reference/details_gen_additive_mod_mgcv.html
     [ ] https://forum.posit.co/t/how-to-define-smoothed-models-for-a-gam-using-tidymodels-and-recipe/144772
 
 [ ] Andere opleidingen proberen
   [ ] ORM_DT
       [ ] select_inspect_data   
-      ECDA [ ] te weinig observaties ondervangen
+      CEDA [ ] te weinig observaties ondervangen
         [ ] voeg per opleiding het aantal eerstejaars toe en unieke collegejaren.
         [ ] als dit te weinig observaties of jaren zijn, dan next
 
 [ ] Modellen
-  ECDA [ ] Aan het begin een klein staatje van het aantal retentie per jaar.
-  ECDA [ ] Een workflow set uitproberen:
+  CEDA [ ] Aan het begin een klein staatje van het aantal retentie per jaar.
+  CEDA [ ] Een workflow set uitproberen:
     [ ] https://workflowsets.tidymodels.org/
-  ECDA [ ] Diplomarendement
+  CEDA [ ] Diplomarendement
   [x] Uitval met en zonder prop
     [x] SUC_P_aantal_jaar
   
 [ ] Teksten
   [x] Beste model fits zoals op https://rpubs.com/mikek25/tidymodels_churn
-  ECDA [ ] Teksten voor conclusies herzien
+  CEDA [ ] Teksten voor conclusies herzien
 
 [ ] Bugs
-  ECDA [ ] Metrics met NA's
+  CEDA [ ] Metrics met NA's
   
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## GEDAAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+## CEDA Klussen
+[x] Consistent gebruik van variabele 'retentie na 1 jaar'
+  [x] Inleiding
+  [x] H1
+  [x] H2
+  [x] H3
+[x] Labels aanpassen van _ naar -
+[x] Tabellen en figuren voorzien van nummer en titel
+  [x] Inleiding
+  [x] H1
+  [x] H2
+    [x] waterfall plots
+    [x] CP en PDP per plaatje aparte cap.
+  [x] H3
+    [x] cap per groep voor uitvalskansen
+    [x] cap per groep voor fairness check
+    
+  
 [x] Fairness draaien voor alle opleidingen
   [x] Onderdeel maken met tellingen per groep (aantal en percentages) in H3
   [x] Uitbreiden met waarden die niet zijn opgenomen 

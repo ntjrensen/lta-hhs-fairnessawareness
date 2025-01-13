@@ -1,56 +1,33 @@
 ---
 subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
 
-## Auteur en datum
+# Auteur en datum
 author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
 date: last-modified
 
-## LTA Template
+# LTA Template
 ltatemplate: 0.9.1.9000
 
-## Format en output
-output-file: "lta-hhs-tidymodels-retentie-verdieping-kansengelijkheid.html"
+# Format en output
+output-file: "lta-hhs-tidymodels-h3-verdieping-kansengelijkheid.html"
 
-## Parameters        
+# Parameters
 params:
   versie: "1.0"
   succes: "Retentie na 1 jaar"
-  propedeusediploma: "Nvt" ## Nvt/Met P/Zonder P
-  
-  ## Use synthetic data
+  model: "Retentie na 1 jaar"
+  propedeusediploma: "Nvt"
   use_synthetic_data: true
-  
-  ## Recreate plots
-  recreateplots: true
-  
-  # BRV:ORM DU
-  # faculteit: "BRV"
-  # opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
-  # opleiding: "BO"
-  # opleidingsvorm: "duaal"
-  # opleidingsvorm_afkorting: "DU"
-  # selectie: false
-  
-  # BRV:HBO-R VT
-  # faculteit: "BRV"
-  # opleidingsnaam: "B HBO-Rechten"
-  # opleiding: "HBO-R"
-  # opleidingsvorm: "deeltijd"
-  # opleidingsvorm_afkorting: "DT"
-  # selectie: false
-  
-  # ITD:CMD
+  recreateplots: false
+
   faculteit: "ITD"
   opleidingsnaam: "B Communication and Multimedia Design"
   opleiding: "CMD"
   opleidingsvorm: "voltijd"
   opleidingsvorm_afkorting: "VT"
   selectie: false
-  
-  ## Author
-  author: "Theo Bakker, lector Learning Technology & Analytics"
-  
-## Content
+
+# Content
 includes:
   inleiding:      true
   data:           true
@@ -89,7 +66,7 @@ De analyse van kansengelijkheid heeft de volgende stappen:
 1.  We lezen de bewerkte dataset weer in en de modellen die we in de basis-analyse hebben gemaakt.
 2.  We maken weer een *explainer* om de modellen beter te begrijpen en te kunnen uitleggen.
 3.  Vervolgens berekenen we of er *bias* bestaat voor verschillende groepen studenten naar geslacht, vooropleiding en vorm van aansluiting. We analyseren daarvoor de verdeling van kansen en mate van fairness in het voorspelmodel dat we hebben ontwikkeld.
-4.  Tot slot trekken we er conclusies uit over de mate van bias binnen de opleiding voor retentie na 1 jaar.
+4.  Tot slot trekken we er conclusies uit over de mate van bias binnen de opleiding voor `r tolower(params$model)`.
 :::
 
 <!-- Data -->
@@ -103,7 +80,7 @@ We laden de bewerkte data en het beste prognosemodel in voor:
 **Opleiding**: `r params$faculteit` \| `r Get_Opleidingsnaam_Synth(params$opleidingsnaam)` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
 ```{r}
-#| label: load_data
+#| label: load-data
 
 ## Bepaal de paden
 sData_outputpath         <- Get_Model_Outputpath(mode = "data")
@@ -140,7 +117,7 @@ dfPersona_all <- Get_dfPersona()
 We maken weer gebruik van de explainer van `DALEX`.
 
 ```{r, include = FALSE}
-#| label: fitted_model
+#| label: fitted-model
 
 sBest_model <- dfModel_results$model[dfModel_results$number == 1]
 last_fit    <- lLast_fits[[sBest_model]]
@@ -159,7 +136,7 @@ if (!is.numeric(coefs)) {
 ```
 
 ```{r}
-#| label: lf_explainer
+#| label: lf-explainer
 
 ## Extraheer het fitted model en de workflow
 fitted_model <- last_fit |>
@@ -197,7 +174,13 @@ In een onderwijssituatie kunnen deze groepen verschillen van maatschappelijke si
 
 ### Ratio's om kansengelijkheid te beoordelen
 
-Voor elke groep onderzoeken we **5 ratio's**, ook wel maatstaven of metrieken genoemd. Deze ratio's zijn afgeleid van verhoudingen in de confusion matrix; ze geven inzicht in de mate van bias en kansengelijkheid vanuit verschillende perspectieven van een prognosemodel. ![](01.%20Includes/img/confustion-matrix-fairness-lta-hhs.png)
+Voor elke groep onderzoeken we **5 ratio's**, ook wel maatstaven of metrieken genoemd. Deze ratio's zijn afgeleid van verhoudingen in de confusion matrix; ze geven inzicht in de mate van bias en kansengelijkheid vanuit verschillende perspectieven van een prognosemodel. 
+
+```{r}
+#| label: fig-confusion-matrix-explanation
+#| fig-cap: "Confusion matrix in relatie tot BSA"
+knitr::include_graphics(here::here("01_Includes/img", "confusion-matrix-fairness-lta-hhs.png"))
+```
 
 :::::::: panel-tabset
 ### 1. Accuracy Equality
@@ -234,7 +217,7 @@ Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspel
 
 Deze maatstaf beoordeelt de gelijkheid van kansen die een model biedt aan verschillende subgroepen in termen van de 'True Positive Rate' (TPR). Het vergelijkt de kans dat een model correct een positieve uitkomst voorspelt voor een beschermde groep versus een bevoorrechte groep.
 
-De True Positive Rate (TPR) wordt ook wel de **gevoeligheid** (sensitivity of recall) genoemd. De Equal Opportunity Ratio wordt berekend als het aantal true positives gedeeld door het totaal aantal werkelijke positives.
+De True Positive Rate (TPR) is een andere term voor de **sensitiviteit** (ook wel recall) genoemd. De Equal Opportunity Ratio wordt berekend als het aantal true positives gedeeld door het totaal aantal werkelijke positives.
 
 **Formule**
 
@@ -347,7 +330,8 @@ Nu we deze begrippen hebben gedefinieerd, kunnen we de bias en kansengelijkheid 
 Voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting` is de verdeling binnen deze opleiding als volgt:
 
 ```{r}
-#| label: amount_and_numbers_per_group
+#| label: tbl-amount-and-percentages-per-group
+#| tbl-cap: "Aantallen en percentages naar geslacht, vooropleiding en aansluiting in relatie tot retentie"
 #| results: asis
 #| echo: false
 
@@ -396,7 +380,7 @@ Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we eerst
 -   De blauwe gestippelde lijn geeft de 50% kans aan; alle waarden die boven deze lijn valt heeft een kans van 50% of meer op retentie. Hiervan voorspelt het model dat zij niet uitvallen. Deze grenslijn kan door de verdeling van de groepen heen lopen.
 
 ```{r}
-#| label: bias_analysis_density
+#| label: bias-analysis-density
 #| results: asis
 
 ## Maak een fairness analyse
@@ -431,7 +415,7 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
         ))
 
   ## Toon de bestaande plot
-  sPlot <- glue("![]({sPlotPath})")
+  sPlot <- glue("![Verdeling en dichtheid van kans op retentie naar  {tolower(group)}]({sPlotPath}){{#fig-fairness-check-{tolower(group)}}}")
   Knit_Print_Rule(sPlot)
 
 }
@@ -462,10 +446,10 @@ Om de robuustheid en betrouwbaarheid in de detectie van bias te waarborgen, moet
 
 **3. Normatieve overwegingen**: Vaak is er een normatieve basis voor het definiëren van wat eerlijk is. Het vergelijken van meerdere maatstaven kan helpen om genuanceerder en vollediger beeld te krijgen van hoe een model presteert ten opzichte van verschillende fairness criteria.
 
-De keuze voor twee maatstaven als minimum baseren we op een combinatie van statistische overwegingen en praktische normen binnen het machine learning vakgebied om een goed evenwicht te vinden tussen gevoeligheid (het detecteren van daadwerkelijke bias) en specificiteit (het vermijden van vals positieven) [@Barocas.2023].
+De keuze voor twee maatstaven als minimum baseren we op een combinatie van statistische overwegingen en praktische normen binnen het machine learning vakgebied om een goed evenwicht te vinden tussen sensitiviteit (het detecteren van daadwerkelijke bias) en specificiteit (het vermijden van vals positieven) [@Barocas.2023].
 
 ```{r}
-#| label: bias_analysis
+#| label: bias-analysis
 #| results: asis
 
 ## Maak een fairness analyse
@@ -508,7 +492,7 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
         ))
 
   ## Toon de bestaande plot
-  sPlot <- glue("![]({sPlotPath})")
+  sPlot <- glue("![Fairness check naar {tolower(group)}]({sPlotPath}){{#fig-fairness-check-{tolower(group)}}}")
   Knit_Print_Rule(sPlot)
   
   ## Bewaar de fairness check data
@@ -534,7 +518,8 @@ Na de uitvoering van de fairness analyse vatten we de conclusies samen in een ta
 -   De bevoorrechte groep is grijs. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
 
 ```{r}
-#| label: fairness_conclusions
+#| label: tbl-fairness-conclusions
+#| tbl-cap: "Fairness conclusies per groep"
 #| results: asis
 #| echo: false
 
@@ -557,6 +542,10 @@ ftFairness_table <- Get_ftFairness(flextable(dfFairness_wide))
 
 # Print de flextable
 ftFairness_table
+```
+
+```{r}
+#| label: txt-fairness-conclusions
 
 # Creeer op basis van de table nu een tekst per variabele
 lConclusies <- list()
@@ -575,13 +564,6 @@ for(i in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 1.  **Geslacht**: `r lConclusies[["Geslacht"]]`
 2.  **Vooropleiding**: `r lConclusies[["Vooropleiding"]]`
 3.  **Aansluiting**: `r lConclusies[["Aansluiting"]]`
-
-<!-- Referenties -->
-
-## Literatuur {.unnumbered}
-
-::: {#refs}
-:::
 
 <!-- Verantwoording -->
 

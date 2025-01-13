@@ -1,53 +1,30 @@
 ---
-subtitle: "Een analyse van kansengelijkheid in studiesucces (retentie na 1 jaar)"
+subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.model >}})"
 
-## Auteur en datum
+# Auteur en datum
 author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
 date: last-modified
 
-## LTA Template
+# LTA Template
 ltatemplate: 0.9.1.9000
 
-## Parameters        
+# Parameters
 params:
   versie: "1.0"
   succes: "Retentie na 1 jaar"
-  propedeusediploma: "Nvt" ## Nvt/Met P/Zonder P
-  
-  ## Use synthetic data
+  model: "Retentie na 1 jaar"
+  propedeusediploma: "Nvt"
   use_synthetic_data: true
-  
-  ## Recreate plots
-  recreateplots: true
-  
-  # BRV:ORM DU
-  # faculteit: "BRV"
-  # opleidingsnaam: "B Bestuurskunde Overheidsmanagement"
-  # opleiding: "BO"
-  # opleidingsvorm: "duaal"
-  # opleidingsvorm_afkorting: "DU"
-  # selectie: false
-  
-  # BRV:HBO-R VT
-  # faculteit: "BRV"
-  # opleidingsnaam: "B HBO-Rechten"
-  # opleiding: "HBO-R"
-  # opleidingsvorm: "deeltijd"
-  # opleidingsvorm_afkorting: "DT"
-  # selectie: false
-  
-  # ITD:CMD
+  recreateplots: false
+
   faculteit: "ITD"
   opleidingsnaam: "B Communication and Multimedia Design"
   opleiding: "CMD"
   opleidingsvorm: "voltijd"
   opleidingsvorm_afkorting: "VT"
   selectie: false
-  
-  ## Author
-  author: "Theo Bakker, lector Learning Technology & Analytics"
-  
-## Content
+
+# Content
 includes:
   inleiding:      true
   data:           true
@@ -85,11 +62,11 @@ Het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool hee
 
 Het lectoraat heeft een onderzoeksmethode ontwikkeld om te kunnen analyseren of er sprake is van bias in studiedata in relatie tot het succes van studenten, wat een indicatie kan zijn van een gebrek aan kansengelijkheid. Deze methode gebruikt prognosemodellen op basis van machine learning. Een prognosemodel is dus niet een doel op zich, maar het instrument voor een analyse van kansengelijkheid, ook wel een *fairness* analyse genoemd.
 
-Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken op 21 november 2024, getiteld: '[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)' [@Bakker.2024]. Zie voor een verdere toelichting op het gehele onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
+Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken op 21 november 2024, getiteld: '[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)' [@Bakker.2024-intreerede]. Zie voor een verdere toelichting op het gehele onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
 
 ## Het nut van prognosemodellen
 
-Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de **retentie** van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen. Denk aan een betere voorlichting, onboarding, begeleiding of ontwikkeling van het onderwijs. Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse de retentie na 1 jaar als uitkomstvariabele nemen.
+Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de **retentie** van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen. Denk aan een betere voorlichting, onboarding, begeleiding of ontwikkeling van het onderwijs. Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse ``r tolower(params$succes)`` als uitkomstvariabele nemen.
 
 ::: {.callout-warning appearance="default" icon="true"}
 ## Disclaimer
@@ -103,7 +80,7 @@ De prognosemodellen die we in deze analyses ontwikkelen zijn bedoeld om de dynam
 
 Deze analyse kent drie hoofdstukken met de drie stappen van de aanpak:
 
--   **Hoofdstuk 1: Prognosemodel retentie na 1 jaar** - De ontwikkeling van een aantal prognosemodellen om retentie na 1 jaar te voorspellen, waaruit het best presterende model wordt gekozen.
+-   **Hoofdstuk 1: Prognosemodel `r tolower(params$model)`** - De ontwikkeling van een aantal prognosemodellen om retentie na 1 jaar te voorspellen, waaruit het best presterende model wordt gekozen.
 -   **Hoofdstuk 2: Factoranalyse** - Een verdiepende analyse op de factoren van het best presterende model.
 -   **Hoofdstuk 3: Kansengelijkheid** - De analyse van de modellen op bias en kansengelijkheid.
 

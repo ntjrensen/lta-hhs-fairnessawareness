@@ -74,6 +74,7 @@ if(bSetup_executed == F) {
   ## Laad extra bibliotheken
   library(conflicted)   # om conflicten op te lossen
   library(tidymodels)   # voor machine learning
+  library(rio)          # voor het inlezen van bestanden
   
   library(vip)          # voor variable importance plots
   library(forcats)      # om factor variabelen te bewerken
