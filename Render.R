@@ -73,7 +73,7 @@ ltabase::load_lta_datasets(message = TRUE)
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.6 Laad extra functies ####
 
-source("99_Functies_Libraries/Rapport_functies.R")
+source("99_Functies_Libraries/report.helpers.R")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

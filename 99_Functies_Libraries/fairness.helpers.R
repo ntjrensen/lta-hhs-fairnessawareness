@@ -1,5 +1,5 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Fairness_functies.R ####
+## fairness.helpers.R ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
 ## Copyright 2024 De HHs
@@ -23,7 +23,7 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## Sluit de oorspronkelijke hulp functies in vanuit het fairness package
-source("99_Functies_Libraries/Fairness_helper_functies.R")
+source("99_Functies_Libraries/fairness.dalex.helpers.R")
 
 library(purrr)
 
