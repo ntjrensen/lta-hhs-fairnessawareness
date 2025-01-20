@@ -24,15 +24,15 @@
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1. COLOR LIJSTEN ####
+## 1. COLOR LISTS ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.1 Standaard kleuren ####
+## 1.1 Standard colors ####
 
 lColors_default <- c(
   
-  ## Kleuren van title, onderwerp, ondertitel, caption, background
+  ## Colors of title, subject, subtitle, caption, background
   sTitle_color            = "black",
   sSubject_color          = "#808080",
   sSubtitle_color         = "black",
@@ -41,11 +41,11 @@ lColors_default <- c(
   sCaption_color          = "darkgray",
   sBackground_color       = "white",
   
-  ## Kleur van tekst
+  ## Color of text
   sText_color            = "black",
   sText_inside_color     = "white",
   
-  ## Intercept (0) en gridlines
+  ## Intercept (0) and gridlines
   sBaseline_color             = "black",
   sGridline_color             = "#CBCBCB",
   sDeadline_color             = "black",
@@ -53,29 +53,29 @@ lColors_default <- c(
   sBreakdown_intercept_color  = "black",
   sBreakdown_segment_color    = "darkgray",
   
-  ## Vulkleur
+  ## Fill color
   sFill_color            = "lightgray",
   
-  ## Lijnkleur
+  ## Line color
   sAverage_line_color    = "#CBCBCB",
   
-  ## Tekstkleur
+  ## Text color
   sAverage_text_color    = "darkgray",
   
-  ## Kleur van annotaties
+  ## Color of annotations
   sAnnotation_text_color = "black",
   sArrow_color           = "darkgray",
   
-  ## Kleur van jitter
+  ## Color of jitter
   sJitter_color          = "darkgray",
   
-  ## Kleur van de errorband
+  ## Error band color
   sSE_color              = "#CBCBCB",
   
-  ## Kleur van de band
+  ## Band color
   sBand_color            = "grey95",
   
-  ## Positief en negatief
+  ## Positive and negative
   sPositive_color        = "#466F9D",
   sNegative_color        = "#C8133B",
   
@@ -87,7 +87,7 @@ lColors_default <- c(
 )
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.2 Specifieke kleuren ####
+## 1.2 Specific colors ####
 
 lColors_geslacht <- c(
   "M" = "#1170AA",

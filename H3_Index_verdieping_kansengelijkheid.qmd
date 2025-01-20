@@ -1,14 +1,14 @@
 ---
 subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
 
-# Auteur en datum
+# Author and date
 author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
 date: last-modified
 
 # LTA Template
 ltatemplate: 0.9.1.9000
 
-# Format en output
+# Format and output
 output-file: "lta-hhs-tidymodels-h3-verdieping-kansengelijkheid.html"
 
 # Parameters
@@ -49,12 +49,12 @@ includes:
 #| label: setup
 #| echo: false
 
-## Sluit het _Setup.R bestand in
+## Include the _Setup.R file
 source("_Setup.R")
 
 ```
 
-<!-- Inleiding -->
+<!-- Introduction -->
 
 ::: {.content-hidden unless-meta="includes.inleiding"}
 ## Inleiding
@@ -82,12 +82,12 @@ We laden de bewerkte data en het beste prognosemodel in voor:
 ```{r}
 #| label: load-data
 
-## Bepaal de paden
+## Define the paths
 sData_outputpath         <- Get_Model_Outputpath(mode = "data")
 sFittedmodels_outputpath <- Get_Model_Outputpath(mode = "last-fits")
 sModelresults_outputpath <- Get_Model_Outputpath(mode = "modelresults")
 
-## Laad de data voor de opleiding: data, last fits en model results
+## Load data for training: dates, last fits and model results
 dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE) |> 
   mutate(Geslacht      = factor(Geslacht,      levels = lLevels_geslacht),
          Vooropleiding = factor(Vooropleiding, levels = lLevels_vop),
@@ -95,19 +95,19 @@ dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE) |>
 lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
 dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
 
-# Pas de Retentie variabele aan naar numeric (0/1), 
-# zodat er een explainer van gemaakt kan worden
+# Adjust the Retention variable to numeric (0/1), 
+# so it can be made into an explainer
 dfOpleiding_inschrijvingen$Retentie <- as.numeric(dfOpleiding_inschrijvingen$Retentie) - 1
 
-## Maak een lijst van dfPersonas
+## Create a list of dfPersonas
 lDfPersona <- list()
 
-## Loop over de variabelen
+## Walk over the variables
 lDfPersona <- map(c("Geslacht", "Vooropleiding", "Aansluiting"),
                   ~ Get_dfPersona(.x)) |>
   set_names(c("Geslacht", "Vooropleiding", "Aansluiting"))
 
-## Laad de persona's
+## Load the personas
 dfPersona_all <- Get_dfPersona()
 
 ```
@@ -125,10 +125,10 @@ last_fit    <- lLast_fits[[sBest_model]]
 fitted_model <- last_fit |>
   extract_fit_parsnip()
 
-## Controleer of de coefficienten van het model numeriek zijn
+## Check that the coefficients of the model are numerical
 coefs <- tidy(fitted_model)$estimate
 
-# Controleer of de coëfficiënten numeriek zijn
+# Check that the coefficients are numerical
 if (!is.numeric(coefs)) {
   stop("De geëxtraheerde coëfficiënten zijn niet numeriek.")
 }
@@ -138,14 +138,14 @@ if (!is.numeric(coefs)) {
 ```{r}
 #| label: lf-explainer
 
-## Extraheer het fitted model en de workflow
+## Extract the fitted model and workflow
 fitted_model <- last_fit |>
   extract_fit_parsnip()
 
 workflow <- last_fit |>
   extract_workflow()
 
-# Maak een explainer
+# Create an explainer
 explain_lf <- DALEXtra::explain_tidymodels(
   model = workflow,
   data = dfOpleiding_inschrijvingen |> select(-Retentie),
@@ -157,7 +157,7 @@ explain_lf <- DALEXtra::explain_tidymodels(
 
 ```
 
-<!-- Kansengelijkheid -->
+<!-- Equity of opportunity -->
 
 ## Analyse van kansengelijkheid
 
@@ -179,7 +179,9 @@ Voor elke groep onderzoeken we **5 ratio's**, ook wel maatstaven of metrieken ge
 ```{r}
 #| label: fig-confusion-matrix-explanation
 #| fig-cap: "Confusion matrix in relatie tot BSA"
+
 knitr::include_graphics(here::here("R/images", "confusion-matrix-fairness-lta-hhs.png"))
+
 ```
 
 :::::::: panel-tabset
@@ -323,7 +325,7 @@ Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspel
 
 Nu we deze begrippen hebben gedefinieerd, kunnen we de bias en kansengelijkheid van het model voor verschillende groepen studenten analyseren. Hiervoor gebruiken we het `fairmodels` package van `DALEX`.
 
-<!-- Aantallen en percentages per groep -->
+<!-- Numbers and percentages by group -->
 
 ### Aantallen en percentages per groep
 
@@ -335,7 +337,7 @@ Voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting` is de verdeling 
 #| results: asis
 #| echo: false
 
-## Maak een tabel met aantallen en percentages voor de 3 variabelen `Geslacht`, `Vooropleiding` en `Aansluiting`
+## Create a table with numbers and percentages for the 3 variables `Geslacht`, `Vooropleiding` and `Aansluiting`
 
 tbl_summary <- dfOpleiding_inschrijvingen |> 
   select(Retentie, Geslacht, Vooropleiding, Aansluiting) |> 
@@ -365,7 +367,7 @@ tbl_summary
 
 ```
 
-<!-- Verdeling van kansen per groep -->
+<!-- Distribution of opportunities by group -->
 
 ### Verdeling van kansen
 
@@ -383,27 +385,27 @@ Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we eerst
 #| label: bias-analysis-density
 #| results: asis
 
-## Maak een fairness analyse
+## Make a fairness analysis
 for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
-  ## Groep
+  ## Group
   Knit_Header(group, 4)
   
-  # Bepaal de meest voorkomende subgroep = Privileged
+  # Determine the most common subgroup = Privileged
   sPrivileged <- Get_Privileged(dfOpleiding_inschrijvingen, group)
 
-  ## Maak een fairness object
+  ## Create a fairness object
   fobject <- Get_objFairness(explain_lf, group, sPrivileged)
   
-  ## Maak een tabel van de fairness analyse
+  ## Create a table from the fairness analysis
   dfFairness_totaal <- Get_dfFairness_Total(fobject)
   
-  ## Maak een plot van de fairness analyse
+  ## Create a plot of the fairness analysis
   density_plot <- suppressWarnings(
     Get_Density_Plot(fobject, group = group) 
   ) 
 
-  ## Bewaar de plot
+  ## Save the plot
   sPlotname <- glue("density_plot_{tolower(group)}")
   sPlotPath <- Get_Plot_Outputpath(sPlotname, mode = "plot")
 
@@ -414,7 +416,7 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
           height_pixels = 250 + (50 * length(unique(dfFairness_totaal$Categorie)))
         ))
 
-  ## Toon de bestaande plot
+  ## Show the existing plot
   sPlot <- glue("![Verdeling en dichtheid van kans op retentie naar  {tolower(group)}]({sPlotPath}){{#fig-fairness-check-{tolower(group)}}}")
   Knit_Print_Rule(sPlot)
 
@@ -452,25 +454,25 @@ De keuze voor twee maatstaven als minimum baseren we op een combinatie van stati
 #| label: bias-analysis
 #| results: asis
 
-## Maak een fairness analyse
+## Make a fairness analysis
 for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
-  ## Groep
+  ## Group
   Knit_Header(group, 4)
   
-  # Bepaal de meest voorkomende subgroep = Privileged
+  # Determine the most common subgroup = Privileged
   sPrivileged <- Get_Privileged(dfOpleiding_inschrijvingen, group)
 
-  ## Maak een fairness object
+  ## Create a fairness object
   fobject <- Get_objFairness(explain_lf, group, sPrivileged)
 
-  ## Maak een tabel van de fairness analyse
+  ## Create a table from the fairness analysis
   dfFairness_totaal <- Get_dfFairness_Total(fobject)
   
-  ## Check of er bias is
+  ## Check for bias
   Print_Fairness_Object_LTA(fobject)
 
-  ## Maak een plot van de fairness analyse
+  ## Create a plot of the fairness analysis
   fairness_plot <- suppressWarnings(
     Get_Fairness_Plot(fobject, group = group, privileged = sPrivileged) +
       theme(panel.border = element_rect(
@@ -480,7 +482,7 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
       ))
   )
 
-  ## Bewaar de plot
+  ## Save the plot
   sPlotname <- glue("fairness_plot_{tolower(group)}")
   sPlotPath <- Get_Plot_Outputpath(sPlotname, mode = "plot")
 
@@ -491,11 +493,11 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
           height_pixels = 250 + (50 * length(unique(dfFairness_totaal$Categorie)))
         ))
 
-  ## Toon de bestaande plot
+  ## Show the existing plot
   sPlot <- glue("![Fairness check naar {tolower(group)}]({sPlotPath}){{#fig-fairness-check-{tolower(group)}}}")
   Knit_Print_Rule(sPlot)
   
-  ## Bewaar de fairness check data
+  ## Keep the fairness check data
   sFairness_outputpath  <- Get_Model_Outputpath(mode = "fairness", group = group)
   dfFairness_check_data <- Get_dfFairness_Check_Data(fobject[["fairness_check_data"]], group = group)
   saveRDS(dfFairness_check_data, file = sFairness_outputpath)
@@ -504,7 +506,7 @@ for(group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
 ```
 
-<!-- Conclusies -->
+<!-- Conclusions -->
 
 ## Conclusies
 
@@ -525,7 +527,7 @@ Na de uitvoering van de fairness analyse vatten we de conclusies samen in een ta
 
 lDfFairness <- list()
 
-## Loop over de variabelen
+## Walk over the variables
 for(i in c("Geslacht", "Vooropleiding", "Aansluiting")) {
   sFairness_outputpath  <- Get_Model_Outputpath(mode = "fairness", group = i)
   lDfFairness[[i]]      <- readRDS(sFairness_outputpath) |> 
@@ -534,20 +536,20 @@ for(i in c("Geslacht", "Vooropleiding", "Aansluiting")) {
                                 .default = "Geen Bias")) 
 }
 
-## Maak een tabel van de fairness analyse
+## Create a table from the fairness analysis
 dfFairness_wide  <- Get_dfFairness_Wide(lDfFairness)
 
-# Maak een flextable
+# Create a flextable
 ftFairness_table <- Get_ftFairness(flextable(dfFairness_wide))
 
-# Print de flextable
+# Print the flextable
 ftFairness_table
 ```
 
 ```{r}
 #| label: txt-fairness-conclusions
 
-# Creeer op basis van de table nu een tekst per variabele
+# Now create a text per variable from the table
 lConclusies <- list()
 for(i in c("Geslacht", "Vooropleiding", "Aansluiting")) {
   lConclusies[[i]] <- Get_Fairness_Conclusies(dfFairness_wide, i)
@@ -559,24 +561,24 @@ for(i in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 
 ```
 
-<!-- Conclusies in tekst -->
+<!-- Conclusions in text -->
 
 1.  **Geslacht**: `r lConclusies[["Geslacht"]]`
 2.  **Vooropleiding**: `r lConclusies[["Vooropleiding"]]`
 3.  **Aansluiting**: `r lConclusies[["Aansluiting"]]`
 
-<!-- Verantwoording -->
+<!-- Accountability -->
 
 ::: {.content-hidden unless-meta="includes.verantwoording"}
-{{< include R/scripts/Include_Verantwoording.qmd >}}
+{{< include R/qmd/Include_Verantwoording.qmd >}}
 :::
 
 <!-- Copyright -->
 
-{{< include R/scripts/Include_Copyright.qmd >}}
+{{< include R/qmd/Include_Copyright.qmd >}}
 
 
-<!-- Opschonen -->
+<!-- Cleaning up -->
 
 ```{r, echo = FALSE}
 #| label: cleanup

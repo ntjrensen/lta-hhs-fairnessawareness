@@ -23,7 +23,6 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
-
 fairness_check_metrics <- function() {
   out <- c("ACC", "TPR", "PPV", "FPR", "STP")
   return(out)
@@ -49,9 +48,6 @@ filter_fairness_check_metrics <- function(data, metrics, fairness_metrics) {
   
   return(list(data = data, metrics = metrics))
 }
-
-
-
 
 drop_metrics_with_na <- function(data) {
   na_col_index <- apply(data, 2, function(x)
@@ -148,16 +144,6 @@ assert_different_label <- function(x) {
 
 get_objects <- function(x, class) {
   stopifnot(class(x) == "list")
-  
-  # explainers <- list()
-  # j <- 1
-  # 
-  # for (i in seq_along(x)) {
-  #   if (class(x[[i]]) == class) {
-  #     explainers[[j]] <- x[[i]]
-  #     j <- j + 1
-  #   }
-  # }
   
   explainers <- list()
   

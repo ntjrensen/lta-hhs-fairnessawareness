@@ -31,24 +31,24 @@ source("R/scripts/Include_Voorbereidingen_Verdieping.R")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2. LAAD BESTANDEN ####
+## 2. LOAD FILE ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.1 Lijst van alle .rds bestanden in de directory ####
+## 2.1 List of all .rds files in the directory ####
 
 dir <- "10. Output"
 lFiles <- list.files(path = dir, recursive = TRUE, pattern = "*.rds", full.names = TRUE)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.2 Behoud paden met 'fairness' ####
+## 2.2 Preserve trails with 'fairness' ####
 
 lFiles <- lFiles[grepl("fairness", lFiles)]
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.3 Laad en combineer de data: dfFairness_HHs ####
+## 2.3 Load and combine the data: dfFairness_HHs ####
 
-# Functie om de faculteit, opleiding, vorm en soort analyse te extraheren uit het pad
+# Function to extract faculty, study programmes, form and type of analysis from the path
 dfFairness_HHs <- bind_rows(lapply(lFiles, function(file) {
   df <- readRDS(file)
   df <- df |>
@@ -60,13 +60,13 @@ dfFairness_HHs <- bind_rows(lapply(lFiles, function(file) {
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3. BEWERK BESTANDEN ####
+## 3. EDIT FILES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3.1 Maak UUID en sub dataframes ####
+## 3.1 Create UUID and sub data frames ####
 
-## Variabelen en hun waarden
+## Variables and their values
 dfVars <- tribble(
   ~FRN_Group, ~FRN_Subgroup,
   "Geslacht",      "M",
@@ -89,7 +89,7 @@ dfVars <- tribble(
   "Aansluiting",   "Onbekend"
 )
 
-## Maak een FRN_UUID
+## Create a FRN_UUID
 dfFairness_HHs <- dfFairness_HHs |> 
   mutate(FRN_UUID = paste(FRN_Faculteit, FRN_Opleidingstype, FRN_Opleiding, FRN_Opleidingsvorm, sep = "_")) |> 
   select(-c(FRN_Faculteit, FRN_Opleidingstype, FRN_Opleiding, FRN_Opleidingsvorm))
@@ -109,7 +109,7 @@ dfUUID <- tibble(
   FRN_UUID = unique(dfFairness_HHs$FRN_UUID)
 )
 
-## Soorten analyes
+## Types of analyzes
 dfSoortAnalyse <- tibble(
   FRN_Analyse = unique(dfFairness_HHs$FRN_Analyse)
 )
@@ -117,10 +117,10 @@ dfSoortAnalyse <- tibble(
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 3.2 Join de dataframes ####
 
-## Maak een df met alle mogelijke combinaties
+## Create a df with all possible combinations
 dfVars_Metrics <- expand_grid(dfVars, dfModel, dfMetrics, dfUUID, dfSoortAnalyse)
 
-## Koppeld deze aan dfFairness_HHs
+## Link this to dfFairness_ THUAS
 dfFairness_HHs.2 <- dfFairness_HHs |>
   full_join(
     dfVars_Metrics,
@@ -137,7 +137,7 @@ dfFairness_HHs.2 <- dfFairness_HHs |>
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 3.3 Split FRN_UUID ####
 
-## Splits de FRN_UUID waar naar Faculteit, Opleidingstype, Opleiding en Opleidingsvorm
+## Split the FRN_UUID into Faculteit, Opleidingstype, Opleiding and Opleidingsvorm
 dfFairness_HHs.3 <- dfFairness_HHs.2 |>
   separate(
     FRN_UUID, into = c("FRN_Faculteit", 
@@ -148,7 +148,7 @@ dfFairness_HHs.3 <- dfFairness_HHs.2 |>
   )
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3.4 Voeg de naam van de opleiding toe ####
+## 3.4 Add the name of the study programme ####
 
 dfFairness_HHs.4 <- dfFairness_HHs.3 |>
   left_join(
@@ -159,7 +159,7 @@ dfFairness_HHs.4 <- dfFairness_HHs.3 |>
   )
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3.5 Bepaal welke bias er is ####
+## 3.5 Determine what bias there is ####
 
 dfFairness_HHs.5 <- dfFairness_HHs.4 |>
   mutate(
@@ -172,7 +172,7 @@ dfFairness_HHs.5 <- dfFairness_HHs.4 |>
   )
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3.6 Bepaal of er enige bias is ####
+## 3.6 Determine if there is any bias ####
 
 dfFairness_HHs.6 <- dfFairness_HHs.5 |>
   select(-c(FRN_Model, FRN_Metric, FRN_Analyse, FRN_Fair, N)) |>
@@ -184,35 +184,34 @@ dfFairness_HHs.6 <- dfFairness_HHs.5 |>
            FRN_Opleiding,
            INS_Opleidingsnaam_huidig) |>
   
-  ## Tel het aantal Bias per groep
+  ## Count the number of Bias per group
   summarise(FRN_Bias_count = n(), 
             .groups = "drop") |> 
   
-  ## Bepaal de juist volgorde van de variabelen
+  ## Determine the correct order of the variables
   select(FRN_Faculteit,
          INS_Opleidingsnaam_huidig,
          FRN_Opleiding,
          FRN_Opleidingsvorm,
          everything()) |> 
 
-  ## Pivot de data
+  ## Pivot the data
   pivot_wider(names_from = FRN_Bias, 
               values_from = c(FRN_Bias_count),
               values_fill = list(FRN_Bias_count = 0)) |> 
   
-  ## Vervang NA door 0
+  ## Replace NA by 0
   replace_na(list(`Geen Bias` = 0,
                   `Negatieve Bias` = 0,
                   `Positieve Bias` = 0)) |>
   
-  ## Voeg Bias toe
-  ## Pas de Bias aan
+  ## Add Bias/Adjust the Bias
   mutate(Bias = case_when(
     `Negatieve Bias` > 1 | `Positieve Bias` > 1 ~ 'Ja',
     `Geen Bias` == 0 & `Negatieve Bias` == 0 & `Positieve Bias` == 0 ~ 'NTB',
     .default = "Nee")) |> 
   
-  ## Hernoem de kolommen zodat deze in de tabel beter leesbaar zijn
+  ## Rename the columns to make them more readable in the table
   rename(Faculteit = FRN_Faculteit,
          Opleidingsnaam = INS_Opleidingsnaam_huidig,
          Opleiding = FRN_Opleiding,
@@ -220,7 +219,7 @@ dfFairness_HHs.6 <- dfFairness_HHs.5 |>
          Variabele = FRN_Group,
          Groep = FRN_Subgroup) |>
   
-  ## Sorteer de Variabele en Groep
+  ## Sort the Variable and Group
   mutate(Variabele = factor(Variabele, 
                             levels = c("Geslacht", 
                                        "Vooropleiding", 
@@ -232,39 +231,39 @@ dfFairness_HHs.6 <- dfFairness_HHs.5 |>
                                    lLevels_aansluiting))
   ) |> 
   
-  ## Selecteer de nodige kolommen
+  ## Select the necessary columns
   select(Faculteit, Opleidingsnaam, Opleiding, Opleidingsvorm,
          Variabele, Groep, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) |> 
   
-  ## Sorteer de data
+  ## Sort the data
   arrange(Faculteit, Opleidingsnaam, Opleiding, Opleidingsvorm, 
           Variabele, Groep)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3.7 Bepaal tellingen ####
+## 3.7 Determine counts ####
 
-## Maak een dataframe voor alle opleidingen
+## Create a data frame for all study programmes
 tblOpleidingen <- dfFairness_HHs.6 |>
   select(Opleiding, Opleidingsvorm) |>
   distinct()
 
-## Maak een lijst van Inschrijvingen
+## Create a list of Enrollments
 lInschrijvingen <- list()
 
-## Loop over de opleidingen, haal de inschrijvingen op en voeg deze toe aan de lijst
+## Walk over the study programmes, collect enrollments and add to the list
 for (i in 1:nrow(tblOpleidingen)) {
   
-  ## Bepaal de opleiding en opleidingsvorm
+  ## Determine study programme and type of education
   opleiding <- tblOpleidingen$Opleiding[i]
   opleidingsvorm <- tblOpleidingen$Opleidingsvorm[i]
   
-  ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
+  ## Create the variables for the current study programme based on the programme name and type of education
   current_opleiding <- Get_Current_Opleiding(
     opleiding = opleiding,
     opleidingsvorm = toupper(opleidingsvorm)
   )
   
-  ## Bepaal op basis hiervan afgeleide variabelen
+  ## Based on this, determine derived variables
   Set_Current_Opleiding_Vars(current_opleiding, debug = F)
   
   dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
@@ -279,10 +278,10 @@ for (i in 1:nrow(tblOpleidingen)) {
   
 }
 
-## Combineer de lijst met inschrijvingen
+## Combine enrollment list
 dfInschrijvingen <- bind_rows(lInschrijvingen)
 
-## Maak een df met tellingen van de variabelen
+## Create a df with counts of the variables
 dfTellingen <- dfInschrijvingen |>
   select(INS_Faculteit,
          INS_Opleiding,
@@ -298,7 +297,7 @@ dfTellingen <- dfInschrijvingen |>
   summarise(N = n()) |>
   ungroup()
 
-## Voeg de tellingen toe aan de data
+## Add the counts to the data
 dfFairness_HHs.7 <- dfFairness_HHs.6 |>
   left_join(
     dfTellingen |> 
@@ -312,9 +311,9 @@ dfFairness_HHs.7 <- dfFairness_HHs.6 |>
   replace_na(list(N = 0))
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3.8 Maak een korte versie van de opleidingen ####
+## 3.8 Create a short version of the study programmes ####
 
-## Maak van de opleiding een korte versie voor de tabel
+## Make the study programme short for the table
 dfFairness_HHs.8 <- dfFairness_HHs.7 |>
   mutate(Opleidingsvorm = toupper(Opleidingsvorm),
          Opleiding = paste0(Opleidingsnaam, " ", 
@@ -328,7 +327,7 @@ dfFairness_HHs.8 <- dfFairness_HHs.7 |>
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 4.1 Bepaal de kleuren #### 
+## 4.1 Determine the colors #### 
 
 sColor_Bias_Positive      <- "#9DBF9E"
 sColor_Bias_Negative      <- "#A84268"
@@ -344,13 +343,13 @@ sColor_Bias_Positive      <- "#1170AA"
 sColor_Bias_Negative      <- "#FC7D0B"
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 4.2 Maak de tabel (versie 1 - long) #### 
+## 4.2 Create the table (version 1 - long) #### 
 
 ftFairness.1 <- flextable(dfFairness_HHs.8 |> 
                             dplyr::filter(N > 0))
 
-# Voeg de kolom 'Variabele' samen voor visueel groeperen
-# Pas voorwaardelijke opmaak toe
+# Merge Variable column for visual grouping
+# Apply conditional formatting
 ftFairness.1 <- ftFairness.1 |>
     merge_v(j = c("Faculteit",
                   "Opleiding",
@@ -397,11 +396,11 @@ ftFairness.1 <- ftFairness.1 |>
     align_text_col(align = "left") |> 
     align_nottext_col(align = "center") 
   
-## Toon de flextable
+## Show the flextable
 ftFairness.1
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 4.3 Maak de tabel (versie 2 - wide) #### 
+## 4.3 Create the table (version 2 - wide) #### 
 
 dfFairness_HHs.9 <- dfFairness_HHs.8 |> 
   mutate(Bias = case_when(
@@ -416,16 +415,16 @@ dfFairness_HHs.9 <- dfFairness_HHs.8 |>
   pivot_wider(names_from = c(Variabele, Groep), 
               values_from = Bias) |> 
   
-  ## Verwijder de kolommen met 'Onbekend' en 'Overig'
+  ## Remove the columns with 'Unknown' and 'Other'
   select(-c(Vooropleiding_Onbekend, 
             Aansluiting_Onbekend,
             Vooropleiding_Overig, 
             Aansluiting_Overig)) |> 
   
-  ## Hernoem de kolommen: bewaar alleen wat er achter een _ staat als er een _ voorkomt
+  ## Rename columns: keep only what is after a _ if a _ occurs
   rename_with(~ gsub(".*_", "", .x)) 
 
-## Pas de waarden bij M/V aan op basis van afleiding bij V/M
+## Adjust values at M/V based on derivation at V/M
 dfFairness_HHs.10 <- dfFairness_HHs.9 |> 
   rowwise() |>
   mutate(
@@ -443,10 +442,10 @@ dfFairness_HHs.10 <- dfFairness_HHs.9 |>
     )
   )
 
-## Maak een basis flextable op basis van dfFairness_HHs.9
+## Create a basic flextable based on dfFairness_HHs.9
 ftFairness.2 <- flextable(dfFairness_HHs.10)
 
-## Pas de basis layout aan
+## Customize the basic layout
 ftFairness.2 <- ftFairness.2 |>
   add_header_row(values = c("", "Geslacht", "Vooropleiding", "Aansluiting"), 
                  colwidths = c(2, 2, 6, 6)) |>
@@ -459,7 +458,7 @@ ftFairness.2 <- ftFairness.2 |>
   align(j = 1:2, align = "left") |> 
   align(j = 3:16, align = "center", part = "all")
 
-# Functie om de kleur van de achtergrond te bepalen
+# Function to determine the color of the background
 Get_Fairness_Bg <- function(value) {
   case_when(
     value == "Negatief"  ~ sColor_Bias_Negative,
@@ -471,7 +470,7 @@ Get_Fairness_Bg <- function(value) {
   )
 }
 
-# Functie om de kleur van de tekst te bepalen
+# Function to define the color of the text
 Get_Fairness_Color <- function(value) {
   case_when(
     value == "Negatief"  ~ "white",
@@ -483,43 +482,43 @@ Get_Fairness_Color <- function(value) {
   )
 }
 
-# Pas de kleuren toe per kolom
+# Apply colors by column
 for (col in colnames(dfFairness_HHs.10)[-1]) {
   
-  ## Pas de achtergrond aan
+  ## Adjust the background
   colors <- map_chr(dfFairness_HHs.10[[col]], Get_Fairness_Bg)
   ftFairness.2 <- ftFairness.2 |>
     bg(j = col, bg = colors)
   
-  ## Pas de kleur aan
+  ## Customize the color
   colors <- map_chr(dfFairness_HHs.10[[col]], Get_Fairness_Color)
   ftFairness.2 <- ftFairness.2 |>
     color(j = col, color = colors)
 }
 
-# Voeg verticale lijnen toe tussen de gewenste kolommen
+# Add vertical lines between desired columns
 border_vline <- fp_border(color = "black", width = 1)
 
-# Pas de borderlines aan
+# Adjust borderlines
 ftFairness.2 <- ftFairness.2 |>
   vline(j = c(2, 4, 10), border = border_vline)
 
-## Bewaar flextable 2
+## Save flextable 2
 ftFairness.2 |> 
   save_as_image(path = "10. Output/all/Fairness_HHs_2.png")
 
-## Toon de flextable
+## Show the flextable
 ftFairness.2
 
-## Corrigeer beoordeling in de flextable voor Geslacht:
-## Als M = Negatief, dan V = Positief
-## Als V = Negatief, dan M = Positief
-## Als M = Positief, dan V = Negatief
-## Als V = Positief, dan M = Negatief
+## Correct rating in the flextable for Geslacht:
+## If M = Negative, then V = Positive
+## If V = Negative, then M = Positive
+## If M = Positive, then V = Negative
+## If V = Positive, then M = Negative
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 5. OPRUIMEN ####
+## 5. CLEAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 rm(list = ls())

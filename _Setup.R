@@ -24,32 +24,32 @@
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 0. ONSTART ####
+## 0. ON START ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 0.1 Reset Setup ####
 
-# Zet deze variabele op T om deze pagina te resetten of herstart de sessie
+# Set this variable to T to reset this page or restart the session
 bReset_Setup <- F
 
-## De setup nog niet is uitgevoerd, voer deze dan alsnog uit, tenzij er een reset is
+## The setup has not yet been performed, please perform it unless there is a reset
 if(!exists("bSetup_executed") || bReset_Setup){
   bSetup_executed <- F
 }
 
-## Run op basis van de setup de rest van dit document wel of niet
+## Based on the setup, do or do not run the rest of this document
 if(bSetup_executed == F) {
 
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1. LAAD LTABASE PACKAGE fS ####
+  ## 1. LOAD LTABASE PACKAGE ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.1 Standaard packages die direct nodig zijn ####
+  ## 1.1 Standard packages needed immediately ####
   
-  ## Installeer here, cli en icecream indien nodig
+  ## Install here, cli and icecream if necessary
   for (i in c("here", "cli", "icecream")) {
     if(!requireNamespace(i, quietly = TRUE)) {
       install.packages(i)
@@ -57,7 +57,7 @@ if(bSetup_executed == F) {
   }
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.2 ltabase package in (installeer indien nodig) ####
+  ## 1.2 ltabase package (install if necessary) ####
   
   source("R/functions/Inladen_ltabase.R")
   source("R/functions/fairness.helpers.R")
@@ -65,61 +65,64 @@ if(bSetup_executed == F) {
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
   
-  ## Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
+  ## Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
   ltabase::load_lta_datasets(message = TRUE)
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.4 Laad extra bibliotheken ####
   
   ## Laad extra bibliotheken
-  library(conflicted)   # om conflicten op te lossen
-  library(tidymodels)   # voor machine learning
-  library(rio)          # voor het inlezen van bestanden
+  library(conflicted)   # to solve conflicts
+  library(tidymodels)   # for machine learning
+  library(rio)          # for reading files
   
-  library(vip)          # voor variable importance plots
-  library(forcats)      # om factor variabelen te bewerken
-  library(performance)  # voor performance metingen op lr modellen
-  #library(dlookr)      # om data te inspecteren > geeft conflicten vanwege showtext_auto()
-  library(gtsummary)    # voor beschrijvende summary tabellen
-  library(flextable)    # voor flextables
-  library(officer)      # voor opmaak in tabellen
-  library(gt)           # voor tabellen
-  library(gtExtras)     # voor sparklines
-  library(cli)          # voor cli teksten
-  library(glue)         # voor string interpolatie
-  library(probably)     # voor probabilistische modellen
+  library(vip)          # for variable importance plots
+  library(forcats)      # to edit factor variables
+  library(performance)  # for performance measurements on lr models
+  #library(dlookr)      # to inspect data > causes conflicts because of showtext_auto()
+  library(gtsummary)    # for descriptive summary tables
+  library(flextable)    # for flextables
+  library(officer)      # for formatting in tables
+  library(gt)           # for tables
+  library(gtExtras)     # for sparklines
+  library(cli)          # for cli texts
+  library(glue)         # for string interpolation
+  library(probably)     # for probabilistic models
   library(discrim)      # discriminant analysis
-  library(klaR)         # voor classificatie en visualisatie
-  library(betacal)      # voor beta calibration
+  library(klaR)         # for classification and visualization
+  library(betacal)      # for beta calibration
   
-  library(doParallel)   # voor parallel processing
-  library(DALEX)        # voor explainable AI
-  library(DALEXtra)     # voor explainable AI
-  library(lobstr)       # voor het meten van objecten
-  library(butcher)      # voor het verkleinen van modellen
-  library(iBreakDown)   # voor het uitleggen van modellen
-  library(ggtext)       # voor het maken van opmaak in titels
+  library(doParallel)   # for parallel processing
+  library(DALEX)        # for explainable AI
+  library(DALEXtra)     # for explainable AI
+  library(lobstr)       # for measuring objects
+  library(butcher)      # for shrinking models
+  library(iBreakDown)   # for explaining models
+  library(ggtext)       # for creating formatting in titles
   
-  library(showtext)     # voor het instellen van lettertypes
-  library(ggplot2)      # voor het maken van plots
-  library(cvms)         # voor confusion matrices
-  library(ggimage)      # voor confusion matrices
-  library(rsvg)         # voor confusion matrices
-  library(ggnewscale)   # voor confusion matrices
+  library(showtext)     # for setting fonts
+  library(ggplot2)      # for creating plots
+  library(cvms)         # for confusion matrices
+  library(ggimage)      # for confusion matrices
+  library(rsvg)         # for confusion matrices
+  library(ggnewscale)   # for confusion matrices
   
-  library(ggpubr)       # voor het bewaren van plots
-  library(bbplot)       # voor het bewaren van plots
-  library(grid)         # voor het bewaren van plots
+  library(ggpubr)       # for saving plots
+  library(bbplot)       # for saving plots
+  library(grid)         # for saving plots
   
-  library(gridGraphics) # voor het bewaren van plots
-  library(extrafont)    # voor het bewaren van plots
-  library(sysfonts)     # voor fonts
+  library(gridGraphics) # for saving plots
+  library(extrafont)    # for saving plots
+  library(sysfonts)     # for fonts
   
-  library(fairmodels)   # voor fairness in modellen
+  library(fairmodels)   # for fairness in models
   
-  library(fs)           # voor file system functies
+  library(fs)           # for file system functions
   
-  library(quartostamp)  # voor extra quarto add-in functionaliteit
+  library(quartostamp)  # for additional quarto add-in functionality
+  
+  ## Added from pages
+  library(ingredients)
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 1.5 Fonts ####
@@ -127,17 +130,17 @@ if(bSetup_executed == F) {
   extrafont::loadfonts(quiet = TRUE)
 
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.6 Laad extra functies ####
+  ## 1.6 Load additional features ####
 
   source("R/functions/report.helpers.R")
   
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.7 Kleuren ####
+  ## 1.7 Colors ####
   
   source("R/scripts/Include_Colors.R")
 
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.8 Bepaal de voorkeur voor de thema's ####
+  ## 1.8 Determine preferred themes ####
 
   Set_LTA_Theme()
 
@@ -149,64 +152,64 @@ if(bSetup_executed == F) {
 
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2. BASISVARIABELEN / PADEN ####
+  ## 2. BASIC VARIABLES / PATHS ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2.1 Netwerkpaden ####
+  ## 2.1 Network paths ####
 
-  # Als LTA_ROOT, LTA_DATA of LTA_BOARD niet bestaan, dan wordt de omgeving opnieuw ingesteld
+  # If LTA_ROOT, LTA_DATA or LTA_BOARD do not exist, the environment is reset
   ltabase::set_lta_sys_env()
 
-  ## Bepaal de netwerkdirectory
+  ## Define the network directory
   Network_directory <- ltabase::get_lta_network_directory()
 
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2.2 Debuginstellingen ####
+  ## 2.2 Debug settings ####
 
-  ## Stel de debug opties in: icecream package settings
+  ## Set debug options: icecream package settings
   ltabase::set_icecream_options()
   icecream::ic_disable()
 
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2.3 Gtsummary instellingen ####
+  ## 2.3 Gtsummary settings ####
 
-  ## Bepaal de standaard instellingen van gtsummary
+  ## Define the default settings of gtsummary
   list("style_number-arg:big.mark" = ".",
        "style_number-arg:decimal.mark" = ",") |>
     set_gtsummary_theme()
   invisible(theme_gtsummary_compact())
 
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2.4 Levels van variabelen ####
+  ## 2.4 Levels of variables ####
 
-  ## Bepaal de volgorde van een aantal levels
+  ## Determine the order of some levels
   Get_Levels()
 
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 2.5  Config ####
 
-  sSucces_model <- params$succes
+  sSucces_model      <- params$succes
   sPropedeusediploma <- params$propedeusediploma
 
   sSucces_model_text <- Get_Succes_Model_Text(sPropedeusediploma, sSucces_model)
 
-  ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
+  ## Create the variables for the current study programme based on the programme name and type of education
   current_opleiding <- Get_Current_Opleiding(
     opleiding = params$opleiding,
     opleidingsvorm = params$opleidingsvorm_afkorting
   )
 
-  ## Bepaal op basis hiervan afgeleide variabelen
+  ## Based on this, determine derived variables
   Set_Current_Opleiding_Vars(current_opleiding, debug = T)
 
   ## . ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 3. BASISQUERY ####
+  ## 3. BASIC QUERY ####
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 3.1 Inschrijvingen  ####
+  ## 3.1 Enrollments  ####
 
   dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
     board = "HHs/Inschrijvingen",
@@ -237,7 +240,7 @@ if(bSetup_executed == F) {
   ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   ## 3.2.3 Plots ####
 
-  ## Bepaal de hoogte en breedte van afbeeldingen
+  ## Determine the height and width of images
   nPlotWidth  <- 640
   nPlotHeight <- 550
 

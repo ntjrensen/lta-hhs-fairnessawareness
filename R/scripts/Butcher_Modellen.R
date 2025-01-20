@@ -24,7 +24,7 @@
 
 library(butcher)
 
-## Bereken de grootte van objecten
+## Calculate the size of objects
 obj_size(lr_auc)
 obj_size(lr_auc_highest)
 obj_size(lr_best)
@@ -37,7 +37,7 @@ obj_size(lr_workflow)
 
 weigh(lr_res, threshold = 0, units = "MB")
 
-## Maak een lijst van alle lr objecten met uitzondering van lr_plot en lr_plot_plus
+## List all lr objects except lr_plot and lr_plot_plus
 lr_list <- list(lr_auc_highest,
                 lr_best,
                 lr_mod,
@@ -47,5 +47,5 @@ lr_list <- list(lr_auc_highest,
 
 obj_size(lr_list)
 
-## Opslaan - last_fit
+## Save - last_fit
 

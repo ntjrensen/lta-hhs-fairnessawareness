@@ -31,38 +31,38 @@ source("R/scripts/Include_Voorbereidingen_Verdieping.R")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2. LAAD BESTANDEN ####
+## 2. LOAD BESTANDEN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.1 Maak een lijst van last-fits.rds ####
+## 2.1 Make a list of last-fits.rds ####
 
 dir <- "10. Output"
 lFiles <- list.files(path = dir, recursive = TRUE, pattern = "*last-fits.rds", full.names = TRUE)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.2 Laad de data ####
+## 2.2 Load the data ####
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.2.1 Basis models ####
+## 2.2.1 Basic models ####
 
-# Functie om de faculteit, opleiding, vorm en soort analyse te extraheren uit het pad
+# Function to extract faculty, study programmes, form and type of analysis from the path
 dfModels_HHs <- bind_rows(lapply(lFiles, function(file) {
   df <- readRDS(file)[["Logistic Regression"]][[".metrics"]] 
   return(df)
 }))
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.2.2 Retentie na 1 jaar per opleiding ####
+## 2.2.2 Retention after 1 year per study programme ####
 dfRetentie_per_opleiding_jr1 <- readRDS("10. Output/all/dfRetentie_per_opleiding_jr1.rds")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3. BEWERK BESTANDEN ####
+## 3. EDIT FILES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3.1 Behoud alleen accuracy en waarde ####
+## 3.1 Conservation only accuracy and value ####
 
 dfModels_HHs.1 <- dfModels_HHs |> 
   dplyr::filter(`.metric` == "accuracy") |> 
@@ -71,23 +71,23 @@ dfModels_HHs.1 <- dfModels_HHs |>
   select(MDL_Metric, MDL_Value)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3.2 Koppel aan opleidingen ####
+## 3.2 Link to study programmes ####
 
-# Functie om de namen te herleiden uit het pad
+# Function to retrieve the names from the path
 Split_files_to_opleidingsnamen <- function(path) {
   
-  # Extract de relevante string uit het bestandspad
+  # Extract the relevant string from the file path
   filename <- basename(path)
   
-  # Verwijder de extensie en andere irrelevante delen uit de bestandsnaam
+  # Remove the extension and other irrelevant parts from the file name
   pattern <- "_retentie_na_1_jaar_nvt_last-fits.rds"
   model_name <- sub(pattern, "", filename)
   
-  # Splits de string: 
-  # tot aan de 1e - = MDL_Faculteit
-  # tot aan de 2e - = MDL_Opleidingssoort
-  # Het laatste deel (na de laatste -) = MDL_Opleidingvorm
-  # De rest is MDL_Opleiding
+  # split the string: 
+  # up to the 1st - = MDL_Faculteit
+  # up to the 2nd - = MDL_Opleidingssoort
+  # The last part (after the last -) = MMDL_Opleidingvorm
+  # The rest is MDL_Opleiding
   
   # Splits de string op de - en haal de eerste 3 delen eruit
   split <- strsplit(model_name, "-")[[1]]
@@ -97,7 +97,7 @@ Split_files_to_opleidingsnamen <- function(path) {
   MDL_Opleidingvorm <- split[length(split)]
   MDL_Opleiding <- paste(split[3:(length(split) - 1)], collapse = "-")
   
-  ## Geeft de resultaten terug als een df
+  ## Return the results as a df
   return(tibble(
     MDL_Faculteit = MDL_Faculteit,
     MDL_Opleidingssoort = MDL_Opleidingssoort,
@@ -107,22 +107,22 @@ Split_files_to_opleidingsnamen <- function(path) {
   
 }
 
-# Combineer tot een df met opleidingsnamen
+# Combine to a df with training names
 dfModels_HHs_Opleidingsnamen <- bind_rows(lapply(lFiles, function(file) {
   df <- Split_files_to_opleidingsnamen(file)
   return(df)
 }))
 
-## Combineer beide dataset
+## Combine both dataset
 dfModels_HHs.2 <- dfModels_HHs.1 |> 
   bind_cols(dfModels_HHs_Opleidingsnamen) |> 
   select(MDL_Faculteit, MDL_Opleidingssoort, MDL_Opleiding, MDL_Opleidingvorm, MDL_Metric, MDL_Value) |> 
   arrange(MDL_Value)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3.3 Koppel aan de retentie ####
+## 3.3 Link to retention ####
 
-## Bereken de lift
+## Calculate the lift
 dfLift <- dfModels_HHs.2 |> 
   left_join(dfRetentie_per_opleiding_jr1, 
             by = c("MDL_Opleiding" = "INS_Opleiding",
@@ -133,26 +133,26 @@ dfLift <- dfModels_HHs.2 |>
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 4. MAAK BEREKENINGEN ####
+## 4. MAKE CALCULATIONS ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 4.1 Bereken de M en SD van accuraatheid ####
+## 4.1 Calculate the M and SD of accuracy ####
 
-## Gemiddelde accuraatheid en SD
+## Mean accuracy and SD
 mean(dfModels_HHs.2$MDL_Value)
 sd(dfModels_HHs.2$MDL_Value)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 4.2 Bereken de M en SD van lift ####
+## 4.2 Calculate the M and SD of lift ####
 
-## Gemiddelde lift en SD
+## Mean Lift and SD
 mean(dfLift$MDL_Lift) * 100
 sd(dfLift$MDL_Lift) * 100
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 5. RUIM OP ####
+## 5. CLEAN ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 rm(list = ls())

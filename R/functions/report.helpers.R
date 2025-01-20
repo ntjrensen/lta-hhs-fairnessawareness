@@ -28,17 +28,17 @@
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1. OPLEIDINGSSPECIFIEKE FUNCTIES ####
+## 1. STUDY PROGRAMME-SPECIFIC FUNCTIONS ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Functie om de huidige opleiding te bepalen
+## Function to determine current study programme
 Get_Current_Opleiding <- function(opleiding, opleidingsvorm) {
   
   if(!exists("dfOpleidingen")){
     cli::cli_abort("dfOpleidingen is niet gedefinieerd")
   }
   
-  ## Test of deze opleiding wel voorkomt
+  ## Test if this study programme does appear
   if(!any(dfOpleidingen$INS_Opleiding == opleiding &
           dfOpleidingen$INS_Opleidingsvorm == opleidingsvorm)) {
     cli::cli_abort(paste0("De opleiding ", opleiding, " met opleidingsvorm ", opleidingsvorm, " bestaat niet. \n",
@@ -70,7 +70,7 @@ Get_Current_Opleiding <- function(opleiding, opleidingsvorm) {
   return(current_opleiding)
 }
 
-## Fuctie om de variabelen van de huidige opleiding in te stellen
+## Function to set the variables of the current study programme
 Set_Current_Opleiding_Vars <- function(current_opleiding, debug = F){
   
   opleiding               <<- current_opleiding$INS_Opleiding
@@ -94,14 +94,14 @@ Set_Current_Opleiding_Vars <- function(current_opleiding, debug = F){
   
 }
 
-## Functie om de variabelen van de huidige opleiding te tonen
+## Function to show the variables of the current study programme
 Show_Current_Opleiding_Vars <- function(){
   
   if(!exists("current_opleiding")){
     cli::cli_abort("current_opleiding is niet gedefinieerd")
   }
   
-  ## Print alle waarden van de huidige opleiding
+  ## Print all values of the current study programme
   cli::cli_h1(paste0("Huidige opleiding:"))
   
   cli_bullets(c(
@@ -117,7 +117,7 @@ Show_Current_Opleiding_Vars <- function(){
   ))
 }
 
-## Functie om de huidige opleidingsnaam te bepalen
+## Function to determine the current training name
 Get_sOpleiding <- function() {
   
   if(!exists("current_opleiding")){
@@ -138,10 +138,10 @@ Get_sOpleiding <- function() {
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2. PAD FUNCTIES ####
+## 2. PAD FUNCTIONS ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Functie om het pad naar de flextables te bepalen
+## Function to determine the path to flextables
 Get_Opleiding_Directory <- function(faculteit,
                                     opleidingsnaam_huidig,
                                     opleidingsnaam = NULL,
@@ -167,7 +167,7 @@ Get_Opleiding_Directory <- function(faculteit,
   return(path)
 }
 
-## Functie om output directory te bepalen van de huidige opleiding
+## Function to determine output directory of current study programme
 Get_Current_Opleiding_Output_Dir <- function(current_opleiding,
                                              mode) {
   
@@ -181,7 +181,7 @@ Get_Current_Opleiding_Output_Dir <- function(current_opleiding,
     current_opleiding$INS_Opleidingsvorm
   ) |> tolower()
   
-  ## Als er synthetische data gebruikt wordt, voeg -synth toe aan de directory
+  ## If synthetic data is used, add -synth to the directory
   if(params$use_synthetic_data == T){
     .fac_opl_vorm <- paste0(.fac_opl_vorm, "-synth")
   }
@@ -213,10 +213,10 @@ Get_Current_Opleiding_Output_Dir <- function(current_opleiding,
   
 }
 
-## Functie om de output directory te bepalen van de huidige opleiding
+## Function to determine the output directory of the current study programme
 Get_Current_Opleiding_Output_File <- function(df, mode, group = NULL, analyse = NULL) {
   
-  ## Bepaal de beschrijving van de analyse
+  ## Define the description of the analysis
   if(is.null(analyse)) {
     .analyse <- Get_Current_Analysis()
   } else {
@@ -239,7 +239,7 @@ Get_Current_Opleiding_Output_File <- function(df, mode, group = NULL, analyse = 
     cli::cli_alert("De mode is niet correct")
   }
   
-  ## Bepaal de output file:
+  ## Determine the output file:
   ## faculteit-opleiding-opleidingsvorm + analyse + suffix
   .output_file <- paste0(
     paste(
@@ -256,48 +256,48 @@ Get_Current_Opleiding_Output_File <- function(df, mode, group = NULL, analyse = 
   
 }
 
-## Functie om de output path te bepalen voor de fitted models
+## Function to determine the output path for fitted models
 Get_Model_Outputpath <- function(mode, group = NULL) {
   
-  ## Bepaal de output file
+  ## Define the output file
   .output_file <- Get_Current_Opleiding_Output_File(current_opleiding, mode, group)
   
-  ## Bepaal de output directory
+  ## Define the output directory
   .output_dir <- Get_Current_Opleiding_Output_Dir(current_opleiding, mode)
   
-  ## Maak de directory indien deze nog niet bestaat
+  ## Create the directory if it does not already exist
   if (!dir.exists(.output_dir)) {
     dir.create(.output_dir, recursive = TRUE)
   }
   
-  ## Geef het volledige outputpath terug
+  ## Return the full output path
   return(file.path(.output_dir, .output_file))
   
 }
 
-## Functie om de output path te bepalen voor de plots
+## Function to determine the output path for the plots
 Get_Plot_Outputpath <- function(plotname, mode = "plot") {
   
-  ## Bepaal de output file
+  ## Define the output file
   .output_file <- paste0(plotname, ".png")
   
-  ## Bepaal de output directory
+  ## Define the output directory
   .output_dir <- Get_Current_Opleiding_Output_Dir(current_opleiding, mode)
   
-  ## Maak de directory indien deze nog niet bestaat
+  ## Create the directory if it does not already exist
   if (!dir.exists(.output_dir)) {
     dir.create(.output_dir, recursive = TRUE)
   }
   
-  ## Geef het volledige outputpath terug
+  ## Return the full output path
   return(file.path(.output_dir, .output_file))
   
 }
 
-## Functie om de output path te bepalen voor de breakdown plots
+## Function to determine the output path for the breakdown plots
 Get_Breakdown_Plotpath <- function(student_groep, student_categorie) {
   
-  ## Vervang spaties door - in de student_groep en student_categorie
+  ## Replace spaces with - in the student_group and student_category
   .student_groep     <- gsub(" ", "-", student_groep)
   .student_categorie <- gsub(" ", "-", student_categorie)
   
@@ -308,10 +308,10 @@ Get_Breakdown_Plotpath <- function(student_groep, student_categorie) {
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3. DATASET FUNCTIES ####
+## 3. DATASET FUNCTIONS ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Functie om de data dictionary in te lezen
+## Function to read the data dictionary.
 Get_Data_Dictionary <- function() {
   
   sInput_path <- "R/vars"
@@ -321,7 +321,7 @@ Get_Data_Dictionary <- function() {
   return(df)
 }
 
-## Functie om een table te maken van de data dictionary
+## Function to create a table from the data dictionary
 Get_tblData_Dictionary <- function(df) {
   
   tbl <- 
@@ -342,7 +342,7 @@ Get_tblData_Dictionary <- function(df) {
   return(tbl)
 }
 
-## Functie om synthetische data op te halen
+## Function to retrieve synthetic data
 Get_Studyprogram_Enrollments_Synthetic <- function(studytrack,
                                                        studyform) {
   
@@ -355,10 +355,10 @@ Get_Studyprogram_Enrollments_Synthetic <- function(studytrack,
   return(df)
 }
 
-## Functie om de Uitval variabele te maken
+## Function to make the Failure variable
 Mutate_Uitval <- function(df, model = "Uitval na 1 jaar") {
   
-  ## Vul de missende waarden in met 0
+  ## Fill in the missing values with 0
   df <- df |>
     mutate(
       SUC_Uitval_aantal_jaar_LTA = coalesce(SUC_Uitval_aantal_jaar_LTA, 0)
@@ -400,17 +400,17 @@ Mutate_Uitval <- function(df, model = "Uitval na 1 jaar") {
   
 }
 
-## Functie om Uitval te verbijzonderen (met en zonder propedeusediploma)
+## Function to differentiate Dropout (with and without a propaedeutic degree)
 Filter_Propedeusediploma_Uitval <- function(df, propedeusediploma = "Nvt") {
   
   if (propedeusediploma == "Nvt" || propedeusediploma == "" || is.na(propedeusediploma)) {
     
-    ## Neem alle uitval mee
+    ## Include all dropout
     return(df)
     
   } else if (propedeusediploma == "Met P") {
     
-    ## Verwijder de studenten die uitvallen met een propedeusediploma
+    ## Remove students who drop out with a propaedeutic degree
     return(
       df |>
         filter(SUC_Studiestatus_cat != "Uitval zonder propedeusediploma")
@@ -418,7 +418,7 @@ Filter_Propedeusediploma_Uitval <- function(df, propedeusediploma = "Nvt") {
     
   } else if (propedeusediploma == "Zonder P") {
     
-    ## Verwijder de studenten die uitvallen met een propedeusediploma
+    ## Remove students who drop out with a propaedeutic degree
     return(
         df |>
         filter(SUC_Studiestatus_cat != "Uitval met propedeusediploma")
@@ -430,7 +430,7 @@ Filter_Propedeusediploma_Uitval <- function(df, propedeusediploma = "Nvt") {
   
 }
 
-## Functie om de Retentie variabele te maken
+## Function to create the Retention variable
 Mutate_Retentie <- function(df, model = "Retentie na 1 jaar") {
   
   if (model == "Retentie na 1 jaar") {
@@ -469,7 +469,7 @@ Mutate_Retentie <- function(df, model = "Retentie na 1 jaar") {
   
 }
 
-## Mutate missing cijfers VO
+## Mutate missing figures VO
 Mutate_Cijfers_VO <- function(df) {
   
   df <- df |>
@@ -486,10 +486,10 @@ Mutate_Cijfers_VO <- function(df) {
   
 }
 
-## Functie om de volgorde van een aantal levels te bepalen
+## Function to determine the order of a number of levels
 Get_Levels <- function() {
   
-  ## Bepaal de volgorde van de levels in de studiekeuzeprofielen:
+  ## Determine the order of levels in the study profiles:
   lLevels_skp <<- c(
     "EM",
     "CM",
@@ -551,7 +551,7 @@ Get_Levels <- function() {
   
 }
 
-## Pas levels aan, zodat deze goed gesorteerd worden
+## Adjust levels so that they are sorted properly
 Sort_Levels <- function(levels, df, var) {
   lLevels <- intersect(levels, 
                        unique(df[[var]])
@@ -559,7 +559,7 @@ Sort_Levels <- function(levels, df, var) {
   return(lLevels)
 }
 
-## Functie om de levels van een variabele te bepalen
+## Function to determine the levels of a variable
 Set_Levels <- function(df = dfOpleiding_inschrijvingen_base) {
   
   lLevels_skp <<-
@@ -589,7 +589,7 @@ Set_Levels <- function(df = dfOpleiding_inschrijvingen_base) {
     )
 }
 
-## Functie om de levels van een variabele te muteren
+## Function to mutate the levels of a variable
 Mutate_Levels <- function(df, vars, levels) {
   
   walk(seq_along(vars), function(i) {
@@ -614,10 +614,10 @@ Mutate_Levels <- function(df, vars, levels) {
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 4. RENDER FUNCTIES ####
+## 4. RENDER FUNCTIONS ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Functie om opleidingsnaam met of zonder synth op te halen
+## Function to retrieve training name with or without synth
 Get_Opleidingsnaam_Synth <- function(opleidingsnaam) {
   
   if(params$use_synthetic_data == T){
@@ -630,7 +630,7 @@ Get_Opleidingsnaam_Synth <- function(opleidingsnaam) {
   
 }
 
-## Functie om de lange naam van de opleidingsvorm te bepalen
+## Function to determine the long name of the type of education
 Get_Opleidingsvorm_Lang <- function(opleidingsvorm) {
   
   return(switch(
@@ -643,7 +643,7 @@ Get_Opleidingsvorm_Lang <- function(opleidingsvorm) {
   
 }
 
-## Functie om de lange naam van de opleidingsvorm te bepalen
+## Function to determine the long name of the type of education
 Get_Faculteitsnaam_Lang <- function(faculteit) {
   
   return(switch(
@@ -660,7 +660,7 @@ Get_Faculteitsnaam_Lang <- function(faculteit) {
   
 }
 
-## Functie om een samenvattende tabel te maken
+## Function to create a summary table
 Get_tblSummary <- function(df) {
   
   dfSummary <- df |> 
@@ -676,7 +676,7 @@ Get_tblSummary <- function(df) {
       percent = "row"
     ) |> 
     
-    ## Richt de vormgeving van de table in
+    ## Organize the design of the table
     modify_header(all_stat_cols() ~ "**{level}**, N={n} ({style_percent(p)}%)") |>
     modify_spanning_header(c("stat_1", "stat_2") ~ "**Retentie**") |>
     modify_header(label = "**Variabele**") |>
@@ -702,18 +702,18 @@ Get_tblSummary <- function(df) {
   
 }
 
-## Functie om een sparkline tabel te maken
+## Function to create a sparkline table
 Get_tblSparklines <- function(df, group = "Geslacht", var = "Leeftijd") {
   
   .group <- as.name(group)
   .var   <- as.name(var)
   
-  ## Bepaal de sparkline tabel
+  ## Determine the sparkline table
   dfSparkline <- df |> 
     
     dplyr::group_by(!!.group) |>
     
-    ## Bewaar de lijst van uitkomsten in een lijst
+    ## Keep the list of outcomes in a list
     dplyr::summarize(
       mean = mean(!!.var),
       sd = sd(!!.var),
@@ -721,7 +721,7 @@ Get_tblSparklines <- function(df, group = "Geslacht", var = "Leeftijd") {
       .groups = "drop"
     )
   
-  ## Zet om naar een gt tabel
+  ## Convert to a gt table
   tblSparkline <- dfSparkline |>
     arrange(desc(!!.group)) |>
     gt() |>
@@ -737,7 +737,7 @@ Get_tblSparklines <- function(df, group = "Geslacht", var = "Leeftijd") {
   
 }
 
-## Functie om de tekst te bepalen voor het model (in de titel)
+## Function to define the text for the model (in the title)
 Get_Succes_Model_Text <- function(propedeusediploma, succes_model) {
   
   if (propedeusediploma == "Zonder P") {
@@ -752,13 +752,13 @@ Get_Succes_Model_Text <- function(propedeusediploma, succes_model) {
   
 }
 
-## Functie om een quarto bestand te renderen en te verplaatsen
+## Function to render and move a quarto file
 Quarto_Render_Move <- function(input,
                                output_file = NULL,
                                output_dir = NULL,
                                ...) {
   
-  # Haal alle informatie op over de output van de quarto file
+  # Retrieve all information about the output of the quarto file
   x <- quarto::quarto_inspect(input)
   output_format <- names(x$formats)
   output <- x$formats[[output_format]]$pandoc$`output-file`
@@ -772,35 +772,35 @@ Quarto_Render_Move <- function(input,
   output_path_from <- file.path(input_dir, output)
   output_path_to <- file.path(output_dir, output_file)
   
-  # Render het qmd input-bestand naar de input_dir
+  # Render the qmd input file to the input_dir
   quarto::quarto_render(input = input, ... = ...)
   
-  # Als de output_dir verschilt van de input_dir, kopieer het gerenderde bestand
-  ## daarheen en verwijder het originele bestand
+  # If the output_dir is different from the input_dir, copy the rendered file
+  # there and delete the original file
   if (input_dir != output_dir) {
     # Try to make the folder if it doesn't yet exist
     if (!dir.exists(output_dir)) {
       dir.create(output_dir)
     }
     
-    # Verplaats nu de uitvoer naar de output_dir en verwijder de originele uitvoer
+    # Now move the output to the output_dir and delete the original output
     file.copy(from = output_path_from,
               to = output_path_to,
               overwrite = TRUE)
     file.remove(output_path_from)
     
-    # Als de output_dir hetzelfde is als de input_dir, maar het gerenderde bestand
-    # een andere naam heeft dan het invoerbestand, hernoem het dan
+    # If the output_dir is the same as the input_dir, but the rendered file
+    # has a different name than the input file, rename it
   } else if (output_file != output) {
     file.rename(from = output_path_from, to = output_path_to)
   }
   
 }
 
-## Functie om de asset repo op te halen
+## Function to retrieve the asset repo
 Get_Asset_Repo <- function() {
   
-  ## Bepaal de asset repo
+  ## Determine the asset repo
   .asset_repo <- file.path(Sys.getenv("ONEDRIVE"), 
                            "HHs_NFWA/lta-hhs-tidymodels-studiesucces-reports")
   
@@ -808,30 +808,30 @@ Get_Asset_Repo <- function() {
 
 }
 
-## Functie om de _book directory te kopieren 
-## naar de output directory van de repo buiten dit project
+## Function to copy the _book directory 
+## to the output directory of the repo outside this project
 Copy_Book_To_Reports <- function(output_dir, debug = FALSE) {
   
-  ## Bepaal de asset repo
+  ## Determine the asset repo
   .asset_repo <- Get_Asset_Repo()
   
-  ## Bepaal de output directory van de repo buiten dit project
+  ## Define the output directory of the repo outside this project
   output_dir_repo <- Get_Output_Dir_Repo(output_dir)
   
-  ## Bepaal de input directory
+  ## Define the input directory
   input_dir_book <- file.path("_book")
   
-  ## Als de output directory van de repo buiten dit project niet bestaat, 
-  ## maak deze dan eerst aan
+  ## If the output directory of the repo outside this project does not exist, 
+  ## create it first
   if (!dir.exists(output_dir_repo)) {
     dir.create(output_dir_repo, recursive = TRUE)
   }
   
-  ## Kopieer de _book directory naar de output directory 
-  ## van de repo buiten dit project
+  ## Copy the _book directory to the output directory 
+  ## from the repo outside this project
   fs::dir_copy(input_dir_book, output_dir_repo, overwrite = TRUE)
   
-  ## Test of de kopieeractie is gelukt
+  ## Test if the copy action was successful
   if (dir.exists(output_dir_repo)) {
     cli::cli_alert_success(
       c(
@@ -850,27 +850,27 @@ Copy_Book_To_Reports <- function(output_dir, debug = FALSE) {
   
 }
 
-## Functie om de _book directory te kopieren
+## Function to copy the _book directory
 Get_Output_Dir_Repo <- function(output_dir) {
   
-  ## Bepaal de asset repo
+  ## Determine the asset repo
   .asset_repo <- Get_Asset_Repo()
   
-  ## Bepaal de output directory van de repo buiten dit project
+  ## Determine the output directory of the repo outside this project
   output_dir_repo <- file.path(.asset_repo, output_dir)
   
   return(output_dir_repo)
   
 }
 
-## Functie om bestanden te kopieren naar de output directory van de repo buiten dit project
+## Function to copy files to the output directory of the repo outside this project
 Copy_Reports <- function(remove_orgials = F, debug = F) {
   
-  ## Bepaal de output directory van de repo buiten dit project
+  ## Determine the output directory of the repo outside this project
   sOutput_directory <- file.path(Get_Rootdirectory(),
                                  "00 LTA Git/Git HHs/LTA_Reports/lta-hhs-studiesucces-models")
   
-  ## Maak een filelist van de .html bestanden in de output directory
+  ## Create a filelist of the .html files in the output directory
   file_list <- list.files(
     "_output",
     pattern = "*.html",
@@ -883,19 +883,20 @@ Copy_Reports <- function(remove_orgials = F, debug = F) {
     cli::cli_bullets(file_list)
   }
   
-  ## Kopieer de .html bestanden van de output directory naar de output directory van de repo buiten dit project
+  ## Copy the .html files from the output directory to the output directory 
+  ## of the repo outside this project
   if(!dir.exists(sOutput_directory)) {
     dir.create(sOutput_directory)
   }
   
-  ## Als er bestanden zijn, kopieer deze dan
+  ## If there are files, copy them
   if(length(file_list) > 0) {
     
-    ## Kopieer de .html bestanden van de output directory 
-    ## naar de output directory van de repo buiten dit project
+    ## Copy the .html files from the output directory 
+    ## to the output directory of the repo outside this project
     walk(file_list, function(f) {
       
-      ## Maak een output directory voor de bestanden: repo + faculteit
+      ## Create an output directory for the files: repo + faculty
       .output_dir <- file.path(sOutput_directory,
                                file.path(dirname(f)) |> basename())
       
@@ -924,10 +925,10 @@ Copy_Reports <- function(remove_orgials = F, debug = F) {
   }
 }
 
-## Functie om de huidige analyse te bepalen
+## Function to determine the current analysis
 Get_Current_Analysis <- function() {
   
-  ## Bepaal de beschrijving van de analyse
+  ## Define the description of the analysis
   .succes     <- janitor::make_clean_names(params$succes)
   .propedeuse <- janitor::make_clean_names(params$propedeusediploma)
   
@@ -941,7 +942,7 @@ Get_Current_Analysis <- function() {
   
 }
 
-## Functie om een header te knitten
+## Function to knit a header
 Knit_Header <- function(x, rep = 1) {
   
   .header <- rep("#", rep) |> paste(collapse = "")
@@ -949,20 +950,19 @@ Knit_Header <- function(x, rep = 1) {
   Knit_Print_Rule(glue("{(.header)} {x}"))
 }
 
-## Functie om een regel te knitten
+## Function to knit a line
 Knit_Print_Rule <- function(x) {
   
   knitr::knit_print(glue("\n\n\n{x}\n\n"))
   
 }
 
-
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 5. CLI FUNCTIES ####
+## 5. CLI FEATURES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Functie voor het printen van een subheader
+## Function for printing a subheader
 Cli_Subheader <- function(sText) {
   
   cli::cli_div(theme = list(span.neutral = list(color = "orange"),
@@ -979,10 +979,10 @@ Cli_Subheader <- function(sText) {
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 6. QUERY FUNCTIES ####
+## 6. QUERY FEATURES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Functie om de meest voorkomende waarde te vinden
+# Function to find the most common value
 get_mode <- function(x) {
   x |>
     table() |>
@@ -990,7 +990,7 @@ get_mode <- function(x) {
     names()
 }
 
-## Functie om de meest voorkomende categorie te bepalen
+## Function to determine the most common category
 Get_Mostcommon_Category <- function(x) {
   
   ## Test of x categorisch is
@@ -1005,7 +1005,7 @@ Get_Mostcommon_Category <- function(x) {
   
 }
 
-## Functie om de mediaan te bepalen (afgerond en zonder NA's)
+## Function to determine median (rounded and without NAs)
 Get_Median_Rounded <- function(x) {
   
   ## Test of x numeriek is
@@ -1020,10 +1020,10 @@ Get_Median_Rounded <- function(x) {
   
 }
 
-# Functie om een persona te maken van de studenten van een opleiding
+# Function to create a persona of a study programme's students
 Get_dfPersona <- function(group = NULL) {
   
-  ## Bepaal de categorische variabelen die gebruikt worden
+  ## Determine the categorical variables used
   lSelect_categorical <- c(
     "Geslacht",
     "Vooropleiding",
@@ -1039,18 +1039,18 @@ Get_dfPersona <- function(group = NULL) {
     "Dubbele_studie"
   ) 
   
-  ## Verwijder de huidige groep variabele uit deze lijst
+  ## Remove the current group variable from this list
   if (!is.null(group)) {
     .group <- as.name(group)
     # Verwijder de groep variabele uit deze lijst
     lSelect_categorical <- setdiff(lSelect_categorical, group)
   }
   
-  ## Verwijder variabelen die niet voorkomen in deze opleiding
+  ## Remove variables not present in this study programme
   lSelect_categorical <- intersect(lSelect_categorical, 
                                    colnames(dfOpleiding_inschrijvingen))
   
-  ## Bepaal de numerieke variabelen die gebruikt worden
+  ## Define the numeric variables used
   lSelect_numerical <- c(
     "Leeftijd",
     "Aanmelding",
@@ -1066,122 +1066,122 @@ Get_dfPersona <- function(group = NULL) {
     "SES_Arbeid"
   )
   
-  ## Als de opleiding gelijk is aan HDT, voeg dan Rangnummer toe
+  ## If study programme is similar to HDT, add Rangnummer
   if(current_opleiding$INS_Opleiding == "HDT") {
     lSelect_numerical <- c(lSelect_numerical, "Rangnummer")
   }
   
-  ## Verwijder variabelen die niet voorkomen in deze opleiding
+  ## Remove variables not present in this study programme
   lSelect_numerical <- intersect(lSelect_numerical, 
                                  colnames(dfOpleiding_inschrijvingen))
   
-  # Bereken het totaal voor deze opleiding
+  # Calculate the total for this study programme
   .totaal <- dfOpleiding_inschrijvingen |> 
     count() |> 
     pull(n)
   
   if (!is.null(group)) {
     
-    # Maak personas aan op basis van de opgegeven groep
+    # Create personas based on the specified group
     dfPersona <- dfOpleiding_inschrijvingen |>
       
-      # Split de opleidingen op basis van de groep
+      # Split study programmes by group
       group_by(!!.group) |>
       
-      # Maak een persona aan op basis van de overige variabelen: 
-      # kies de meest voorkomende waarden per variabele bij categorieën 
-      # en de mediaan bij numerieke variabelen
+      # Create a persona based on the remaining variables: 
+      # choose the most common values per variable in the case of categories 
+      # and the median for numeric variables
       summarise(
         
-        # Categorische variabelen
+        # Categorical variables
         across(
           all_of(lSelect_categorical), 
           Get_Mostcommon_Category,
           .names = "{col}"
         ),
         
-        # Numerieke variabelen
+        # Numerical variables
         across(
           all_of(lSelect_numerical),
           Get_Median_Rounded,
           .names = "{col}"
         ), 
         
-        # Overige variabelen
+        # Other variables
         Collegejaar = median(Collegejaar, na.rm = TRUE),
         ID = NA,
         
-        # Subtotaal aantal studenten
+        # Subtotal number of students
         Subtotaal = n(),
         
         .groups = "drop") |> 
       
-      # Tel het aantal studenten per groep
+      # Count the number of students per group
       mutate(Totaal = .totaal,
              Percentage = round(Subtotaal/Totaal, 3)) |>
       
-      # Voeg de groep variabele toe en bepaal de categorie binnen de groep
+      # Add the group variable and define the category within the group
       mutate(Groep = group,
              Categorie = !!.group) |>
       
-      # Mutate leeftijd naar integer
+      # Mutate age to integer
       mutate(Leeftijd = as.integer(round(Leeftijd, 0))) |>
       
-      # Herorden
+      # Reorder
       select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
     
   } else {
     
-    # Maak persona voor alle studenten zonder groepering
+    # Create persona for all students without grouping
     dfPersona <- dfOpleiding_inschrijvingen |>
       
-      # Maak een persona aan op basis van de overige variabelen: 
-      # kies de meest voorkomende waarden per variabele bij categorieën 
-      # en de mediaan bij numerieke variabelen
+      # Create a persona based on the remaining variables: 
+      # choose the most common values per variable in the case of categories 
+      # and the median for numeric variables
       summarise(
         
-        # Categorische variabelen
+        # Categorical variables
         across(
           all_of(lSelect_categorical), 
           Get_Mostcommon_Category,
           .names = "{col}"
         ),
         
-        # Numerieke variabelen
+        # Numerical variables
         across(
           all_of(lSelect_numerical),
           Get_Median_Rounded,
           .names = "{col}"
         ), 
         
-        # Overige variabelen
+        # Other variables
         Collegejaar = median(Collegejaar, na.rm = TRUE),
         ID = NA,
         
-        # Subtotaal aantal studenten
+        # Subtotal number of students
         Subtotaal = n(),
         
         .groups = "drop") |> 
       
-      # Tel het aantal studenten per groep
+      # Count the number of students per group
       mutate(Totaal = .totaal,
              Percentage = round(Subtotaal/Totaal, 3)) |>
       
-      # Voeg de groep variabele toe en bepaal de categorie binnen de groep
+      # Add the group variable and define the category within the group
       mutate(Groep = "Alle",
              Categorie = "Alle studenten") |>
       
-      # Mutate leeftijd naar integer
+      # Mutate age to integer
       mutate(Leeftijd = as.integer(round(Leeftijd, 0))) |>
       
-      # Herorden
+      # Reorder
       select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
   }
   
   return(dfPersona)
 }
 
-# Helper functie om meest voorkomende waarde te vinden
+# Helper function to find most common value
 Get_Mostcommon_Value <- function(x) {
   if (is.numeric(x)) {
     return(median(x, na.rm = TRUE))
@@ -1192,7 +1192,7 @@ Get_Mostcommon_Value <- function(x) {
 
 Get_dfPersona_2 <- function(group = NULL) {
   
-  ## Bepaal de categorische variabelen die gebruikt worden
+  ## Determine the categorical variables used
   lSelect_categorical <- c(
     "Aansluiting",
     "APCG",
@@ -1208,14 +1208,14 @@ Get_dfPersona_2 <- function(group = NULL) {
     "Vooropleiding"
   ) 
   
-  ## Verwijder de huidige groep variabele uit deze lijst
+  ## Remove the current group variable from this list
   if (!is.null(group)) {
     .group <- as.name(group)
     # Verwijder de groep variabele uit deze lijst
     lSelect_categorical <- setdiff(lSelect_categorical, group)
   }
   
-  ## Bepaal de numerieke variabelen die gebruikt worden
+  ## Define the numeric variables used
   lSelect_numerical <- c(
     "Aanmelding",
     "Cijfer_CE_Engels",
@@ -1232,30 +1232,30 @@ Get_dfPersona_2 <- function(group = NULL) {
     "Retentie"
   )
   
-  ## Als de opleiding gelijk is aan HDT, voeg dan Rangnummer toe
+  ## If study programme is similar to HDT, add Rangnummer
   if(current_opleiding$INS_Opleiding == "HDT") {
     lSelect_numerical <- c(lSelect_numerical, "Rangnummer")
   }
   
-  ## Verwijder variabelen die niet voorkomen in deze opleiding
+  ## Remove variables not present in this study programme
   lSelect_numerical <- intersect(lSelect_numerical, 
                                  colnames(dfOpleiding_inschrijvingen))
   
-  # Bereken het totaal voor deze opleiding
+  # Calculate the total for this study programme
   .totaal <- dfOpleiding_inschrijvingen |> 
     count() |> 
     pull(n)
   
   if (!is.null(group)) {
     
-    # Maak personas aan op basis van de opgegeven groep
+    # Create personas based on the specified group
     dfPersona <<- dfOpleiding_inschrijvingen |> 
       
       group_by(!!.group)
       
       dfPersona_filtered <<- dfPersona 
       
-      ## Filter recursief per variabele
+      ## Filter recursively by variable
       for (var in c(lSelect_categorical)) {
         print(var)
         # if(is.numeric(dfPersona_filtered[[var]])) {
@@ -1273,108 +1273,108 @@ Get_dfPersona_2 <- function(group = NULL) {
       
       dfPersona <<- dfPersona_filtered |> 
       
-      # Maak een persona aan op basis van de overige variabelen: 
-      # kies de meest voorkomende waarden per variabele bij categorieën 
-      # en de mediaan bij numerieke variabelen
+        # Create a persona based on the remaining variables: 
+        # choose the most common values per variable in the case of categories 
+        # and the median for numeric variables
       summarise(
         
-        # Categorische variabelen
+        # Categorical variables
         across(
           all_of(lSelect_categorical), 
           Get_Mostcommon_Category,
           .names = "{col}"
         ),
         
-        # Numerieke variabelen
+        # Numerical variables
         across(
           all_of(lSelect_numerical),
           Get_Median_Rounded,
           .names = "{col}"
         ), 
         
-        # Overige variabelen
+        # Other variables
         Collegejaar = median(Collegejaar, na.rm = TRUE),
         ID = NA,
         
-        # Subtotaal aantal studenten
+        # Subtotal number of students
         Subtotaal = n(),
         
         .groups = "drop") |> 
       
-      # Tel het aantal studenten per groep
+      # Count the number of students per group
       mutate(Totaal = .totaal,
              Percentage = round(Subtotaal/Totaal, 3)) |>
       
-      # Voeg de groep variabele toe en bepaal de categorie binnen de groep
+      # Add the group variable and define the category within the group
       mutate(Groep = group,
              Categorie = !!.group) |>
       
-      # Mutate leeftijd naar integer
+      # Mutate age to integer
       mutate(Leeftijd = as.integer(round(Leeftijd, 0))) |>
       
-      # Herorden
+      # Reorder
       select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
     
   } else {
     
-    # Maak persona voor alle studenten zonder groepering
+    # Create persona for all students without grouping
     dfPersona <- dfOpleiding_inschrijvingen |>
       
-      # Maak een persona aan op basis van de overige variabelen: 
-      # kies de meest voorkomende waarden per variabele bij categorieën 
-      # en de mediaan bij numerieke variabelen
+      # Create a persona based on the remaining variables: 
+      # choose the most common values per variable in the case of categories 
+      # and the median for numeric variables
       summarise(
         
-        # Categorische variabelen
+        # Categorical variables
         across(
           all_of(lSelect_categorical), 
           Get_Mostcommon_Category,
           .names = "{col}"
         ),
         
-        # Numerieke variabelen
+        # Numerical variables
         across(
           all_of(lSelect_numerical),
           Get_Median_Rounded,
           .names = "{col}"
         ), 
         
-        # Overige variabelen
+        # Other variables
         Collegejaar = median(Collegejaar, na.rm = TRUE),
         ID = NA,
         
-        # Subtotaal aantal studenten
+        # Subtotal number of students
         Subtotaal = n(),
         
         .groups = "drop") |> 
       
-      # Tel het aantal studenten per groep
+      # Count the number of students per group
       mutate(Totaal = .totaal,
              Percentage = round(Subtotaal/Totaal, 3)) |>
       
-      # Voeg de groep variabele toe en bepaal de categorie binnen de groep
+      # Add the group variable and define the category within the group
       mutate(Groep = "Alle",
              Categorie = "Alle studenten") |>
       
-      # Mutate leeftijd naar integer
+      # Mutate age to integer
       mutate(Leeftijd = as.integer(round(Leeftijd, 0))) |>
       
-      # Herorden
+      # Reorder
       select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
   
   return(dfPersona)
   }
 }
 
-# Functie om een breakdown plot te maken
+# Function to create a breakdown plot
 Get_dfBreakdown_Lf <- function(bd_lf) {
   
   dfBreakdown_lf <- as.data.frame(bd_lf) |>
     
-    ## Sorteer op basis van de position van de variabelene (aflopend)
+    ## Sort by the position of the variablese (descending)
     arrange(desc(position)) |>
     
-    ## Hernoem variabelen (intercept en prediction)
+    ## Rename variables (intercept and prediction)
     mutate(
       variable = case_when(
         variable == "intercept" ~ "Intercept",
@@ -1383,7 +1383,7 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
       )
     ) |>
     
-    ## Maak het label aan (in percentages)
+    ## Create the label (in percentages)
     mutate(label = paste0(as.character(round(contribution, 3) * 100), "%")) |>
     mutate(
       label = case_when(
@@ -1396,14 +1396,14 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
     ) |>
     mutate(label = case_when(label == "0%" ~ "+0%", .default = label)) |>
     
-    ## Verwijder variabelen met een contribution van 0
+    ## Remove variables with a contribution of 0
     filter(sign != 0) |>
     
-    ## Maak start en end variabelen aan
+    ## Create start and end variables
     mutate(start = dplyr::lag(cumulative, default = min(cumulative)),
            end = cumulative) 
   
-  ## Voeg een rij toe voor "Overige variabelen"
+  ## Add a row for “Other variables”
   dfBreakdown_lf <- dfBreakdown_lf |>
     add_row(
       variable = "+ Overige variabelen",
@@ -1418,12 +1418,12 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
       end = dfBreakdown_lf$cumulative[dfBreakdown_lf$position == 1]
     ) |>
     
-    ## Pas de positie aan
+    ## Adjust the position
     arrange(position) |>
     mutate(position = row_number()) |>
     arrange(desc(position)) |>
     
-    ## Bepaal de volgende start en positie
+    ## Determine the next start and position
     mutate(
       next_start = lead(start, default = NA),
       next_position = lead(position, default = NA)
@@ -1434,21 +1434,21 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
       .default = start
     )) |>
     
-    ## Pas de sign aan
+    ## Customize the sign
     mutate(sign = case_when(variable == "Intercept" ~ "X", .default = sign)) |>
     
-    ## Bepaal de kleur van de labels
+    ## Determine the color of the labels
     mutate(label_color = case_when(
       sign == "1" ~ lColors_default[["sNegative_color"]], 
       sign == "-1" ~ lColors_default[["sPositive_color"]], 
       .default = lColors_default[["sText_color"]])) |>
     
-    ## Bepaal de positie van de labels
+    ## Determine the position of the labels
     rowwise() |>
     mutate(label_position = max(start, end)) |>
     ungroup()
   
-  ## Pas de sign aan naar een factor
+  ## Adjust the sign to a factor
   dfBreakdown_lf$sign <- factor(
     dfBreakdown_lf$sign,
     levels = c("1", "-1", "0", "X"),
@@ -1459,37 +1459,37 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
   
 }
 
-## Functie om de Shapley waarden te bepalen
+## Function to determine the Shapley values
 Get_dfShapley <- function(shapley_object) {
   
-  ## Maak een dataframe van de shapley waarden
+  ## Create a dataframe of the shapley values
   dfShapley <- shapley_object |> 
     
-    ## Verwijder variabelen zonder contribution
+    ## Remove variables without contribution
     filter(contribution != 0) |>
     
-    ## Bereken de gemiddelde contribution per variabele
+    ## Calculate the average contribution per variable
     group_by(variable) |>
     mutate(mean_val = mean(contribution)) |>
     ungroup() |>
     
-    ## Sorteer de variabelen op basis van de gemiddelde contribution
+    ## Sort the variables by mean contribution
     mutate(variable = fct_reorder(variable, abs(mean_val))) 
   
   return(dfShapley)
   
 }
 
-## Functie om een fairness object te maken
+## Function to create a fairness object
 Get_objFairness <- function(explainer, protected_var, privileged, verbose = FALSE) {
   
-  ## Bepaal de protected variabele
+  ## Define the protected variable
   .protected <- dfOpleiding_inschrijvingen |> 
     select(-Retentie) |>
     select(all_of({{protected_var}})) |>
     pull()
   
-  ## Maak een fairness object
+  ## Create a fairness object
   fobject <- fairness_check(explainer,
                             protected = .protected,
                             privileged = privileged,
@@ -1497,21 +1497,21 @@ Get_objFairness <- function(explainer, protected_var, privileged, verbose = FALS
                             verbose = verbose,
                             colorize = TRUE)
   
-  ## Return het fairness object
+  ## Return the fairness object
   return(fobject)
 }
 
-# Functie om de privileged (meerderheid)
+# Function to make the privileged (majority)
 Get_Privileged <- function(df, group) {
   
-  # Bereken de frequenties van elke subgroep
+  # Calculate the frequencies of each subgroup
   dfTally <- table(df[[group]])
   
-  # Bepaal de meest voorkomende subgroep(en)
+  # Determine the most common subgroup(s).
   max_frequency <- max(dfTally)
   most_common_subgroups <- names(dfTally[dfTally == max_frequency])
   
-  # Indien er meerdere zijn, kies de eerste (of bepaal een andere logica)
+  # If there are several, choose the first one (or determine another logic)
   sPrivileged <- most_common_subgroups[1]
   
   # ## Geslacht: M
@@ -1523,7 +1523,7 @@ Get_Privileged <- function(df, group) {
   # else if(group == "Vooropleiding") {
   #   if(opleiding == "HDT") {
   #     sPrivileged <- "VWO"
-  #     ## Als de opleiding het cijfer 3 bevat, dan is de vooropleiding VWO
+  #     ## If the study programme contains the grade 3, then the previous education is VWO
   #   } else if (grepl("3", opleiding)) {
   #     sPrivileged <- "VWO"
   #   } else {
@@ -1540,38 +1540,38 @@ Get_Privileged <- function(df, group) {
   return(sPrivileged)
 }
 
-## Functie om de fairness tabel te maken
+## Function to create the fairness table
 Get_dfFairness_Total <- function(fobject) {
   
-  ## Maak een tabel van de fairness analyse
+  ## Create a table from the fairness analysis
   dfFairness <<- fobject[["fairness_check_data"]] |>
     as.data.frame() |> 
     filter(!is.na(score))
   
-  ## Bereken per metric of de score buiten de cutoff ligt
+  ## Calculate for each metric whether the score is outside the cutoff
   dfFairness_metric <<- dfFairness |>
     
-    ## Bereken per groep of de score buiten de cutoff ligt
+    ## For each group, calculate whether the score is outside the cutoff
     mutate(Categorie_buiten_grenzen = ifelse(score < 0.8 |
                                               score > 1.2, "Ja", "Nee")) |> 
-    ## Bereken per groep of er > 1 Ja is
+    ## For each group, calculate whether there is > 1 Ja
     group_by(metric) |>
     summarise(Metric_buiten_grenzen = ifelse(sum(Categorie_buiten_grenzen == "Ja") > 1, 
                                              "Ja", 
                                              "Nee"))
   
-  ## Verrijk de tabel met variabele Metric_buiten_grenzen
+  ## Enrich the table with variable Metric_outside_limits
   dfFairness_totaal <- dfFairness |>
     
-    ## Bereken per groep of de score buiten de cutoff ligt
+    ## For each group, calculate whether the score is outside the cutoff
     mutate(Categorie_buiten_grenzen = ifelse(score < 0.8 |
                                               score > 1.2, "Ja", "Nee")) |> 
     
-    ## Koppel aan de metric
+    ## Link to the metric
     left_join(dfFairness_metric, by = "metric") |> 
     select(-model) |> 
     
-    ## Hernoem de kolommen
+    ## Rename the columns
     rename(Metric = metric,
            `Metric buiten grenzen` = Metric_buiten_grenzen,
            Score = score,
@@ -1582,14 +1582,14 @@ Get_dfFairness_Total <- function(fobject) {
            Categorie, 
            `Categorie buiten grenzen`) #|> 
     
-    ## Verwijder missende waarden
+    ## Remove missing values
     #drop_na()
   
   return(dfFairness_totaal)
   
 }
 
-## Functie om de fairness analyse df om te zetten naar een wide df
+## Function to convert fairness analysis df to a wide df
 Get_dfFairness_Wide <- function(lDf) {
   
   dfVars <- tribble(
@@ -1618,7 +1618,7 @@ Get_dfFairness_Wide <- function(lDf) {
     FRN_Bias = c("Geen Bias", "Negatieve Bias", "Positieve Bias")
   )
   
-  ## Combineer dfVars en dfBias
+  ## Combine dfVars and dfBias
   dfVars_Bias <- dfVars |> 
     crossing(dfBias)
   
@@ -1649,30 +1649,30 @@ Get_dfFairness_Wide <- function(lDf) {
     pivot_longer(cols = c(Geslacht, Vooropleiding, Aansluiting)) |>
     count(name, value, name = "N")
   
-  ## Maak de df breed
+  ## Make the df wide
   dfWide <- df |>
     
-    ## Pas de Bias aan
+    ## Adjust the Bias
     mutate(Bias = case_when(
       `Negatieve Bias` > 1 | `Positieve Bias` > 1 ~ 'Ja',
       `Geen Bias` == 0 & `Negatieve Bias` == 0 & `Positieve Bias` == 0 ~ 'NTB',
       .default = "Nee")) |> 
         
-    ## Sorteer de Variabele en Groep
+    ## Sort the Variable and Group
     mutate(Variabele = factor(Variabele, 
                               levels = c("Geslacht", 
                                          "Vooropleiding", 
                                          "Aansluiting")),
            Groep = factor(Groep,
                           levels = c(lLevels_geslacht, 
-                                     ## Maak lLevels_vop uniek om Overig en onbekend niet te herhalen
+                                     ## Make lLevels_vop unique to avoid repeating Other and unknown
                                      setdiff(lLevels_vop, lLevels_aansluiting), 
                                      lLevels_aansluiting))
                           ) |> 
     select(Variabele, Groep, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) |> 
     arrange(Variabele, Groep)
   
-  ## Voeg aantallen en percentages toe
+  ## Add numbers and percentages
   dfWide2 <- dfWide |> 
     left_join(dfTellingen, by = c("Variabele" = "name", "Groep" = "value")) |>
     select(Variabele, Groep, N, everything()) |> 
@@ -1683,7 +1683,7 @@ Get_dfFairness_Wide <- function(lDf) {
   
 }
 
-## Functie om de flextable te maken voor de fairness analyse
+## Function to create the flextable for fairness analysis
 Get_ftFairness <- function(ft) {
   
   sColor_Bias_Positive <- "#9DBF9E"
@@ -1691,8 +1691,8 @@ Get_ftFairness <- function(ft) {
   sColor_Bias_Neutral  <- "#FCB97D"
   sColor_Bias_None     <- "#E5E5E5"
   
-  # Voeg de kolom 'Variabele' samen voor visueel groeperen
-  # Pas voorwaardelijke opmaak toe
+  # Merge the 'Variable' column for visual grouping
+  # Apply conditional formatting
   ft <- ft |>
     merge_v(j = ~ Variabele) |>
     fix_border_issues() |>
@@ -1741,12 +1741,12 @@ Get_ftFairness <- function(ft) {
   return(ft)
 }
 
-## Functie om de fairness conclusies te bepalen
+## Function to determine fairness inferences
 Get_Fairness_Conclusies <- function(df, variabele, succes = "Retentie na 1 jaar") {
   
   sText <- ""
   
-  ## Bepaal de groepen
+  ## Define the groups
   dfVariabele <- df |>
     filter(Variabele == variabele,
            N > 14) 
@@ -1758,12 +1758,12 @@ Get_Fairness_Conclusies <- function(df, variabele, succes = "Retentie na 1 jaar"
     return(sConclusie)
   }
   
-  ## Functie om de laatste , te vervangen door ' en '
+  ## Function to replace the last , with ' and '
   Replace_comma_end <- function(x) {
     gsub(",([^,]*)$", " en\\1", x)
   }
   
-  ## Bepaal de groepen met een negatieve bias
+  ## Determine the groups with negative bias
   if(any(dfVariabele$`Negatieve Bias` > 1)) {
     lNegatieve_Bias <- dfVariabele |>
       filter(`Negatieve Bias` > 1) |> 
@@ -1776,13 +1776,13 @@ Get_Fairness_Conclusies <- function(df, variabele, succes = "Retentie na 1 jaar"
     sNegatieve_Bias <- ""
   }
   
-  ## Bepaal de groepen met een positieve bias
+  ## Determine the groups with positive bias
   if(any(dfVariabele$`Positieve Bias` > 1)) {
     lPositieve_Bias <- dfVariabele |>
       filter(`Positieve Bias` > 1) |> 
       pull(Groep) |>
       paste(collapse = ", ")
-    ## Vervang de laatste , door en
+    ## Replace the last , with and
     lPositieve_Bias <- Replace_comma_end(lPositieve_Bias)
     sPositieve_Bias <- glue("Er is een positieve bias voor: {lPositieve_Bias}.")
   } else {
@@ -1795,7 +1795,7 @@ Get_Fairness_Conclusies <- function(df, variabele, succes = "Retentie na 1 jaar"
   
 }
 
-## Functie om een dataframe te maken van de fairness check data
+## Function to create a data frame from the fairness check data
 Get_dfFairness_Check_Data <- function(fobject, group) {
   df <- fobject |>
     dplyr::mutate(
@@ -1822,13 +1822,13 @@ Get_dfFairness_Check_Data <- function(fobject, group) {
            FRN_Score,
            FRN_Fair)
   
-  ## Maak een dataframe van de fairness check data
+  ## Create a dataframe of the fairness check data
   dfTellingen <- dfOpleiding_inschrijvingen |>
     select(!!group) |>
     pivot_longer(cols = c(!!group)) |>
     count(name, value, name = "N")
   
-  ## Combineer met aantallen
+  ## Combine with numbers
   df <- df |>
     left_join(dfTellingen, by = c("FRN_Group" = "name", "FRN_Subgroup" = "value")) |>
     replace_na(list(N = 0)) |> 
@@ -1840,19 +1840,17 @@ Get_dfFairness_Check_Data <- function(fobject, group) {
   return(df)
 }
 
-
-
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 7. PLOT FUNCTIES ####
+## 7. PLOT FEATURES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Bepaal het basisthema
+## Determine the basic theme
 Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
   theme_set(theme_minimal())
   theme_update(
     
-    ## Titel en caption
+    ## Title and caption
     plot.title = element_textbox_simple(
       size = 16,
       lineheight = 1,
@@ -1889,19 +1887,19 @@ Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
     axis.text.x  = element_text(size = 11),
     axis.text.y  = element_text(size = 11),
 
-    ## Lijnen
+    ## Lines
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank(),
 
-    ## Legenda
+    ## Legend
     legend.key.size = unit(.5, "cm"),
     legend.text = element_text(size = 10),
 
-    ## Achtergrond wit en border niet zichtbaar
+    ## Background white and border not visible
     plot.background = element_rect(fill = lColors_default["sBackground_color"],
                                    color = NA) +
 
-    ## Maak van de title van x en y een markdown element
+    ## Make the title of x and y a markdown element
     theme(
       axis.title.x = element_markdown(),
       axis.title.y = element_markdown()
@@ -1911,12 +1909,12 @@ Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
   
 }
 
-## Functie om LTA thema elementen toe te voegen
+## Function to add LTA theme elements
 Add_LTA_Theme_Elements <- function(p,
                                    title_subtitle = TRUE,
                                    extended = FALSE) {
   
-  ## Pas het thema aan met of zonder titel en ondertitel
+  ## Customize theme with or without title and subtitle
   if(title_subtitle) {
     p <- p + theme(
         plot.title = element_text(size = 14, face = "bold"),
@@ -1941,24 +1939,24 @@ Add_LTA_Theme_Elements <- function(p,
         )
     }
   
-  ## Als het thema uitgebreid moet worden, voeg dan extra elementen toe
+  ## If the theme needs to be expanded, add additional elements
   if(extended) {
     
     p <- p + 
       
-      # Pas het thema verder aan
+      # Customize the theme further
       theme(
         axis.title.x = element_text(margin = margin(t = 20))
       ) +
       
-      # Pas de positie van de legenda aan en verberg de titel
+      # Adjust the position of the legend and hide the title
       theme(legend.position = "bottom",
             legend.title = element_blank()) +
       
-      # Maak het grid iets rustiger
+      # Make the grid a little quieter
       theme(panel.grid.minor = element_blank()) +
       
-      # Maak de kopjes van de facetten groter
+      # Make the cups of the facets larger
       theme(strip.text = element_text(size = 12))
   }
   
@@ -1966,7 +1964,7 @@ Add_LTA_Theme_Elements <- function(p,
   
 }
 
-## Functie om de y-as in te stellen
+## Function to set the y-axis
 Set_XY_Axis <- function(axis, breaks = 4) {
   
   if(axis == "x") {
@@ -1987,7 +1985,7 @@ Set_XY_Axis <- function(axis, breaks = 4) {
   
 }
 
-## Functie om de caption te bepalen
+## Function to define the caption
 Get_sCaption <- function() {
   
   sCaption <- paste0(
@@ -2007,7 +2005,7 @@ Get_sCaption <- function() {
   
 }
 
-## Functie om de waarden en labels te bepalen
+## Function to determine values and labels
 Get_Color_Values_and_Labels <- function(group, cp_lf_all) {
   colors_list <- switch(group,
                         "Geslacht"      = lColors_geslacht,
@@ -2021,10 +2019,10 @@ Get_Color_Values_and_Labels <- function(group, cp_lf_all) {
   return(list(values = .values, labels = .labels))
 }
 
-## Functie om een ROC plot te maken
+## Function to create an ROC plot
 Get_ROC_Plot <- function(models, position = NULL) {
   
-  ## Combineer eventueel meerdere modellen
+  ## Combine multiple models if necessary
   if(is.list(models)) {
     models <- bind_rows(models)
   }
@@ -2035,7 +2033,7 @@ Get_ROC_Plot <- function(models, position = NULL) {
     lColors <- lColors_ROC_plots
   }
   
-  ## Maak een ROC plot
+  ## Create an ROC plot
   roc_plot <- models |>
     ggplot(aes(x = 1 - specificity, 
                y = sensitivity, 
@@ -2044,10 +2042,10 @@ Get_ROC_Plot <- function(models, position = NULL) {
     geom_abline(lty = 3) + 
     coord_equal() + 
     
-    ## Voeg meerdere kleuren toe bij meerdere modellen
+    ## Add multiple colors to multiple models
     scale_color_manual(values = lColors) +
     
-    ## Maak de labs
+    ## Make the labs
     labs(x = "1 - specificiteit", 
          y = "sensitiviteit", 
          color = "Model",
@@ -2056,7 +2054,7 @@ Get_ROC_Plot <- function(models, position = NULL) {
       axis.title.x = element_text(margin = margin(t = 20))
     )
     
-    ## Voeg LTA elementen toe
+    ## Add LTA elements
     roc_plot <- Add_LTA_Theme_Elements(roc_plot,
                                        title_subtitle = FALSE)
   
@@ -2064,7 +2062,7 @@ Get_ROC_Plot <- function(models, position = NULL) {
   
 }
 
-## Functie om een confusion plot te maken
+## Function to create a confusion plot
 Get_Confusion_Plot <- function(dfConf_matrix) {
  
   confusion_plot <- plot_confusion_matrix(
@@ -2081,7 +2079,7 @@ Get_Confusion_Plot <- function(dfConf_matrix) {
       tc_tile_border_color = "black"
     )) +
     
-    ## Pas de labels aan
+    ## Customize the labels
     labs(
       title = "Confusion Matrix",
       x = "Werkelijke uitkost",
@@ -2091,7 +2089,7 @@ Get_Confusion_Plot <- function(dfConf_matrix) {
     
     Set_LTA_Theme()
   
-  ## Voeg LTA elementen toe
+  ## Add LTA elements
   confusion_plot <- Add_LTA_Theme_Elements(confusion_plot, 
                                            title_subtitle = TRUE)
   
@@ -2099,16 +2097,16 @@ Get_Confusion_Plot <- function(dfConf_matrix) {
    
 }
 
-## Functie om een RMSE plot te maken
+## Function to create an RMSE plot
 Get_RMSE_Plot <- function(mp_rmse) {
   
-  ## Maak een RMSE plot
+  ## Create an RMSE plot
   mp_rmse_plot <- plot(mp_rmse) +
     
     ## Themes
     Set_LTA_Theme() +
     
-    ## Titel, ondertitel en caption
+    ## Title, subtitle and caption
     labs(
       title = "Meest voorspellende factoren",
       subtitle = "Root Mean Square Error (RMSE) na permutaties",
@@ -2117,25 +2115,25 @@ Get_RMSE_Plot <- function(mp_rmse) {
       y = NULL
     ) +
     
-    ## Verberg de legenda
+    ## Hide the legend
     theme(
       legend.position = "none"
     )
   
-  ## Voeg LTA elementen toe
+  ## Add LTA elements
   mp_rmse_plot <- Add_LTA_Theme_Elements(mp_rmse_plot)
   
   return(mp_rmse_plot)
 
 }
 
-## Functie om de titels te bepalen
+## Function to determine titles
 Get_Breakdown_Titles <- function(bd, df, j, 
                                  student_groep, student_categorie, 
                                  mode = "group",
                                  debug = FALSE) {
   
-  ## Bepaal de retentiekans, totalen en de titel/ondertitel
+  ## Determine retention rate, totals and title/subtitle
   nRetentie   <- Change_Number_Marks(as.numeric(bd$cumulative[bd$variable == 'prediction']) * 100, 
                                      digits = 1)
   nSubtotaal  <- Change_Number_Marks(as.numeric(df[j, 'Subtotaal']))
@@ -2149,7 +2147,7 @@ Get_Breakdown_Titles <- function(bd, df, j,
     cli::cli_alert_info(c("nPercentage: ", nPercentage))
   }
   
-  # Bouw de titel
+  # Build the title
   if(mode == "all") {
     student_current_title <- glue(
       "Opbouw van de kans op retentie ({tolower(student_groep)})"
@@ -2164,7 +2162,7 @@ Get_Breakdown_Titles <- function(bd, df, j,
     cli::cli_alert_info(student_current_title)
   }
   
-  ## Bepaal de ondertitel
+  ## Define the subtitle
   student_current_subtitle <- glue(
     " | kans op retentie: {nRetentie}%"
   )
@@ -2191,22 +2189,22 @@ Get_Breakdown_Titles <- function(bd, df, j,
               student_current_subtitle))
 }
 
-## Functie om een breakdown plot te maken (all)
+## Function to create a breakdown plot (all)
 Get_Breakdown_Plot_All <- function(breakdown_lf_all, lTitles) {
   
-  ## Bouw de basisplot
+  ## Build the basic plot
   breakdown_plot <- suppressWarnings(plot(breakdown_lf_all, plot_distributions = TRUE)) 
   
-  ## Bepaal de y as
+  ## Determine the y axis
   lY_Axis <- Set_XY_Axis(axis = "y")
 
-  ## Maak de plot af op basis van de LTA vormgeving
+  ## Complete the plot based on the LTA design
   breakdown_plot <- breakdown_plot +
 
     ## Themes
     Set_LTA_Theme() +
 
-    # Bepaal de titel, ondertitel en caption
+    # Define the title, subtitle and caption
     labs(
       title = lTitles[[1]],
       subtitle = lTitles[[2]],
@@ -2215,7 +2213,7 @@ Get_Breakdown_Plot_All <- function(breakdown_lf_all, lTitles) {
       y = NULL
     )
 
-  ## Pas de summary laag aan voor de gemiddelde kans (laag 3)
+  ## Adjust the summary layer for the average probability (layer 3)
   breakdown_plot$layers[[3]] <- stat_summary(
     fun = mean,
     geom = "point",
@@ -2225,36 +2223,36 @@ Get_Breakdown_Plot_All <- function(breakdown_lf_all, lTitles) {
     fill = lColors_default[["sNegative_color"]]
   )
 
-  ## Maak de plot af
+  ## Complete the plot
   breakdown_plot <- breakdown_plot +
 
-    # Pas de y-as labels aan
+    # Adjust the y-axis labels
     scale_y_continuous(breaks = lY_Axis[["y_breaks"]],
                        labels = lY_Axis[["y_labels"]],
                        limits = c(0, 1)) +
 
-    ## Verberg de legenda
+    ## Hide the legend
     theme(
       legend.position = "none"
     )
 
-  ## Voeg LTA elementen toe
+  ## Add LTA elements
   breakdown_plot <- Add_LTA_Theme_Elements(breakdown_plot)
   
   return(breakdown_plot)
   
 }
 
-## Functie om een watervalplot te maken
+## Function to create a waterfall plot
 Get_Breakdown_Plot <- function(df, titles) {
    
-  # Bepaal de breaks voor de x-as (y-as, maar wordt gekanteld)
+  # Determine the breaks for the x-axis (y-axis, but is tilted)
   lY_Axis  <- Set_XY_Axis(axis = "y")
   
-  ## Maak een watervalplot
+  ## Create a waterfall plot
   breakdown_plot <- ggplot(df) +
     
-    # Voeg horizontale lijnen toe om de 0.2
+    # Add horizontal lines every 0.2
     geom_hline(
       yintercept = lY_Axis[["y_breaks"]],
       color = lColors_default[["sGridline_color"]],
@@ -2262,14 +2260,14 @@ Get_Breakdown_Plot <- function(df, titles) {
       linewidth = 0.5
     ) +
     
-    # Voeg een horizontale lijn toe op de laagste waarde
+    # Add a horizontal line at the lowest value
     geom_hline(
       yintercept = df$cumulative[df$position == 1],
       color = lColors_default[["sBreakdown_intercept_color"]],
       linetype = "dotted"
     ) +
     
-    # Voeg de waterval bands toe
+    # Add the waterfall bands
     geom_rect(aes(
       xmin = position - 0.4,
       xmax = position + 0.4,
@@ -2278,7 +2276,7 @@ Get_Breakdown_Plot <- function(df, titles) {
       fill = sign
     )) +
     
-    # Voeg de waterval lijnen toe
+    # Add the waterfall lines
     geom_segment(aes(
       x = next_position - 0.4,
       xend = position + 0.4,
@@ -2287,10 +2285,10 @@ Get_Breakdown_Plot <- function(df, titles) {
     ),
     color = lColors_default[["sBreakdown_segment_color"]]) +
     
-    # Flip de plot
+    # Flip the plot
     coord_flip() +
     
-    # Bepaal de title en ondertitel
+    # Define the title and subtitle
     labs(
       title = titles[[1]],
       subtitle = titles[[2]],
@@ -2299,14 +2297,14 @@ Get_Breakdown_Plot <- function(df, titles) {
       y = NULL
     ) +
     
-    # Vul de kleuren in
+    # Fill in the colors
     scale_fill_manual(values = c(
       "Positief" = lColors_default[["sPositive_color"]],
       "Negatief" = lColors_default[["sNegative_color"]],
       "X" = lColors_default[["sPositive_color"]]
     )) +
     
-    # Voeg tekstlabels toe voor de variabelen
+    # Add text labels for the variables
     geom_text(
       aes(x = position, y = label_position, label = label),
       hjust = -0.1,
@@ -2314,13 +2312,13 @@ Get_Breakdown_Plot <- function(df, titles) {
       color = lColors_default[["sText_color"]]
     ) +
     
-    # Pas het thema aan om de y-as labels weer te geven
+    # Adjust the theme to display the y-axis labels
     scale_x_continuous(breaks = df$position, labels = df$variable) +
     scale_y_continuous(breaks = lY_Axis[["y_breaks"]],
                        labels = lY_Axis[["y_labels"]],
                        limits = c(0, 1)) +
     
-    ## Verwijder de legenda en maak de plot rustiger
+    ## Remove the legend and make the plot quieter
     theme(legend.position = "none") +
     theme(
       axis.text.y = element_text(size = 12),
@@ -2328,9 +2326,9 @@ Get_Breakdown_Plot <- function(df, titles) {
       panel.grid.minor = element_blank()
     ) +
   
-    ## Maak de labels van Intercept en voorspelling vetgedrukt
-    ## suppressWarnings, omdat er een warning komt dat vectorized input 
-    ## in de toekomst niet mogelijk is
+    ## Make the labels of Intercept and prediction bold.
+    ## suppressWarnings, because there will be a warning that vectorized input 
+    ## will not be possible in the future
     suppressWarnings(theme(axis.text.y = element_text(
       face = ifelse(
         df$variable %in% c("Intercept", "Voorspelling"),
@@ -2343,28 +2341,28 @@ Get_Breakdown_Plot <- function(df, titles) {
   
 }
 
-## Functie om een Shapley plot te maken
+## Function to create a Shapley plot
 Get_Shapley_Plot <- function(data) {
   
   shapley_plot <- data |> 
     
-    ## Bouw de plot en vul de kleur op met positieve en negatieve waarden
+    ## Build the plot and fill the color with positive and negative values
     ggplot(aes(contribution, variable, fill = mean_val > 0)) +
     
-    ## Maak een barplot en voeg een boxplot toe
+    ## Create a barplot and add a boxplot
     geom_col(data = ~distinct(., variable, mean_val), 
              aes(mean_val, variable), 
              alpha = 0.5) +
     geom_boxplot(width = 0.5) +
     
-    ## Verwijder de legenda
+    ## Remove the legend
     theme(legend.position = "none") +
     
-    ## Bepaal de kleuren
+    ## Determine the colors
     scale_fill_manual(values = c("TRUE" = lColors_default[["sPositive_color"]], 
                                  "FALSE" = lColors_default[["sNegative_color"]])) +
     
-    # Bepaal de titel en ondertitel
+    # Define the title and subtitle
     labs(
       title = "Shapley values",
       subtitle = "Bijdrage per variabele voor de meest voorkomende student",
@@ -2377,14 +2375,14 @@ Get_Shapley_Plot <- function(data) {
   
 }
 
-## Functie om de ceteris paribus plot te maken
+## Function to create the ceteris paribus plot
 Get_Ceteris_Paribus_Plot <- function(cp_lf_all, group) {
   
-  # Bepaal de y as
+  # Determine the y axis
   lY_Axis <- Set_XY_Axis(axis = "y")
   
-  # Plot de ceteris paribus analyse
-  # Gebruik kleur voor _ids_
+  # Plot the ceteris paribus analysis
+  # Use color for _ids_
   cp_plot <- plot(
     cp_lf_all,
     color = "_ids_",  
@@ -2397,39 +2395,39 @@ Get_Ceteris_Paribus_Plot <- function(cp_lf_all, group) {
     )
   )
 
-  ## Verwijder de bestaande kleurenschaal,
-  ## zodat er geen waarschuwing komt over de bestaande kleurenschaal
+  ## Remove the existing color scale,
+  ## so there is no warning about the existing color scale
   cp_plot$scales$scales <- list()
 
-  ## Bouw de kleurenschaal op basis van de variabele
-  ## Bepaal de waarden en labels
+  ## Build the color scale based on the variable
+  ## Define the values and labels
   lColor_values_labels <- Get_Color_Values_and_Labels(group, cp_lf_all)
   
-  # Bouw nu de plot verder op
+  # Now build the plot further
   cp_plot <- cp_plot +
 
-    # Voeg een enkele schaal toe voor de fill
+    # Add a single bowl for the fill
     scale_color_manual(
       name = group,
       values = lColor_values_labels$values,
       labels = lColor_values_labels$labels,
     ) +
 
-    # Pas de y-as schaal aan
+    # Adjust the y-axis scale
     scale_y_continuous(breaks = lY_Axis[["y_breaks"]],
                        labels = lY_Axis[["y_labels"]],
                        limits = c(0, 1)) +
 
-    # Pas de labels aan
+    # Customize the labels
     labs(title = "Ceteris-paribus profiel",
          subtitle = glue("Kans op retentie voor de meest voorkomende studenten naar **{tolower(group)}**"),
          y = NULL,
          caption = sCaption) +
 
-    # Pas het LTA thema toe
+    # Apply the LTA theme
     Set_LTA_Theme()
     
-  # Voeg LTA elementen toe
+  # Add LTA elements
   cp_plot <- Add_LTA_Theme_Elements(cp_plot, 
                                     title_subtitle = TRUE, 
                                     extended = TRUE) +
@@ -2437,20 +2435,20 @@ Get_Ceteris_Paribus_Plot <- function(cp_lf_all, group) {
           legend.title = element_blank()) +
     guides(colour = guide_legend(nrow = 1))
   
-  # Geef de plot terug
+  # Return the plot
   return(cp_plot)
   
 }
 
-## Functie om de ceteris paribus plot te maken
+## Function to create the ceteris paribus plot
 Get_Partial_Dependence_Plot <- function(pdp_lf, 
                                         group = "all",
                                         show_profiles = TRUE) {
   
-  ## Bepaal de y as
+  ## Determine the y axis
   lY_Axis <- Set_XY_Axis(axis = "y")
   
-  ## Bepaal per variabele de kleurenschalen
+  ## Define color scales for each variable
   if(group == "Geslacht") {
     .values = lColors_geslacht
   } else if (group == "Vooropleiding") {
@@ -2461,55 +2459,55 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
     .values = lColors_default[["sMetrics_blue"]]
   }
   
-  ## Bouw de subtitle
+  ## Build the subtitle
   if(group == "all") {
     .subtitle <- glue("Kans op retentie")
   } else {
     .subtitle <- glue("Kans op retentie naar **{tolower(group)}**")
   }
   
-  ## Verwijder uit pdp_lf[["agr_profiles"]][["_label_"]] de naam van het model
-  ## zodat de labels matchen met de namen van de categorieen in de variabelen
+  ## Remove from pdp_lf[[“agr_profiles”]][[“_label_”]] the name of the model
+  ## so that the labels match the category names in the variables
   .model <- explain_lf$label
   pdp_lf[["agr_profiles"]][["_label_"]] <- gsub(paste0(.model, "_"),
                                                 "",
                                                 pdp_lf[["agr_profiles"]][["_label_"]])
   
-  # Plot de partial dependence analyse
+  # Analyseer de gedeeltelijke afhankelijkheid
   if(show_profiles) {
     pdp_plot <- plot(pdp_lf, geom = "profiles")
   } else {
     pdp_plot <- plot(pdp_lf)
   }
 
-  ## Verwijder de bestaande kleurenschaal, 
-  ## zodat er geen waarschuwing komt over de bestaande kleurenschaal
+  ## Remove the existing color scale, 
+  ## so there is no warning about the existing color scale
   pdp_plot$scales$scales <- list()
   
-  ## Bouw nu de plot verder op
+  ## Now build the plot further
   pdp_plot <- pdp_plot +  
     
-    # Voeg een enkele schaal toe voor de fill
+    # Add a single scale for the fill
     scale_color_manual(
       name = NULL,
       values = .values
     ) +
 
-    # Pas de y-as schaal aan
+    # Adjust the y-axis scale
     scale_y_continuous(breaks = lY_Axis[["y_breaks"]],
                        labels = lY_Axis[["y_labels"]],
                        limits = c(0, 1)) +
     
-    # Pas de labels aan
+    # Customize the labels
     labs(title = "Partial Dependence profielen",
          subtitle = .subtitle,
          y = NULL,
          caption = sCaption) +
     
-    # Pas het LTA thema toe
+    # Apply the LTA theme
     Set_LTA_Theme()
     
-    # Voeg LTA elementen toe
+  # Add LTA elements
     pdp_plot <- Add_LTA_Theme_Elements(pdp_plot, 
                                        title_subtitle = TRUE, 
                                        extended = TRUE) +
@@ -2517,18 +2515,18 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
             legend.title = element_blank()) +
       guides(colour = guide_legend(nrow = 1))
     
-  # Geef de plot terug
-  return(pdp_plot)
+    # Return the plot
+    return(pdp_plot)
   
 }
 
-## Functie om een fairness plot t emaken
+## Function to create a density plot
 Get_Density_Plot <- function(fairness_object, group) {
   
-  ## Bepaal de x as
+  ## Determine the x axis
   lX_Axis <- Set_XY_Axis(axis = "x")
   
-  ## Bepaal per variabele de kleurenschalen
+  ## Define color scales for each variable
   if(group == "Geslacht") {
     .values = lColors_geslacht
   } else if (group == "Vooropleiding") {
@@ -2539,12 +2537,12 @@ Get_Density_Plot <- function(fairness_object, group) {
     .values = lColors_default[["sMetrics_blue"]]
   }
   
-  ## Maak een density plot
+  ## Create a density plot
   density_plot <- fairness_object |> 
     
     plot_density() +
     
-    ## Voeg titel en subtitel toe
+    ## Add title and subtitle
     labs(
       title = "Verdeling en dichtheid van kans op retentie",
       subtitle = glue("Naar **{group}**"),
@@ -2552,30 +2550,30 @@ Get_Density_Plot <- function(fairness_object, group) {
       x = NULL,
       y = NULL)
     
-  ## Verwijder de bestaande kleurenschaal,
-  ## zodat er geen waarschuwing komt over de bestaande kleurenschaal
+  ## Remove the existing color scale,
+  ## so there is no warning about the existing color scale
   density_plot$scales$scales <- list()
   
-  ## Bepaal de kleur
+  ## Define the color
   density_plot <- density_plot +
    
-    # Voeg een enkele schaal toe voor de fill
+    # Add a single scale for the fill
     scale_fill_manual(
       name = NULL,
       values = .values
     ) +
     
-    ## Pas de x-as schaal aan
+    ## Adjust the x-axis scale
     scale_x_continuous(breaks = lX_Axis[["x_breaks"]],
                        labels = lX_Axis[["x_labels"]],
                        limits = c(0, 1)) +
     
-    ## Voeg een lijn toe op de 50% met als label "50%"
+    ## Add a line on the 50% labeled “50%”
     geom_vline(xintercept = 0.5,
                linetype = "dotted",
                color = lColors_default[["sPositive_color"]]) +
     
-    ## Voeg het label "50%" toe
+    ## Add the label “50%”
     annotate(
       "text",
       x = 0.53,
@@ -2584,17 +2582,17 @@ Get_Density_Plot <- function(fairness_object, group) {
       vjust = -0.3,
       color = lColors_default[["sPositive_color"]]) +
     
-    # Pas het LTA thema toe
+    # Apply the LTA theme
     Set_LTA_Theme()  +
     
-    # Pas een aantal thema elementen aan
+    # Customize some theme elements
     theme(
       panel.grid.minor = element_blank(),
       legend.position = "none",
       strip.text = element_blank()
     )
   
-  ## Voeg LTA elementen toe
+  ## Add LTA elements.
   density_plot <- Add_LTA_Theme_Elements(density_plot,
                                          title_subtitle = TRUE) +
     theme(legend.position = "bottom",
@@ -2606,19 +2604,19 @@ Get_Density_Plot <- function(fairness_object, group) {
   
 }
 
-## Functie om een fairness plot t emaken
+## Function to create a fairness plot
 Get_Fairness_Plot <- function(fairness_object, group, privileged) {
   
-  ## Bepaal de y as
+  ## Determine the y axis
   y_breaks <- seq(-100, 100, by = 0.2)
   
-  ## Maak een fairness plot
+  ## Create a fairness plot
   fairness_plot <- fairness_object |> 
     plot() +
     theme_minimal() +
     Set_LTA_Theme() +
     
-    ## Voeg titel en subtitel toe
+    ## Add title and subtitle
     labs(
       title = "Fairness check",
       subtitle = glue("Fairness van het model voor **{group}** ",
@@ -2627,26 +2625,26 @@ Get_Fairness_Plot <- function(fairness_object, group, privileged) {
       x = NULL,
       y = NULL)
     
-  ## Verwijder de bestaande kleurenschaal, 
-  ## zodat er geen waarschuwing komt over de bestaande kleurenschaal
+  ## Remove the existing color scale, 
+  ## so there is no warning about the existing color scale
   fairness_plot$scales$scales <- list()
   
-  # Bouw de plot verder op
+  # Build the plot further
   fairness_plot <- fairness_plot +
     
-    ## Bepaal de kleur
+    ## Define the color
     scale_fill_manual(
       values = c(lColors_default[["sPositive_color"]])
     ) +
       
-    # Pas de y-as schaal aan
+    # Adjust the y-axis scale
     scale_y_continuous(breaks = y_breaks)
     
-    ## Voeg LTA elementen toe
+    ## Add LTA elements.
     fairness_plot <- Add_LTA_Theme_Elements(fairness_plot,
                                             title_subtitle = TRUE) +
     
-    ## Pas een aantal thema elementen aan
+    ## Customize some theme elements
     theme(
       panel.grid.minor = element_blank(),
       legend.position = "none",
@@ -2657,8 +2655,8 @@ Get_Fairness_Plot <- function(fairness_object, group, privileged) {
   
 }
 
-## Op basis van het bbplot package zijn gebouwd left_align ensave_plot
-## (vandaar de namen in lowercase, zodat deze functies die van het bbplot package overschrijven)
+## Based on the bbplot package are built left_align ensave_plot
+## (hence the names in lowercase, so that these functions override those of the bbplot package)
 
 ## Left align
 left_align <- function (plot_name, pieces) {
@@ -2683,7 +2681,7 @@ save_plot <- function (plot_grid, width, height, save_filepath) {
   )
 }
 
-## Bewaar een plot
+## Save a plot
 Finalize_Plot <-
   function (plot_name,
             source_name,
@@ -2698,12 +2696,12 @@ Finalize_Plot <-
       plot_name,
       ncol = 1,
       nrow = 2,
-      # heights = c(1, 0.045 / (height_pixels / 450)) ## Correctie op BBC template (marge)
+      # heights = c(1, 0.045 / (height_pixels / 450)) ## Correction to BBC template (margin)
       heights = c(1, 0 / (height_pixels / 450))
     )
     save_plot(plot_grid, width_pixels, height_pixels, save_filepath)
     
-    ## Als de plot getoond moet worden, toon deze dan
+    ## If the plot must be shown, show it
     if(show_plot) {
       invisible(plot_grid)
     }
@@ -2711,10 +2709,10 @@ Finalize_Plot <-
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 8. HULP FUNCTIES ####
+## 8. AID FUNCTIONS ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Functie nummers om te zetten naar een leesbare notatie
+## Function convert numbers to readable notation
 Change_Number_Marks <- function(x, digits = 0) {
   return(formatC(round(x, digits), 
                  format = "f", 
@@ -2723,12 +2721,12 @@ Change_Number_Marks <- function(x, digits = 0) {
                  decimal.mark = ","))
 }
 
-## Haal de versienaam van de dataset op
+## Retrieve the version name of the dataset
 Get_sDataset <- function(df) {
   unique(df$LTA_Dataset)
 }
 
-## Functie om de metadata van de analyse te bepalen
+## Function to determine the metadata of the analysis
 Get_Metadata <- function() {
   
   lMetadata <- list(

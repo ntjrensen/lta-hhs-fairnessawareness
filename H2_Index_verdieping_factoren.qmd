@@ -1,14 +1,14 @@
 ---
 subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
 
-# Auteur en datum
+# Author and date
 author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
 date: last-modified
 
 # LTA Template
 ltatemplate: 0.9.1.9000
 
-# Format en output
+# Format and output
 output-file: "lta-hhs-tidymodels-h2-verdieping-factoren.html"
 
 # Parameters
@@ -49,12 +49,12 @@ includes:
 #| label: setup
 #| echo: false
 
-## Sluit het _Setup.R bestand in
+## Include the _Setup.R file
 source("_Setup.R")
 
 ```
 
-<!-- Inleiding -->
+<!-- Introduction -->
 
 ::: {.content-hidden unless-meta="includes.inleiding"}
 ## Inleiding
@@ -82,35 +82,35 @@ We laden de bewerkte data en prognosemodellen in voor:
 ```{r}
 #| label: load-data
 
-## Bepaal de paden
+## Define the paths
 sData_outputpath           <- Get_Model_Outputpath(mode = "data")
 sFittedmodels_outputpath   <- Get_Model_Outputpath(mode = "last-fits")
 sModelresults_outputpath   <- Get_Model_Outputpath(mode = "modelresults")
 
-## Laad de data voor de opleiding: data, last fits en model results
+## Load data for training: dates, last fits and model results
 dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE)
 lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
 dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
 
-# Pas de Retentie variabele aan naar numeric (0/1), 
-# zodat er een explainer van gemaakt kan worden
+# Adjust the Retentie variable to numeric (0/1), 
+# so it can be turned into an explainer
 dfOpleiding_inschrijvingen$Retentie <- as.numeric(dfOpleiding_inschrijvingen$Retentie) - 1
 
-## Maak een lijst van dfPersonas
+## Create a list of dfPersonas
 lDfPersona <- list()
 
-## Loop over de variabelen
+## Walk over the variables
 lDfPersona <- map(c("Geslacht", "Vooropleiding", "Aansluiting"),
                   ~ Get_dfPersona(.x)) |>
   set_names(c("Geslacht", "Vooropleiding", "Aansluiting"))
 
 dfPersona_per_group <- bind_rows(lDfPersona) 
 
-## Bewaar dit bestand als excel
-sOutputPath <- file.path("92_Tmp", "dfPersona_per_group.xlsx")
+## Save this file as an Excel spreadsheet
+sOutputPath <- file.path("R/data", "dfPersona_per_group.xlsx")
 writexl::write_xlsx(dfPersona_per_group, sOutputPath)
 
-## Laad de persona's
+## Load the personas
 dfPersona_all <- Get_dfPersona()
 
 ```
@@ -134,10 +134,10 @@ last_fit    <- lLast_fits[[sBest_model]]
 fitted_model <- last_fit |>
   extract_fit_parsnip()
 
-## Controleer of de coefficienten van het model numeriek zijn
+# Check that the coefficients of the model are numerical
 coefs <- tidy(fitted_model)$estimate
 
-# Controleer of de coëfficiënten numeriek zijn
+# Check that the coefficients are numerical
 if (!is.numeric(coefs)) {
   stop("De geëxtraheerde coëfficiënten zijn niet numeriek.")
 }
@@ -147,14 +147,14 @@ if (!is.numeric(coefs)) {
 ```{r}
 #| label: lf-explainer
 
-## Extraheer het fitted model en de workflow
+# Extract the fitted model and workflow
 fitted_model <- last_fit |>
   extract_fit_parsnip()
 
 workflow <- last_fit |>
   extract_workflow()
 
-# Maak een explainer
+# Create an explainer
 explain_lf <- DALEX::explain(
   model = workflow,
   data = dfOpleiding_inschrijvingen,
@@ -183,16 +183,16 @@ De meeste voorspellende factoren en hun RMSE zijn:
 
 sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_model_parts_rmse"))
 
-## Als de plot niet bestaat of als recreateplots - T, maak dan een nieuwe plot
+## If the plot does not exist or if recreateplots - T, create a new plot
 if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
-  ## Bereken de model parts op basis van de RMSE
+  ## Calculate the model parts based on the RMSE
   mp_rmse <- model_parts(explain_lf, loss_function = loss_root_mean_square)
   
-  ## Maak een plot van de RMSE
+  ## Create a plot of the RMSE
   mp_rmse_plot <- Get_RMSE_Plot(mp_rmse)
   
-  ## Bewaar de plot
+  ## Save the plot
   suppressWarnings(
     Finalize_Plot(
       plot_name = mp_rmse_plot,
@@ -200,12 +200,12 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
       height_pixels = 50 + (15 * length(unique(mp_rmse$variable)))
     ))
 
-  # ## Toon de bestaande plot
+  # Show the existing plot
   knitr::include_graphics(sPlotPath)
       
 } else {
   
-  ## Toon de bestaande plot
+  ## Show the existing plot
   knitr::include_graphics(sPlotPath)
   
 }
@@ -230,12 +230,12 @@ We kijken hiermee naar de voorspelling van het model per groep en de bijdrage va
 #| echo: false
 #| results: asis
 
-## Maak een breakdown van de meeste voorkomende student over alle data
+## Create a breakdown of the most common student across all dates
 breakdown_lf_all <- predict_parts(explainer = explain_lf,
                                   new_observation = dfPersona_all[1, ],
                                   type = "break_down")
 
-## Bereken de intercept
+## Calculate the intercept
 nIntercept <- breakdown_lf_all |> 
   filter(variable == "intercept") |>
   pull(cumulative) * 100 |> 
@@ -274,31 +274,31 @@ We kijken eerst naar de meest voorkomende student in de opleiding. We analyseren
 #| echo: false
 #| results: asis
 
-## Bepaal de plot
+## Define the plot
 sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_break_down_distribution_all"))
 
-## Als de plot niet bestaat of als recreateplots - T, maak dan een nieuwe plot
+## If the plot does not exist or if recreateplots - T, create a new plot
 if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
-  ## Bepaal de algemene persona en de breakdown (met distributie)
+  ## Define the overall persona and breakdown (with distribution)
   breakdown_lf_all <- predict_parts(explainer = explain_lf,
                                     new_observation = dfPersona_all[1, ],
                                     type = "break_down",  
                                     keep_distributions = TRUE)
   
-  ## Bepaal de dataframe voor de breakdown
+  ## Determine the data frame for the breakdown
   dfBreakdown_lf_all <- Get_dfBreakdown_Lf(breakdown_lf_all)
   
-  ## Bepaal de titels
+  ## Define the titles
   lTitles <- Get_Breakdown_Titles(breakdown_lf_all, dfPersona_all, 1, 
                                   "Alle studenten", "Alle studenten",
                                   mode = "all")
   
-  ## Bouw de plot
+  ## Build the plot
   breakdown_plot <- Get_Breakdown_Plot_All(breakdown_lf_all, 
                                            lTitles)
     
-  ## Bewaar de plot
+  ## Save the plot
   suppressWarnings(
     Finalize_Plot(
           plot_name = breakdown_plot,
@@ -308,12 +308,12 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
     )
 
   
-  ## Toon de bestaande plot
+  ## Show the existing plot
   knitr::include_graphics(sPlotPath)
 
 } else {
 
-  ## Toon de bestaande plot
+  ## Show the existing plot
   knitr::include_graphics(sPlotPath)
 
 }
@@ -331,25 +331,25 @@ De volgorde van de variabelen is zo gesorteerd dat per groep de meest voorspelle
 #| echo: false
 #| results: asis
 
-## Loop over de persona's
+## Walk the personas
 for(group in names(lDfPersona)) {
   
-  ## Laad de dataset voor de huidige persona
+  ## Load the dataset for the current persona
   dfPersona <- lDfPersona[[group]]
   
-  ## Print de naam van lDfPersona als header
+  ## Print the name of lDfPersona as a header
   Knit_Header(glue("Naar {tolower(group)}"), 5)
   
-  ## Bepaal of er in de dataset een groep is met minder dan 21 studenten;
-  ## Zo ja, laat die buiten beschouwing en meld dit
+  ## Determine if there is a group in the dataset with fewer than 21 students;
+  ## If so, leave those out and report this
   if (any(dfPersona$Subtotaal < 21)) {
     
-    ## Bepaal de categorieën met minder dan 21 studenten
+    ## Determine categories with fewer than 21 students
     lCategorie_te_laag <- dfPersona |>
       filter(Subtotaal < 21) |>
       pull(Categorie) 
     
-    ## Bepaal de tekst voor de melding
+    ## Define the text for the notification
     if(length(lCategorie_te_laag) > 1) {
       .categorieen  <- paste0(head(lCategorie_te_laag, 
                                    length(lCategorie_te_laag) - 1), " en ", 
@@ -362,16 +362,16 @@ for(group in names(lDfPersona)) {
       .persoonsvorm <- "is"
     }
     
-    ## Print de melding
+    ## Print the notification
     Knit_Print_Rule(glue("{(.subtotalen)} {(.categorieen)} {(.persoonsvorm)} te laag voor een betrouwbare analyse."))
   }
   
-  ## Open een panel-tabset
+  ## Open a panel tabset
   Knit_Print_Rule(glue("::: {.panel-tabset}", 
                        .open = "{{", 
                        .close = "}}"))
   
-  ## Bepaal de sorteervolgorde van de variabelen
+  ## Determine the sort order of the variables
   if(group == "Geslacht") {
     lArrange <- c("M", "V")
   } else if (group == "Vooropleiding") {
@@ -380,47 +380,47 @@ for(group in names(lDfPersona)) {
     lArrange <- lLevels_aansluiting
   }
   
-  # Sorteer de persona op basis van de levels van de categorie
+  # Sort the persona based on the levels of the category
   dfPersona <- dfPersona |> 
     arrange(match(Categorie, lArrange))
   
-  # Loop over de persona's
+  # Walk the personas
   for(j in 1:nrow(dfPersona)) {
     
-    ## Bepaal de huidige student
+    ## Determine the current student
     student_current   <- dfPersona[j, ]
     student_groep     <- student_current$Groep
     student_categorie <- dfPersona[j, ]$Categorie # levels(student_current[[student_groep]])[j]
     
-    ## Bepaal de plotnaam
+    ## Determine the plot name
     sPlotPath <- Get_Breakdown_Plotpath(student_groep, student_categorie)
     
-    ## Als het subtotaal < 21, ga dan door naar het volgende item
+    ## If the subtotal < 21, proceed to the next item
     if (as.numeric(dfPersona[j, 'Subtotaal']) < 21) {
       next
     }
     
-    ## Als recreateplots == T, maak dan een nieuwe plot
+    ## If recreateplots == T, create a new plot
     if(params$recreateplots) {
       
-      ## Bepaal de breakdown voor de huidige student
+      ## Determine the breakdown for the current student
       breakdown_lf <- predict_parts(explainer = explain_lf,
                                     new_observation = student_current,
                                     type = "break_down")
       
       dfBreakdown_lf <- Get_dfBreakdown_Lf(breakdown_lf)
       
-      ## Toon de header
+      ## Show the header
       Knit_Header(student_categorie, 5)
       
-      ## Functie om de titels te bepalen
+      ## Get a list of titles
       lTitles <- Get_Breakdown_Titles(breakdown_lf, dfPersona, j, 
                                       student_groep, student_categorie)
       
-      # Watervalplot met ggplot
+      # Create a waterfall plot
       plot <- Get_Breakdown_Plot(dfBreakdown_lf, lTitles)
       
-      ## Bewaar de plot
+      ## Save the plot
       suppressWarnings(
         Finalize_Plot(
           plot_name = plot,
@@ -428,17 +428,17 @@ for(group in names(lDfPersona)) {
           height_pixels = 50 + (20 * length(breakdown_lf$variable))
         ))
       
-      ## Toon de bestaande plot
+      ## Show the existing plot
       sPlot <- glue("![Breakdown naar {tolower(student_groep)}: {student_categorie}]({sPlotPath}){{#fig-breakdown-{gsub(' ', '-', tolower(student_groep))}-{gsub(' ', '-', tolower(student_categorie))}}}")
       Knit_Print_Rule(sPlot)
       
       
     } else {
       
-      ## Toon de header
+      ## Show the header
       Knit_Header(student_categorie, 5)
       
-      ## Toon de bestaande plot
+      ## Show the existing plot
       sPlot <- glue("![Breakdown naar {tolower(student_groep)}: {student_categorie}]({sPlotPath}){{#fig-breakdown-{gsub(' ', '-', tolower(student_groep))}-{gsub(' ', '-', tolower(student_categorie))}}}")
       Knit_Print_Rule(sPlot)
       
@@ -446,7 +446,7 @@ for(group in names(lDfPersona)) {
     
   }
   
-  ## Sluit de panel-tabset
+  ## Close the panel tabset
   Knit_Print_Rule(":::")
   
 }
@@ -463,13 +463,13 @@ De volgorde van de variabelen is cumulatief (additief) en maakt dus uit voor de 
 #| label: fig-lf-shapley
 #| fig-cap: "Shapley values"
 
-## Bewaar de plot
+## Save the plot
 sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_shapley"))
 
-## Als de plot niet bestaat of als recreateplots - T, maak dan een nieuwe plot
+## If the plot does not exist or if recreateplots - T, create a new plot
 if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
-  ## Bepaal de Shapley waarden
+  ## Determine the Shapley values
   lf_shapley <- 
     predict_parts(
       explainer = explain_lf,
@@ -478,13 +478,13 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
       B = 20
     )
 
-  ## Zet deze om naar een dataframe
+  ## Convert these to a data frame
   dfShapley <- Get_dfShapley(lf_shapley)
 
-  ## Bouw de plot
+  ## Build the plot
   shapley_plot <- Get_Shapley_Plot(dfShapley)
   
-  ## Bewaar de plot
+  ## Save the plot
   suppressWarnings(
     Finalize_Plot(
       plot_name = shapley_plot,
@@ -492,12 +492,12 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
       height_pixels = 50 + (20 * length(unique(dfShapley$variable_name)))
     ))
   
-  ## Print de bestaande plot
+  ## Print the existing plot
   knitr::include_graphics(sPlotPath)
 
 } else {
 
-  ## Print de bestaande plot
+  ## Print the existing plot
   knitr::include_graphics(sPlotPath)
 
 }
@@ -535,9 +535,7 @@ Opnieuw kijken we naar geslacht, vooropleiding en aansluiting. N.B. Het kan zijn
 #| echo: false
 #| results: asis
 
-library(ingredients)
-
-## Bepaal de meest voorkomende studenten
+## Determine the most common students
 student_all <- dfPersona_all[1, ] |> as.data.frame()
 
 dfPersona_tmp <- bind_rows(lDfPersona)
@@ -547,7 +545,7 @@ student_mbo  <- dfPersona_tmp[3, ]
 student_havo <- dfPersona_tmp[4, ]
 student_vwo  <- dfPersona_tmp[5, ]
 
-## Maak variabelen splits voor elke continue
+## Create variables splits for each continuous
 variable_splits = list(
   Leeftijd = seq(
     min(dfOpleiding_inschrijvingen$Leeftijd),
@@ -570,7 +568,7 @@ variable_splits = list(
 
 for (group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
   
-  ## Als recreateplots == T, maak dan een nieuwe plot
+  ## If recreateplots == T, create a new plot
   if(params$recreateplots) {
   
     ## Bewaar de plot
@@ -578,7 +576,7 @@ for (group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
     
     Knit_Header(group, 4)
   
-    ## Maak een breakdown van de meeste voorkomende student over alle data
+    ## Create a breakdown of the most common student across all dates
     if(group == "Geslacht") {
       .new_observation <- dfPersona_tmp |>
         filter(Groep == "Geslacht") |> 
@@ -602,14 +600,14 @@ for (group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
         ))
     }
     
-    ## Maak een ceteris paribus analyse
+    ## Make a Ceteris Paribus analysis
     cp_lf_all <- predict_profile(
       explainer = explain_lf,
       new_observation = .new_observation,
       variable_splits = variable_splits
     )
 
-    ## Maak een Ceteris Paribus plot
+    ## Create a Ceteris Paribus plot
     cp_plot <- Get_Ceteris_Paribus_Plot(cp_lf_all, group)
 
     suppressWarnings(
@@ -618,13 +616,13 @@ for (group in c("Geslacht", "Vooropleiding", "Aansluiting")) {
             save_filepath = sPlotPath
           ))
 
-    ## Print de bestaande plot
+    ## Print the existing plot
     sPlot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({sPlotPath}){{#fig-cp-{tolower(group)}}}")
     Knit_Print_Rule(sPlot)
     
     } else {
       
-      ## Print de bestaande plot
+      ## Print the existing plot
       sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_cp_", tolower(group))))
       sPlot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({sPlotPath}){{#fig-cp-{tolower(group)}}}")
       Knit_Print_Rule(sPlot)
@@ -656,57 +654,57 @@ We analyseren eerst de variabelen voor alle studenten. We tonen niet alleen de g
 
 set.seed(1134)
 
-## Maak een PDP voor alle variabelen. Gebruik de variable_splits die we eerder hebben gemaakt
+## Create a PDP for all variables. Use the variable_splits we created earlier
 for (group in c("Alle studenten", "Geslacht", "Vooropleiding", "Aansluiting")) {
   
-  ## Als recreateplots == T, maak dan een nieuwe plot
+  ## If recreateplots == T, create a new plot
   if(params$recreateplots) {
   
-    ## Bewaar de plot
+    ## Save the plot
     sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_pdp_",
                                                                  tolower(group))))
-    ## Maak een header
+    ## Create a header
     Knit_Header(group, 4)
 
     if(group == "Alle studenten") {
       
-      ## Maak het model profiel
+      ## Create the model profile
       pdp_lf <- model_profile(explainer = explain_lf,
                               variable_splits = variable_splits)
 
-      ## Maak een Partial Dependence plot
+      ## Create a Partial Dependence plot
       pdp_plot <- Get_Partial_Dependence_Plot(pdp_lf, "all")
       
       
     } else {
       
-      ## Maak het model profiel
+      ## Create the model profile
       pdp_lf <- model_profile(explainer = explain_lf,
                               variable_splits = variable_splits,
                               groups = group)
       
-      ## Maak een Partial Dependence plot per groep
+      ## Create a Partial Dependence plot by group
       pdp_plot <- Get_Partial_Dependence_Plot(pdp_lf, group)
       
     }
     
-    ## Bewaar de plot
+    ## Save the plot
     suppressWarnings(
           Finalize_Plot(
             plot_name = pdp_plot,
             save_filepath = sPlotPath
           ))
 
-    ## Print de bestaande plot
+    ## Print the existing plot
     sPlot <- glue("![Partial Dependence profiel naar {tolower(group)}]({sPlotPath}){{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
     Knit_Print_Rule(sPlot)
     
     } else {
       
-      ## Maak een header
+      ## Create a header
       Knit_Header(group, 4)
       
-      ## Print de bestaande plot
+      ## Print the existing plot
       sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_pdp_",
                                                                    tolower(group))))
       sPlot <- glue("![Partial Dependence profiel naar {tolower(group)}]({sPlotPath}){{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
@@ -727,18 +725,18 @@ De volgende stap (stap 3) is te onderzoeken of er binnen deze opleiding binnen d
 Dit doen we door voor verschillende groepen studenten de metrieken van de modellen te evalueren, zoals accuraatheid. Als de metrieken van de voorspellingen van het model voor verschillende groepen studenten sterk uiteenlopen kan er sprake zijn van een bias, wat kan duiden op kansenongelijkheid. Dit is het onderwerp van de volgende en laatste analyse.
 :::
 
-<!-- Verantwoording -->
+<!-- Accountability -->
 
 ::: {.content-hidden unless-meta="includes.verantwoording"}
-{{< include R/scripts/Include_Verantwoording.qmd >}}
+{{< include R/qmd/Include_Verantwoording.qmd >}}
 :::
 
 <!-- Copyright -->
 
-{{< include R/scripts/Include_Copyright.qmd >}}
+{{< include R/qmd/Include_Copyright.qmd >}}
 
 
-<!-- Opschonen -->
+<!-- Cleaning up -->
 
 ```{r, echo = FALSE}
 #| label: cleanup

@@ -1,7 +1,7 @@
 ---
 subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.model >}})"
 
-# Auteur en datum
+# Author and date
 author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
 date: last-modified
 
@@ -44,15 +44,15 @@ includes:
 #| label: setup
 #| echo: false
 
-## Sluit het _Setup.R bestand in
+## Include the _Setup.R file
 source("_Setup.R")
 
-## Bepaal de lange naam van de opleidingsvorm en faculteit
+## Determine the long name of the type of education and faculty
 opleidingsvorm_lang <- Get_Opleidingsvorm_Lang(params$opleidingsvorm_afkorting)
 faculteit_lang      <- Get_Faculteitsnaam_Lang(params$faculteit)
 ```
 
-<!-- Inleiding -->
+<!-- Introduction -->
 
 In deze analyse onderzoeken we **`r sSucces_model`** voor de opleiding **`r Get_Opleidingsnaam_Synth(params$opleidingsnaam)`** (`r params$opleiding`), `r opleidingsvorm_lang`, eerstejaars, van de faculteit `r Get_Faculteitsnaam_Lang(params$faculteit)` (`r params$faculteit`).
 
@@ -90,9 +90,9 @@ Heb je vragen of suggesties over deze analyse? Neem dan contact op met Theo Bakk
 
 <!-- Copyright -->
 
-{{< include R/scripts/Include_Copyright.qmd >}}
+{{< include R/qmd/Include_Copyright.qmd >}}
 
-<!-- Opschonen -->
+<!-- Cleaning up -->
 
 ```{r, echo = FALSE}
 #| label: cleanup

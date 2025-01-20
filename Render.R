@@ -24,11 +24,11 @@
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1. LAAD LTABASE PACKAGE + DEFAULT DATABASES ####
+## 1. LOAD LTABASE PACKAGE + DEFAULT DATABASES ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.1 Standaard packages die direct nodig zijn ####
+## 1.1 Standard packages needed immediately ####
 
 ## Installeer here, cli en icecream indien nodig
 for (i in c("here", "cli", "icecream")) {
@@ -38,50 +38,50 @@ for (i in c("here", "cli", "icecream")) {
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.2 ltabase package in (installeer indien nodig) ####
+## 1.2 ltabase package (install if necessary) ####
 
 source("R/functions/Inladen_ltabase.R")
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
 
-## Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
+## Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
 ltabase::load_lta_datasets(message = TRUE)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.4 Laad extra bibliotheken
+## 1.4 Load additional libraries
 
-## Laad extra bibliotheken
-library(tidymodels)  # voor machine learning
-library(vip)         # voor variable importance plots
-library(forcats)     # om factor variabelen te bewerken
-library(performance) # voor performance metingen op lr modellen
-library(dlookr)      # om data te inspecteren
-library(gtsummary)   # voor beschrijvende summary tabellen
-library(cli)         # voor cli teksten
-library(quarto)      # voor quarto bestanden
+## Load additional libraries
+library(tidymodels)  # for machine learning
+library(vip)         # for variable importance plots
+library(forcats)     # to edit factor variables
+library(performance) # for performance measurements on lr models
+library(dlookr)      # to inspect data
+library(gtsummary)   # for descriptive summary tables
+library(cli)         # for cli texts
+library(quarto)      # for quarto files
 
-## Geef de voorkeur bij conflicten aan het tidymodels package
+## When conflicts arise, give preference to the tidymodels package
 tidymodels_prefer(quiet = TRUE)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.5 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
 
-## Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
+## Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
 ltabase::load_lta_datasets(message = TRUE)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.6 Laad extra functies ####
+## 1.6 Load additional features ####
 
 source("R/functions/report.helpers.R")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2. RENDER DE OUTPUT ####
+## 2. RENDER THE OUTPUT ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.0 Bepaal de selectie ####
+## 2.1 Determine the selection ####
 
 dfRender <- dfOpleidingen |>
   mutate(INS_Opleiding_en_Opleidingsvorm = paste(INS_Opleiding, INS_Opleidingsvorm, sep = "_")) |>
@@ -108,13 +108,13 @@ dfRender <- dfOpleidingen |>
                 everything())
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.1 Loop over opleidingen en render de output ####
+## 2.2 Walk across study programmes and render outputs ####
 
 lUitval <-  c("Uitval na 1 jaar", "Alle uitval")
 
 for(i in 1:nrow(dfRender)) {
   
-  ## Bepaal de opleiding en opleidingsvorm
+  ## Determine study programme and type of education
   .opleiding      <- dfRender$INS_Opleiding[i] 
   .opleidingsvorm <- dfRender$INS_Opleidingsvorm[i]
   
@@ -129,11 +129,11 @@ for(i in 1:nrow(dfRender)) {
   
   for (j in lUitval) {
   
-    ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
+    ## Create the variables for the current study programme based on the programme name and type of education
     current_render_opleiding <- Get_Current_opleiding(opleiding = .opleiding,
                                                       opleidingsvorm = .opleidingsvorm)
 
-    ## Bepaal de output file:
+    ## Define the output file:
     ## faculteit-opleiding-opleidingsvorm-uitval.html
     .uitval <- janitor::make_clean_names(j)
     .output_file <- paste(
@@ -150,11 +150,11 @@ for(i in 1:nrow(dfRender)) {
       sep = ""
     )
     
-    ## Bepaal de output directory
+    ## Define the output directory
     .output_dir <- file.path("_output",
                              tolower(current_render_opleiding$INS_Faculteit))
     
-    ## Bepaal de parameters voor de quarto file
+    ## Define the parameters for the quarto file
     .execute_params <- list(
       uitval                   = j,
       faculteit                = current_render_opleiding$INS_Faculteit,
@@ -167,7 +167,7 @@ for(i in 1:nrow(dfRender)) {
                                         FALSE)
     )
     
-    ## Render de quarto file en verplaats deze naar de output directory
+    ## Render the quarto file and move it to the output directory
     Quarto_Render_Move(input = "Index_basis.qmd",
                        output_file = .output_file,
                        output_dir = .output_dir,
@@ -182,11 +182,11 @@ for(i in 1:nrow(dfRender)) {
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.2 Verplaats de output naar de output directory van de repo buiten dit project ####
+## 2.2 Move the output to the output directory of the repo outside this project ####
 
 bRemove_originals <- FALSE
 
-## Kopieer de gerenderde bestanden naar de output directory van de repo buiten dit project
-## Verwijder de originele bestanden indien bRemove_originals = TRUE
+## Copy the rendered files to the output directory of the repo outside this project
+## Delete the original files if bRemove_originals = TRUE
 Copy_Reports(remove_orgials = bRemove_originals)
 

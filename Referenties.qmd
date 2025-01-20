@@ -1,8 +1,0 @@
----
-# No title for this page
----
-
-# Referenties {.unnumbered}
-
-::: {#refs}
-:::

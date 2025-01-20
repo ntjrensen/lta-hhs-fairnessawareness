@@ -27,45 +27,45 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 0. Functies voor deze pagina ####
+## 0. Features for this page ####
 
-## Functie om de rootfolder van het project te bepalen
+## Function to determine the root folder of the project
 Get_Rootdirectory <- function() {
 
-    # Bepaal de rootfolder van het project
+    # Determine the root folder of the project
     sRootdirectory <- here::here()
 
-    # Zoek de eindpositie van het pad tot en met "LTA-HHS (Projectfolder)"
+    # Find the end position of the path to "LTA-HHS (Projectfolder)"
     nEindpositie <- regexpr("LTA-HHS \\(Projectfolder\\)", sRootdirectory)
 
-    # Bewaar de substring tot het einde van de gevonden reeks
+    # Keep the substring until the end of the sequence found
     sRootdirectory <- substr(sRootdirectory, 1, nEindpositie + attr(nEindpositie, "match.length") - 1)
 
     return(sRootdirectory)
 }
 
-## Functie om het pad naar het ltabase package te bepalen
+## Function to determine the path to the ltabase package
 Get_Ltabase_path <- function() {
 
     sLtabase_directory <- file.path(Get_Rootdirectory(),
                                     "00 LTA Git/Git HHs/LTA_Packages/ltabase_releases")
 
-    ## Haal de laatste versie van ltabase op uit de directory en sorteer op naam descending
+    ## Retrieve the latest version of ltabase from the directory and sort by name descending
     file_list <- list.files(sLtabase_directory, pattern = "*.tgz", full.names = TRUE) |>
         file.info() |>
-        ## Haal het meest recente package op basis van ctime
+        ## Get the latest package based on ctime
         subset(ctime == max(ctime)) |>
         rownames() |>
         sort(decreasing = TRUE)
 
-    ## Bewaar de laatste versie van ltabase in sLtabase_path
+    ## Store the latest version of ltabase in sLtabase_path
     sLtabase_path <- file_list[1]
 
     return(sLtabase_path)
 
 }
 
-## Functie om de versie van ltabase te bepalen
+## Function to determine the version of ltabase
 Get_Ltabase_version <- function() {
 
     ## Bepaal de versie van ltabase op basis van sLtabase_path
@@ -75,38 +75,38 @@ Get_Ltabase_version <- function() {
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1. INSTALLEER EN LAAD DE LAATSTE VERSIE VAN LTABASE PACKAGE ####
+## 1. INSTALL AND LOAD THE LATEST VERSION OF LTABASE PACKAGE ####
 
-## Controleer of ltabase is geïnstalleerd:
-## 1. Zo niet installeer dan de laatste versie
-## 2. Zo ja, controleer of de laatste versie is geïnstalleerd
-## 3. Zo niet installeer dan de laatste versie
+## Verify that ltabase is installed:
+## 1. If not install the latest version.
+## 2. If yes, check that the latest version is installed
+## 3. If not install the latest version
 
 if (!requireNamespace("ltabase", quietly = TRUE)) {
 
-    ## Installeer ltabase
+    ## Install ltabase
     install.packages(Get_Ltabase_path(), repos = NULL, type = 'source')
 
     cli::cli_alert("Het package ltabase is geïnstalleerd naar versie {packageVersion('ltabase')}")
 
 } else {
 
-    ## Als de versie van ltabase niet de laatste versie is, installeer dan de laatste versie
+    ## If the version of ltabase is not the latest version, install the latest version
     if (packageVersion("ltabase") < Get_Ltabase_version()) {
 
         ## Installeer ltabase
         install.packages(Get_Ltabase_path(), repos = NULL, type = 'source')
 
-        cli::cli_alert("Het package ltabase is geüpdatet naar de laatste versie: {packageVersion('ltabase')}")
+        cli::cli_alert("The package ltabase has been updated to the latest version: {packageVersion('ltabase')}")
 
     } else {
-        cli::cli_alert("Het package ltabase is al geïnstalleerd in de laatste versie: {packageVersion('ltabase')}")
+        cli::cli_alert("The package ltabase is already installed in the latest version: {packageVersion('ltabase')}")
     }
 }
 
-## Laad ltabase
+## Load ltabase
 library(ltabase)
 
-## Ignore ltabase voor renv
+## Ignore ltabase for renv
 renv::settings$ignored.packages("ltabase")
 

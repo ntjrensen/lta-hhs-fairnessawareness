@@ -1,10 +1,10 @@
-# Project instellingen
+# Project settings
 project:
   title: "No Fairness without Awareness"
   type: book
   output-dir: _book
   
-# Boek instellingen
+# Book settings
 book:
   title: "No Fairness without Awareness"
   author: "Theo Bakker"
@@ -26,24 +26,24 @@ book:
         - H1_Index_basis.qmd
         - H2_Index_verdieping_factoren.qmd
         - H3_Index_verdieping_kansengelijkheid.qmd
-        - Referenties.qmd
+        - H4_Referenties.qmd
 
-# Brand instellingen
+# Brand settings
 brand: brand/_brand.yml  
 
 # Editor
 editor: source
 
-# Bewaar code
+# Save code
 execute:
  keep-md: false
 
-# Citaties
+# Citations
 link-citations: true
 bibliography: bibliography/references.bib
 csl: bibliography/apa.csl
 
-# Taalinstellingen
+# Language settings
 lang: nl
 language: 
   other-links-title: "Meer informatie"
@@ -51,7 +51,7 @@ language:
 # Lightbox
 lightbox: true
 
-# Output instellingen
+# Output settings
 format:
   html:
     number-sections: true
@@ -59,22 +59,22 @@ format:
     link-external-icon: true
     html-math-method: katex
     
-    # Code instellingen
+    # Code settings
     code-fold: true
     code-summary: "Toon code"
     
-    # Theme instellingen
+    # Theme settings
     theme: 
     - lumen
     - brand
     - "R/scss/lta.scss"
     
-    # Output instellingen
+    # Output settings
     self-contained: true
     standalone: true
     embed-resources: true
     
-    # Links rechterzijde
+    # Hyperlinks on the right
     toc: true
     toc-title: Inhoudsopgave
     toc-depth: 3

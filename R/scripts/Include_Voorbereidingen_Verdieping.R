@@ -24,13 +24,13 @@
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1. LAAD LTABASE PACKAGE ####
+## 1. LOAD LTABASE PACKAGE ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.1 Standaard packages die direct nodig zijn ####
+## 1.1 Standard packages needed immediately ####
 
-## Installeer here, cli en icecream indien nodig
+## Install here, cli and icecream if necessary
 for (i in c("here", "cli", "icecream")) {
   if(!requireNamespace(i, quietly = TRUE)) {
     install.packages(i)
@@ -38,7 +38,7 @@ for (i in c("here", "cli", "icecream")) {
 }
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.2 ltabase package in (installeer indien nodig) ####
+## 1.2 ltabase package (install if necessary) ####
 
 source("R/functions/Inladen_ltabase.R")
 source("R/functions/fairness.helpers.R")
@@ -46,60 +46,60 @@ source("R/functions/fairness.helpers.R")
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
 
-## Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
+## Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
 ltabase::load_lta_datasets(message = TRUE)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.4 Laad extra bibliotheken ####
+## 1.4 Load additional libraries ####
 
-## Laad extra bibliotheken
-library(conflicted)   # om conflicten op te lossen
-library(tidymodels)   # voor machine learning
+## Load additional libraries
+library(conflicted)   # to solve conflicts
+library(tidymodels)   # for machine learning
 
-library(vip)          # voor variable importance plots
-library(forcats)      # om factor variabelen te bewerken
-library(performance)  # voor performance metingen op lr modellen
-#library(dlookr)      # om data te inspecteren > geeft conflicten vanwege showtext_auto()
-library(gtsummary)    # voor beschrijvende summary tabellen
-library(flextable)    # voor flextables
-library(officer)      # voor opmaak in tabellen
-library(gt)           # voor tabellen
-library(gtExtras)     # voor sparklines
-library(cli)          # voor cli teksten
-library(glue)         # voor string interpolatie
-library(probably)     # voor probabilistische modellen
+library(vip)          # for variable importance plots
+library(forcats)      # to edit factor variables
+library(performance)  # for performance measures on lr models
+#library(dlookr)      # to inspect data > gives conflicts because of showtext_auto()
+library(gtsummary)    # for descriptive summary tables
+library(flextable)    # for flextables
+library(officer)      # for formatting in tables
+library(gt)           # for tables
+library(gtExtras)     # for sparklines
+library(cli)          # for cli texts
+library(glue)         # for string interpolation
+library(probably)     # for probabilistic models
 library(discrim)      # discriminant analysis
-library(klaR)         # voor classificatie en visualisatie
-library(betacal)      # voor beta calibration
+library(klaR)         # for classification and visualization
+library(betacal)      # for beta calibration
 
-library(doParallel)   # voor parallel processing
-library(DALEX)        # voor explainable AI
-library(DALEXtra)     # voor explainable AI
-library(lobstr)       # voor het meten van objecten
-library(butcher)      # voor het verkleinen van modellen
-library(iBreakDown)   # voor het uitleggen van modellen
-library(ggtext)       # voor het maken van opmaak in titels
+library(doParallel)   # for parallel processing
+library(DALEX)        # for explainable AI
+library(DALEXtra)     # for explainable AI
+library(lobstr)       # for measuring objects
+library(butcher)      # for shrinking models
+library(iBreakDown)   # for explaining models
+library(ggtext)       # for creating formatting in titles
 
-library(showtext)     # voor het instellen van lettertypes
-library(ggplot2)      # voor het maken van plots
-library(cvms)         # voor confusion matrices
-library(ggimage)      # voor confusion matrices
-library(rsvg)         # voor confusion matrices
-library(ggnewscale)   # voor confusion matrices
+library(showtext)     # for setting fonts
+library(ggplot2)      # for creating plots
+library(cvms)         # for confusion matrices
+library(ggimage)      # for confusion matrices
+library(rsvg)         # for confusion matrices
+library(ggnewscale)   # for confusion matrices
 
-library(ggpubr)       # voor het bewaren van plots
-library(bbplot)       # voor het bewaren van plots
-library(grid)         # voor het bewaren van plots
+library(ggpubr)       # for storing plots
+library(bbplot)       # for storing plots
+library(grid)         # for storing plots
 
-library(gridGraphics) # voor het bewaren van plots
-library(extrafont)    # voor het bewaren van plots
-library(sysfonts)     # voor fonts
+library(gridGraphics) # for storing plots
+library(extrafont)    # for saving plots
+library(sysfonts)     # for fonts
 
-library(fairmodels)   # voor fairness in modellen
+library(fairmodels)   # for fairness in models
 
-library(fs)          # voor file system functies
+library(fs)           # for file system functions
 
-library(quartostamp)  # voor extra quarto add-in functionaliteit
+library(quartostamp)  # for additional quarto add-in functionality
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.5 Fonts ####
@@ -107,26 +107,26 @@ library(quartostamp)  # voor extra quarto add-in functionaliteit
 extrafont::loadfonts(quiet = TRUE)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.6 Laad extra functies ####
+## 1.6 Load additional features ####
 
 source("R/functions/report.helpers.R")
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.7 Kleuren ####
+## 1.7 Colors ####
 
 source("R/scripts/Include_Colors.R")
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.8 Bepaal de voorkeur voor de thema's ####
+## 1.8 Determine preferred themes ####
 
 Set_LTA_Theme()
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.9 Laad extra functies ####
+## 1.9 Load additional features ####
 
 source("R/functions/report.helpers.R")
 
-## Bepaal de volgorde van een aantal levels
+## Determine the order of some levels
 Get_Levels()
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -135,10 +135,10 @@ Get_Levels()
 conflicts_prefer(dplyr::select)
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.11 Netwerkpaden ####
+## 1.11 Network paths ####
 
-# Als LTA_ROOT, LTA_DATA of LTA_BOARD niet bestaan, dan wordt de omgeving opnieuw ingesteld
+# If LTA_ROOT, LTA_DATA or LTA_BOARD do not exist, the environment is reset
 ltabase::set_lta_sys_env()
 
-## Bepaal de netwerkdirectory
+## Define the network directory
 Network_directory <- ltabase::get_lta_network_directory()
