@@ -1,33 +1,33 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## fairness.helpers.R ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
-## Copyright 2024 De HHs
-## Web Page: http://www.hhs.nl
-## Contact: Theo Bakker (t.c.bakker@hhs.nl)
-## Verspreiding buiten De HHs: Nee
-##
-## Doel: Aangepaste functies uit het fairness package, om deze beter te kunnen tonen in html.
-##
-## Afhankelijkheden: Geen
-##
-## Datasets: Geen
-##
-## Opmerkingen:
-## 1) Geen.
-## 2) ___
-##
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Geschiedenis:
-## 01-05-2024: TB: Aanmaak bestand
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# fairness.helpers.R ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# R code of the Learning Technology & Analytics Research Group of THUAS
+# Copyright 2025 THUAS
+# Web Page: http://www.thuas.com
+# Contact: Theo Bakker (t.c.bakker@hhs.nl)
+# Distribution outside THUAS: No
+#
+# Purpose: Aangepaste functies uit het fairness package, om deze beter te kunnen tonen in html.
+#
+# Dependencies: None
+#
+# Datasets: Geen
+#
+# Remarks:
+# 1) None.
+# 2) ___
+#
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Version history:
+# 01-05-2024: TB: File creation
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Enclose the original help functions from the fairness package
+# Enclose the original help functions from the fairness package
 source("R/functions/fairness.dalex.helpers.R")
 
 library(purrr)
 
-## Function to display the outcomes of a fairness object
+# Function to display the outcomes of a fairness object
 Print_Fairness_Object_LTA <- function(x,
                                       ...,
                                       colorize = TRUE,
@@ -39,7 +39,7 @@ Print_Fairness_Object_LTA <- function(x,
                                       show_header = FALSE,
                                       show_warning = FALSE) {
   
-  ## Determine the color codes if colorize = FALSE
+  # Determine the color codes if colorize = FALSE
   if (!colorize) {
     color_codes <- list(
       yellow_start = "",
@@ -51,7 +51,7 @@ Print_Fairness_Object_LTA <- function(x,
     )
   }
   
-  ## Adjust the color codes if the mode is html
+  # Adjust the color codes if the mode is html
   if (mode == "html") {
     color_codes <- list(
       yellow_start = "<span class = metrics-orange>",
@@ -77,20 +77,20 @@ Print_Fairness_Object_LTA <- function(x,
     stopifnot(is.function(loss_aggregating_function))
   }
   
-  ## Determine the data and metrics
+  # Determine the data and metrics
   data <- x$fairness_check_data
   
   models <- unique(data$model)
   epsilon <- x$epsilon
   metrics <- unique(data$metric)
   
-  ## Filter the data by the fairness metrics
+  # Filter the data by the fairness metrics
   filtered <- filter_fairness_check_metrics(data, metrics, fairness_metrics)
   
   data <- filtered$data
   metrics <- filtered$metrics
   
-  ## Check for NAs in the data
+  # Check for NAs in the data
   if (any(is.na(data$score)) & show_warning) {
     warning(
       "NA's zijn weggelaten voor: ",
@@ -99,7 +99,7 @@ Print_Fairness_Object_LTA <- function(x,
     )
   }
   
-  ## Determine the loss aggregating function
+  # Determine the loss aggregating function
   if (is.null(loss_aggregating_function)) {
     loss_aggregating_function <- function(x) {
       return(sum(abs(na.omit(x) - 1)))
@@ -109,7 +109,7 @@ Print_Fairness_Object_LTA <- function(x,
     function_name <- "<br/>**Aangepast verlies**"
   }
   
-  ## Print the results
+  # Print the results
   if(mode == "html" & show_header) {
     cat("<br/>Fairness check voor:",
         paste(models, collapse = ", "),
@@ -121,7 +121,7 @@ Print_Fairness_Object_LTA <- function(x,
         "\n")
   }
   
-  ## Use purrr::walk instead of for-loop
+  # Use purrr::walk instead of for-loop
   purrr::walk(models, function(model) {
     model_data <- data[data$model == model, ]
     
@@ -129,7 +129,7 @@ Print_Fairness_Object_LTA <- function(x,
                                           na.omit(model_data$score) > 1 / epsilon, "metric"])
     passed_metrics <- length(metrics[!metrics %in% failed_metrics])
     
-    ## Values at unfair
+    # Values at unfair
     if (passed_metrics <= unfair_level) {
       cat(
         "\n",
@@ -146,7 +146,7 @@ Print_Fairness_Object_LTA <- function(x,
       )
     }
     
-    ## Values between unfair and fair
+    # Values between unfair and fair
     if (passed_metrics > unfair_level & passed_metrics < fair_level) {
       cat(
         "\n",
@@ -163,7 +163,7 @@ Print_Fairness_Object_LTA <- function(x,
       )
     }
     
-    ## Values at fair
+    # Values at fair
     if (passed_metrics >= fair_level) {
       cat(
         "\n",
@@ -180,7 +180,7 @@ Print_Fairness_Object_LTA <- function(x,
       )
     }
     
-    ## De verlies-aggregatiefunctie afdrukken
+    # De verlies-aggregatiefunctie afdrukken
     cat(function_name,
         ": ",
         round(loss_aggregating_function(data[data$model == model, "score"]), 2),
@@ -191,7 +191,7 @@ Print_Fairness_Object_LTA <- function(x,
   return(invisible(NULL))
 }
 
-## Function to display the outcomes of a fairness object
+# Function to display the outcomes of a fairness object
 Print_Fairness_Object_LTA_oud <- function(x,
                                   ...,
                                   colorize = TRUE,
@@ -203,7 +203,7 @@ Print_Fairness_Object_LTA_oud <- function(x,
                                   show_header = FALSE,
                                   show_warning = FALSE) {
   
-  ## Determine the color codes if colorize = FALSE
+  # Determine the color codes if colorize = FALSE
   if (!colorize) {
     color_codes <- list(
       yellow_start = "",
@@ -215,7 +215,7 @@ Print_Fairness_Object_LTA_oud <- function(x,
     )
   }
   
-  ## Adjust the color codes if the mode is html
+  # Adjust the color codes if the mode is html
   if (mode == "html") {
     color_codes <- list(
       yellow_start = "<span class = metrics-orange>",
@@ -241,20 +241,20 @@ Print_Fairness_Object_LTA_oud <- function(x,
     stopifnot(is.function(loss_aggregating_function))
   }
   
-  ## Determine the data and metrics
+  # Determine the data and metrics
   data <- x$fairness_check_data
   
   models  <- unique(data$model)
   epsilon <- x$epsilon
   metrics <- unique(data$metric)
   
-  ## Filter the data by the fairness metrics
+  # Filter the data by the fairness metrics
   filtered <- filter_fairness_check_metrics(data, metrics, fairness_metrics)
   
   data <- filtered$data
   metrics <- filtered$metrics
   
-  ## Check for NAs in the data
+  # Check for NAs in the data
   if (any(is.na(data$score)) & show_warning) {
     warning(
       "NA's zijn weggelaten voor: ",
@@ -263,7 +263,7 @@ Print_Fairness_Object_LTA_oud <- function(x,
     )
   }
   
-  ## Determine the loss aggregating function
+  # Determine the loss aggregating function
   if (is.null(loss_aggregating_function)) {
     loss_aggregating_function <- function(x) {
       return(sum(abs(na.omit(x) - 1)))
@@ -273,7 +273,7 @@ Print_Fairness_Object_LTA_oud <- function(x,
     function_name <- "<br/>**Aangepast verlies**"
   }
   
-  ## Print the results
+  # Print the results
   if(mode == "html" & show_header) {
     cat("<br/>Fairness check voor:",
         paste(models, collapse = ", "),
@@ -292,7 +292,7 @@ Print_Fairness_Object_LTA_oud <- function(x,
                                           na.omit(model_data$score) > 1 / epsilon, "metric"])
     passed_metrics <- length(metrics[!metrics %in% failed_metrics])
     
-    ## Values at unfair
+    # Values at unfair
     if (passed_metrics <= unfair_level) {
       cat(
         "\n",
@@ -311,7 +311,7 @@ Print_Fairness_Object_LTA_oud <- function(x,
       )
     }
     
-    ## Values between unfair and fair
+    # Values between unfair and fair
     if (passed_metrics > unfair_level &
         passed_metrics < fair_level) {
       cat(
@@ -331,7 +331,7 @@ Print_Fairness_Object_LTA_oud <- function(x,
       )
     }
     
-    ## Values at fair
+    # Values at fair
     if (passed_metrics >= fair_level) {
       cat(
         "\n",
@@ -350,7 +350,7 @@ Print_Fairness_Object_LTA_oud <- function(x,
       )
     }
     
-    ## De verlies-aggregatiefunctie afdrukken
+    # Printing the loss aggregation function
     cat(function_name,
         ": ",
         round(loss_aggregating_function(data[data$model == model, "score"]), 2),

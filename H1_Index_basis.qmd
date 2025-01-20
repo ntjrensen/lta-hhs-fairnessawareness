@@ -49,13 +49,13 @@ includes:
 
 prognose_titel <- paste("Prognosemodel", tolower(params$model)) ## Set the title
 
-source("_Setup.R") ## Include the _Setup.R file
+source("_Setup.R") # Include the _Setup.R file
 
-bInclude_Model_LR    <- rmarkdown::metadata$includes$model_lr    ## Penalized Logistic Regression
-bInclude_Model_RF    <- rmarkdown::metadata$includes$model_rf    ## Random Forest
-bInclude_Model_SVM   <- rmarkdown::metadata$includes$model_svm   ## Support Vector Machine
-bInclude_Final_fit   <- rmarkdown::metadata$includes$final_fit   ## Final Fit
-bInclude_Conclusies  <- rmarkdown::metadata$includes$conclusies  ## Conclusies
+bInclude_Model_LR    <- rmarkdown::metadata$includes$model_lr    # Penalized Logistic Regression
+bInclude_Model_RF    <- rmarkdown::metadata$includes$model_rf    # Random Forest
+bInclude_Model_SVM   <- rmarkdown::metadata$includes$model_svm   # Support Vector Machine
+bInclude_Final_fit   <- rmarkdown::metadata$includes$final_fit   # Final Fit
+bInclude_Conclusies  <- rmarkdown::metadata$includes$conclusies  # Conclusies
 
 dfModel_results <- data.frame(
   model = character(),
@@ -113,7 +113,7 @@ We laden een subset in van historische data specifiek voor:
 ```{r}
 #| label: load-data
 
-## Read the data for this study progamme
+# Read the data for this study progamme
 if(params$use_synthetic_data) {
   dfOpleiding_inschrijvingen_base <- Get_Studyprogram_Enrollments_Synthetic(
     studytrack = params$opleiding,
@@ -133,27 +133,27 @@ if(params$use_synthetic_data) {
     range = "eerstejaars")
 }
 
-## Rearrange the levels
+# Rearrange the levels
 Set_Levels(dfOpleiding_inschrijvingen_base)
 
 dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>  
   
-  ## Create a simple success variable
+  # Create a simple success variable
   Mutate_Retentie(sSucces_model) |>
   
-  ## Convert the success variable into a factor
+  # Convert the success variable into a factor
   mutate(SUC_Retentie = as.factor(SUC_Retentie)) |> 
 
   ## Special possibly based on the propaedeutic diploma
   # Filter_Propedeusediploma(sPropedeusediploma) |>
 
-  ## Make the Dual Study variable a Yes/No variable
+  # Make the Dual Study variable a Yes/No variable
   mutate(INS_Dubbele_studie = ifelse(INS_Aantal_inschrijvingen > 1, "Ja", "Nee")) |>  
 
-  ## Remove INS_Aantal_inschrijvingen
+  # Remove INS_Aantal_inschrijvingen
   select(-INS_Aantal_inschrijvingen) |> 
 
-  ## Adjust levels for some variables
+  # Adjust levels for some variables
   Mutate_Levels(
   c(
     "VOP_Studiekeuzeprofiel_LTA_afkorting",
@@ -163,7 +163,7 @@ dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>
     list(lLevels_skp, lLevels_vop, lLevels_vop)
   )
   
-## B Huidtherapie: Filter on only students with a grade number (selection)
+# B Huidtherapie: Filter on only students with a grade number (selection)
 if(opleiding == "HDT") {
   dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |> 
     filter(!is.na(RNK_Rangnummer)) 
@@ -202,18 +202,18 @@ lSelect <- c(
     "VOP_Toelaatgevende_vooropleiding_soort"
   )
 
-## B Huidtherapie: add the variable RNK_Rangnummer
+# B Huidtherapie: add the variable RNK_Rangnummer
 if(opleiding == "HDT") {
   lSelect <- c(lSelect, "RNK_Rangnummer")
 }
 
-## Create a subset
+# Create a subset
 dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen_base |>
   
-  ## Select the relevant variables
+  # Select the relevant variables
   select_at(lSelect) |>
   
-  ## Rename variables for more readable names
+  # Rename variables for more readable names
   rename(
     ID                    = INS_Student_UUID_opleiding_vorm,
     Geslacht              = DEM_Geslacht,
@@ -238,20 +238,20 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen_base |>
     Vooropleiding         = VOP_Toelaatgevende_vooropleiding_soort
   ) |> 
   
-  ## Adjust CBS_APCG_tf to a factor
+  # Adjust CBS_APCG_tf to a factor
   mutate(APCG = case_when(APCG == TRUE ~ "Ja",
                           APCG == FALSE ~ "Nee",
                           .default = "Onbekend")) |>
 
-  ## Indicate where missing numbers are in VO
+  # Indicate where missing numbers are in VO
   Mutate_Cijfers_VO() |>
   
-  ## Remove variables, where there is only 1 value
+  # Remove variables, where there is only 1 value
   select(where(~ n_distinct(.) > 1)) |>
   
   arrange(Collegejaar, ID)
 
-## B Huidtherapie: rename the variable RNK_Rangnummer
+# B Huidtherapie: rename the variable RNK_Rangnummer
 if(opleiding == "HDT") {
   dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |> 
     rename(Rangnummer = RNK_Rangnummer)
@@ -261,7 +261,7 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |>
  ltabase::sort_distinct()
 
 ## Remove the base dataset
-## rm(dfOpleiding_inschrijvingen_base)
+#rm(dfOpleiding_inschrijvingen_base)
 
 ```
 
@@ -269,25 +269,25 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |>
 #| label: tbl-summary-data
 #| tbl-cap: "Variabelen in relatie tot de uitkomstmaat: params$succes"
 
-## Create a summary of the data
+# Create a summary of the data
 dfSummary <- dfOpleiding_inschrijvingen |>
   
-  ## Remove columns not relevant to the analysis
+  # Remove columns not relevant to the analysis
   select(-c(ID, Collegejaar)) |> 
   
-  ## Adjust the labels of Retention from True to Ja, and from False to Nee
+  # Adjust the labels of Retention from True to Ja, and from False to Nee
   mutate(Retentie = fct_recode(Retentie, "Nee" = "FALSE", "Ja" = "TRUE")) |>
   
-  ## Adjust the order of the labels of Retentie
+  # Adjust the order of the labels of Retentie
   mutate(Retentie = fct_relevel(Retentie, "Ja", "Nee")) |> 
   
-  ## Adjust Studiekeuzeprofiel: if NA, then unknown
+  # Adjust Studiekeuzeprofiel: if NA, then unknown
   mutate(Studiekeuzeprofiel = coalesce(Studiekeuzeprofiel, "Onbekend")) |> 
   
-  ## Factor all character variables
+  # Factor all character variables
   mutate(across(where(is.character), as.factor))
 
-## Create a tbl_df of the summary
+# Create a tbl_df of the summary
 tbl_dfSummary <- Get_tblSummary(dfSummary) 
 
 tbl_dfSummary
@@ -298,10 +298,10 @@ tbl_dfSummary
 #| label: tbl-summarizy-missing-before
 #| tbl-cap: "Kwaliteit van de data voor bewerkingen (gesorteerd op missende waarden)"
 
-## Load dlookr (temporary)
+# Load dlookr (temporary to avoid conflicts)
 suppressMessages(library(dlookr))
 
-## Show a summary of the data, sorted by missing values
+# Show a summary of the data, sorted by missing values
 diagnose(dfOpleiding_inschrijvingen) |> 
   mutate(missing_percent = round(missing_percent, 2),
          unique_rate = round(missing_percent, 2)) |>
@@ -313,7 +313,7 @@ diagnose(dfOpleiding_inschrijvingen) |>
                            "# Unieke waarden",
                            "Ratio unieke waarden"))
 
-## Detach dlookr
+# Detach dlookr
 detach("package:dlookr", unload = TRUE)
 
 ```
@@ -330,37 +330,37 @@ detach("package:dlookr", unload = TRUE)
 #| label: tbl-summarizy-missing-after
 #| tbl-cap: "Kwaliteit van de data na bewerkingen (gesorteerd op missende waarden)"
 
-## Edit the data
+# Edit the data
 dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |> 
   
-  ## Imputate all numeric variables with the mean
+  # Imputate all numeric variables with the mean
   mutate(across(where(is.numeric), ~ ifelse(
     is.na(.x),
     mean(.x, na.rm = T),
     .x
   )) ) |>
   
-  ## Convert character variables to factor
+  # Convert character variables to factor
   mutate(across(where(is.character), as.factor)) |> 
   
-  ## Convert logical variables to 0 or 1
+  # Convert logical variables to 0 or 1
   mutate(across(where(is.logical), as.integer)) |>
   
-  ## Fill in factors missing values with “Unknown”
+  # Fill in factors missing values with “Unknown”
   mutate(across(where(is.factor), ~ suppressWarnings(
     fct_explicit_na(.x, na_level = "Onbekend")
   ))) |> 
   
-  ## Rearrange the columns so that Retentie is in front
+  # Rearrange the columns so that Retentie is in front
   select(Retentie, everything()) 
 
 ## View the data
-## glimpse(dfOpleiding_inschrijvingen) 
+# glimpse(dfOpleiding_inschrijvingen) 
 
-## Load dlookr (temporary)
+# Load dlookr (temporary to avoid conflicts)
 suppressMessages(library(dlookr))
 
-## Diagnose the data
+# Diagnose the data
 diagnose(dfOpleiding_inschrijvingen) |> 
   mutate(missing_percent = round(missing_percent, 2),
          unique_rate = round(unique_rate, 2)) |>
@@ -371,7 +371,7 @@ diagnose(dfOpleiding_inschrijvingen) |>
                            "# Unieke waarden",
                            "Ratio unieke waarden"))
 
-## Detach dlookr
+# Detach dlookr
 detach("package:dlookr", unload = TRUE)
 
 ```
@@ -384,8 +384,8 @@ Het is verstandig om voorafgaand aan het bouwen van een model te kijken naar de 
 #| label: fig-corplot-data
 #| fig-cap: "Correlatiematrix"
 
-## Create a plot of the intercorrelations in numerical variables
-## Remove columns with a standard deviation of 0
+# Create a plot of the intercorrelations in numerical variables
+# Remove columns with a standard deviation of 0
 dfOpleiding_inschrijvingen |> 
   select(-Collegejaar) |>
   select(where(is.numeric)) |> 
@@ -422,17 +422,17 @@ knitr::include_graphics(here::here("R/images", "voorspelmodel-dataset-lta-hhs.pn
 
 set.seed(0821)
 
-## Split the data into 3 parts: 60%, 20% and 20%
+# Split the data into 3 parts: 60%, 20% and 20%
 splits      <- initial_validation_split(dfOpleiding_inschrijvingen,
                                         strata = Retentie,
                                         prop = c(0.6, 0.2))
 
-## Create three sets: a training set, a test set and a validation set
+# Create three sets: a training set, a test set and a validation set
 dfRetentie_train      <- training(splits)
 dfRetentie_test       <- testing(splits)
 dfRetentie_validation <- validation_set(splits)
 
-## Create a resample set based on 10 folds (default)
+# Create a resample set based on 10 folds (default)
 dfRetentie_resamples  <- vfold_cv(dfRetentie_train, strata = Retentie)
 ```
 
@@ -440,19 +440,19 @@ dfRetentie_resamples  <- vfold_cv(dfRetentie_train, strata = Retentie)
 #| label: tbl-split-data
 #| tbl-cap: "Verhouding van de uitkomstvariabele in de training- en testset"
 
-## Training set proportions
+# Training set proportions
 dfRetentie_train_prop <- dfRetentie_train |> 
   count(Retentie) |> 
   mutate(Naam = "Trainingset",
          prop = n/sum(n)) 
 
-## Test set proportions
+# Test set proportions
 dfRetentie_test_prop <- dfRetentie_test  |> 
   count(Retentie) |> 
   mutate(Naam = "Testset",
          prop = n/sum(n)) 
 
-## Combine the training and test set to display in a table
+# Combine the training and test set to display in a table
 bind_rows(dfRetentie_train_prop,
           dfRetentie_test_prop) |> 
   mutate(prop = scales::percent(prop, accuracy = 0.1)) |>
@@ -477,7 +477,7 @@ Eerst bouwen we het model.
 #| label: lr-mod
 #| code-fold: false
 
-## Build the model: logistic regression
+# Build the model: logistic regression
 lr_mod <- 
   logistic_reg(penalty = tune(), mixture = 1) |> 
   set_engine("glmnet")
@@ -498,14 +498,14 @@ Vervolgens zetten we meerdere stappen in een 'recipe':
 #| label: lr-recipe
 #| code-fold: false
 
-## Build the recipe: logistic regression
+# Build the recipe: logistic regression
 lr_recipe <- 
   recipe(Retentie ~ ., data = dfRetentie_train) |>  
-  update_role(ID, new_role = "ID") |>           ## Set the student ID as an ID variable
-  step_rm(ID, Collegejaar) |>                   ## Remove ID and college year from the model
-  step_dummy(all_nominal_predictors()) |>       ## Create dummy variables from categorical variables
-  step_zv(all_predictors()) |>                  ## Remove zero values
-  step_normalize(all_numeric_predictors())      ## Center and scale numeric variables
+  update_role(ID, new_role = "ID") |>           # Set the student ID as an ID variable
+  step_rm(ID, Collegejaar) |>                   # Remove ID and college year from the model
+  step_dummy(all_nominal_predictors()) |>       # Create dummy variables from categorical variables
+  step_zv(all_predictors()) |>                  # Remove zero values
+  step_normalize(all_numeric_predictors())      # Center and scale numeric variables
 
 ```
 
@@ -513,7 +513,7 @@ lr_recipe <-
 #| label: tbl-lr-recipe-steps
 #| tbl-cap: "Recipesteps voor logistische regressie"
 
-## Show the recipe
+# Show the recipe
 tidy(lr_recipe) |> 
   knitr::kable(col.names = c("Nummer", 
                              "Operatie", 
@@ -529,13 +529,13 @@ De variabelen die nu nog overblijven zijn:
 #| label: tbl-lr-recipe-final
 #| tbl-cap: "Resterende variabelen voor logistische regressie na bewerkingen"
 
-## Show the variables remaining
+# Show the variables remaining
 model_vars <- lr_recipe |> 
   prep() |> 
   juice() |> 
   names()
 
-## Add empty values to make the length divisible by 3
+# Add empty values to make the length divisible by 3
 while (length(model_vars) %% 3 != 0) {
   model_vars <- c(model_vars, "")
 }
@@ -554,13 +554,13 @@ Voor de uitvoering bouwen we een workflow. Daaraan voegen we het model en de bew
 #| label: lr-workflow
 #| code-fold: false
 
-## Create the workflow: logistic regression
+# Create the workflow: logistic regression
 lr_workflow <- 
-  workflow() |>         ## Create a workflow
-  add_model(lr_mod) |>  ## Add the model
-  add_recipe(lr_recipe) ## Add the recipe
+  workflow() |>         # Create a workflow
+  add_model(lr_mod) |>  # Add the model
+  add_recipe(lr_recipe) # Add the recipe
 
-## Show workflow
+# Show workflow
 lr_workflow
 ```
 
@@ -572,10 +572,10 @@ Het model moet getuned worden. Dit houdt in dat we de beste parameters voor het 
 #| label: lr-reg-grid
 #| code-fold: false
 
-## Create a grid: logistic regression
+# Create a grid: logistic regression
 lr_reg_grid <- tibble(penalty = 10 ^ seq(-4, -1, length.out = 30))
 
-## Train and tune the model: logistic regression
+# Train and tune the model: logistic regression
 lr_res <- 
   lr_workflow |> 
   tune_grid(dfRetentie_validation,
@@ -589,7 +589,7 @@ lr_res <-
 #| label: fig-lr-plot
 #| fig-cap: "Tuning resultaten logistische regressie"
 
-## Plot the results + a red vertical line for the max AUC
+# Plot the results + a red vertical line for the max AUC
 lr_plot <- 
   lr_res |> 
   collect_metrics() |> 
@@ -597,7 +597,7 @@ lr_plot <-
   geom_point() + 
   geom_line() + 
   
-  ## Make the scale of the x-axis logarithmic
+  # Make the scale of the x-axis logarithmic
   scale_x_log10(labels = scales::label_number()) +
     theme(
       axis.title.x = element_text(margin = margin(t = 20))
@@ -610,7 +610,7 @@ lr_plot <-
     y = "Penalty"
   )
   
-  ## Add LTA elements
+  # Add LTA elements
   lr_plot <- Add_LTA_Theme_Elements(lr_plot, title_subtitle = FALSE)
   
 # Find the penalty value with the max AUC
@@ -629,7 +629,7 @@ max_auc_mean <- lr_res |>
   filter(mean == max(mean)) |> 
   pull(penalty)
 
-## Print the final plot
+# Print the final plot
 lr_plot_plus
 
 ```
@@ -644,7 +644,7 @@ We gebruiken modellen met een zo hoog mogelijke Area under the ROC Curve (AUC/RO
 #| label: lr-top-models
 #| code-fold: false
 
-## Show the best model
+# Show the best model
 top_models <-
   lr_res |> 
   show_best(metric = "roc_auc", n = 10) |> 
@@ -671,7 +671,7 @@ top_models|>
 #| label: lr-best
 #| code-fold: false
 
-## Select the best model: logistic regression
+# Select the best model: logistic regression
 lr_best <- 
   lr_res |> 
   collect_metrics() |> 
@@ -699,7 +699,7 @@ lr_best|>
 #| label: lr-auc
 #| code-fold: false
 
-## Collect the predictions and evaluate the model (AUC/ROC): logistic regression
+# Collect the predictions and evaluate the model (AUC/ROC): logistic regression
 lr_auc <- 
   lr_res |> 
   collect_predictions(parameters = lr_best) |> 
@@ -710,20 +710,20 @@ lr_auc <-
 #| label: fig-lrauc
 #| fig-cap: "ROC curve voor logistische regressie"
 
-## Plot the ROC curve
+# Plot the ROC curve
 Get_ROC_Plot(lr_auc, position = 1)
 ```
 
 ```{r}
 #| label: lr-auc-highest
 
-## Determine the AUC of the best model
+# Determine the AUC of the best model
 lr_auc_highest   <-
   lr_res |>
   collect_predictions(parameters = lr_best) |> 
   roc_auc(Retentie, .pred_FALSE)
 
-## Add model name and AUC dfModel_results
+# Add model name and AUC dfModel_results
 dfModel_results <- 
   dfModel_results |>
   add_row(model = "Logistic Regression", auc = lr_auc_highest$.estimate)
@@ -746,7 +746,7 @@ Omdat een random forest model veel berekeningen vereist, willen we daarvoor alle
 ```{r}
 #| label: cores
 
-## Determine the number of cores
+# Determine the number of cores
 cores <- parallel::detectCores()
 
 ```
@@ -759,7 +759,7 @@ We bouwen eerst het model. We gebruiken de `rand_forest` functie om het model te
 #| label: rf-mod
 #| code-fold: false
 
-## Build the model: random forest
+# Build the model: random forest
 
 rf_mod <- 
   rand_forest(mtry = tune(), min_n = tune(), trees = 1000) |> 
@@ -775,17 +775,17 @@ We maken een recipe voor het random forest model. We verwijderen de student ID e
 #| label: rf-recipe
 #| code-fold: false
 
-## Create the recipe: random forest
+# Create the recipe: random forest
 rf_recipe <- 
   recipe(Retentie ~ ., data = dfRetentie_train) |> 
-  step_rm(ID, Collegejaar)                      ## Verwijder ID en Collegejaar uit het model
+  step_rm(ID, Collegejaar)                      # Remove ID and Collegejaar from the model
 ```
 
 ```{r}
 #| label: tbl-rf-recipe
 #| tbl-cap: "Recipesteps voor random forest"
 
-## Show the recipe
+# Show the recipe
 tidy(rf_recipe) |> 
   knitr::kable(col.names = c("Nummer", 
                              "Operatie", 
@@ -803,13 +803,13 @@ We voegen het model en de recipe toe aan de workflow voor dit model.
 #| label: rf-workflow
 #| code-fold: false
 
-## Create the workflow: random forest
+# Create the workflow: random forest
 rf_workflow <- 
   workflow() |> 
   add_model(rf_mod) |> 
   add_recipe(rf_recipe)
 
-## Show workflow
+# Show workflow
 rf_workflow
 ```
 
@@ -821,16 +821,16 @@ We trainen en tunen het model in de workflow. We maken een grid met verschillend
 #| label: rf-tune
 #| code-fold: false
 
-## Show the parameters that can be tuned
+# Show the parameters that can be tuned
 rf_mod
 
-## Extract the parameters being tuned
+# Extract the parameters being tuned
 extract_parameter_set_dials(rf_mod)
 
-## Determine the seed
+# Determine the seed
 set.seed(2904)
 
-## Build the grid: random forest
+# Build the grid: random forest
 rf_res <- 
   rf_workflow |> 
   tune_grid(dfRetentie_validation,
@@ -848,7 +848,7 @@ We evalueren de beste modellen en maken een ROC curve om de performance van het 
 #| tbl-cap: "Model performance voor random forest"
 #| code-fold: false
 
-## Show the best models
+# Show the best models
 rf_res |> 
   show_best(metric = "roc_auc", n = 15) |> 
   mutate(mean = round(mean, 6)) |>
@@ -866,7 +866,7 @@ rf_res |>
 #| label: fig-rf-results
 #| fig-cap: "Model performance random forest"
 
-## Plot the results
+# Plot the results
 autoplot <- autoplot(rf_res) +
   theme_minimal() +
   labs(
@@ -874,7 +874,7 @@ autoplot <- autoplot(rf_res) +
     caption = sCaption
   )
   
-  ## Add LTA elements
+  # Add LTA elements
   autoplot <- Add_LTA_Theme_Elements(autoplot, title_subtitle = FALSE)
   
   print(autoplot)
@@ -885,7 +885,7 @@ autoplot <- autoplot(rf_res) +
 #| label: rf-best
 #| code-fold: false
 
-## Select the best model
+# Select the best model
 rf_best <- 
   rf_res |> 
   select_best(metric = "roc_auc")
@@ -908,7 +908,7 @@ rf_best|>
 #| tbl-cap: "Predicties voor random forest"
 #| code-fold: true
 
-## Collect the predictions
+# Collect the predictions
 rf_res |> 
   collect_predictions() |> 
   head(10) |>
@@ -928,23 +928,23 @@ rf_res |>
 #| label: fig-rf-auc
 #| fig-cap: "ROC curve voor random forest"
  
-## Determine the AUC/ROC curve
+# Determine the AUC/ROC curve
 rf_auc <- 
   rf_res |> 
   collect_predictions(parameters = rf_best) |> 
   roc_curve(Retentie, .pred_FALSE) |> 
   mutate(model = "Random Forest")
 
-## Plot the ROC curve
+# Plot the ROC curve
 Get_ROC_Plot(rf_auc, position = 2)
 
-## Determine the AUC of the best model
+# Determine the AUC of the best model
 rf_auc_highest   <-
   rf_res |>
   collect_predictions(parameters = rf_best) |> 
   roc_auc(Retentie, .pred_FALSE)
 
-## Add model name and AUC to dfModel_results
+# Add model name and AUC to dfModel_results
 dfModel_results <- 
   dfModel_results |>
   add_row(model = "Random Forest", 
@@ -968,7 +968,7 @@ Eerst combineren we de AUC/ROC curves van de modellen om ze te vergelijken. We k
 #| label: fig-bind-rows-auc-roc
 #| fig-cap: "Gecombineerde ROC curves"
 
-## Combine the AUC/ROC curves to compare the models
+# Combine the AUC/ROC curves to compare the models
 Get_ROC_Plot(list(lr_auc, rf_auc))
 
 ```
@@ -976,13 +976,13 @@ Get_ROC_Plot(list(lr_auc, rf_auc))
 ```{r}
 #| label: best-model-auc-roc
 
-## Determine which of the models is best based on highest AUC/ROC
+# Determine which of the models is best based on highest AUC/ROC
 dfModel_results <- dfModel_results |>
   mutate(number = row_number()) |> 
   mutate(best = ifelse(auc == max(auc), TRUE, FALSE)) |> 
   arrange(number)
 
-## Determine the best model
+# Determine the best model
 sBest_model     <- dfModel_results$model[dfModel_results$best == TRUE]
 sBest_model_auc <- round(dfModel_results$auc[dfModel_results$best == TRUE], 4)
 ```
@@ -990,7 +990,7 @@ sBest_model_auc <- round(dfModel_results$auc[dfModel_results$best == TRUE], 4)
 ```{r, echo=FALSE, results='asis'}
 #| label: best-model-auc-roc-text
 
-## Build the text for the best models
+# Build the text for the best models
 sText_best_model <- ""
 
 walk(1:nrow(dfModel_results), function(i) {
@@ -1001,7 +1001,7 @@ walk(1:nrow(dfModel_results), function(i) {
     )
 })
 
-## Rearrange the final text for a clear summary
+# Rearrange the final text for a clear summary
 sText_best_model <-
   glue(
     "Het beste model is het **{sBest_model}** model met een **AUC/ROC van {sBest_model_auc}**. {sText_best_model} We ronden de analyse verder af met het {sBest_model} model."
@@ -1016,15 +1016,15 @@ sText_best_model <-
 ```{r, echo=FALSE, results='asis'}
 #| label: text-final-model
 
-## Build the text for the final model
+# Build the text for the final model
 if(sBest_model == "Logistisch Regressie") {
   
-  ## Make the final model
+  # Make the final model
   sText_final_model <- "We maken het finale model op basis van de beste parameters die we hebben gevonden. Voor het Logistisch Regressie model is dit het model met de beste penalty en mixture."
 
 } else if (sBest_model == "Random Forest") {
   
-  ## Make the final model
+  # Make the final model
   sText_final_model <- "We maken het finale model op basis van de beste parameters die we hebben gevonden. Door in de engine bij `importance` de `impurity` op te geven, wordt het beste random forest model gekozen om de data definitief mee te classificeren."
 
 }
@@ -1036,10 +1036,10 @@ We maken het finale model op basis van de beste parameters die we hebben gevonde
 #| label: last-mod
 #| code-fold: false
 
-## Test the developed model on the test set
-## Determine the optimal parameters
+# Test the developed model on the test set
+# Determine the optimal parameters
 
-## Build the final models
+# Build the final models
 last_lr_mod <-
     logistic_reg(penalty = lr_best$penalty,
                  mixture = 1) |>
@@ -1063,7 +1063,7 @@ We voegen het model toe aan de workflow en updaten de workflow met het finale mo
 #| label: last-workflow
 #| code-fold: false
 
-## Update the workflows
+# Update the workflows
  last_lr_workflow <- 
     lr_workflow |> 
     update_model(last_lr_mod)
@@ -1082,10 +1082,10 @@ We voeren de finale fit uit. De functie `last_fit` past het model toe op de vali
 #| label: last-fit
 #| code-fold: false
 
-## Perform the final fit
+# Perform the final fit
 set.seed(2904)
 
-## Make a final fit for both models so we can save it for later use
+# Make a final fit for both models so we can save it for later use
 last_fit_lr <- 
     last_lr_workflow |> 
     last_fit(splits)
@@ -1097,14 +1097,14 @@ last_fit_rf <-
 lLast_fits <- list(last_fit_lr, last_fit_rf) |> 
   set_names(c("Logistic Regression", "Random Forest"))
 
-## Determine which model is best
+# Determine which model is best
 if(sBest_model == "Logistic Regression") {
   last_fit <- last_fit_lr
 } else if(sBest_model == "Random Forest") {
   last_fit <- last_fit_rf
 }
 
-## Keep results, model results and associated data
+# Keep results, model results and associated data
 sFittedmodels_outputpath <- Get_Model_Outputpath(mode = "last-fits")
 saveRDS(lLast_fits, file = sFittedmodels_outputpath)
 
@@ -1124,7 +1124,7 @@ We evalueren het finale model op basis van 4 metrieken: 1) accuraatheid, 2) ROC/
 #| label: last-fit-metrics-vi
 #| code-fold: false
 
-## Collect the metrics
+# Collect the metrics
 last_fit |> 
   collect_metrics() |> 
   mutate(.estimate = round(.estimate, 4)) |>
@@ -1154,7 +1154,7 @@ importance_plot <- dfVi |>
              fill = Importance)) +
   geom_col(show.legend = FALSE) +
   
-  ## Create the title and caption
+  # Create the title and caption
   labs(x = NULL,
        y = "VI-score",
        caption = sCaption) +
@@ -1168,7 +1168,7 @@ importance_plot <- dfVi |>
   
   coord_flip()
   
-  ## Add LTA elements
+  # Add LTA elements
   importance_plot <- Add_LTA_Theme_Elements(importance_plot, title_subtitle = TRUE)
 
 # Show the plot
@@ -1185,7 +1185,7 @@ Tot slot visualiseren we de prestaties weer met een ROC curve van het beste mode
 #| fig-cap: "ROC curve finale model"
 #| code-fold: false
 
-## Show the roc curve
+# Show the roc curve
 auc_lf <- last_fit |> 
   collect_predictions() |> 
   roc_curve(Retentie, .pred_FALSE) |> 
@@ -1204,7 +1204,7 @@ Get_ROC_Plot(auc_lf, position = 3)
 #| label: conclusions-accuracy
 #| code-fold: false
 
-## Determine model accuracy, average retention rate and base model
+# Determine model accuracy, average retention rate and base model
 Last_fit_Accuracy   <- last_fit |>
   collect_metrics() |>
   filter(.metric == "accuracy") |>
@@ -1221,11 +1221,11 @@ if(Avg_Retentie < 50) {
   sRetentie <- "die doorstudeerde"
 }
 
-## Now calculate the difference in accuracy
+# Now calculate the difference in accuracy
 nAccuracy_verschil  <- round(abs(Last_fit_Accuracy - Base_Model_Accuracy), 2)
 pAccuracy_verschil  <- paste0(nAccuracy_verschil, "%") 
 
-## Features
+# Features
 Get_Accuracy_vergelijking <-
   function(Last_fit_Accuracy, Base_Model_Accuracy) {
     if (Last_fit_Accuracy == Base_Model_Accuracy) {
@@ -1265,16 +1265,16 @@ Get_Accuracy_verschil <- function(nAccuracy_verschil) {
   }
 }
 
-## Functions to create sentences and print variables
+# Functions to create sentences and print variables
 Special_Paste  <- function(vec) sub(",\\s+([^,]+)$", " en \\1", toString(vec))
 Print_Variable <- function(variable) paste0("`", variable, "`")
 
-## Determine a number of texts
+# Determine a number of texts
 sAccuracy_vergelijking <- Get_Accuracy_vergelijking(Last_fit_Accuracy, Base_Model_Accuracy)
 sAccuracy_niveau       <- Get_Accuracy_niveau(Last_fit_Accuracy)
 sAccuracy_verschil     <- Get_Accuracy_verschil(nAccuracy_verschil)
 
-## Determine the top 3 and top 5 variables based on the VI
+# Determine the top 3 and top 5 variables based on the VI
 dfTop_vi   <- last_fit |> 
   extract_fit_parsnip() |> 
   vip::vi() |> 
@@ -1283,18 +1283,18 @@ dfTop_vi   <- last_fit |>
 lTop3_vi <- dfTop_vi |>
   slice(1:3) |>
   pull(Variable) |>
-  ## Adjust the variables so that they are between backticks
+  # Adjust the variables so that they are between backticks
   Print_Variable() |>
-  ## Make it a sentence
+  # Make it a sentence
   Special_Paste()  
 
 lTop45_vi <- dfTop_vi |>
-  ## Lines 4 and 5
+  # Lines 4 and 5
   slice(4:5) |>
   pull(Variable) |>
-  ## Adjust the variables so that they are between backticks
+  # Adjust the variables so that they are between backticks
   Print_Variable() |>
-  ## Make it a sentence
+  # Make it a sentence
   Special_Paste()
 
 sConclusie_text <- ""
@@ -1349,7 +1349,7 @@ knitr::include_graphics(here::here("R/images", "basemodel-lift.png"))
 ```{r}
 #| label: confusion-matrix-calculation
 
-## Determine the confusion matrix
+# Determine the confusion matrix
 confusion_matrix <- last_fit |>
   collect_predictions() |>
   conf_mat(truth = Retentie, estimate = .pred_class) 
@@ -1397,7 +1397,7 @@ confusion_plot <- plot_confusion_matrix(
       tc_tile_border_color = "black"
     )) +
     
-    ## Customize the labels
+    # Customize the labels
     labs(
       x = "Werkelijke uitkost",
       y = "Voorspelde uitkomst",
@@ -1406,7 +1406,7 @@ confusion_plot <- plot_confusion_matrix(
     
     Set_LTA_Theme()
   
-  ## Add LTA elements
+  # Add LTA elements
   confusion_plot <- Add_LTA_Theme_Elements(confusion_plot, 
                                            title_subtitle = TRUE)
   
@@ -1433,22 +1433,22 @@ Ongeacht de mate van accuraatheid, is het voor onderzoek naar kansengelijkheid e
 De volgende stap (stap 2) is een verdiepende analyse van de mate waarin de **factoren** die we gevonden hebben van invloed zijn op `r sSucces_model`. We kijken naar de rangorde, of ze `r tolower(sSucces_model)` verhogen of juist verlagen en hoe stabiel de factoren zijn als we in andere volgordes aan het model toevoegen. Om het concreet te maken zullen we het model toepassen op een aantal fictieve studenten, die we opbouwen uit de meeste voorkomende waarden in deze opleiding. Dit is het onderwerp van analyse 2: de Factoranalyse.
 :::
 
-<!-- Accountability -->
+<!-- Justification -->
 
 ::: {.content-hidden unless-meta="includes.verantwoording"}
-{{< include R/qmd/Include_Verantwoording.qmd >}}
+{{< include R/qmd/justification.qmd >}}
 :::
 
 <!-- Copyright -->
 
-{{< include R/qmd/Include_Copyright.qmd >}}
+{{< include R/qmd/copyright.qmd >}}
 
 <!-- Cleaning up -->
 
 ```{r, echo = FALSE}
 #| label: cleanup
 
-## Datasets
+# Datasets
 rm(
   dfOpleiding_inschrijvingen,
   dfSummary,
@@ -1458,7 +1458,7 @@ rm(
   splits
   )
 
-## Logistic regression
+# Logistic regression
 if(bInclude_Model_LR) {
   rm(
     lr_auc,
@@ -1476,7 +1476,7 @@ if(bInclude_Model_LR) {
   # }
 }
 
-## Random Forest
+# Random Forest
 if(bInclude_Model_RF) {
   rm(
     rf_auc,
@@ -1495,14 +1495,14 @@ if(bInclude_Model_RF) {
   # }
 }
 
-## Final Fit
+# Final Fit
 if(bInclude_Final_fit) {
   rm(
     last_fit
   )
 }
 
-## Conclusions
+# Conclusions
 if(bInclude_Conclusies) {
   rm(
     top_models,
@@ -1512,7 +1512,7 @@ if(bInclude_Conclusies) {
     )
 }
 
-## Collect garbage
+# Collect garbage
 invisible(gc())
   
 ```

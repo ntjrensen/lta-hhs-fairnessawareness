@@ -44,10 +44,10 @@ includes:
 #| label: setup
 #| echo: false
 
-## Include the _Setup.R file
+# Include the _Setup.R file
 source("_Setup.R")
 
-## Determine the long name of the type of education and faculty
+# Determine the long name of the type of education and faculty
 opleidingsvorm_lang <- Get_Opleidingsvorm_Lang(params$opleidingsvorm_afkorting)
 faculteit_lang      <- Get_Faculteitsnaam_Lang(params$faculteit)
 ```
@@ -90,7 +90,7 @@ Heb je vragen of suggesties over deze analyse? Neem dan contact op met Theo Bakk
 
 <!-- Copyright -->
 
-{{< include R/qmd/Include_Copyright.qmd >}}
+{{< include R/qmd/copyright.qmd >}}
 
 <!-- Cleaning up -->
 

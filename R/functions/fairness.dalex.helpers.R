@@ -1,26 +1,26 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## fairness.dalex.helpers.R ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
-## Copyright 2024 De HHs
-## Web Page: http://www.hhs.nl
-## Contact: Theo Bakker (t.c.bakker@hhs.nl)
-## Verspreiding buiten De HHs: Nee
-##
-## Doel: Aangepaste functies uit het fairness package, om deze beter te kunnen tonen in html.
-##
-## Afhankelijkheden: Geen
-##
-## Datasets: Geen
-##
-## Opmerkingen:
-## 1) Geen.
-## 2) ___
-##
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Geschiedenis:
-## 01-05-2024: TB: Aanmaak bestand
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# fairness.dalex.helpers.R ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# R code of the Learning Technology & Analytics Research Group of THUAS
+# Copyright 2025 THUAS
+# Web Page: http://www.thuas.com
+# Contact: Theo Bakker (t.c.bakker@hhs.nl)
+# Distribution outside THUAS: No
+#
+# Purpose: Custom functions from the fairness package, to better display in html.
+#
+# Dependencies: None
+#
+# Datasets: Geen
+#
+# Remarks:
+# 1) None.
+# 2) ___
+#
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Version history:
+# 01-05-2024: TB: File creation
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 
 fairness_check_metrics <- function() {

@@ -1,57 +1,57 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Render_book.R ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
-## Copyright 2024 De HHs
-## Web Page: http://www.hhs.nl
-## Contact: Theo Bakker (t.c.bakker@hhs.nl)
-## Verspreiding buiten De HHs: Nee
-##
-## Doel: Het renderen van de analyses voor meerdere opleidingen in boekvorm
-##
-## Afhankelijkheden: ltabase package
-##
-## Datasets: Geen
-##
-## Opmerkingen:
-## 1) Geen.
-## 2) ___
-##
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Geschiedenis:
-## 01-05-2024: TB: Aanmaak bestand
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Render_book.R ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# R code of the Learning Technology & Analytics Research Group of THUAS
+# Copyright 2025 THUAS
+# Web Page: http://www.thuas.com
+# Contact: Theo Bakker (t.c.bakker@hhs.nl)
+# Distribution outside THUAS: No
+#
+# Purpose: Rendering analyses for multiple study programmes in book form
+#
+# Dependencies: ltabase package
+#
+# Datasets: None
+#
+# Remarks:
+# 1) None.
+# 2) ___
+#
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Version history:
+# 01-05-2024: TB: File creation
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1. LOAD LTABASE PACKAGE + DEFAULT DATABASES ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1. LOAD LTABASE PACKAGE + DEFAULT DATABASES ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.1 Standard packages needed immediately ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1.1 Standard packages needed immediately ####
 
-## Install here, cli en icecream if required
+# Install here, cli en icecream if required
 for (i in c("here", "cli", "icecream")) {
   if(!requireNamespace(i, quietly = TRUE)) {
     install.packages(i)
   }
 }
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.2 ltabase package (install if necessary) ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1.2 ltabase package (install if necessary) ####
 
-source("R/functions/Inladen_ltabase.R")
+source("R/functions/load.ltabase.R")
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
 
-## Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
+# Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
 ltabase::load_lta_datasets(message = TRUE)
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.4 Load additional libraries
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1.4 Load additional libraries
 
-## Load additional libraries
+# Load additional libraries
 library(cli)         # for cli texts
 library(quarto)      # for quarto files
 library(tidyverse)   # for data manipulation
@@ -59,28 +59,28 @@ library(conflicted)  # to resolve conflicts
 library(janitor)     # for make_clean_names
 library(fs)          # for file system functions
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.4 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1.4 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
 
-## Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
+# Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
 ltabase::load_lta_datasets(message = TRUE)
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.5 Load additional features ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1.5 Load additional features ####
 
 source("R/functions/report.helpers.R")
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2. RENDER THE OUTPUT ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 2. RENDER THE OUTPUT ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.1 Determine the selection ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 2.1 Determine the selection ####
 
 dfRender <- dfOpleidingen |>
   
-  ## Combine the study programme and type of education into a new variable
+  # Combine the study programme and type of education into a new variable
   mutate(INS_Opleiding_en_Opleidingsvorm = paste(INS_Opleiding, INS_Opleidingsvorm, sep = "_")) |>
   # dplyr::filter(
   #   INS_Opleiding_en_Opleidingsvorm %in% c(
@@ -104,8 +104,8 @@ dfRender <- dfOpleidingen |>
   # dplyr::filter(INS_Faculteit %in% c("GVS","MO","SWE","TIS"),
   #               INS_Opleiding %in% c("HDT")) |>
   
-  ## Limit selection to study programmes still in existence in 2022 
-  ## and have more than 1 year's worth of data
+  # Limit selection to study programmes still in existence in 2022 
+  # and have more than 1 year's worth of data
   dplyr::filter(INS_Collegejaar_max == 2022,
                 INS_Collegejaar_min < 2022) |>
   dplyr::select(INS_Opleiding_en_Opleidingsvorm, 
@@ -114,33 +114,33 @@ dfRender <- dfOpleidingen |>
                 INS_Opleidingsvorm,
                 everything())
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.2 Determine if a refresh is needed ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 2.2 Determine if a refresh is needed ####
 
 bRefresh_books <- FALSE
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.3 Determine whether synthetic data will be used ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 2.3 Determine whether synthetic data will be used ####
 
 bUse_Synthetic_data <- FALSE
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2.4 Walk across study programmes and render outputs ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 2.4 Walk across study programmes and render outputs ####
 
-## Determine the success variables
+# Determine the success variables
 lSucces <-  c("Retentie na 1 jaar")
 
-## Walk across the study programmes
+# Walk across the study programmes
 for(i in 1:nrow(dfRender)) {
   
-  ## Determine study programme and type of education
+  # Determine study programme and type of education
   .opleiding      <- dfRender$INS_Opleiding[i] 
   .opleidingsvorm <- dfRender$INS_Opleidingsvorm[i]
   
-  ## Walk over the success variables
+  # Walk over the success variables
   for (j in lSucces) {
     
-    ## Report the action
+    # Report the action
     cli::cli_h1(
       paste(
         .opleiding,
@@ -150,20 +150,20 @@ for(i in 1:nrow(dfRender)) {
     )
     cli::cli_alert_info(
       paste(
-        "Render de output voor de opleiding:",
+        "Render the output for the study programme:",
         .opleiding,
-        "en opleidingsvorm:",
+        "and type of education:",
         .opleidingsvorm
       )
     )
     
-    ## If this combination already exists, skip
-    ## Create the variables for the current study programme based on the programme name and type of education
+    # If this combination already exists, skip
+    # Create the variables for the current study programme based on the programme name and type of education
     current_render_opleiding <- Get_Current_Opleiding(opleiding = .opleiding,
                                                       opleidingsvorm = .opleidingsvorm)
 
-    ## Determine the output dir:
-    ## faculteit/opleiding-opleidingsvorm/retentie-na-1-jaar/index.html
+    # Determine the output dir:
+    # faculteit/opleiding-opleidingsvorm/retentie-na-1-jaar/index.html
     
     .output_dir <- tolower(file.path(
       current_render_opleiding$INS_Faculteit,
@@ -180,7 +180,7 @@ for(i in 1:nrow(dfRender)) {
       .output_dir <- paste0(.output_dir, "-synth")
     }
     
-    ## Define the parameters for the quarto file
+    # Define the parameters for the quarto file
     .execute_params <- list(
       succes                   = j,
       faculteit                = current_render_opleiding$INS_Faculteit,
@@ -194,19 +194,19 @@ for(i in 1:nrow(dfRender)) {
       use_synthetic_data       = bUse_Synthetic_data
     )
     
-    ## If the output directory of this book already exists, skip
+    # If the output directory of this book already exists, skip
     bBook_exists <- file.exists(Get_Output_Dir_Repo(.output_dir))
     if(bBook_exists & !bRefresh_books) {
       
       cli::cli_alert_info(
         paste(
-          "De output voor de opleiding:",
+          "The output for the study programme.:",
           .opleiding,
-          "en opleidingsvorm:",
+          "and type of education:",
           .opleidingsvorm,
-          "en succes:",
+          "and success:",
           j,
-          "bestaat al in de directory:",
+          "already exists in the directory:",
           .output_dir
         )
       )
@@ -214,23 +214,23 @@ for(i in 1:nrow(dfRender)) {
       next
       } else {
     
-        ## Report the action
+        # Report the action
         cli::cli_alert_info(
           paste(
-            "Render de output voor de opleiding:",
+            "Render the output for the study programme:",
             .opleiding,
-            "en opleidingsvorm:",
+            "and type of education:",
             .opleidingsvorm,
-            "en succes:",
+            "and success:",
             j,
-            "\n naar de directory:",
+            "\n to the directory:",
             .output_dir
           )
         ) 
         
         }
 
-    ## Render the quarto files and move them to the asset repo
+    # Render the quarto files and move them to the asset repo
     for(k in c("index.qmd",
                "H1_Index_basis.qmd",
                "H2_Index_verdieping_factoren.qmd",
@@ -242,24 +242,24 @@ for(i in 1:nrow(dfRender)) {
                             output_format = 'html')
     }
 
-    ## Copy the _book directory to the output directory
+    # Copy the _book directory to the output directory
     Copy_Book_To_Reports(output_dir = .output_dir)
     
-    ## Collect garbage
+    # Collect garbage
     invisible(gc())
   
   }
   
 }
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3. eND ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 3. END ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-cli::cli_alert_success("Einde van het script")
+cli::cli_alert_success("End of script")
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 

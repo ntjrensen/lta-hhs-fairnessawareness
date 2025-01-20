@@ -1,44 +1,44 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## report.helpers.R ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
-## Copyright 2024 De HHs
-## Web Page: http://www.hhs.nl
-## Contact: Theo Bakker (t.c.bakker@hhs.nl)
-## Verspreiding buiten De HHs: Nee
-##
-## Doel: Doel
-##
-## Afhankelijkheden: Afhankelijkheid
-##
-## Datasets: Datasets
-##
-## Opmerkingen:
-## 1) Geen.
-## 2) ___
-##
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## TODO:
-## 1) ___.
-##
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Geschiedenis:
-## 30-04-2024: TB: Aanmaak bestand
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# report.helpers.R ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# R code of the Learning Technology & Analytics Research Group of THUAS
+# Copyright 2025 THUAS
+# Web Page: http://www.thuas.com
+# Contact: Theo Bakker (t.c.bakker@hhs.nl)
+# Distribution outside THUAS: No
+#
+# Purpose: Doel
+#
+# Dependencies: Afhankelijkheid
+#
+# Datasets: Datasets
+#
+# Remarks:
+# 1) None.
+# 2) ___
+#
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# TODO:
+# 1) ___.
+#
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Version history:
+# 30-04-2024: TB: File creation
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1. STUDY PROGRAMME-SPECIFIC FUNCTIONS ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1. STUDY PROGRAMME-SPECIFIC FUNCTIONS ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Function to determine current study programme
+# Function to determine current study programme
 Get_Current_Opleiding <- function(opleiding, opleidingsvorm) {
   
   if(!exists("dfOpleidingen")){
     cli::cli_abort("dfOpleidingen is niet gedefinieerd")
   }
   
-  ## Test if this study programme does appear
+  # Test if this study programme does appear
   if(!any(dfOpleidingen$INS_Opleiding == opleiding &
           dfOpleidingen$INS_Opleidingsvorm == opleidingsvorm)) {
     cli::cli_abort(paste0("De opleiding ", opleiding, " met opleidingsvorm ", opleidingsvorm, " bestaat niet. \n",
@@ -70,7 +70,7 @@ Get_Current_Opleiding <- function(opleiding, opleidingsvorm) {
   return(current_opleiding)
 }
 
-## Function to set the variables of the current study programme
+# Function to set the variables of the current study programme
 Set_Current_Opleiding_Vars <- function(current_opleiding, debug = F){
   
   opleiding               <<- current_opleiding$INS_Opleiding
@@ -94,14 +94,14 @@ Set_Current_Opleiding_Vars <- function(current_opleiding, debug = F){
   
 }
 
-## Function to show the variables of the current study programme
+# Function to show the variables of the current study programme
 Show_Current_Opleiding_Vars <- function(){
   
   if(!exists("current_opleiding")){
     cli::cli_abort("current_opleiding is niet gedefinieerd")
   }
   
-  ## Print all values of the current study programme
+  # Print all values of the current study programme
   cli::cli_h1(paste0("Huidige opleiding:"))
   
   cli_bullets(c(
@@ -117,7 +117,7 @@ Show_Current_Opleiding_Vars <- function(){
   ))
 }
 
-## Function to determine the current training name
+# Function to determine the current training name
 Get_sOpleiding <- function() {
   
   if(!exists("current_opleiding")){
@@ -136,12 +136,12 @@ Get_sOpleiding <- function() {
   
 }
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 2. PAD FUNCTIONS ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 2. PAD FUNCTIONS ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Function to determine the path to flextables
+# Function to determine the path to flextables
 Get_Opleiding_Directory <- function(faculteit,
                                     opleidingsnaam_huidig,
                                     opleidingsnaam = NULL,
@@ -167,7 +167,7 @@ Get_Opleiding_Directory <- function(faculteit,
   return(path)
 }
 
-## Function to determine output directory of current study programme
+# Function to determine output directory of current study programme
 Get_Current_Opleiding_Output_Dir <- function(current_opleiding,
                                              mode) {
   
@@ -181,7 +181,7 @@ Get_Current_Opleiding_Output_Dir <- function(current_opleiding,
     current_opleiding$INS_Opleidingsvorm
   ) |> tolower()
   
-  ## If synthetic data is used, add -synth to the directory
+  # If synthetic data is used, add -synth to the directory
   if(params$use_synthetic_data == T){
     .fac_opl_vorm <- paste0(.fac_opl_vorm, "-synth")
   }
@@ -206,17 +206,17 @@ Get_Current_Opleiding_Output_Dir <- function(current_opleiding,
                              .fac_opl_vorm,
                              "plots")
   } else {
-    cli::cli_alert("De mode is niet correct")
+    cli::cli_alert("The mode is not correct")
   }
   
   return(.output_dir)
   
 }
 
-## Function to determine the output directory of the current study programme
+# Function to determine the output directory of the current study programme
 Get_Current_Opleiding_Output_File <- function(df, mode, group = NULL, analyse = NULL) {
   
-  ## Define the description of the analysis
+  # Define the description of the analysis
   if(is.null(analyse)) {
     .analyse <- Get_Current_Analysis()
   } else {
@@ -236,11 +236,11 @@ Get_Current_Opleiding_Output_File <- function(df, mode, group = NULL, analyse = 
   } else if(mode == "plot") {
     .suffix <- ".png"
   } else {
-    cli::cli_alert("De mode is niet correct")
+    cli::cli_alert("The mode is not correct")
   }
   
-  ## Determine the output file:
-  ## faculteit-opleiding-opleidingsvorm + analyse + suffix
+  # Determine the output file:
+  # faculteit-opleiding-opleidingsvorm + analyse + suffix
   .output_file <- paste0(
     paste(
       df$INS_Faculteit,
@@ -256,48 +256,48 @@ Get_Current_Opleiding_Output_File <- function(df, mode, group = NULL, analyse = 
   
 }
 
-## Function to determine the output path for fitted models
+# Function to determine the output path for fitted models
 Get_Model_Outputpath <- function(mode, group = NULL) {
   
-  ## Define the output file
+  # Define the output file
   .output_file <- Get_Current_Opleiding_Output_File(current_opleiding, mode, group)
   
-  ## Define the output directory
+  # Define the output directory
   .output_dir <- Get_Current_Opleiding_Output_Dir(current_opleiding, mode)
   
-  ## Create the directory if it does not already exist
+  # Create the directory if it does not already exist
   if (!dir.exists(.output_dir)) {
     dir.create(.output_dir, recursive = TRUE)
   }
   
-  ## Return the full output path
+  # Return the full output path
   return(file.path(.output_dir, .output_file))
   
 }
 
-## Function to determine the output path for the plots
+# Function to determine the output path for the plots
 Get_Plot_Outputpath <- function(plotname, mode = "plot") {
   
-  ## Define the output file
+  # Define the output file
   .output_file <- paste0(plotname, ".png")
   
-  ## Define the output directory
+  # Define the output directory
   .output_dir <- Get_Current_Opleiding_Output_Dir(current_opleiding, mode)
   
-  ## Create the directory if it does not already exist
+  # Create the directory if it does not already exist
   if (!dir.exists(.output_dir)) {
     dir.create(.output_dir, recursive = TRUE)
   }
   
-  ## Return the full output path
+  # Return the full output path
   return(file.path(.output_dir, .output_file))
   
 }
 
-## Function to determine the output path for the breakdown plots
+# Function to determine the output path for the breakdown plots
 Get_Breakdown_Plotpath <- function(student_groep, student_categorie) {
   
-  ## Replace spaces with - in the student_group and student_category
+  # Replace spaces with - in the student_group and student_category
   .student_groep     <- gsub(" ", "-", student_groep)
   .student_categorie <- gsub(" ", "-", student_categorie)
   
@@ -306,12 +306,12 @@ Get_Breakdown_Plotpath <- function(student_groep, student_categorie) {
   )
 }
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 3. DATASET FUNCTIONS ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 3. DATASET FUNCTIONS ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Function to read the data dictionary.
+# Function to read the data dictionary.
 Get_Data_Dictionary <- function() {
   
   sInput_path <- "R/vars"
@@ -321,7 +321,7 @@ Get_Data_Dictionary <- function() {
   return(df)
 }
 
-## Function to create a table from the data dictionary
+# Function to create a table from the data dictionary
 Get_tblData_Dictionary <- function(df) {
   
   tbl <- 
@@ -342,7 +342,7 @@ Get_tblData_Dictionary <- function(df) {
   return(tbl)
 }
 
-## Function to retrieve synthetic data
+# Function to retrieve synthetic data
 Get_Studyprogram_Enrollments_Synthetic <- function(studytrack,
                                                        studyform) {
   
@@ -355,10 +355,10 @@ Get_Studyprogram_Enrollments_Synthetic <- function(studytrack,
   return(df)
 }
 
-## Function to make the Failure variable
+# Function to make the Failure variable
 Mutate_Uitval <- function(df, model = "Uitval na 1 jaar") {
   
-  ## Fill in the missing values with 0
+  # Fill in the missing values with 0
   df <- df |>
     mutate(
       SUC_Uitval_aantal_jaar_LTA = coalesce(SUC_Uitval_aantal_jaar_LTA, 0)
@@ -400,17 +400,17 @@ Mutate_Uitval <- function(df, model = "Uitval na 1 jaar") {
   
 }
 
-## Function to differentiate Dropout (with and without a propaedeutic degree)
+# Function to differentiate Dropout (with and without a propaedeutic degree)
 Filter_Propedeusediploma_Uitval <- function(df, propedeusediploma = "Nvt") {
   
   if (propedeusediploma == "Nvt" || propedeusediploma == "" || is.na(propedeusediploma)) {
     
-    ## Include all dropout
+    # Include all dropout
     return(df)
     
   } else if (propedeusediploma == "Met P") {
     
-    ## Remove students who drop out with a propaedeutic degree
+    # Remove students who drop out with a propaedeutic degree
     return(
       df |>
         filter(SUC_Studiestatus_cat != "Uitval zonder propedeusediploma")
@@ -418,19 +418,19 @@ Filter_Propedeusediploma_Uitval <- function(df, propedeusediploma = "Nvt") {
     
   } else if (propedeusediploma == "Zonder P") {
     
-    ## Remove students who drop out with a propaedeutic degree
+    # Remove students who drop out with a propaedeutic degree
     return(
         df |>
         filter(SUC_Studiestatus_cat != "Uitval met propedeusediploma")
         ) 
     
   } else {
-    cli::cli_alert("De propedeusediploma variabele is niet correct")
+    cli::cli_alert("The propaedeutic degree variable is incorrect")
   }
   
 }
 
-## Function to create the Retention variable
+# Function to create the Retention variable
 Mutate_Retentie <- function(df, model = "Retentie na 1 jaar") {
   
   if (model == "Retentie na 1 jaar") {
@@ -469,7 +469,7 @@ Mutate_Retentie <- function(df, model = "Retentie na 1 jaar") {
   
 }
 
-## Mutate missing figures VO
+# Mutate missing figures VO
 Mutate_Cijfers_VO <- function(df) {
   
   df <- df |>
@@ -486,10 +486,10 @@ Mutate_Cijfers_VO <- function(df) {
   
 }
 
-## Function to determine the order of a number of levels
+# Function to determine the order of a number of levels
 Get_Levels <- function() {
   
-  ## Determine the order of levels in the study profiles:
+  # Determine the order of levels in the study profiles:
   lLevels_skp <<- c(
     "EM",
     "CM",
@@ -551,7 +551,7 @@ Get_Levels <- function() {
   
 }
 
-## Adjust levels so that they are sorted properly
+# Adjust levels so that they are sorted properly
 Sort_Levels <- function(levels, df, var) {
   lLevels <- intersect(levels, 
                        unique(df[[var]])
@@ -559,7 +559,7 @@ Sort_Levels <- function(levels, df, var) {
   return(lLevels)
 }
 
-## Function to determine the levels of a variable
+# Function to determine the levels of a variable
 Set_Levels <- function(df = dfOpleiding_inschrijvingen_base) {
   
   lLevels_skp <<-
@@ -589,7 +589,7 @@ Set_Levels <- function(df = dfOpleiding_inschrijvingen_base) {
     )
 }
 
-## Function to mutate the levels of a variable
+# Function to mutate the levels of a variable
 Mutate_Levels <- function(df, vars, levels) {
   
   walk(seq_along(vars), function(i) {
@@ -612,12 +612,12 @@ Mutate_Levels <- function(df, vars, levels) {
   return(df)
 }
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 4. RENDER FUNCTIONS ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 4. RENDER FUNCTIONS ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Function to retrieve training name with or without synth
+# Function to retrieve training name with or without synth
 Get_Opleidingsnaam_Synth <- function(opleidingsnaam) {
   
   if(params$use_synthetic_data == T){
@@ -630,7 +630,7 @@ Get_Opleidingsnaam_Synth <- function(opleidingsnaam) {
   
 }
 
-## Function to determine the long name of the type of education
+# Function to determine the long name of the type of education
 Get_Opleidingsvorm_Lang <- function(opleidingsvorm) {
   
   return(switch(
@@ -643,7 +643,7 @@ Get_Opleidingsvorm_Lang <- function(opleidingsvorm) {
   
 }
 
-## Function to determine the long name of the type of education
+# Function to determine the long name of the type of education
 Get_Faculteitsnaam_Lang <- function(faculteit) {
   
   return(switch(
@@ -660,7 +660,7 @@ Get_Faculteitsnaam_Lang <- function(faculteit) {
   
 }
 
-## Function to create a summary table
+# Function to create a summary table
 Get_tblSummary <- function(df) {
   
   dfSummary <- df |> 
@@ -676,7 +676,7 @@ Get_tblSummary <- function(df) {
       percent = "row"
     ) |> 
     
-    ## Organize the design of the table
+    # Organize the design of the table
     modify_header(all_stat_cols() ~ "**{level}**, N={n} ({style_percent(p)}%)") |>
     modify_spanning_header(c("stat_1", "stat_2") ~ "**Retentie**") |>
     modify_header(label = "**Variabele**") |>
@@ -702,18 +702,18 @@ Get_tblSummary <- function(df) {
   
 }
 
-## Function to create a sparkline table
+# Function to create a sparkline table
 Get_tblSparklines <- function(df, group = "Geslacht", var = "Leeftijd") {
   
   .group <- as.name(group)
   .var   <- as.name(var)
   
-  ## Determine the sparkline table
+  # Determine the sparkline table
   dfSparkline <- df |> 
     
     dplyr::group_by(!!.group) |>
     
-    ## Keep the list of outcomes in a list
+    # Keep the list of outcomes in a list
     dplyr::summarize(
       mean = mean(!!.var),
       sd = sd(!!.var),
@@ -721,7 +721,7 @@ Get_tblSparklines <- function(df, group = "Geslacht", var = "Leeftijd") {
       .groups = "drop"
     )
   
-  ## Convert to a gt table
+  # Convert to a gt table
   tblSparkline <- dfSparkline |>
     arrange(desc(!!.group)) |>
     gt() |>
@@ -737,7 +737,7 @@ Get_tblSparklines <- function(df, group = "Geslacht", var = "Leeftijd") {
   
 }
 
-## Function to define the text for the model (in the title)
+# Function to define the text for the model (in the title)
 Get_Succes_Model_Text <- function(propedeusediploma, succes_model) {
   
   if (propedeusediploma == "Zonder P") {
@@ -752,7 +752,7 @@ Get_Succes_Model_Text <- function(propedeusediploma, succes_model) {
   
 }
 
-## Function to render and move a quarto file
+# Function to render and move a quarto file
 Quarto_Render_Move <- function(input,
                                output_file = NULL,
                                output_dir = NULL,
@@ -797,10 +797,10 @@ Quarto_Render_Move <- function(input,
   
 }
 
-## Function to retrieve the asset repo
+# Function to retrieve the asset repo
 Get_Asset_Repo <- function() {
   
-  ## Determine the asset repo
+  # Determine the asset repo
   .asset_repo <- file.path(Sys.getenv("ONEDRIVE"), 
                            "HHs_NFWA/lta-hhs-tidymodels-studiesucces-reports")
   
@@ -808,41 +808,41 @@ Get_Asset_Repo <- function() {
 
 }
 
-## Function to copy the _book directory 
-## to the output directory of the repo outside this project
+# Function to copy the _book directory 
+# to the output directory of the repo outside this project
 Copy_Book_To_Reports <- function(output_dir, debug = FALSE) {
   
-  ## Determine the asset repo
+  # Determine the asset repo
   .asset_repo <- Get_Asset_Repo()
   
-  ## Define the output directory of the repo outside this project
+  # Define the output directory of the repo outside this project
   output_dir_repo <- Get_Output_Dir_Repo(output_dir)
   
-  ## Define the input directory
+  # Define the input directory
   input_dir_book <- file.path("_book")
   
-  ## If the output directory of the repo outside this project does not exist, 
-  ## create it first
+  # If the output directory of the repo outside this project does not exist, 
+  # create it first
   if (!dir.exists(output_dir_repo)) {
     dir.create(output_dir_repo, recursive = TRUE)
   }
   
-  ## Copy the _book directory to the output directory 
-  ## from the repo outside this project
+  # Copy the _book directory to the output directory 
+  # from the repo outside this project
   fs::dir_copy(input_dir_book, output_dir_repo, overwrite = TRUE)
   
-  ## Test if the copy action was successful
+  # Test if the copy action was successful
   if (dir.exists(output_dir_repo)) {
     cli::cli_alert_success(
       c(
-        "De _book directory is gekopieerd naar {.var {(.asset_repo)}}: \n",
+        "The _book directory is copied to {.var {(.asset_repo)}}: \n",
         "{.file {output_dir_repo}}"
       )
     )
   } else {
     cli::cli_alert_error(
       c(
-        "De _book directory is niet gekopieerd naar {.var {(.asset_repo)}}: \n",
+        "The _book directory is NOT copied to {.var {(.asset_repo)}}: \n",
         "{.file {output_dir_repo}}"
       )
     )
@@ -850,27 +850,27 @@ Copy_Book_To_Reports <- function(output_dir, debug = FALSE) {
   
 }
 
-## Function to copy the _book directory
+# Function to copy the _book directory
 Get_Output_Dir_Repo <- function(output_dir) {
   
-  ## Determine the asset repo
+  # Determine the asset repo
   .asset_repo <- Get_Asset_Repo()
   
-  ## Determine the output directory of the repo outside this project
+  # Determine the output directory of the repo outside this project
   output_dir_repo <- file.path(.asset_repo, output_dir)
   
   return(output_dir_repo)
   
 }
 
-## Function to copy files to the output directory of the repo outside this project
+# Function to copy files to the output directory of the repo outside this project
 Copy_Reports <- function(remove_orgials = F, debug = F) {
   
-  ## Determine the output directory of the repo outside this project
+  # Determine the output directory of the repo outside this project
   sOutput_directory <- file.path(Get_Rootdirectory(),
                                  "00 LTA Git/Git HHs/LTA_Reports/lta-hhs-studiesucces-models")
   
-  ## Create a filelist of the .html files in the output directory
+  # Create a filelist of the .html files in the output directory
   file_list <- list.files(
     "_output",
     pattern = "*.html",
@@ -883,20 +883,20 @@ Copy_Reports <- function(remove_orgials = F, debug = F) {
     cli::cli_bullets(file_list)
   }
   
-  ## Copy the .html files from the output directory to the output directory 
-  ## of the repo outside this project
+  # Copy the .html files from the output directory to the output directory 
+  # of the repo outside this project
   if(!dir.exists(sOutput_directory)) {
     dir.create(sOutput_directory)
   }
   
-  ## If there are files, copy them
+  # If there are files, copy them
   if(length(file_list) > 0) {
     
-    ## Copy the .html files from the output directory 
-    ## to the output directory of the repo outside this project
+    # Copy the .html files from the output directory 
+    # to the output directory of the repo outside this project
     walk(file_list, function(f) {
       
-      ## Create an output directory for the files: repo + faculty
+      # Create an output directory for the files: repo + faculty
       .output_dir <- file.path(sOutput_directory,
                                file.path(dirname(f)) |> basename())
       
@@ -913,22 +913,22 @@ Copy_Reports <- function(remove_orgials = F, debug = F) {
       )
     })
     
-    cli::cli_alert("De bestanden zijn gekopieerd")
+    cli::cli_alert("The files have been copied")
     
   } else {
-    cli::cli_alert("Er zijn geen bestanden om te kopiëren")
+    cli::cli_alert("There are no files to copy")
   }
   
   if(remove_orgials) {
     file.remove(file_list)
-    cli::cli_alert("De originele bestanden zijn verwijderd")
+    cli::cli_alert("The original files have been deleted")
   }
 }
 
-## Function to determine the current analysis
+# Function to determine the current analysis
 Get_Current_Analysis <- function() {
   
-  ## Define the description of the analysis
+  # Define the description of the analysis
   .succes     <- janitor::make_clean_names(params$succes)
   .propedeuse <- janitor::make_clean_names(params$propedeusediploma)
   
@@ -942,7 +942,7 @@ Get_Current_Analysis <- function() {
   
 }
 
-## Function to knit a header
+# Function to knit a header
 Knit_Header <- function(x, rep = 1) {
   
   .header <- rep("#", rep) |> paste(collapse = "")
@@ -950,19 +950,19 @@ Knit_Header <- function(x, rep = 1) {
   Knit_Print_Rule(glue("{(.header)} {x}"))
 }
 
-## Function to knit a line
+# Function to knit a line
 Knit_Print_Rule <- function(x) {
   
   knitr::knit_print(glue("\n\n\n{x}\n\n"))
   
 }
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 5. CLI FEATURES ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 5. CLI FEATURES ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Function for printing a subheader
+# Function for printing a subheader
 Cli_Subheader <- function(sText) {
   
   cli::cli_div(theme = list(span.neutral = list(color = "orange"),
@@ -977,10 +977,10 @@ Cli_Subheader <- function(sText) {
   
 }
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 6. QUERY FEATURES ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 6. QUERY FEATURES ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Function to find the most common value
 get_mode <- function(x) {
@@ -990,30 +990,30 @@ get_mode <- function(x) {
     names()
 }
 
-## Function to determine the most common category
+# Function to determine the most common category
 Get_Mostcommon_Category <- function(x) {
   
-  ## Test of x categorisch is
+  # Test of x categorisch is
   if(!is.factor(x) && !is.character(x)) {
     stop("De variabele is niet categorisch")
   }
   
-  ## Bepaal de meest voorkomende categorie
+  # Bepaal de meest voorkomende categorie
   x <- names(which.max(table(x)))
   
   return(x)
   
 }
 
-## Function to determine median (rounded and without NAs)
+# Function to determine median (rounded and without NAs)
 Get_Median_Rounded <- function(x) {
   
-  ## Test of x numeriek is
+  # Test of x numeriek is
   if(!is.numeric(x)) {
     stop("De variabele is niet numeriek")
   }
   
-  ## Bepaal de mediaan
+  # Bepaal de mediaan
   x <- round(median(x, na.rm = TRUE), 1)
   
   return(x)
@@ -1023,7 +1023,7 @@ Get_Median_Rounded <- function(x) {
 # Function to create a persona of a study programme's students
 Get_dfPersona <- function(group = NULL) {
   
-  ## Determine the categorical variables used
+  # Determine the categorical variables used
   lSelect_categorical <- c(
     "Geslacht",
     "Vooropleiding",
@@ -1039,18 +1039,18 @@ Get_dfPersona <- function(group = NULL) {
     "Dubbele_studie"
   ) 
   
-  ## Remove the current group variable from this list
+  # Remove the current group variable from this list
   if (!is.null(group)) {
     .group <- as.name(group)
     # Verwijder de groep variabele uit deze lijst
     lSelect_categorical <- setdiff(lSelect_categorical, group)
   }
   
-  ## Remove variables not present in this study programme
+  # Remove variables not present in this study programme
   lSelect_categorical <- intersect(lSelect_categorical, 
                                    colnames(dfOpleiding_inschrijvingen))
   
-  ## Define the numeric variables used
+  # Define the numeric variables used
   lSelect_numerical <- c(
     "Leeftijd",
     "Aanmelding",
@@ -1066,12 +1066,12 @@ Get_dfPersona <- function(group = NULL) {
     "SES_Arbeid"
   )
   
-  ## If study programme is similar to HDT, add Rangnummer
+  # If study programme is similar to HDT, add Rangnummer
   if(current_opleiding$INS_Opleiding == "HDT") {
     lSelect_numerical <- c(lSelect_numerical, "Rangnummer")
   }
   
-  ## Remove variables not present in this study programme
+  # Remove variables not present in this study programme
   lSelect_numerical <- intersect(lSelect_numerical, 
                                  colnames(dfOpleiding_inschrijvingen))
   
@@ -1192,7 +1192,7 @@ Get_Mostcommon_Value <- function(x) {
 
 Get_dfPersona_2 <- function(group = NULL) {
   
-  ## Determine the categorical variables used
+  # Determine the categorical variables used
   lSelect_categorical <- c(
     "Aansluiting",
     "APCG",
@@ -1208,14 +1208,14 @@ Get_dfPersona_2 <- function(group = NULL) {
     "Vooropleiding"
   ) 
   
-  ## Remove the current group variable from this list
+  # Remove the current group variable from this list
   if (!is.null(group)) {
     .group <- as.name(group)
     # Verwijder de groep variabele uit deze lijst
     lSelect_categorical <- setdiff(lSelect_categorical, group)
   }
   
-  ## Define the numeric variables used
+  # Define the numeric variables used
   lSelect_numerical <- c(
     "Aanmelding",
     "Cijfer_CE_Engels",
@@ -1232,12 +1232,12 @@ Get_dfPersona_2 <- function(group = NULL) {
     "Retentie"
   )
   
-  ## If study programme is similar to HDT, add Rangnummer
+  # If study programme is similar to HDT, add Rangnummer
   if(current_opleiding$INS_Opleiding == "HDT") {
     lSelect_numerical <- c(lSelect_numerical, "Rangnummer")
   }
   
-  ## Remove variables not present in this study programme
+  # Remove variables not present in this study programme
   lSelect_numerical <- intersect(lSelect_numerical, 
                                  colnames(dfOpleiding_inschrijvingen))
   
@@ -1255,7 +1255,7 @@ Get_dfPersona_2 <- function(group = NULL) {
       
       dfPersona_filtered <<- dfPersona 
       
-      ## Filter recursively by variable
+      # Filter recursively by variable
       for (var in c(lSelect_categorical)) {
         print(var)
         # if(is.numeric(dfPersona_filtered[[var]])) {
@@ -1371,10 +1371,10 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
   
   dfBreakdown_lf <- as.data.frame(bd_lf) |>
     
-    ## Sort by the position of the variablese (descending)
+    # Sort by the position of the variablese (descending)
     arrange(desc(position)) |>
     
-    ## Rename variables (intercept and prediction)
+    # Rename variables (intercept and prediction)
     mutate(
       variable = case_when(
         variable == "intercept" ~ "Intercept",
@@ -1383,7 +1383,7 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
       )
     ) |>
     
-    ## Create the label (in percentages)
+    # Create the label (in percentages)
     mutate(label = paste0(as.character(round(contribution, 3) * 100), "%")) |>
     mutate(
       label = case_when(
@@ -1396,14 +1396,14 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
     ) |>
     mutate(label = case_when(label == "0%" ~ "+0%", .default = label)) |>
     
-    ## Remove variables with a contribution of 0
+    # Remove variables with a contribution of 0
     filter(sign != 0) |>
     
-    ## Create start and end variables
+    # Create start and end variables
     mutate(start = dplyr::lag(cumulative, default = min(cumulative)),
            end = cumulative) 
   
-  ## Add a row for “Other variables”
+  # Add a row for “Other variables”
   dfBreakdown_lf <- dfBreakdown_lf |>
     add_row(
       variable = "+ Overige variabelen",
@@ -1418,12 +1418,12 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
       end = dfBreakdown_lf$cumulative[dfBreakdown_lf$position == 1]
     ) |>
     
-    ## Adjust the position
+    # Adjust the position
     arrange(position) |>
     mutate(position = row_number()) |>
     arrange(desc(position)) |>
     
-    ## Determine the next start and position
+    # Determine the next start and position
     mutate(
       next_start = lead(start, default = NA),
       next_position = lead(position, default = NA)
@@ -1434,21 +1434,21 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
       .default = start
     )) |>
     
-    ## Customize the sign
+    # Customize the sign
     mutate(sign = case_when(variable == "Intercept" ~ "X", .default = sign)) |>
     
-    ## Determine the color of the labels
+    # Determine the color of the labels
     mutate(label_color = case_when(
       sign == "1" ~ lColors_default[["sNegative_color"]], 
       sign == "-1" ~ lColors_default[["sPositive_color"]], 
       .default = lColors_default[["sText_color"]])) |>
     
-    ## Determine the position of the labels
+    # Determine the position of the labels
     rowwise() |>
     mutate(label_position = max(start, end)) |>
     ungroup()
   
-  ## Adjust the sign to a factor
+  # Adjust the sign to a factor
   dfBreakdown_lf$sign <- factor(
     dfBreakdown_lf$sign,
     levels = c("1", "-1", "0", "X"),
@@ -1459,37 +1459,37 @@ Get_dfBreakdown_Lf <- function(bd_lf) {
   
 }
 
-## Function to determine the Shapley values
+# Function to determine the Shapley values
 Get_dfShapley <- function(shapley_object) {
   
-  ## Create a dataframe of the shapley values
+  # Create a dataframe of the shapley values
   dfShapley <- shapley_object |> 
     
-    ## Remove variables without contribution
+    # Remove variables without contribution
     filter(contribution != 0) |>
     
-    ## Calculate the average contribution per variable
+    # Calculate the average contribution per variable
     group_by(variable) |>
     mutate(mean_val = mean(contribution)) |>
     ungroup() |>
     
-    ## Sort the variables by mean contribution
+    # Sort the variables by mean contribution
     mutate(variable = fct_reorder(variable, abs(mean_val))) 
   
   return(dfShapley)
   
 }
 
-## Function to create a fairness object
+# Function to create a fairness object
 Get_objFairness <- function(explainer, protected_var, privileged, verbose = FALSE) {
   
-  ## Define the protected variable
+  # Define the protected variable
   .protected <- dfOpleiding_inschrijvingen |> 
     select(-Retentie) |>
     select(all_of({{protected_var}})) |>
     pull()
   
-  ## Create a fairness object
+  # Create a fairness object
   fobject <- fairness_check(explainer,
                             protected = .protected,
                             privileged = privileged,
@@ -1497,7 +1497,7 @@ Get_objFairness <- function(explainer, protected_var, privileged, verbose = FALS
                             verbose = verbose,
                             colorize = TRUE)
   
-  ## Return the fairness object
+  # Return the fairness object
   return(fobject)
 }
 
@@ -1514,16 +1514,16 @@ Get_Privileged <- function(df, group) {
   # If there are several, choose the first one (or determine another logic)
   sPrivileged <- most_common_subgroups[1]
   
-  # ## Geslacht: M
+  # # Geslacht: M
   # if(group == "Geslacht") {
   #   sPrivileged <- "M"
   # } 
   # 
-  # ## Vooropleiding
+  # # Vooropleiding
   # else if(group == "Vooropleiding") {
   #   if(opleiding == "HDT") {
   #     sPrivileged <- "VWO"
-  #     ## If the study programme contains the grade 3, then the previous education is VWO
+  #     # If the study programme contains the grade 3, then the previous education is VWO
   #   } else if (grepl("3", opleiding)) {
   #     sPrivileged <- "VWO"
   #   } else {
@@ -1532,7 +1532,7 @@ Get_Privileged <- function(df, group) {
   #   sPrivileged <- "HAVO"
   # } 
   # 
-  # ## Aansluiting
+  # # Aansluiting
   # else if(group == "Aansluiting") {
   #   sPrivileged <- "Direct"
   # }
@@ -1540,38 +1540,38 @@ Get_Privileged <- function(df, group) {
   return(sPrivileged)
 }
 
-## Function to create the fairness table
+# Function to create the fairness table
 Get_dfFairness_Total <- function(fobject) {
   
-  ## Create a table from the fairness analysis
+  # Create a table from the fairness analysis
   dfFairness <<- fobject[["fairness_check_data"]] |>
     as.data.frame() |> 
     filter(!is.na(score))
   
-  ## Calculate for each metric whether the score is outside the cutoff
+  # Calculate for each metric whether the score is outside the cutoff
   dfFairness_metric <<- dfFairness |>
     
-    ## For each group, calculate whether the score is outside the cutoff
+    # For each group, calculate whether the score is outside the cutoff
     mutate(Categorie_buiten_grenzen = ifelse(score < 0.8 |
                                               score > 1.2, "Ja", "Nee")) |> 
-    ## For each group, calculate whether there is > 1 Ja
+    # For each group, calculate whether there is > 1 Ja
     group_by(metric) |>
     summarise(Metric_buiten_grenzen = ifelse(sum(Categorie_buiten_grenzen == "Ja") > 1, 
                                              "Ja", 
                                              "Nee"))
   
-  ## Enrich the table with variable Metric_outside_limits
+  # Enrich the table with variable Metric_outside_limits
   dfFairness_totaal <- dfFairness |>
     
-    ## For each group, calculate whether the score is outside the cutoff
+    # For each group, calculate whether the score is outside the cutoff
     mutate(Categorie_buiten_grenzen = ifelse(score < 0.8 |
                                               score > 1.2, "Ja", "Nee")) |> 
     
-    ## Link to the metric
+    # Link to the metric
     left_join(dfFairness_metric, by = "metric") |> 
     select(-model) |> 
     
-    ## Rename the columns
+    # Rename the columns
     rename(Metric = metric,
            `Metric buiten grenzen` = Metric_buiten_grenzen,
            Score = score,
@@ -1582,14 +1582,14 @@ Get_dfFairness_Total <- function(fobject) {
            Categorie, 
            `Categorie buiten grenzen`) #|> 
     
-    ## Remove missing values
+    # Remove missing values
     #drop_na()
   
   return(dfFairness_totaal)
   
 }
 
-## Function to convert fairness analysis df to a wide df
+# Function to convert fairness analysis df to a wide df
 Get_dfFairness_Wide <- function(lDf) {
   
   dfVars <- tribble(
@@ -1618,7 +1618,7 @@ Get_dfFairness_Wide <- function(lDf) {
     FRN_Bias = c("Geen Bias", "Negatieve Bias", "Positieve Bias")
   )
   
-  ## Combine dfVars and dfBias
+  # Combine dfVars and dfBias
   dfVars_Bias <- dfVars |> 
     crossing(dfBias)
   
@@ -1649,30 +1649,30 @@ Get_dfFairness_Wide <- function(lDf) {
     pivot_longer(cols = c(Geslacht, Vooropleiding, Aansluiting)) |>
     count(name, value, name = "N")
   
-  ## Make the df wide
+  # Make the df wide
   dfWide <- df |>
     
-    ## Adjust the Bias
+    # Adjust the Bias
     mutate(Bias = case_when(
       `Negatieve Bias` > 1 | `Positieve Bias` > 1 ~ 'Ja',
       `Geen Bias` == 0 & `Negatieve Bias` == 0 & `Positieve Bias` == 0 ~ 'NTB',
       .default = "Nee")) |> 
         
-    ## Sort the Variable and Group
+    # Sort the Variable and Group
     mutate(Variabele = factor(Variabele, 
                               levels = c("Geslacht", 
                                          "Vooropleiding", 
                                          "Aansluiting")),
            Groep = factor(Groep,
                           levels = c(lLevels_geslacht, 
-                                     ## Make lLevels_vop unique to avoid repeating Other and unknown
+                                     # Make lLevels_vop unique to avoid repeating Other and unknown
                                      setdiff(lLevels_vop, lLevels_aansluiting), 
                                      lLevels_aansluiting))
                           ) |> 
     select(Variabele, Groep, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) |> 
     arrange(Variabele, Groep)
   
-  ## Add numbers and percentages
+  # Add numbers and percentages
   dfWide2 <- dfWide |> 
     left_join(dfTellingen, by = c("Variabele" = "name", "Groep" = "value")) |>
     select(Variabele, Groep, N, everything()) |> 
@@ -1683,7 +1683,7 @@ Get_dfFairness_Wide <- function(lDf) {
   
 }
 
-## Function to create the flextable for fairness analysis
+# Function to create the flextable for fairness analysis
 Get_ftFairness <- function(ft) {
   
   sColor_Bias_Positive <- "#9DBF9E"
@@ -1741,12 +1741,12 @@ Get_ftFairness <- function(ft) {
   return(ft)
 }
 
-## Function to determine fairness inferences
+# Function to determine fairness inferences
 Get_Fairness_Conclusies <- function(df, variabele, succes = "Retentie na 1 jaar") {
   
   sText <- ""
   
-  ## Define the groups
+  # Define the groups
   dfVariabele <- df |>
     filter(Variabele == variabele,
            N > 14) 
@@ -1758,31 +1758,31 @@ Get_Fairness_Conclusies <- function(df, variabele, succes = "Retentie na 1 jaar"
     return(sConclusie)
   }
   
-  ## Function to replace the last , with ' and '
+  # Function to replace the last , with ' and '
   Replace_comma_end <- function(x) {
     gsub(",([^,]*)$", " en\\1", x)
   }
   
-  ## Determine the groups with negative bias
+  # Determine the groups with negative bias
   if(any(dfVariabele$`Negatieve Bias` > 1)) {
     lNegatieve_Bias <- dfVariabele |>
       filter(`Negatieve Bias` > 1) |> 
       pull(Groep) |>
       paste(collapse = ", ")
-    ## Vervang de laatste , door en
+    # Vervang de laatste , door en
     lNegatieve_Bias <- Replace_comma_end(lNegatieve_Bias)
     sNegatieve_Bias <- glue("Er is een negatieve bias voor: {lNegatieve_Bias}.")
   } else {
     sNegatieve_Bias <- ""
   }
   
-  ## Determine the groups with positive bias
+  # Determine the groups with positive bias
   if(any(dfVariabele$`Positieve Bias` > 1)) {
     lPositieve_Bias <- dfVariabele |>
       filter(`Positieve Bias` > 1) |> 
       pull(Groep) |>
       paste(collapse = ", ")
-    ## Replace the last , with and
+    # Replace the last , with and
     lPositieve_Bias <- Replace_comma_end(lPositieve_Bias)
     sPositieve_Bias <- glue("Er is een positieve bias voor: {lPositieve_Bias}.")
   } else {
@@ -1795,7 +1795,7 @@ Get_Fairness_Conclusies <- function(df, variabele, succes = "Retentie na 1 jaar"
   
 }
 
-## Function to create a data frame from the fairness check data
+# Function to create a data frame from the fairness check data
 Get_dfFairness_Check_Data <- function(fobject, group) {
   df <- fobject |>
     dplyr::mutate(
@@ -1822,13 +1822,13 @@ Get_dfFairness_Check_Data <- function(fobject, group) {
            FRN_Score,
            FRN_Fair)
   
-  ## Create a dataframe of the fairness check data
+  # Create a dataframe of the fairness check data
   dfTellingen <- dfOpleiding_inschrijvingen |>
     select(!!group) |>
     pivot_longer(cols = c(!!group)) |>
     count(name, value, name = "N")
   
-  ## Combine with numbers
+  # Combine with numbers
   df <- df |>
     left_join(dfTellingen, by = c("FRN_Group" = "name", "FRN_Subgroup" = "value")) |>
     replace_na(list(N = 0)) |> 
@@ -1840,17 +1840,17 @@ Get_dfFairness_Check_Data <- function(fobject, group) {
   return(df)
 }
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 7. PLOT FEATURES ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 7. PLOT FEATURES ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Determine the basic theme
+# Determine the basic theme
 Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
   theme_set(theme_minimal())
   theme_update(
     
-    ## Title and caption
+    # Title and caption
     plot.title = element_textbox_simple(
       size = 16,
       lineheight = 1,
@@ -1874,7 +1874,7 @@ Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
                                           padding = margin(0, 0, 0, 0),
                                           margin = margin(15, 0, 0, 0)),
     
-    ## Assen
+    # Assen
     axis.title.x = element_text(face = "bold",
                                 vjust = 5),
     axis.title.y = element_text(face = "bold",
@@ -1887,19 +1887,19 @@ Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
     axis.text.x  = element_text(size = 11),
     axis.text.y  = element_text(size = 11),
 
-    ## Lines
+    # Lines
     panel.grid.minor = element_blank(),
     panel.grid.major.x = element_blank(),
 
-    ## Legend
+    # Legend
     legend.key.size = unit(.5, "cm"),
     legend.text = element_text(size = 10),
 
-    ## Background white and border not visible
+    # Background white and border not visible
     plot.background = element_rect(fill = lColors_default["sBackground_color"],
                                    color = NA) +
 
-    ## Make the title of x and y a markdown element
+    # Make the title of x and y a markdown element
     theme(
       axis.title.x = element_markdown(),
       axis.title.y = element_markdown()
@@ -1909,12 +1909,12 @@ Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
   
 }
 
-## Function to add LTA theme elements
+# Function to add LTA theme elements
 Add_LTA_Theme_Elements <- function(p,
                                    title_subtitle = TRUE,
                                    extended = FALSE) {
   
-  ## Customize theme with or without title and subtitle
+  # Customize theme with or without title and subtitle
   if(title_subtitle) {
     p <- p + theme(
         plot.title = element_text(size = 14, face = "bold"),
@@ -1939,7 +1939,7 @@ Add_LTA_Theme_Elements <- function(p,
         )
     }
   
-  ## If the theme needs to be expanded, add additional elements
+  # If the theme needs to be expanded, add additional elements
   if(extended) {
     
     p <- p + 
@@ -1964,7 +1964,7 @@ Add_LTA_Theme_Elements <- function(p,
   
 }
 
-## Function to set the y-axis
+# Function to set the y-axis
 Set_XY_Axis <- function(axis, breaks = 4) {
   
   if(axis == "x") {
@@ -1985,7 +1985,7 @@ Set_XY_Axis <- function(axis, breaks = 4) {
   
 }
 
-## Function to define the caption
+# Function to define the caption
 Get_sCaption <- function() {
   
   sCaption <- paste0(
@@ -2005,7 +2005,7 @@ Get_sCaption <- function() {
   
 }
 
-## Function to determine values and labels
+# Function to determine values and labels
 Get_Color_Values_and_Labels <- function(group, cp_lf_all) {
   colors_list <- switch(group,
                         "Geslacht"      = lColors_geslacht,
@@ -2019,10 +2019,10 @@ Get_Color_Values_and_Labels <- function(group, cp_lf_all) {
   return(list(values = .values, labels = .labels))
 }
 
-## Function to create an ROC plot
+# Function to create an ROC plot
 Get_ROC_Plot <- function(models, position = NULL) {
   
-  ## Combine multiple models if necessary
+  # Combine multiple models if necessary
   if(is.list(models)) {
     models <- bind_rows(models)
   }
@@ -2033,7 +2033,7 @@ Get_ROC_Plot <- function(models, position = NULL) {
     lColors <- lColors_ROC_plots
   }
   
-  ## Create an ROC plot
+  # Create an ROC plot
   roc_plot <- models |>
     ggplot(aes(x = 1 - specificity, 
                y = sensitivity, 
@@ -2042,10 +2042,10 @@ Get_ROC_Plot <- function(models, position = NULL) {
     geom_abline(lty = 3) + 
     coord_equal() + 
     
-    ## Add multiple colors to multiple models
+    # Add multiple colors to multiple models
     scale_color_manual(values = lColors) +
     
-    ## Make the labs
+    # Make the labs
     labs(x = "1 - specificiteit", 
          y = "sensitiviteit", 
          color = "Model",
@@ -2054,7 +2054,7 @@ Get_ROC_Plot <- function(models, position = NULL) {
       axis.title.x = element_text(margin = margin(t = 20))
     )
     
-    ## Add LTA elements
+    # Add LTA elements
     roc_plot <- Add_LTA_Theme_Elements(roc_plot,
                                        title_subtitle = FALSE)
   
@@ -2062,7 +2062,7 @@ Get_ROC_Plot <- function(models, position = NULL) {
   
 }
 
-## Function to create a confusion plot
+# Function to create a confusion plot
 Get_Confusion_Plot <- function(dfConf_matrix) {
  
   confusion_plot <- plot_confusion_matrix(
@@ -2079,7 +2079,7 @@ Get_Confusion_Plot <- function(dfConf_matrix) {
       tc_tile_border_color = "black"
     )) +
     
-    ## Customize the labels
+    # Customize the labels
     labs(
       title = "Confusion Matrix",
       x = "Werkelijke uitkost",
@@ -2089,7 +2089,7 @@ Get_Confusion_Plot <- function(dfConf_matrix) {
     
     Set_LTA_Theme()
   
-  ## Add LTA elements
+  # Add LTA elements
   confusion_plot <- Add_LTA_Theme_Elements(confusion_plot, 
                                            title_subtitle = TRUE)
   
@@ -2097,16 +2097,16 @@ Get_Confusion_Plot <- function(dfConf_matrix) {
    
 }
 
-## Function to create an RMSE plot
+# Function to create an RMSE plot
 Get_RMSE_Plot <- function(mp_rmse) {
   
-  ## Create an RMSE plot
+  # Create an RMSE plot
   mp_rmse_plot <- plot(mp_rmse) +
     
-    ## Themes
+    # Themes
     Set_LTA_Theme() +
     
-    ## Title, subtitle and caption
+    # Title, subtitle and caption
     labs(
       title = "Meest voorspellende factoren",
       subtitle = "Root Mean Square Error (RMSE) na permutaties",
@@ -2115,25 +2115,25 @@ Get_RMSE_Plot <- function(mp_rmse) {
       y = NULL
     ) +
     
-    ## Hide the legend
+    # Hide the legend
     theme(
       legend.position = "none"
     )
   
-  ## Add LTA elements
+  # Add LTA elements
   mp_rmse_plot <- Add_LTA_Theme_Elements(mp_rmse_plot)
   
   return(mp_rmse_plot)
 
 }
 
-## Function to determine titles
+# Function to determine titles
 Get_Breakdown_Titles <- function(bd, df, j, 
                                  student_groep, student_categorie, 
                                  mode = "group",
                                  debug = FALSE) {
   
-  ## Determine retention rate, totals and title/subtitle
+  # Determine retention rate, totals and title/subtitle
   nRetentie   <- Change_Number_Marks(as.numeric(bd$cumulative[bd$variable == 'prediction']) * 100, 
                                      digits = 1)
   nSubtotaal  <- Change_Number_Marks(as.numeric(df[j, 'Subtotaal']))
@@ -2162,7 +2162,7 @@ Get_Breakdown_Titles <- function(bd, df, j,
     cli::cli_alert_info(student_current_title)
   }
   
-  ## Define the subtitle
+  # Define the subtitle
   student_current_subtitle <- glue(
     " | kans op retentie: {nRetentie}%"
   )
@@ -2189,19 +2189,19 @@ Get_Breakdown_Titles <- function(bd, df, j,
               student_current_subtitle))
 }
 
-## Function to create a breakdown plot (all)
+# Function to create a breakdown plot (all)
 Get_Breakdown_Plot_All <- function(breakdown_lf_all, lTitles) {
   
-  ## Build the basic plot
+  # Build the basic plot
   breakdown_plot <- suppressWarnings(plot(breakdown_lf_all, plot_distributions = TRUE)) 
   
-  ## Determine the y axis
+  # Determine the y axis
   lY_Axis <- Set_XY_Axis(axis = "y")
 
-  ## Complete the plot based on the LTA design
+  # Complete the plot based on the LTA design
   breakdown_plot <- breakdown_plot +
 
-    ## Themes
+    # Themes
     Set_LTA_Theme() +
 
     # Define the title, subtitle and caption
@@ -2213,7 +2213,7 @@ Get_Breakdown_Plot_All <- function(breakdown_lf_all, lTitles) {
       y = NULL
     )
 
-  ## Adjust the summary layer for the average probability (layer 3)
+  # Adjust the summary layer for the average probability (layer 3)
   breakdown_plot$layers[[3]] <- stat_summary(
     fun = mean,
     geom = "point",
@@ -2223,7 +2223,7 @@ Get_Breakdown_Plot_All <- function(breakdown_lf_all, lTitles) {
     fill = lColors_default[["sNegative_color"]]
   )
 
-  ## Complete the plot
+  # Complete the plot
   breakdown_plot <- breakdown_plot +
 
     # Adjust the y-axis labels
@@ -2231,25 +2231,25 @@ Get_Breakdown_Plot_All <- function(breakdown_lf_all, lTitles) {
                        labels = lY_Axis[["y_labels"]],
                        limits = c(0, 1)) +
 
-    ## Hide the legend
+    # Hide the legend
     theme(
       legend.position = "none"
     )
 
-  ## Add LTA elements
+  # Add LTA elements
   breakdown_plot <- Add_LTA_Theme_Elements(breakdown_plot)
   
   return(breakdown_plot)
   
 }
 
-## Function to create a waterfall plot
+# Function to create a waterfall plot
 Get_Breakdown_Plot <- function(df, titles) {
    
   # Determine the breaks for the x-axis (y-axis, but is tilted)
   lY_Axis  <- Set_XY_Axis(axis = "y")
   
-  ## Create a waterfall plot
+  # Create a waterfall plot
   breakdown_plot <- ggplot(df) +
     
     # Add horizontal lines every 0.2
@@ -2318,7 +2318,7 @@ Get_Breakdown_Plot <- function(df, titles) {
                        labels = lY_Axis[["y_labels"]],
                        limits = c(0, 1)) +
     
-    ## Remove the legend and make the plot quieter
+    # Remove the legend and make the plot quieter
     theme(legend.position = "none") +
     theme(
       axis.text.y = element_text(size = 12),
@@ -2326,9 +2326,9 @@ Get_Breakdown_Plot <- function(df, titles) {
       panel.grid.minor = element_blank()
     ) +
   
-    ## Make the labels of Intercept and prediction bold.
-    ## suppressWarnings, because there will be a warning that vectorized input 
-    ## will not be possible in the future
+    # Make the labels of Intercept and prediction bold.
+    # suppressWarnings, because there will be a warning that vectorized input 
+    # will not be possible in the future
     suppressWarnings(theme(axis.text.y = element_text(
       face = ifelse(
         df$variable %in% c("Intercept", "Voorspelling"),
@@ -2341,24 +2341,24 @@ Get_Breakdown_Plot <- function(df, titles) {
   
 }
 
-## Function to create a Shapley plot
+# Function to create a Shapley plot
 Get_Shapley_Plot <- function(data) {
   
   shapley_plot <- data |> 
     
-    ## Build the plot and fill the color with positive and negative values
+    # Build the plot and fill the color with positive and negative values
     ggplot(aes(contribution, variable, fill = mean_val > 0)) +
     
-    ## Create a barplot and add a boxplot
+    # Create a barplot and add a boxplot
     geom_col(data = ~distinct(., variable, mean_val), 
              aes(mean_val, variable), 
              alpha = 0.5) +
     geom_boxplot(width = 0.5) +
     
-    ## Remove the legend
+    # Remove the legend
     theme(legend.position = "none") +
     
-    ## Determine the colors
+    # Determine the colors
     scale_fill_manual(values = c("TRUE" = lColors_default[["sPositive_color"]], 
                                  "FALSE" = lColors_default[["sNegative_color"]])) +
     
@@ -2375,7 +2375,7 @@ Get_Shapley_Plot <- function(data) {
   
 }
 
-## Function to create the ceteris paribus plot
+# Function to create the ceteris paribus plot
 Get_Ceteris_Paribus_Plot <- function(cp_lf_all, group) {
   
   # Determine the y axis
@@ -2395,12 +2395,12 @@ Get_Ceteris_Paribus_Plot <- function(cp_lf_all, group) {
     )
   )
 
-  ## Remove the existing color scale,
-  ## so there is no warning about the existing color scale
+  # Remove the existing color scale,
+  # so there is no warning about the existing color scale
   cp_plot$scales$scales <- list()
 
-  ## Build the color scale based on the variable
-  ## Define the values and labels
+  # Build the color scale based on the variable
+  # Define the values and labels
   lColor_values_labels <- Get_Color_Values_and_Labels(group, cp_lf_all)
   
   # Now build the plot further
@@ -2440,15 +2440,15 @@ Get_Ceteris_Paribus_Plot <- function(cp_lf_all, group) {
   
 }
 
-## Function to create the ceteris paribus plot
+# Function to create the ceteris paribus plot
 Get_Partial_Dependence_Plot <- function(pdp_lf, 
                                         group = "all",
                                         show_profiles = TRUE) {
   
-  ## Determine the y axis
+  # Determine the y axis
   lY_Axis <- Set_XY_Axis(axis = "y")
   
-  ## Define color scales for each variable
+  # Define color scales for each variable
   if(group == "Geslacht") {
     .values = lColors_geslacht
   } else if (group == "Vooropleiding") {
@@ -2459,15 +2459,15 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
     .values = lColors_default[["sMetrics_blue"]]
   }
   
-  ## Build the subtitle
+  # Build the subtitle
   if(group == "all") {
     .subtitle <- glue("Kans op retentie")
   } else {
     .subtitle <- glue("Kans op retentie naar **{tolower(group)}**")
   }
   
-  ## Remove from pdp_lf[[“agr_profiles”]][[“_label_”]] the name of the model
-  ## so that the labels match the category names in the variables
+  # Remove from pdp_lf[[“agr_profiles”]][[“_label_”]] the name of the model
+  # so that the labels match the category names in the variables
   .model <- explain_lf$label
   pdp_lf[["agr_profiles"]][["_label_"]] <- gsub(paste0(.model, "_"),
                                                 "",
@@ -2480,11 +2480,11 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
     pdp_plot <- plot(pdp_lf)
   }
 
-  ## Remove the existing color scale, 
-  ## so there is no warning about the existing color scale
+  # Remove the existing color scale, 
+  # so there is no warning about the existing color scale
   pdp_plot$scales$scales <- list()
   
-  ## Now build the plot further
+  # Now build the plot further
   pdp_plot <- pdp_plot +  
     
     # Add a single scale for the fill
@@ -2520,13 +2520,13 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
   
 }
 
-## Function to create a density plot
+# Function to create a density plot
 Get_Density_Plot <- function(fairness_object, group) {
   
-  ## Determine the x axis
+  # Determine the x axis
   lX_Axis <- Set_XY_Axis(axis = "x")
   
-  ## Define color scales for each variable
+  # Define color scales for each variable
   if(group == "Geslacht") {
     .values = lColors_geslacht
   } else if (group == "Vooropleiding") {
@@ -2537,12 +2537,12 @@ Get_Density_Plot <- function(fairness_object, group) {
     .values = lColors_default[["sMetrics_blue"]]
   }
   
-  ## Create a density plot
+  # Create a density plot
   density_plot <- fairness_object |> 
     
     plot_density() +
     
-    ## Add title and subtitle
+    # Add title and subtitle
     labs(
       title = "Verdeling en dichtheid van kans op retentie",
       subtitle = glue("Naar **{group}**"),
@@ -2550,11 +2550,11 @@ Get_Density_Plot <- function(fairness_object, group) {
       x = NULL,
       y = NULL)
     
-  ## Remove the existing color scale,
-  ## so there is no warning about the existing color scale
+  # Remove the existing color scale,
+  # so there is no warning about the existing color scale
   density_plot$scales$scales <- list()
   
-  ## Define the color
+  # Define the color
   density_plot <- density_plot +
    
     # Add a single scale for the fill
@@ -2563,17 +2563,17 @@ Get_Density_Plot <- function(fairness_object, group) {
       values = .values
     ) +
     
-    ## Adjust the x-axis scale
+    # Adjust the x-axis scale
     scale_x_continuous(breaks = lX_Axis[["x_breaks"]],
                        labels = lX_Axis[["x_labels"]],
                        limits = c(0, 1)) +
     
-    ## Add a line on the 50% labeled “50%”
+    # Add a line on the 50% labeled “50%”
     geom_vline(xintercept = 0.5,
                linetype = "dotted",
                color = lColors_default[["sPositive_color"]]) +
     
-    ## Add the label “50%”
+    # Add the label “50%”
     annotate(
       "text",
       x = 0.53,
@@ -2592,7 +2592,7 @@ Get_Density_Plot <- function(fairness_object, group) {
       strip.text = element_blank()
     )
   
-  ## Add LTA elements.
+  # Add LTA elements.
   density_plot <- Add_LTA_Theme_Elements(density_plot,
                                          title_subtitle = TRUE) +
     theme(legend.position = "bottom",
@@ -2604,19 +2604,19 @@ Get_Density_Plot <- function(fairness_object, group) {
   
 }
 
-## Function to create a fairness plot
+# Function to create a fairness plot
 Get_Fairness_Plot <- function(fairness_object, group, privileged) {
   
-  ## Determine the y axis
+  # Determine the y axis
   y_breaks <- seq(-100, 100, by = 0.2)
   
-  ## Create a fairness plot
+  # Create a fairness plot
   fairness_plot <- fairness_object |> 
     plot() +
     theme_minimal() +
     Set_LTA_Theme() +
     
-    ## Add title and subtitle
+    # Add title and subtitle
     labs(
       title = "Fairness check",
       subtitle = glue("Fairness van het model voor **{group}** ",
@@ -2625,14 +2625,14 @@ Get_Fairness_Plot <- function(fairness_object, group, privileged) {
       x = NULL,
       y = NULL)
     
-  ## Remove the existing color scale, 
-  ## so there is no warning about the existing color scale
+  # Remove the existing color scale, 
+  # so there is no warning about the existing color scale
   fairness_plot$scales$scales <- list()
   
   # Build the plot further
   fairness_plot <- fairness_plot +
     
-    ## Define the color
+    # Define the color
     scale_fill_manual(
       values = c(lColors_default[["sPositive_color"]])
     ) +
@@ -2640,11 +2640,11 @@ Get_Fairness_Plot <- function(fairness_object, group, privileged) {
     # Adjust the y-axis scale
     scale_y_continuous(breaks = y_breaks)
     
-    ## Add LTA elements.
+    # Add LTA elements.
     fairness_plot <- Add_LTA_Theme_Elements(fairness_plot,
                                             title_subtitle = TRUE) +
     
-    ## Customize some theme elements
+    # Customize some theme elements
     theme(
       panel.grid.minor = element_blank(),
       legend.position = "none",
@@ -2655,10 +2655,10 @@ Get_Fairness_Plot <- function(fairness_object, group, privileged) {
   
 }
 
-## Based on the bbplot package are built left_align ensave_plot
-## (hence the names in lowercase, so that these functions override those of the bbplot package)
+# Based on the bbplot package are built left_align ensave_plot
+# (hence the names in lowercase, so that these functions override those of the bbplot package)
 
-## Left align
+# Left align
 left_align <- function (plot_name, pieces) {
   grob <- ggplot2::ggplotGrob(plot_name)
   n <- length(pieces)
@@ -2666,7 +2666,7 @@ left_align <- function (plot_name, pieces) {
   return(grob)
 }
 
-## Save plot
+# Save plot
 save_plot <- function (plot_grid, width, height, save_filepath) {
   
   ggplot2::ggsave(
@@ -2681,7 +2681,7 @@ save_plot <- function (plot_grid, width, height, save_filepath) {
   )
 }
 
-## Save a plot
+# Save a plot
 Finalize_Plot <-
   function (plot_name,
             source_name,
@@ -2691,28 +2691,28 @@ Finalize_Plot <-
             height_pixels = nPlotHeight,
             show_plot = FALSE) {
     
-    ## Print de plot
+    # Print de plot
     plot_grid <- ggpubr::ggarrange(
       plot_name,
       ncol = 1,
       nrow = 2,
-      # heights = c(1, 0.045 / (height_pixels / 450)) ## Correction to BBC template (margin)
+      # heights = c(1, 0.045 / (height_pixels / 450)) # Correction to BBC template (margin)
       heights = c(1, 0 / (height_pixels / 450))
     )
     save_plot(plot_grid, width_pixels, height_pixels, save_filepath)
     
-    ## If the plot must be shown, show it
+    # If the plot must be shown, show it
     if(show_plot) {
       invisible(plot_grid)
     }
   }
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 8. AID FUNCTIONS ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 8. AID FUNCTIONS ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## Function convert numbers to readable notation
+# Function convert numbers to readable notation
 Change_Number_Marks <- function(x, digits = 0) {
   return(formatC(round(x, digits), 
                  format = "f", 
@@ -2721,12 +2721,12 @@ Change_Number_Marks <- function(x, digits = 0) {
                  decimal.mark = ","))
 }
 
-## Retrieve the version name of the dataset
+# Retrieve the version name of the dataset
 Get_sDataset <- function(df) {
   unique(df$LTA_Dataset)
 }
 
-## Function to determine the metadata of the analysis
+# Function to determine the metadata of the analysis
 Get_Metadata <- function() {
   
   lMetadata <- list(

@@ -1,38 +1,38 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Include_Colors.R ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
-## Copyright 2024 De HHs
-## Web Page: http://www.hhs.nl
-## Contact: Theo Bakker (t.c.bakker@hhs.nl)
-## Verspreiding buiten De HHs: Nee
-##
-## Doel: Het insluiten van de color settings
-##
-## Afhankelijkheden: Geen
-##
-## Datasets: Nvt
-##
-## Opmerkingen:
-## 1) Geen.
-## 2) ___
-##
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Geschiedenis:
-## 23-06-2024: TB: Aanmaak bestand
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# colors.R ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# R code of the Learning Technology & Analytics Research Group of THUAS
+# Copyright 2025 THUAS
+# Web Page: http://www.thuas.com
+# Contact: Theo Bakker (t.c.bakker@hhs.nl)
+# Distribution outside THUAS: No
+#
+# Purpose: Het insluiten van de color settings
+#
+# Dependencies: None
+#
+# Datasets: DNA
+#
+# Remarks:
+# 1) None.
+# 2) ___
+#
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# Version history:
+# 23-06-2024: TB: File creation
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1. COLOR LISTS ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1. COLOR LISTS ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.1 Standard colors ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1.1 Standard colors ####
 
 lColors_default <- c(
   
-  ## Colors of title, subject, subtitle, caption, background
+  # Colors of title, subject, subtitle, caption, background
   sTitle_color            = "black",
   sSubject_color          = "#808080",
   sSubtitle_color         = "black",
@@ -41,11 +41,11 @@ lColors_default <- c(
   sCaption_color          = "darkgray",
   sBackground_color       = "white",
   
-  ## Color of text
+  # Color of text
   sText_color            = "black",
   sText_inside_color     = "white",
   
-  ## Intercept (0) and gridlines
+  # Intercept (0) and gridlines
   sBaseline_color             = "black",
   sGridline_color             = "#CBCBCB",
   sDeadline_color             = "black",
@@ -53,41 +53,41 @@ lColors_default <- c(
   sBreakdown_intercept_color  = "black",
   sBreakdown_segment_color    = "darkgray",
   
-  ## Fill color
+  # Fill color
   sFill_color            = "lightgray",
   
-  ## Line color
+  # Line color
   sAverage_line_color    = "#CBCBCB",
   
-  ## Text color
+  # Text color
   sAverage_text_color    = "darkgray",
   
-  ## Color of annotations
+  # Color of annotations
   sAnnotation_text_color = "black",
   sArrow_color           = "darkgray",
   
-  ## Color of jitter
+  # Color of jitter
   sJitter_color          = "darkgray",
   
-  ## Error band color
+  # Error band color
   sSE_color              = "#CBCBCB",
   
-  ## Band color
+  # Band color
   sBand_color            = "grey95",
   
-  ## Positive and negative
+  # Positive and negative
   sPositive_color        = "#466F9D",
   sNegative_color        = "#C8133B",
   
-  ## Metrics
+  # Metrics
   sMetrics_green         = "#287233",
   sMetrics_red           = "#C8133B",
   sMetrics_yellow        = "#FFD966",
   sMetrics_blue          = "#5FA2CE"
 )
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 1.2 Specific colors ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 1.2 Specific colors ####
 
 lColors_geslacht <- c(
   "M" = "#1170AA",

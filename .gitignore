@@ -36,9 +36,10 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 
-# Temporary folders
+# Temporary or private folders
 _test
 _graveyard
+_log
 
 /.quarto/
 

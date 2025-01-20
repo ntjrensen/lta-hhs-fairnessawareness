@@ -1,10 +1,10 @@
 color:
   palette:
-    hhs-color-green: "#9EA700"
-    hhs-color-blue: "#00B2CD"
-    metrics-color-red: "#C8133B"
-    metrics-color-green: "#287233"
-    metrics-color-blue: "#5FA2CE"
+    hhs-color-green:      "#9EA700"
+    hhs-color-blue:       "#00B2CD"
+    metrics-color-red:    "#C8133B"
+    metrics-color-green:  "#287233"
+    metrics-color-blue:   "#5FA2CE"
     metrics-color-yellow: "#FFD966"
     metrics-color-orange: "#FFA500"
 
