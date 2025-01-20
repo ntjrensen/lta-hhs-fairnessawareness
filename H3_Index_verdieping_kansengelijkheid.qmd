@@ -179,7 +179,7 @@ Voor elke groep onderzoeken we **5 ratio's**, ook wel maatstaven of metrieken ge
 ```{r}
 #| label: fig-confusion-matrix-explanation
 #| fig-cap: "Confusion matrix in relatie tot BSA"
-knitr::include_graphics(here::here("01_Includes/img", "confusion-matrix-fairness-lta-hhs.png"))
+knitr::include_graphics(here::here("R/images", "confusion-matrix-fairness-lta-hhs.png"))
 ```
 
 :::::::: panel-tabset
@@ -568,12 +568,12 @@ for(i in c("Geslacht", "Vooropleiding", "Aansluiting")) {
 <!-- Verantwoording -->
 
 ::: {.content-hidden unless-meta="includes.verantwoording"}
-{{< include 01_Includes/Include_Verantwoording.qmd >}}
+{{< include R/scripts/Include_Verantwoording.qmd >}}
 :::
 
 <!-- Copyright -->
 
-{{< include 01_Includes/Include_Copyright.qmd >}}
+{{< include R/scripts/Include_Copyright.qmd >}}
 
 
 <!-- Opschonen -->

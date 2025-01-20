@@ -40,7 +40,7 @@ for (i in c("here", "cli", "icecream")) {
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.2 ltabase package in (installeer indien nodig) ####
 
-source("99_Functies_Libraries/Inladen_ltabase.R")
+source("R/functions/Inladen_ltabase.R")
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
@@ -73,7 +73,7 @@ ltabase::load_lta_datasets(message = TRUE)
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.6 Laad extra functies ####
 
-source("99_Functies_Libraries/report.helpers.R")
+source("R/functions/report.helpers.R")
 
 ## . ####
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -151,7 +151,7 @@ for(i in 1:nrow(dfRender)) {
     )
     
     ## Bepaal de output directory
-    .output_dir <- file.path("10_Output",
+    .output_dir <- file.path("_output",
                              tolower(current_render_opleiding$INS_Faculteit))
     
     ## Bepaal de parameters voor de quarto file

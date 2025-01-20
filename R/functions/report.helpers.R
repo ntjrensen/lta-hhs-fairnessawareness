@@ -187,22 +187,22 @@ Get_Current_Opleiding_Output_Dir <- function(current_opleiding,
   }
   
   if(mode == "last-fits" | mode == "modelresults") {
-    .output_dir <- file.path("10_Output",
+    .output_dir <- file.path("_output",
                              .fac_opl_vorm,
                              "modelresults")
   } else if(mode == "data") {
-    .output_dir <- file.path("10_Output",
+    .output_dir <- file.path("_output",
                              .fac_opl_vorm,
                              "data")
   } else if(mode == "fairness") {
-    .output_dir <- file.path("10_Output",
+    .output_dir <- file.path("_output",
                              .fac_opl_vorm,
                              "fairness")
   } else if(mode == "html") {
-    .output_dir <- file.path("10_Output",
+    .output_dir <- file.path("_output",
                              .fac_opl_vorm)
   } else if(mode == "plot") {
-    .output_dir <- file.path("10_Output",
+    .output_dir <- file.path("_output",
                              .fac_opl_vorm,
                              "plots")
   } else {
@@ -314,7 +314,7 @@ Get_Breakdown_Plotpath <- function(student_groep, student_categorie) {
 ## Functie om de data dictionary in te lezen
 Get_Data_Dictionary <- function() {
   
-  sInput_path <- "01_Includes/vars"
+  sInput_path <- "R/vars"
   
   df <- rio::import(file.path(sInput_path, "data_dictionary.xlsx")) 
   
@@ -872,7 +872,7 @@ Copy_Reports <- function(remove_orgials = F, debug = F) {
   
   ## Maak een filelist van de .html bestanden in de output directory
   file_list <- list.files(
-    "10_Output",
+    "_output",
     pattern = "*.html",
     full.names = TRUE,
     recursive = TRUE

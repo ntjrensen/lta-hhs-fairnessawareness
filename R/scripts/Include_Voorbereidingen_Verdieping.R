@@ -40,8 +40,8 @@ for (i in c("here", "cli", "icecream")) {
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.2 ltabase package in (installeer indien nodig) ####
 
-source("99_Functies_Libraries/Inladen_ltabase.R")
-source("99_Functies_Libraries/fairness.helpers.R")
+source("R/functions/Inladen_ltabase.R")
+source("R/functions/fairness.helpers.R")
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
@@ -109,12 +109,12 @@ extrafont::loadfonts(quiet = TRUE)
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.6 Laad extra functies ####
 
-source("99_Functies_Libraries/report.helpers.R")
+source("R/functions/report.helpers.R")
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.7 Kleuren ####
 
-source("01_Includes/Include_Colors.R")
+source("R/scripts/Include_Colors.R")
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.8 Bepaal de voorkeur voor de thema's ####
@@ -124,7 +124,7 @@ Set_LTA_Theme()
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 1.9 Laad extra functies ####
 
-source("99_Functies_Libraries/report.helpers.R")
+source("R/functions/report.helpers.R")
 
 ## Bepaal de volgorde van een aantal levels
 Get_Levels()

@@ -730,12 +730,12 @@ Dit doen we door voor verschillende groepen studenten de metrieken van de modell
 <!-- Verantwoording -->
 
 ::: {.content-hidden unless-meta="includes.verantwoording"}
-{{< include 01_Includes/Include_Verantwoording.qmd >}}
+{{< include R/scripts/Include_Verantwoording.qmd >}}
 :::
 
 <!-- Copyright -->
 
-{{< include 01_Includes/Include_Copyright.qmd >}}
+{{< include R/scripts/Include_Copyright.qmd >}}
 
 
 <!-- Opschonen -->

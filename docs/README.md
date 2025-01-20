@@ -38,16 +38,16 @@ Het template is opgebouwd uit de volgende **bestanden**:
 
 Het bevat de volgende **folders**:
 
--   `01_Includes` met bestanden die worden ingesloten (afbeeldingen en scss files)
--   `10_Output` met de rapporten die bij een automatische rendering worden gemaakt.
--   `99_Functies_Libraries` met de standaard voorbereidingen, het ltabase package en extra functies
+-   `R/scripts` met bestanden die worden ingesloten (afbeeldingen en scss files)
+-   `_output` met de rapporten die bij een automatische rendering worden gemaakt.
+-   `R/functions` met de standaard voorbereidingen, het ltabase package en extra functies
 -   `02_Plots` met de afbeeldingen
 -   `docs` voor de documentatiebestanden
 -   `renv` voor de packages uit de R omgeving
 
 **NB Git ignore**
 
--   Het `.gitignore` bestand is zo ingericht dat folders die specifieke output bevatten niet meegaan naar de repo (bijv. `00. Log` en `90_Test`.
+-   Het `.gitignore` bestand is zo ingericht dat folders die specifieke output bevatten niet meegaan naar de repo (bijv. `_00. _log` en `_test`.
 
 ## Vooraf
 

@@ -93,7 +93,7 @@ svm_res <-
 ## Stop het cluster
 stopCluster()
 
-saveRDS(svm_res, file = "10_Output/modelresults/svm_initial_tune.rds")
+saveRDS(svm_res, file = "_output/modelresults/svm_initial_tune.rds")
 
 autoplot(svm_res)
 ```

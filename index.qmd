@@ -90,7 +90,7 @@ Heb je vragen of suggesties over deze analyse? Neem dan contact op met Theo Bakk
 
 <!-- Copyright -->
 
-{{< include 01_Includes/Include_Copyright.qmd >}}
+{{< include R/scripts/Include_Copyright.qmd >}}
 
 <!-- Opschonen -->
 

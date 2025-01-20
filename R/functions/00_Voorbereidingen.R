@@ -85,7 +85,7 @@ purrr::walk(packages, function(pkg) {
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 0.2 ltabase package in (installeer indien nodig) ####
 
-source("99_Functies_Libraries/Inladen_ltabase.R")
+source("R/functions/Inladen_ltabase.R")
 
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 ## 0.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####

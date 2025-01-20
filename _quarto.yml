@@ -67,7 +67,7 @@ format:
     theme: 
     - lumen
     - brand
-    - "01_Includes/scss/lta.scss"
+    - "R/scss/lta.scss"
     
     # Output instellingen
     self-contained: true

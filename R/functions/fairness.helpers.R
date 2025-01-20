@@ -23,7 +23,7 @@
 ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 ## Sluit de oorspronkelijke hulp functies in vanuit het fairness package
-source("99_Functies_Libraries/fairness.dalex.helpers.R")
+source("R/functions/fairness.dalex.helpers.R")
 
 library(purrr)
 

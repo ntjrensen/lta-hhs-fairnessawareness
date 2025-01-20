@@ -412,7 +412,7 @@ dfOpleiding_inschrijvingen |>
 #| label: fig-dataset-split
 #| fig-cap: "Splitsing van de dataset in trainingset, validatieset en testset"
 #| out-width: 80%
-knitr::include_graphics(here::here("01_Includes/img", "voorspelmodel-dataset-lta-hhs.png"))
+knitr::include_graphics(here::here("R/images", "voorspelmodel-dataset-lta-hhs.png"))
 ```
 
 
@@ -1331,7 +1331,7 @@ Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde o
 #| label: fig-basemodel-lift
 #| fig-cap: "Lift afhankelijk van base-model en accuraatheid"
 #| out-width: 80%
-knitr::include_graphics(here::here("01_Includes/img", "basemodel-lift.png"))
+knitr::include_graphics(here::here("R/images", "basemodel-lift.png"))
 ```
 
 **De mate van accuraatheid van het prognosemodel is `r sAccuracy_niveau` (`r Last_fit_Accuracy`%).**
@@ -1369,7 +1369,7 @@ De prestaties van het model kunnen we verder uitdrukken in een *confusion matrix
 ```{r}
 #| label: fig-confusion-matrix-explanation
 #| fig-cap: "Confusion matrix in relatie tot BSA"
-knitr::include_graphics(here::here("01_Includes/img", "confusion-matrix-retention-lta-hhs.png"))
+knitr::include_graphics(here::here("R/images", "confusion-matrix-retention-lta-hhs.png"))
 ```
 
 We passen de confusion matrix nu toe op het model dat als beste naar voren kwam. De **accuraatheid** van dit model is **`r pACC`%**. De accuraatheid van het model berekenen we door de som van de diagonaal te berekenen: het aandeel goed voorspelde uitkomsten, Retentie = Retentie (*True Positive*) en Geen retentie = Geen retentie (*True Negative*), af te zetten tegen het totaal aantal voorspellingen: `r pTP`% + `r pTN`% = `r pACC`%. (NB. De weergave in deze confusion matrix is diagonaal gespiegeld vergeleken met het voorbeeld.)
@@ -1431,12 +1431,12 @@ De volgende stap (stap 2) is een verdiepende analyse van de mate waarin de **fac
 <!-- Verantwoording -->
 
 ::: {.content-hidden unless-meta="includes.verantwoording"}
-{{< include 01_Includes/Include_Verantwoording.qmd >}}
+{{< include R/scripts/Include_Verantwoording.qmd >}}
 :::
 
 <!-- Copyright -->
 
-{{< include 01_Includes/Include_Copyright.qmd >}}
+{{< include R/scripts/Include_Copyright.qmd >}}
 
 <!-- Opschonen -->
 
