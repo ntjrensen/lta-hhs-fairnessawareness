@@ -316,7 +316,7 @@ Get_Data_Dictionary <- function() {
   
   sInput_path <- "R/vars"
   
-  df <- rio::import(file.path(sInput_path, "data_dictionary.xlsx")) 
+  df <- rio::import(file.path(sInput_path, "data-dictionary.xlsx")) 
   
   return(df)
 }
@@ -489,8 +489,11 @@ Mutate_Cijfers_VO <- function(df) {
 # Function to determine the order of a number of levels
 Get_Levels <- function() {
   
+  ## Set lLevels
+  lLevels <- list()
+  
   # Determine the order of levels in the study profiles:
-  lLevels_skp <<- c(
+  lLevels[["Studiekeuzeprofiel"]] <- c(
     "EM",
     "CM",
     "EM&CM",
@@ -522,7 +525,7 @@ Get_Levels <- function() {
     "ZW"
   )
   
-  lLevels_aansluiting <<- c(
+  lLevels[["Aansluiting"]] <- c(
     "Direct",
     "Tussenjaar",
     "Switch intern",
@@ -533,7 +536,7 @@ Get_Levels <- function() {
     "Onbekend"
   )
   
-  lLevels_vop <<- c(
+  lLevels[["Vooropleiding"]] <- c(
     "MBO",
     "HAVO",
     "VWO",
@@ -544,49 +547,48 @@ Get_Levels <- function() {
     "Onbekend"
   )
   
-  lLevels_geslacht <<- c(
+  lLevels[["Geslacht"]] <- c(
     "M",
     "V"
   )
+  
+  return(lLevels)
+  
+}
+
+# Function to determine the levels of a variable
+Set_Levels <- function(df = dfOpleiding_inschrijvingen_base, lLevels) {
+  
+  lNew_levels <- list()
+  
+  lNew_levels[["Studiekeuzeprofiel"]] <-
+    Sort_Levels(
+      lLevels[["Studiekeuzeprofiel"]],
+      df,
+      "VOP_Studiekeuzeprofiel_LTA_afkorting"
+    )
+
+  # Loop over the sensitive attributes
+  for (sensitive_attribute in lSensitive_attributes) {
+    
+    formal_variable <- unique(dfSensitive$VAR_Sensitive_formal_variable[dfSensitive$VAR_Sensitive_simple_variable == sensitive_attribute])
+    
+    lNew_levels[[sensitive_attribute]] <- Sort_Levels(lLevels[[sensitive_attribute]],
+                                                      df, 
+                                                      formal_variable)
+    
+  }
+  
+  return(lNew_levels)
   
 }
 
 # Adjust levels so that they are sorted properly
 Sort_Levels <- function(levels, df, var) {
-  lLevels <- intersect(levels, 
+  levels_sorted <- intersect(levels, 
                        unique(df[[var]])
-                       )
-  return(lLevels)
-}
-
-# Function to determine the levels of a variable
-Set_Levels <- function(df = dfOpleiding_inschrijvingen_base) {
-  
-  lLevels_skp <<-
-    Sort_Levels(
-      lLevels_skp,
-      df,
-      "VOP_Studiekeuzeprofiel_LTA_afkorting"
-    )
-  
-  lLevels_aansluiting <<-
-    Sort_Levels(lLevels_aansluiting,
-                df,
-                "INS_Aansluiting_LTA")
-  
-  lLevels_vop <<-
-    Sort_Levels(
-      lLevels_vop,
-      df,
-      "VOP_Toelaatgevende_vooropleiding_soort"
-    )
-  
-  lLevels_geslacht <<-
-    Sort_Levels(
-      lLevels_geslacht,
-      df,
-      "INS_Geslacht"
-    )
+  )
+  return(levels_sorted)
 }
 
 # Function to mutate the levels of a variable
@@ -601,14 +603,6 @@ Mutate_Levels <- function(df, vars, levels) {
       )
   })
   
-  # for (i in seq_along(vars)) {
-  #   df <- df |>
-  #     mutate(
-  #       !!rlang::sym(vars[i]) := fct_expand(!!rlang::sym(vars[i]), levels[[i]]),
-  #       !!rlang::sym(vars[i]) := fct_relevel(!!rlang::sym(vars[i]), levels[[i]]),
-  #       !!rlang::sym(vars[i]) := fct_drop(!!rlang::sym(vars[i]))
-  #     )
-  # }
   return(df)
 }
 
@@ -699,41 +693,6 @@ Get_tblSummary <- function(df) {
     set_table_properties(width = 0.8, layout = "autofit")
   
   return(dfSummary)
-  
-}
-
-# Function to create a sparkline table
-Get_tblSparklines <- function(df, group = "Geslacht", var = "Leeftijd") {
-  
-  .group <- as.name(group)
-  .var   <- as.name(var)
-  
-  # Determine the sparkline table
-  dfSparkline <- df |> 
-    
-    dplyr::group_by(!!.group) |>
-    
-    # Keep the list of outcomes in a list
-    dplyr::summarize(
-      mean = mean(!!.var),
-      sd = sd(!!.var),
-      var_data = list(!!.var),
-      .groups = "drop"
-    )
-  
-  # Convert to a gt table
-  tblSparkline <- dfSparkline |>
-    arrange(desc(!!.group)) |>
-    gt() |>
-    gtExtras::gt_plt_dist(
-      var_data,
-      type = "density",
-      line_color = lColors_default[["sGridline_color"]],
-      fill_color = lColors_default[["sMetric_blue"]]
-    ) |>
-    fmt_number(columns = mean:sd, decimals = 1) 
-  
-  return(tblSparkline)
   
 }
 
@@ -1020,14 +979,21 @@ Get_Median_Rounded <- function(x) {
   
 }
 
-# Function to create a persona of a study programme's students
+# Helper function to find most common value
+Get_Mostcommon_Value <- function(x) {
+  if (is.numeric(x)) {
+    return(median(x, na.rm = TRUE))
+  } else {
+    return(names(sort(table(x), decreasing = TRUE))[1])
+  }
+}
+
+# Function to create a persona of a study programme's students (OLD VERSION)
 Get_dfPersona <- function(group = NULL) {
   
   # Determine the categorical variables used
   lSelect_categorical <- c(
-    "Geslacht",
-    "Vooropleiding",
-    "Aansluiting",
+    lSensitive_attributes,
     "Studiekeuzeprofiel",
     "APCG",
     "Cijfer_CE_VO_missing",
@@ -1181,189 +1147,140 @@ Get_dfPersona <- function(group = NULL) {
   return(dfPersona)
 }
 
-# Helper function to find most common value
-Get_Mostcommon_Value <- function(x) {
-  if (is.numeric(x)) {
-    return(median(x, na.rm = TRUE))
-  } else {
-    return(names(sort(table(x), decreasing = TRUE))[1])
-  }
-}
-
-Get_dfPersona_2 <- function(group = NULL) {
+Get_dfPersona_Recursive <- function(variable_list = NULL) {
   
-  # Determine the categorical variables used
+  # Initialize the result dataframe
+  dfResults <- NULL
+  
+  # Initialize the working dataframe
+  dfWorking <- dfOpleiding_inschrijvingen
+  
+  # Calculate the total number of students
+  .totaal <- dfWorking |> count() |> pull(n)
+  
+  # Define categorical and numerical variables present in the dataframe
   lSelect_categorical <- c(
-    "Aansluiting",
-    "APCG",
-    "Cijfer_CE_Engels_missing",
-    "Cijfer_CE_Natuurkunde_missing",
-    "Cijfer_CE_Nederlands_missing",
-    "Cijfer_CE_VO_missing",
-    "Cijfer_CE_Wiskunde_missing",
-    "Cijfer_SE_VO_missing",
-    "Dubbele_studie",
-    "Geslacht",
+    lSensitive_attributes,
     "Studiekeuzeprofiel",
-    "Vooropleiding"
-  ) 
+    "APCG",
+    "Cijfer_CE_VO_missing",
+    "Cijfer_SE_VO_missing",
+    "Cijfer_CE_Nederlands_missing",
+    "Cijfer_CE_Engels_missing",
+    "Cijfer_CE_Wiskunde_missing",
+    "Cijfer_CE_Natuurkunde_missing",
+    "Dubbele_studie"
+  ) |> intersect(colnames(dfWorking))
   
-  # Remove the current group variable from this list
-  if (!is.null(group)) {
-    .group <- as.name(group)
-    # Verwijder de groep variabele uit deze lijst
-    lSelect_categorical <- setdiff(lSelect_categorical, group)
-  }
-  
-  # Define the numeric variables used
   lSelect_numerical <- c(
+    "Leeftijd",
     "Aanmelding",
+    "Reistijd",
+    "Cijfer_CE_VO",
+    "Cijfer_SE_VO",
+    "Cijfer_CE_Nederlands",
+    "Cijfer_CE_Wiskunde",
     "Cijfer_CE_Engels",
     "Cijfer_CE_Natuurkunde",
-    "Cijfer_CE_Nederlands",
-    "Cijfer_CE_VO",
-    "Cijfer_CE_Wiskunde",
-    "Cijfer_SE_VO",
-    "Leeftijd",
-    "Reistijd",
-    "SES_Arbeid",
-    "SES_Welvaart",
     "SES_Totaal",
-    "Retentie"
-  )
+    "SES_Welvaart",
+    "SES_Arbeid"
+  ) |> intersect(colnames(dfWorking))
   
-  # If study programme is similar to HDT, add Rangnummer
-  if(current_opleiding$INS_Opleiding == "HDT") {
-    lSelect_numerical <- c(lSelect_numerical, "Rangnummer")
+  # Add "Rangnummer" if the study programme is HDT
+  if (current_opleiding$INS_Opleiding == "HDT") {
+    lSelect_numerical <- c(lSelect_numerical, "Rangnummer") |> 
+      intersect(colnames(dfWorking))
   }
   
-  # Remove variables not present in this study programme
-  lSelect_numerical <- intersect(lSelect_numerical, 
-                                 colnames(dfOpleiding_inschrijvingen))
-  
-  # Calculate the total for this study programme
-  .totaal <- dfOpleiding_inschrijvingen |> 
-    count() |> 
-    pull(n)
-  
-  if (!is.null(group)) {
-    
-    # Create personas based on the specified group
-    dfPersona <<- dfOpleiding_inschrijvingen |> 
-      
-      group_by(!!.group)
-      
-      dfPersona_filtered <<- dfPersona 
-      
-      # Filter recursively by variable
-      for (var in c(lSelect_categorical)) {
-        print(var)
-        # if(is.numeric(dfPersona_filtered[[var]])) {
-        #   median_value <- Get_Median_Rounded(dfPersona_filtered[[var]])  # Bepaal de mediaan
-        #   dfPersona_filtered <- dfPersona_filtered |>
-        #     filter(!!sym(var) == median_value)  # Filter op de mediaan
-        # } else {
-          mode_value <- Get_Mostcommon_Category(dfPersona_filtered[[var]])  # Bepaal de meest voorkomende waarde
-          dfPersona_filtered <- dfPersona_filtered |>
-            filter(!!sym(var) == mode_value)  # Filter op de meest voorkomende waarde
-        # }
-      }
-      
-      dfPersona_filtered_tmp <<- dfPersona_filtered
-      
-      dfPersona <<- dfPersona_filtered |> 
-      
-        # Create a persona based on the remaining variables: 
-        # choose the most common values per variable in the case of categories 
-        # and the median for numeric variables
+  if (is.null(variable_list)) {
+    # If no variable list is provided, calculate for the entire dataset
+    dfResults <- dfWorking |>
       summarise(
-        
         # Categorical variables
         across(
           all_of(lSelect_categorical), 
           Get_Mostcommon_Category,
           .names = "{col}"
         ),
-        
         # Numerical variables
         across(
           all_of(lSelect_numerical),
           Get_Median_Rounded,
           .names = "{col}"
-        ), 
-        
+        ),
         # Other variables
         Collegejaar = median(Collegejaar, na.rm = TRUE),
         ID = NA,
-        
-        # Subtotal number of students
         Subtotaal = n(),
-        
-        .groups = "drop") |> 
-      
-      # Count the number of students per group
-      mutate(Totaal = .totaal,
-             Percentage = round(Subtotaal/Totaal, 3)) |>
-      
-      # Add the group variable and define the category within the group
-      mutate(Groep = group,
-             Categorie = !!.group) |>
-      
-      # Mutate age to integer
+        .groups = "drop"
+      ) |>
+      mutate(
+        Totaal = .totaal,
+        Percentage = round(Subtotaal / Totaal, 3),
+        Groep = "Alle",
+        Categorie = "Alle studenten"
+      ) |>
       mutate(Leeftijd = as.integer(round(Leeftijd, 0))) |>
-      
-      # Reorder
       select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
     
   } else {
     
-    # Create persona for all students without grouping
-    dfPersona <- dfOpleiding_inschrijvingen |>
+    # Loop through each variable in the list
+    for (variable in variable_list) {
       
-      # Create a persona based on the remaining variables: 
-      # choose the most common values per variable in the case of categories 
-      # and the median for numeric variables
-      summarise(
-        
-        # Categorical variables
-        across(
-          all_of(lSelect_categorical), 
-          Get_Mostcommon_Category,
-          .names = "{col}"
-        ),
-        
-        # Numerical variables
-        across(
-          all_of(lSelect_numerical),
-          Get_Median_Rounded,
-          .names = "{col}"
-        ), 
-        
-        # Other variables
-        Collegejaar = median(Collegejaar, na.rm = TRUE),
-        ID = NA,
-        
-        # Subtotal number of students
-        Subtotaal = n(),
-        
-        .groups = "drop") |> 
+      # Convert variable to symbol for dynamic grouping
+      .variable <- as.name(variable)
       
-      # Count the number of students per group
-      mutate(Totaal = .totaal,
-             Percentage = round(Subtotaal/Totaal, 3)) |>
+      # Exclude the grouping variable from the categorical variables
+      lSelect_categorical <- setdiff(lSelect_categorical, variable)
       
-      # Add the group variable and define the category within the group
-      mutate(Groep = "Alle",
-             Categorie = "Alle studenten") |>
+      # Check if the current variable exists in the dataframe
+      if (!(variable %in% colnames(dfWorking))) {
+        warning(paste("Variable", variable, "not found in the dataset. Skipping."))
+        next
+      }
       
-      # Mutate age to integer
-      mutate(Leeftijd = as.integer(round(Leeftijd, 0))) |>
+      # Summarise data for the current variable
+      dfPersona <- dfWorking |>
+        group_by(!!.variable) |>
+        summarise(
+          # Categorical variables
+          across(
+            all_of(lSelect_categorical), 
+            Get_Mostcommon_Category,
+            .names = "{col}"
+          ),
+          # Numerical variables
+          across(
+            all_of(lSelect_numerical),
+            Get_Median_Rounded,
+            .names = "{col}"
+          ),
+          # Other variables
+          Collegejaar = median(Collegejaar, na.rm = TRUE),
+          ID = NA,
+          Subtotaal = n(),
+          .groups = "drop"
+        ) |>
+        mutate(
+          Totaal = .totaal,
+          Percentage = round(Subtotaal / Totaal, 3),
+          Groep = variable,
+          Categorie = !!.variable
+        ) |>
+        mutate(Leeftijd = as.integer(round(Leeftijd, 0))) |>
+        select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
       
-      # Reorder
-      select(Groep, Categorie, Totaal, Subtotaal, Percentage, everything())
-  
-  return(dfPersona)
+      # Append to the result dataframe
+      dfResults <- bind_rows(dfResults, dfPersona)
+      
+      # Update the working dataframe for the next iteration
+      dfWorking <- dfWorking |> filter(!!.variable == Get_Mostcommon_Category(dfWorking[[variable]]))
+    }
   }
+  
+  return(dfResults)
 }
 
 # Function to create a breakdown plot
@@ -1514,29 +1431,6 @@ Get_Privileged <- function(df, group) {
   # If there are several, choose the first one (or determine another logic)
   sPrivileged <- most_common_subgroups[1]
   
-  # # Geslacht: M
-  # if(group == "Geslacht") {
-  #   sPrivileged <- "M"
-  # } 
-  # 
-  # # Vooropleiding
-  # else if(group == "Vooropleiding") {
-  #   if(opleiding == "HDT") {
-  #     sPrivileged <- "VWO"
-  #     # If the study programme contains the grade 3, then the previous education is VWO
-  #   } else if (grepl("3", opleiding)) {
-  #     sPrivileged <- "VWO"
-  #   } else {
-  #     sPrivileged <- "HAVO"
-  #   }
-  #   sPrivileged <- "HAVO"
-  # } 
-  # 
-  # # Aansluiting
-  # else if(group == "Aansluiting") {
-  #   sPrivileged <- "Direct"
-  # }
-  
   return(sPrivileged)
 }
 
@@ -1592,27 +1486,21 @@ Get_dfFairness_Total <- function(fobject) {
 # Function to convert fairness analysis df to a wide df
 Get_dfFairness_Wide <- function(lDf) {
   
-  dfVars <- tribble(
-    ~FRN_Group, ~FRN_Subgroup,
-    "Geslacht",      "M",
-    "Geslacht",      "V",
-    "Vooropleiding", "MBO",
-    "Vooropleiding", "HAVO",
-    "Vooropleiding", "VWO",
-    "Vooropleiding", "BD",
-    "Vooropleiding", "CD",
-    "Vooropleiding", "HO",
-    "Vooropleiding", "Overig",
-    "Vooropleiding", "Onbekend",
-    "Aansluiting",   "Direct",
-    "Aansluiting",   "Tussenjaar",
-    "Aansluiting",   "Switch extern",
-    "Aansluiting",   "Switch intern",
-    "Aansluiting",   "Na CD",
-    "Aansluiting",   "2e Studie",
-    "Aansluiting",   "Overig",
-    "Aansluiting",   "Onbekend"
-  )
+  ## Create a dataframe with the variables based on lSensitive_variables
+  dfVars <- do.call(rbind, lapply(names(lLevels), function(group) {
+    data.frame(
+      FRN_Group = group,
+      FRN_Subgroup = lLevels[[group]],
+      stringsAsFactors = FALSE
+    )
+  })) |>
+    
+    ## Filter on lSensitive_attributes
+    filter(FRN_Group %in% lSensitive_attributes) |>
+    
+    ## Order by the order in lSensitive_attributes
+    mutate(FRN_Group = factor(FRN_Group, levels = lSensitive_attributes)) |>
+    arrange(FRN_Group)
   
   dfBias <- tibble(
     FRN_Bias = c("Geen Bias", "Negatieve Bias", "Positieve Bias")
@@ -1622,32 +1510,36 @@ Get_dfFairness_Wide <- function(lDf) {
   dfVars_Bias <- dfVars |> 
     crossing(dfBias)
   
+  # Totale grootte van de dataset
+  total_rows <- nrow(bind_rows(lDf))
+  
   df <- bind_rows(lDf) |> 
-    group_by(FRN_Group, 
-             FRN_Subgroup, 
-             FRN_Bias) |>
-    summarise(FRN_Bias_count = n(), 
-              .groups = "drop") |> 
+    group_by(FRN_Group, FRN_Subgroup, FRN_Bias) |>
+    summarise(
+      FRN_Bias_count = n(), 
+      .groups = "drop"
+    ) |> 
     full_join(dfVars_Bias,
               by = c("FRN_Group" = "FRN_Group", 
                      "FRN_Subgroup" = "FRN_Subgroup",
                      "FRN_Bias" = "FRN_Bias")) |>
-    
     pivot_wider(names_from = FRN_Bias, 
-                values_from = c(FRN_Bias_count),
+                values_from = FRN_Bias_count,
                 values_fill = list(FRN_Bias_count = 0)) |> 
-    replace_na(list(`Geen Bias` = 0,
-                   `Negatieve Bias` = 0,
-                   `Positieve Bias` = 0)) |>
-    
+    replace_na(list(`Geen Bias` = 0, `Negatieve Bias` = 0, `Positieve Bias` = 0)) |>
     rename(Variabele = FRN_Group,
            Groep = FRN_Subgroup) |>
     select(Variabele, Groep, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) 
   
   dfTellingen <- dfOpleiding_inschrijvingen |>
-    select(Geslacht, Vooropleiding, Aansluiting) |>
-    pivot_longer(cols = c(Geslacht, Vooropleiding, Aansluiting)) |>
-    count(name, value, name = "N")
+    select(all_of(lSensitive_attributes)) |>
+    pivot_longer(cols = all_of(lSensitive_attributes)) |>
+    count(name, value, name = "N") |> 
+    group_by(name) |>
+    mutate(
+      Perc = round(N / sum(N) * 100, 1) 
+    ) |> 
+    ungroup()
   
   # Make the df wide
   dfWide <- df |>
@@ -1657,18 +1549,14 @@ Get_dfFairness_Wide <- function(lDf) {
       `Negatieve Bias` > 1 | `Positieve Bias` > 1 ~ 'Ja',
       `Geen Bias` == 0 & `Negatieve Bias` == 0 & `Positieve Bias` == 0 ~ 'NTB',
       .default = "Nee")) |> 
-        
+    
     # Sort the Variable and Group
+    # Make levels unique based on the first occurence (to avoid conflicts for repeating levels)
     mutate(Variabele = factor(Variabele, 
-                              levels = c("Geslacht", 
-                                         "Vooropleiding", 
-                                         "Aansluiting")),
+                              levels = lSensitive_attributes),
            Groep = factor(Groep,
-                          levels = c(lLevels_geslacht, 
-                                     # Make lLevels_vop unique to avoid repeating Other and unknown
-                                     setdiff(lLevels_vop, lLevels_aansluiting), 
-                                     lLevels_aansluiting))
-                          ) |> 
+                          levels = unique(dfVars$FRN_Subgroup, fromLast = FALSE))
+    ) |> 
     select(Variabele, Groep, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) |> 
     arrange(Variabele, Groep)
   
@@ -1676,12 +1564,17 @@ Get_dfFairness_Wide <- function(lDf) {
   dfWide2 <- dfWide |> 
     left_join(dfTellingen, by = c("Variabele" = "name", "Groep" = "value")) |>
     select(Variabele, Groep, N, everything()) |> 
-    replace_na(list(N = 0)) |> 
-    filter(N > 0)
+    mutate(
+      N = replace_na(N, 0), 
+      Perc = replace_na(Perc, 0) 
+    ) |> 
+    mutate(Perc = format(Perc, decimal.mark = ",", nsmall = 1)) |> 
+    filter(N > 0) |> 
+    select(Variabele, Groep, N, Perc, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) 
   
   return(dfWide2)
-  
 }
+
 
 # Function to create the flextable for fairness analysis
 Get_ftFairness <- function(ft) {
@@ -1700,6 +1593,8 @@ Get_ftFairness <- function(ft) {
     set_header_labels(
       Variabele = "Variabele",
       Groep = "Groep",
+      N = "N",
+      Perc = "%",
       Bias = "Bias",
       `Geen Bias` = "Geen Bias",
       `Negatieve Bias` = "Negatieve Bias",
@@ -1726,7 +1621,7 @@ Get_ftFairness <- function(ft) {
        j = c("Groep", "Bias"), 
        bg = sColor_Bias_Neutral) |>
     bg(i = ~ `Geen Bias` == 0 & `Positieve Bias` == 0 & `Negatieve Bias` == 0,
-       j = 2:7,
+       j = 2:8,
        bg = sColor_Bias_None) |>
     bold(i = ~ `Negatieve Bias` > 1,
          j = c("Groep", "Bias", "Negatieve Bias")) |>
@@ -1736,7 +1631,11 @@ Get_ftFairness <- function(ft) {
     #        j = NULL) |>
     valign(j = 1, valign = "top", part = "all") |> 
     align_text_col(align = "left") |> 
-    align_nottext_col(align = "center") 
+    align_nottext_col(align = "center") |> 
+    # Align % and Bias column
+    align(j = 4:5, align = "center", part = "header") |> 
+    align(j = 4:5, align = "center")
+    
   
   return(ft)
 }
@@ -2005,12 +1904,10 @@ Get_sCaption <- function() {
   
 }
 
-# Function to determine values and labels
+# Function to determine color values and labels
 Get_Color_Values_and_Labels <- function(group, cp_lf_all) {
-  colors_list <- switch(group,
-                        "Geslacht"      = lColors_geslacht,
-                        "Vooropleiding" = lColors_toelaatgevende_vooropleiding,
-                        "Aansluiting"   = lColors_aansluiting)
+  
+  colors_list <- lColors[[group]]
   
   unique_values <- unique(cp_lf_all[[group]])
   .values <- unname(colors_list[unique_values])
@@ -2028,9 +1925,9 @@ Get_ROC_Plot <- function(models, position = NULL) {
   }
   
   if(!is.null(position)) {
-    lColors <- lColors_ROC_plots[position]
+    lColors <- lColors[["ROC_plots"]][position]
   } else {
-    lColors <- lColors_ROC_plots
+    lColors <- lColors[["ROC_plots"]]
   }
   
   # Create an ROC plot
@@ -2150,11 +2047,11 @@ Get_Breakdown_Titles <- function(bd, df, j,
   # Build the title
   if(mode == "all") {
     student_current_title <- glue(
-      "Opbouw van de kans op retentie ({tolower(student_groep)})"
+      "Opbouw van de {tolower(sSucces_label)} ({tolower(student_groep)})"
     )
   } else if(mode == "group") {
     student_current_title <- glue(
-      "Opbouw van de kans op retentie naar {tolower(student_groep)}"
+      "Opbouw van de {tolower(sSucces_label)} naar {tolower(student_groep)}"
     )
   }  
   
@@ -2164,7 +2061,7 @@ Get_Breakdown_Titles <- function(bd, df, j,
   
   # Define the subtitle
   student_current_subtitle <- glue(
-    " | kans op retentie: {nRetentie}%"
+    " | {tolower(sSucces_label)}: {nRetentie}%"
   )
   
   if(mode == "all") {
@@ -2420,7 +2317,7 @@ Get_Ceteris_Paribus_Plot <- function(cp_lf_all, group) {
 
     # Customize the labels
     labs(title = "Ceteris-paribus profiel",
-         subtitle = glue("Kans op retentie voor de meest voorkomende studenten naar **{tolower(group)}**"),
+         subtitle = glue("{sSucces_label} voor de meest voorkomende studenten naar **{tolower(group)}**"),
          y = NULL,
          caption = sCaption) +
 
@@ -2449,21 +2346,17 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
   lY_Axis <- Set_XY_Axis(axis = "y")
   
   # Define color scales for each variable
-  if(group == "Geslacht") {
-    .values = lColors_geslacht
-  } else if (group == "Vooropleiding") {
-    .values = lColors_toelaatgevende_vooropleiding
-  } else if (group == "Aansluiting") {
-    .values = lColors_aansluiting
-  } else if (group == "all") {
+  if (group == "all") {
     .values = lColors_default[["sMetrics_blue"]]
+  } else {
+    .values = lColors[[group]]
   }
   
   # Build the subtitle
   if(group == "all") {
-    .subtitle <- glue("Kans op retentie")
+    .subtitle <- glue("{sSucces_label}")
   } else {
-    .subtitle <- glue("Kans op retentie naar **{tolower(group)}**")
+    .subtitle <- glue("{sSucces_label} naar **{tolower(group)}**")
   }
   
   # Remove from pdp_lf[[“agr_profiles”]][[“_label_”]] the name of the model
@@ -2527,14 +2420,10 @@ Get_Density_Plot <- function(fairness_object, group) {
   lX_Axis <- Set_XY_Axis(axis = "x")
   
   # Define color scales for each variable
-  if(group == "Geslacht") {
-    .values = lColors_geslacht
-  } else if (group == "Vooropleiding") {
-    .values = lColors_toelaatgevende_vooropleiding
-  } else if (group == "Aansluiting") {
-    .values = lColors_aansluiting
-  } else if (group == "all") {
+  if (group == "all") {
     .values = lColors_default[["sMetrics_blue"]]
+  } else {
+    .values = lColors[[group]]
   }
   
   # Create a density plot
@@ -2544,7 +2433,7 @@ Get_Density_Plot <- function(fairness_object, group) {
     
     # Add title and subtitle
     labs(
-      title = "Verdeling en dichtheid van kans op retentie",
+      title = glue("Verdeling en dichtheid van {tolower(sSucces_label)}"),
       subtitle = glue("Naar **{group}**"),
       caption = sCaption,
       x = NULL,
@@ -2556,7 +2445,7 @@ Get_Density_Plot <- function(fairness_object, group) {
   
   # Define the color
   density_plot <- density_plot +
-   
+    
     # Add a single scale for the fill
     scale_fill_manual(
       name = NULL,
@@ -2709,7 +2598,7 @@ Finalize_Plot <-
 
 # . ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 8. AID FUNCTIONS ####
+# 8. ADDITIONAL AID FUNCTIONS ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Function convert numbers to readable notation
@@ -2742,5 +2631,30 @@ Get_Metadata <- function() {
   )
   
   return(lMetadata)
+}
+
+# Function to concatenate a list of strings
+Concatenate_List <- function(l, lang = "nl", extend = TRUE, tolower = FALSE) {
+  
+  if(lang == "nl") {
+    if(extend){
+      sCollapse <- glue_collapse(l, sep = ", ", last = " en ")
+    } else {
+      sCollapse <- glue_collapse(l, sep = ", ")
+    }
+  } else if(lang == "en") {
+    if(extend){
+      sCollapse <- glue_collapse(l, sep = ", ", last = ", and ") 
+    } else {
+      sCollapse <- glue_collapse(l, sep = ", ") 
+      }
+  }
+  
+  if(tolower){
+    sCollapse <- tolower(sCollapse)
+  }
+  
+  return(sCollapse)
+  
 }
 

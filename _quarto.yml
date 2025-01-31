@@ -1,12 +1,12 @@
 # Project settings
 project:
-  title: "No Fairness without Awareness"
   type: book
-  output-dir: _book
   
+# LTA Template
+ltatemplate: 0.9.1.9000
+
 # Book settings
 book:
-  title: "No Fairness without Awareness"
   author: "Theo Bakker"
   date: last-modified
   bread-crumbs: false
@@ -18,15 +18,10 @@ book:
   repo-url: https://github.com/LTA-HHs/lta-hhs-tidymodels-studiesucces/
   repo-branch: main
   repo-actions: [issue]
-  chapters:
-    - index.qmd
-    
-    - part: "Analyse"
-      chapters:
-        - H1_Index_basis.qmd
-        - H2_Index_verdieping_factoren.qmd
-        - H3_Index_verdieping_kansengelijkheid.qmd
-        - H4_Referenties.qmd
+
+profile:
+  group: 
+    - [basic, advanced]
 
 # Brand settings
 brand: brand/_brand.yml  
@@ -34,9 +29,10 @@ brand: brand/_brand.yml
 # Editor
 editor: source
 
-# Save code
+# Execute settings (default)
 execute:
- keep-md: false
+  keep-md: false
+  echo: false
 
 # Citations
 link-citations: true
@@ -58,10 +54,6 @@ format:
     smooth-scroll: true
     link-external-icon: true
     html-math-method: katex
-    
-    # Code settings
-    code-fold: true
-    code-summary: "Toon code"
     
     # Theme settings
     theme: 

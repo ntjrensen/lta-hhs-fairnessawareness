@@ -1,0 +1,63 @@
+---
+# No title for this page
+
+---
+
+De uitkomsten van de fairness analyses zijn:
+
+```{r}
+#| label: tbl-fairness-conclusions
+#| tbl-cap: "Fairness conclusies per groep"
+#| results: asis
+
+lDfFairness <- list()
+
+# Walk over the variables
+for(i in c(lSensitive_attributes)) {
+  sFairness_outputpath  <- Get_Model_Outputpath(mode = "fairness", group = i)
+  lDfFairness[[i]]      <- readRDS(sFairness_outputpath) |> 
+    mutate(FRN_Bias = case_when(FRN_Score < 0.8 ~ "Negatieve Bias",
+                                FRN_Score > 1.25 ~ "Positieve Bias", 
+                                .default = "Geen Bias")) 
+}
+
+# Create a table from the fairness analysis
+dfFairness_wide  <- Get_dfFairness_Wide(lDfFairness)
+
+# Create a flextable
+ftFairness_table <- Get_ftFairness(flextable(dfFairness_wide))
+
+# Print the flextable
+ftFairness_table
+```
+
+**Toelichting:**
+
+-   Bij rood is er sprake van een negatieve bias.
+-   Bij groen is er sprake van een positieve bias.
+-   Bij oranje is er sprake van een bias, maar zijn de aantallen studenten te laag om conclusies over een negatieve of positieve bias aan te verbinden. 
+-   Er zijn vijf aspecten op basis waarvan de mate van bias gescoord wordt; het aantal in de kolommen geeft aan op hoeveel aspecten het oordeel over bias is gebaseerd. Voor een oordeel moet er minimaal op twee aspecten sprake zijn van bias.
+-   We hanteren een minimum van 15 studenten per categorie binnen een variabele.
+-   De bevoorrechte groep is grijs. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
+
+**Tekstuele samenvatting:**
+
+```{r}
+#| label: txt-fairness-conclusions
+#| results: asis
+
+# Now create a text per variable from the table
+lConclusies <- list()
+for(i in lSensitive_attributes) {
+  lConclusies[[i]] <- Get_Fairness_Conclusies(dfFairness_wide, i)
+  # print(lConclusies[[i]])
+}
+
+# Dynamically generate the conclusions in text
+j <- 1
+for (i in lSensitive_attributes) {
+  cat(glue("{j}.  **{i}**: {lConclusies[[i]]} \n\n"))
+  j <- j + 1
+}
+
+```

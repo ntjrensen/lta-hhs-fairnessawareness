@@ -1,5 +1,0 @@
- 
-
-**Copyright**
-
-Dr. Theo Bakker, Lectoraat Learning Technology & Analytics, De Haagse Hogeschool © 2023-`r as.numeric(format(Sys.Date(), "%Y"))`. Alle rechten voorbehouden.

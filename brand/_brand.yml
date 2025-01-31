@@ -2,6 +2,7 @@ color:
   palette:
     hhs-color-green:      "#9EA700"
     hhs-color-blue:       "#00B2CD"
+    hhs-color-orange:     "#FFA500"
     metrics-color-red:    "#C8133B"
     metrics-color-green:  "#287233"
     metrics-color-blue:   "#5FA2CE"

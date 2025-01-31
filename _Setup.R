@@ -114,6 +114,7 @@ if(bSetup_executed == F) {
   library(gridGraphics) # for saving plots
   library(extrafont)    # for saving plots
   library(sysfonts)     # for fonts
+  library(systemfonts)  # for fonts
   
   library(fairmodels)   # for fairness in models
   
@@ -127,6 +128,8 @@ if(bSetup_executed == F) {
   # 1.5 Fonts ####
   
   extrafont::loadfonts(quiet = TRUE)
+  systemfonts::get_from_google_fonts("GT Walsheim")
+  systemfonts::get_from_google_fonts("Aktiv Grotesk")
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.6 Load additional features ####
@@ -162,7 +165,7 @@ if(bSetup_executed == F) {
 
   # Define the network directory
   Network_directory <- ltabase::get_lta_network_directory()
-
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.2 Debug settings ####
 
@@ -180,13 +183,7 @@ if(bSetup_executed == F) {
   invisible(theme_gtsummary_compact())
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.4 Levels of variables ####
-
-  # Determine the order of some levels
-  Get_Levels()
-
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.5  Config ####
+  # 2.4  Config ####
 
   sSucces_model      <- params$succes
   sPropedeusediploma <- params$propedeusediploma
@@ -242,5 +239,72 @@ if(bSetup_executed == F) {
   # Determine the height and width of images
   nPlotWidth  <- 640
   nPlotHeight <- 550
-
+  
+  
+  # . ####
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 4. CONTENT ####
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 4.1 Names of the study programme and type of education ####
+  
+  # Determine the long name of the type of education and faculty
+  opleidingsvorm_lang <- Get_Opleidingsvorm_Lang(params$opleidingsvorm_afkorting)
+  faculteit_lang      <- Get_Faculteitsnaam_Lang(params$faculteit)
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 4.2 Sensitive attributes ####
+  
+  dfSensitive <- rio::import(file.path("R/data/", "dfSensitive_variables.xlsx"))
+  
+  lSensitive_attributes       <- dfSensitive$VAR_Sensitive_variable_label  |> unique()
+  lSentitive_variables        <- dfSensitive$VAR_Sensitive_simple_variable |> unique()
+  lSentitive_formal_variables <- dfSensitive$VAR_Sensitive_formal_variable |> unique()
+  
+  lSenstive_levels_breakdown <- list()
+  for(i in lSensitive_attributes) {
+    lSenstive_levels_breakdown[[i]] <- dfSensitive |> 
+      filter(VAR_Sensitive_variable_label == i,
+             VAR_Breakdown_tf == TRUE) |>
+      select(VAR_Level_NL) |> 
+      pull()
+  }
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 4.3 Succes label ####
+  
+  sSucces_label <- "Kans op retentie"
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 4.4 Levels of variables ####
+  
+  # Determine the order of some levels
+  lLevels <- Get_Levels()
+  lLevels <- Set_Levels(dfOpleiding_inschrijvingen_base, lLevels)
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 4.5 Paths for data, last fits and model results ####
+  
+  # Define the paths
+  sData_outputpath         <- Get_Model_Outputpath(mode = "data")
+  sFittedmodels_outputpath <- Get_Model_Outputpath(mode = "last-fits")
+  sModelresults_outputpath <- Get_Model_Outputpath(mode = "modelresults")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 4.6 Data for training, last fits and results ####
+  
+  # Load data for training: dates, last fits and model results
+  dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE) |> 
+    mutate(across(all_of(dfSensitive$Sensitive_variable), 
+                  ~ factor(.x, 
+                           levels = lLevels[[dfSensitive$Sensitive_attribute[dfSensitive$Sensitive_variable == cur_column()]]])
+    ))
+  lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
+  dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
+  
+  # Adjust the Retention variable to numeric (0/1), 
+  # so it can be made into an explainer
+  dfOpleiding_inschrijvingen$Retentie <- as.numeric(dfOpleiding_inschrijvingen$Retentie) - 1
+  
 }

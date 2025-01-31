@@ -89,14 +89,13 @@ lColors_default <- c(
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 1.2 Specific colors ####
 
-lColors_geslacht <- c(
+lColors <- list()
+
+lColors[["Geslacht"]] <- c(
   "M" = "#1170AA",
   "V" = "#FC7D0B")
 
-lColors_ROC_plots <- c("#fc7d0b", "#1170aa",
-                       "#c85200", "#a3cce9")
-
-lColors_toelaatgevende_vooropleiding <- c(
+lColors[["Vooropleiding"]] <- c(
   "MBO"      = "#1170AA",
   "HAVO"     = "#FC7D0B",
   "VWO"      = "#F1CE63",
@@ -107,7 +106,7 @@ lColors_toelaatgevende_vooropleiding <- c(
   "Onbekend" = "#C8D0D9"
 )
 
-lColors_aansluiting <- c(
+lColors[["Aansluiting"]] <- c(
   "Direct"            = "#FC7D0B",
   "Tussenjaar"        = "#1170AA",
   "Switch intern"     = "#5FA2CE",
@@ -118,7 +117,10 @@ lColors_aansluiting <- c(
   "Onbekend"          = "#C8D0D9"
 )
 
-lColors_hhs <- c(
+lColors[["ROC_plots"]] <- c("#fc7d0b", "#1170aa",
+                          "#c85200", "#a3cce9")
+
+lColors[["hhs"]] <- c(
   "hhs-color-green" = "#9EA700",
   "hhs-color-blue"  = "#00B2CD"
 )

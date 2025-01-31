@@ -1,0 +1,29 @@
+## Quarto file for the basic profile
+project:
+  title: "No Fairness without Awareness"
+  output-dir: _basic
+
+## Format settings
+format:
+  html:
+    # Theme settings
+    theme: 
+    - "R/scss/basic.scss"
+    
+## Execute settings
+execute:
+  freeze: auto
+
+# Book settings
+book:
+  title: "No Fairness without Awareness"
+  chapters:
+    - index.qmd
+    
+    - part: "Analyse"
+      chapters:
+        - ch1-introduction.qmd
+        - ch2-equity.qmd
+        - ch3-factors.qmd
+        - ch5-references.qmd
+

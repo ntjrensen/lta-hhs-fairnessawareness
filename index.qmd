@@ -32,13 +32,13 @@ includes:
   model_rf:       true
   model_svm:      false
   final_fit:      true
-  conclusies:     true
-  verantwoording: true
-  nextsteps:      true
+  conclusions:    true
+  contact:        true
+  justification:  true
   copyright:      true
 ---
 
-# Inleiding {.unnumbered}
+# Samenvatting {.unnumbered}
 
 ```{r setup, include = FALSE}
 #| label: setup
@@ -47,50 +47,36 @@ includes:
 # Include the _Setup.R file
 source("_Setup.R")
 
-# Determine the long name of the type of education and faculty
-opleidingsvorm_lang <- Get_Opleidingsvorm_Lang(params$opleidingsvorm_afkorting)
-faculteit_lang      <- Get_Faculteitsnaam_Lang(params$faculteit)
 ```
 
 <!-- Introduction -->
 
-In deze analyse onderzoeken we **`r sSucces_model`** voor de opleiding **`r Get_Opleidingsnaam_Synth(params$opleidingsnaam)`** (`r params$opleiding`), `r opleidingsvorm_lang`, eerstejaars, van de faculteit `r Get_Faculteitsnaam_Lang(params$faculteit)` (`r params$faculteit`).
+<!-- HEADER -->
 
-## Onderzoek naar kansengelijkheid
+<!-- Studyprogram -->
+{{< include R/qmd/header-studyprogram.qmd >}}
 
-Het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool heeft tot doel kansengelijkheid voor studenten te verhogen met behulp van learning analytics en inzet van learning technology.
+<!-- BODY -->
 
-Het lectoraat heeft een onderzoeksmethode ontwikkeld om te kunnen analyseren of er sprake is van bias in studiedata in relatie tot het succes van studenten, wat een indicatie kan zijn van een gebrek aan kansengelijkheid. Deze methode gebruikt prognosemodellen op basis van machine learning. Een prognosemodel is dus niet een doel op zich, maar het instrument voor een analyse van kansengelijkheid, ook wel een *fairness* analyse genoemd.
+<!-- Equity conclusions -->
+## Samenvatting analyse kansengelijkheid
+{{< include R/qmd/equity-conclusions.qmd >}}
 
-Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken op 21 november 2024, getiteld: '[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)' [@Bakker.2024-intreerede]. Zie voor een verdere toelichting op het gehele onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
+Zie voor een verdere onderbouwing van deze uitkomsten de volgende hoofdstukken in de analyse.
 
-## Het nut van prognosemodellen
+<!-- FOOTER -->
 
-Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de **retentie** van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen. Denk aan een betere voorlichting, onboarding, begeleiding of ontwikkeling van het onderwijs. Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse ``r tolower(params$succes)`` als uitkomstvariabele nemen.
+<!-- Contact -->
 
-::: {.callout-warning appearance="default" icon="true"}
-## Disclaimer
-
-De prognosemodellen die we in deze analyses ontwikkelen zijn bedoeld om de dynamiek in het studiesucces van studenten een opleiding beter te begrijpen om kansengelijkheid te bevorderen.
-
-**Deze modellen mogen op geen enkele wijze gebruikt worden om individuele studenten te beoordelen of hun succes te voorspellen.**
+::: {.content-hidden unless-meta="includes.contact"}
+{{< include R/qmd/footer-contact.qmd >}}
 :::
-
-## Opbouw analyse en aanpak
-
-Deze analyse kent drie hoofdstukken met de drie stappen van de aanpak:
-
--   **Hoofdstuk 1: Prognosemodel `r tolower(params$model)`** - De ontwikkeling van een aantal prognosemodellen om retentie na 1 jaar te voorspellen, waaruit het best presterende model wordt gekozen.
--   **Hoofdstuk 2: Factoranalyse** - Een verdiepende analyse op de factoren van het best presterende model.
--   **Hoofdstuk 3: Kansengelijkheid** - De analyse van de modellen op bias en kansengelijkheid.
-
-## Vragen of suggesties
-
-Heb je vragen of suggesties over deze analyse? Neem dan contact op met Theo Bakker via 06-25637172 of per mail via [t.c.bakker\@hhs.nl](mailto:t.c.bakker@hhs.nl).
 
 <!-- Copyright -->
 
-{{< include R/qmd/copyright.qmd >}}
+::: {.content-hidden unless-meta="includes.copyright"}
+{{< include R/qmd/footer-copyright.qmd >}}
+:::
 
 <!-- Cleaning up -->
 

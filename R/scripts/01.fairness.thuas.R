@@ -221,14 +221,12 @@ dfFairness_HHs.6 <- dfFairness_HHs.5 |>
   
   # Sort the Variable and Group
   mutate(Variabele = factor(Variabele, 
-                            levels = c("Geslacht", 
-                                       "Vooropleiding", 
-                                       "Aansluiting")),
+                            levels = lSensitive_attributes),
          Groep = factor(Groep,
-                        levels = c(lLevels_geslacht, 
-                                   # Maak lLevels_vop uniek om Overig en onbekend niet te herhalen
-                                   setdiff(lLevels_vop, lLevels_aansluiting), 
-                                   lLevels_aansluiting))
+                        levels = c(lLevels[["Geslacht"]], 
+                                   # Maak lLevels[["Vooropleiding"]] uniek om Overig en onbekend niet te herhalen
+                                   setdiff(lLevels[["Vooropleiding"]], lLevels[["Aansluiting"]]), 
+                                   lLevels[["Aansluiting"]]))
   ) |> 
   
   # Select the necessary columns
@@ -447,7 +445,7 @@ ftFairness.2 <- flextable(dfFairness_HHs.10)
 
 # Customize the basic layout
 ftFairness.2 <- ftFairness.2 |>
-  add_header_row(values = c("", "Geslacht", "Vooropleiding", "Aansluiting"), 
+  add_header_row(values = c("", lSensitive_attributes), 
                  colwidths = c(2, 2, 6, 6)) |>
   merge_v(j = c("Faculteit")) |>
   fix_border_issues() |>
