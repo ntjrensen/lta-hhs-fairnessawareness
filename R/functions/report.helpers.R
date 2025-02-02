@@ -276,10 +276,22 @@ Get_Model_Outputpath <- function(mode, group = NULL) {
 }
 
 # Function to determine the output path for the plots
-Get_Plot_Outputpath <- function(plotname, mode = "plot") {
+Get_Plot_Outputpath <- function(plotname, mode = "plot", bestmodel = NA) {
   
-  # Define the output file
-  .output_file <- paste0(plotname, ".png")
+  # Best model is not NA, make the name clean
+  if(!is.na(bestmodel)) {
+    
+    .bestmodel <- janitor::make_clean_names(bestmodel)
+    
+    # Define the output file
+    .output_file <- glue("{plotname}_{.bestmodel}.png") 
+    
+  } else {
+    
+    # Define the output file
+    .output_file <- glue("{plotname}.png") 
+    
+    }
   
   # Define the output directory
   .output_dir <- Get_Current_Opleiding_Output_Dir(current_opleiding, mode)
@@ -295,14 +307,15 @@ Get_Plot_Outputpath <- function(plotname, mode = "plot") {
 }
 
 # Function to determine the output path for the breakdown plots
-Get_Breakdown_Plotpath <- function(student_groep, student_categorie) {
+Get_Breakdown_Plotpath <- function(student_groep, student_categorie, bestmodel) {
   
   # Replace spaces with - in the student_group and student_category
   .student_groep     <- gsub(" ", "-", student_groep)
   .student_categorie <- gsub(" ", "-", student_categorie)
   
   file.path(Get_Plot_Outputpath(
-    plotname = tolower(glue("lf_break_down_{(.student_groep)}_{(.student_categorie)}")))
+    plotname = tolower(glue("lf_break_down_{(.student_groep)}_{(.student_categorie)}")),
+    bestmodel = bestmodel)
   )
 }
 
@@ -469,6 +482,28 @@ Mutate_Retentie <- function(df, model = "Retentie na 1 jaar") {
   
 }
 
+# Mutate Dubbele studies
+Mutate_Dubbele_studie <- function(df) {
+  
+  df <- df |>
+    mutate(INS_Dubbele_studie = ifelse(INS_Aantal_inschrijvingen > 1, "Ja", "Nee"))
+  
+  return(df)
+  
+}
+
+# Mutate APCG
+Mutate_APCG <- function(df) {
+  
+  df <- df |>
+    mutate(APCG = case_when(APCG == TRUE ~ "Ja", 
+                            APCG == FALSE ~ "Nee", 
+                            .default = "Onbekend"))
+  
+  return(df)
+  
+}
+
 # Mutate missing figures VO
 Mutate_Cijfers_VO <- function(df) {
   
@@ -486,81 +521,91 @@ Mutate_Cijfers_VO <- function(df) {
   
 }
 
+# Function to get the variables
+Get_dfVariables <- function() {
+  
+  dfVariables <- rio::import(file.path("R/data/", 
+                                       "dfVariables.xlsx"), 
+                             sheet = "Variables")
+  
+  return(dfVariables)
+}
+
+# Function to get the sensitive variables
+Get_lSelect <- function(df, var) {
+  
+  lSelect <- df |> 
+    filter(VAR_Select_tf == TRUE) |> 
+    select(all_of(var)) |> 
+    pull()
+  
+  return(lSelect)
+}
+
+# Function to get the levels of the variables
+Get_dfLevels <- function() {
+  
+  dfLevels <- rio::import(file.path("R/data/", 
+                                    "dfVariables.xlsx"), 
+                          sheet = "Levels") |> 
+    group_by(VAR_Formal_variable) |>
+    arrange(VAR_Level_order, 
+            .by_group = TRUE) |>
+    ungroup()
+  
+  return(dfLevels)
+}
+
+# Function to get the sensitive variables
+Get_lSensitive <- function(df, var) {
+  
+  lSensitive <- df |> 
+    filter(VAR_Sensitive_tf == TRUE) |> 
+    select(all_of(var)) |> 
+    pull()
+  
+  return(lSensitive)
+}
+
 # Function to determine the order of a number of levels
-Get_Levels <- function() {
+Get_lLevels <- function(df, formal = FALSE) {
   
   ## Set lLevels
   lLevels <- list()
   
-  # Determine the order of levels in the study profiles:
-  lLevels[["Studiekeuzeprofiel"]] <- c(
-    "EM",
-    "CM",
-    "EM&CM",
-    "NT",
-    "NG",
-    "NT&NG",
-    "NG&NT",
-    "NG&CM",
-    "NG&EM",
-    "NT&CM",
-    "NT&EM",
-    "OS",
-    "CERT",
-    "AHO",
-    "ALG",
-    "BI",
-    "EA",
-    "HO",
-    "HB",
-    "ICT",
-    "MedV",
-    "MobV",
-    "TP",
-    "TR",
-    "TSL",
-    "UV",
-    "VS",
-    "VNL",
-    "ZW"
-  )
-  
-  lLevels[["Aansluiting"]] <- c(
-    "Direct",
-    "Tussenjaar",
-    "Switch intern",
-    "Switch extern",
-    "Na CD",
-    "2e Studie",
-    "Overig",
-    "Onbekend"
-  )
-  
-  lLevels[["Vooropleiding"]] <- c(
-    "MBO",
-    "HAVO",
-    "VWO",
-    "BD",
-    "HO",
-    "CD",
-    "Overig",
-    "Onbekend"
-  )
-  
-  lLevels[["Geslacht"]] <- c(
-    "M",
-    "V"
-  )
+  if(formal) {
+    for (i in df$VAR_Formal_variable) {
+      lLevels[[i]] <- df$VAR_Level_NL[df$VAR_Formal_variable == i]
+    }
+  } else {
+    for (i in df$VAR_Simple_variable) {
+      lLevels[[i]] <- df$VAR_Level_NL[df$VAR_Simple_variable == i]
+    }
+  }
   
   return(lLevels)
   
 }
+# Function to determine the levels of sensitive variables for breakdown plots
+Get_lSensitive_Levels_Breakdown <- function(df, list) {
+  
+  lSenstive_levels_breakdown <- list()
+  for(i in list) {
+    lSenstive_levels_breakdown[[i]] <- df |> 
+      filter(VAR_Formal_variable == i,
+             VAR_Breakdown_tf == TRUE) |>
+      select(VAR_Level_NL) |> 
+      pull()
+  }
+  
+  return(lSenstive_levels_breakdown)
+}
 
 # Function to determine the levels of a variable
 Set_Levels <- function(df = dfOpleiding_inschrijvingen_base, lLevels) {
-  
+
   lNew_levels <- list()
-  
+
   lNew_levels[["Studiekeuzeprofiel"]] <-
     Sort_Levels(
       lLevels[["Studiekeuzeprofiel"]],
@@ -569,23 +614,23 @@ Set_Levels <- function(df = dfOpleiding_inschrijvingen_base, lLevels) {
     )
 
   # Loop over the sensitive attributes
-  for (sensitive_attribute in lSensitive_attributes) {
-    
-    formal_variable <- unique(dfSensitive$VAR_Sensitive_formal_variable[dfSensitive$VAR_Sensitive_simple_variable == sensitive_attribute])
-    
+  for (sensitive_attribute in lSensitive_labels) {
+
+    formal_variable <- unique(dfSensitive$VAR_Formal_variable[dfSensitive$VAR_Simple_variable == sensitive_attribute])
+
     lNew_levels[[sensitive_attribute]] <- Sort_Levels(lLevels[[sensitive_attribute]],
-                                                      df, 
+                                                      df,
                                                       formal_variable)
-    
+
   }
-  
+
   return(lNew_levels)
-  
+
 }
 
 # Adjust levels so that they are sorted properly
 Sort_Levels <- function(levels, df, var) {
-  levels_sorted <- intersect(levels, 
+  levels_sorted <- intersect(levels,
                        unique(df[[var]])
   )
   return(levels_sorted)
@@ -993,7 +1038,7 @@ Get_dfPersona <- function(group = NULL) {
   
   # Determine the categorical variables used
   lSelect_categorical <- c(
-    lSensitive_attributes,
+    lSensitive_labels,
     "Studiekeuzeprofiel",
     "APCG",
     "Cijfer_CE_VO_missing",
@@ -1160,7 +1205,7 @@ Get_dfPersona_Recursive <- function(variable_list = NULL) {
   
   # Define categorical and numerical variables present in the dataframe
   lSelect_categorical <- c(
-    lSensitive_attributes,
+    lSensitive_labels,
     "Studiekeuzeprofiel",
     "APCG",
     "Cijfer_CE_VO_missing",
@@ -1495,11 +1540,11 @@ Get_dfFairness_Wide <- function(lDf) {
     )
   })) |>
     
-    ## Filter on lSensitive_attributes
-    filter(FRN_Group %in% lSensitive_attributes) |>
+    ## Filter on lSensitive_labels
+    filter(FRN_Group %in% lSensitive_labels) |>
     
-    ## Order by the order in lSensitive_attributes
-    mutate(FRN_Group = factor(FRN_Group, levels = lSensitive_attributes)) |>
+    ## Order by the order in lSensitive_labels
+    mutate(FRN_Group = factor(FRN_Group, levels = lSensitive_labels)) |>
     arrange(FRN_Group)
   
   dfBias <- tibble(
@@ -1532,8 +1577,8 @@ Get_dfFairness_Wide <- function(lDf) {
     select(Variabele, Groep, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) 
   
   dfTellingen <- dfOpleiding_inschrijvingen |>
-    select(all_of(lSensitive_attributes)) |>
-    pivot_longer(cols = all_of(lSensitive_attributes)) |>
+    select(all_of(lSensitive_labels)) |>
+    pivot_longer(cols = all_of(lSensitive_labels)) |>
     count(name, value, name = "N") |> 
     group_by(name) |>
     mutate(
@@ -1553,7 +1598,7 @@ Get_dfFairness_Wide <- function(lDf) {
     # Sort the Variable and Group
     # Make levels unique based on the first occurence (to avoid conflicts for repeating levels)
     mutate(Variabele = factor(Variabele, 
-                              levels = lSensitive_attributes),
+                              levels = lSensitive_labels),
            Groep = factor(Groep,
                           levels = unique(dfVars$FRN_Subgroup, fromLast = FALSE))
     ) |> 

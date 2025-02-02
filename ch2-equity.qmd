@@ -73,27 +73,8 @@ We laden de bewerkte data en het beste prognosemodel in voor:
 
 **Opleiding**: `r params$faculteit` \| `r Get_Opleidingsnaam_Synth(params$opleidingsnaam)` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
-```{r}
-#| label: load-dfpersona
-
-## Create a list of dfPersonas
-lDfPersona <- list()
-
-## Walk over the variables
-lDfPersona <- map(lSensitive_attributes,
-                  ~ Get_dfPersona_Recursive(.x)) |>
-  set_names(lSensitive_attributes)
-
-dfPersona_per_group <- bind_rows(lDfPersona) 
-
-## Save this file as an Excel spreadsheet
-sOutputPath <- file.path("R/data", "dfPersona_per_group.xlsx")
-writexl::write_xlsx(dfPersona_per_group, sOutputPath)
-
-## Load the personas
-dfPersona_all <- Get_dfPersona_Recursive()
-
-```
+<!-- Include load-dfpersona -->
+{{< include R/qmd/load-dfpersona.qmd >}}
 
 ### Maak een explainer
 
@@ -101,46 +82,12 @@ Om het model beter te begrijpen en te kunnen uitleggen, maken we met behulp van 
 
 DALEX is onder andere ontwikkeld om uit te kunnen leggen welke verklarende variabelen van belang zijn en wat deze voor een effect hebben in een model. Een explainer is een model-onafhankelijke *wrapper*, die inzicht geeft in de voorspellingen van het model en de bijdrage van de variabelen aan de prognose. Een explainer maakt het verder mogelijk om modellen onderling te vergelijken en benchmarken.
 
-```{r, include = FALSE}
-#| label: fitted-model
+<!-- Include the fitted model -->
+{{< include R/qmd/fitted-model.qmd >}}
 
-sBest_model <- dfModel_results$model[dfModel_results$number == 1]
-last_fit    <- lLast_fits[[sBest_model]]
+<!-- Include the last fit explainer -->
+{{< include R/qmd/lf-explainer.qmd >}}
 
-fitted_model <- last_fit |>
-  extract_fit_parsnip()
-
-# Check that the coefficients of the model are numerical
-coefs <- tidy(fitted_model)$estimate
-
-# Check that the coefficients are numerical
-if (!is.numeric(coefs)) {
-  stop("De geëxtraheerde coëfficiënten zijn niet numeriek.")
-}
-
-```
-
-```{r}
-#| label: lf-explainer
-
-# Extract the fitted model and workflow
-fitted_model <- last_fit |>
-  extract_fit_parsnip()
-
-workflow <- last_fit |>
-  extract_workflow()
-
-# Create an explainer
-explain_lf <- DALEXtra::explain_tidymodels(
-  model = workflow,
-  data = dfOpleiding_inschrijvingen |> select(-Retentie),
-  y = dfOpleiding_inschrijvingen |> pull(Retentie),
-  colorize = TRUE,
-  verbose = FALSE,
-  label = "Linear Regression"
-)
-
-```
 :::
 <!-- Equity of opportunity -->
 
@@ -154,10 +101,8 @@ Het leidende werk voor fairness analyses is [*Fairness and Machine Learning: Lim
 
 De volgende **definities** zijn van belang:
 
--   **Bevoorrechte groep**: Een groep die als standaard wordt beschouwd en mogelijk bevoordeeld wordt (bijv. meerderheidsgroepen, mannen, etc.).
--   **Beschermde groep**: Een groep waarvan wordt verwacht dat deze mogelijk benadeeld wordt (bijv. minderheidsgroepen, vrouwen, etc.).
-
-In een onderwijssituatie kunnen deze groepen verschillen van maatschappelijke situaties. Zo hebben vrouwen in het onderwijs vaak een bevoorrechte positie omdat zij over het algemeen meer studiesucces hebben, terwijl in andere domeinen, bijvoorbeeld het vinden van werk, vrouwen vaak een beschermde groep zijn.
+-   **Bevoorrechte groep**: Een groep die als referentiegroep wordt beschouwd en mogelijk bevoordeeld wordt. Dit is in deze analyse altijd de meerderheidsgroep (bijv. vrouwen). Welke dit is per opleiding kan verschillen.
+-   **Beschermde groep**: Een groep waarvan wordt verwacht dat deze mogelijk benadeeld wordt (bijv. mannen). Dit zijn in deze analyse, afhankelijke van de variabele, altijd een of meer minderheidsgroepen.
 
 <!-- Explanation of confusion matrix -->
 ::: {.content-visible when-profile="advanced"}
@@ -178,7 +123,7 @@ Voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting` is de verdeling 
 # Create a table with numbers and percentages for the 3 sensitive 
 
 tbl_summary <- dfOpleiding_inschrijvingen |> 
-  select(Retentie, all_of(lSensitive_attributes)) |> 
+  select(Retentie, all_of(lSensitive_labels)) |> 
   mutate(Retentie = ifelse(Retentie == 1, "Ja", "Nee")) |>
   tbl_summary(by = Retentie) |> 
   add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
@@ -209,7 +154,7 @@ tbl_summary
 
 ### Verdeling van kansen
 
-Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we de *verdeling van de kansen* op retentie voor verschillende groepen studenten voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting`. De verdeling van deze kansen is uniek per opleiding.
+Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we de *verdeling van de kansen* op retentie voor verschillende groepen studenten voor `r Concatenate_List(lSentitive_variables)`. De verdeling van deze kansen is uniek per opleiding.
 
 **Toelichting**
 
@@ -217,14 +162,14 @@ Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we de *v
 -   De boxplot geeft de vier quartielen aan van de data: de box staat voor de middelste 50% van de data, met een streep die de mediaan aangeeft (de middelste waarde van de data). De lijnen (*whiskers*) geven de 1e 25% en laatste 25% van de data.
 -   De boxplot wordt gecombineerd met de violin plot, waarbij de breedte van de violin de dichtheid van de data aangeeft. Het kan zijn dat het lijkt alsof er geen violin is; in dat geval is de verdeling van het aantal studenten zeer breed en de violin vorm daardoor heel smal.
 -   Samen geven deze twee visualisaties een goed beeld van de verdeling van de voorspelde kansen van het model.
--   De blauwe gestippelde lijn geeft de 50% kans aan; alle waarden die boven deze lijn valt heeft een kans van 50% of meer op retentie. Hiervan voorspelt het model dat zij niet uitvallen. Deze grenslijn kan door de verdeling van de groepen heen lopen.
+-   De blauwe gestippelde lijn geeft de 50% kans aan; alle waarden die boven deze lijn vallen hebben een kans van 50% of meer op retentie. Hiervan voorspelt het model dat zij zeker doorstuderen. Deze grenslijn kan door de verdeling van de groepen heen lopen.
 
 ```{r}
 #| label: bias-analysis-density
 #| results: asis
 
 # Make a fairness analysis
-for(group in c(lSensitive_attributes)) {
+for(group in c(lSensitive_labels)) {
 
   # Group
   Knit_Header(group, 4)
@@ -245,7 +190,8 @@ for(group in c(lSensitive_attributes)) {
 
   # Save the plot
   sPlotname <- glue("density_plot_{tolower(group)}")
-  sPlotPath <- Get_Plot_Outputpath(sPlotname, mode = "plot")
+  sPlotPath <- Get_Plot_Outputpath(sPlotname, mode = "plot", 
+                                   bestmodel = sBest_model)
 
   suppressWarnings(
         Finalize_Plot(
@@ -265,13 +211,15 @@ for(group in c(lSensitive_attributes)) {
 ::: {.content-visible when-profile="advanced"}
 ### Fairness checks
 
-Nu we de verdeling van de kansen kennen, maken we een fairness analyse voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting`. Voor elke groep berekenen we de maatstaven die we eerder hebben behandeld.
+Nu we de verdeling van de kansen kennen, maken we een fairness analyse voor `r Concatenate_List(lSentitive_variables)`. Voor elke groep berekenen we de maatstaven die we eerder hebben behandeld.
 
-We maken een plot van de fairness analyse, waarbij we per variabele één categorie nemen als de bevoorrechte groep; hiervoor hanteren we per variabele de meest frequente groep. De aanname is dat een opleiding op deze groep het beste is toegerust. Daarnaast speelt mee dat Dalex bij een te laag aantal studenten in een bevoorrechte groep geen fairness analyse kan berekenen.
+We maken een plot van de fairness analyse, waarbij we per variabele één categorie nemen als de bevoorrechte groep; hiervoor hanteren we -- zoals al aangegeven -- per variabele de meest frequente groep. Het is waarschijnlijk dat in een opleiding de voorlichting, begeleiding en onderwijs het meest heeft afgestemd op deze groep. 
 
 Als binnen een variabele een groep een ratio heeft die naar links of naar rechts afwijkt, kan dit duiden op een verschil in kansengelijkheid. Let erop dat de bevoorrechte groep zelf hier niet in is opgenomen (!). Mochten alle overige groepen naar links of rechts afwijken, dan is er sprake van een bias naar de bevoorrechte groep.
 
 Het wijkt af als de balken verder buiten het groene vlak komen en in het rode vlak; dit is gebaseerd op een marge, *epsilon*, van 0,8. Deze marge is gebaseerd op het 4/5 principe: er is sprake van een te groot verschil als de maat voor een beschermde groep 4/5 of meer afwijkt van de bevoorrechte groep. Een epsilon van 0,8 leidt tot marges van -0,2 (epsilon/1) en +0,25 (1/espilon). Als er twee ratio's of meer buiten deze marges vallen, is er volgens dit criterium sprake van bias. Als een maatstaf naar links afwijkt is er sprake van bias naar de beschermde groep (ten nadele), als deze naar rechts afwijkt is er sprake van bias naar de bevoorrechte groep (ten voordele).
+
+Alle afwijkingen samen worden opgeteld als absolute waarden en uitgedrukt in de maat 'Totaal verlies'. Hoe hoger de waarde hiervan is, des te groter de verschillen zijn tussen groepen.
 
 ::: {.callout-warning appearance="default" icon="true"}
 ### Nota Bene
@@ -291,7 +239,7 @@ Om de robuustheid en betrouwbaarheid in de detectie van bias te waarborgen, moet
 #| results: asis
 
 # Make a fairness analysis
-for(group in c(lSensitive_attributes)) {
+for(group in c(lSensitive_labels)) {
 
   # Group
   Knit_Header(group, 4)
@@ -320,7 +268,7 @@ for(group in c(lSensitive_attributes)) {
 
   # Save the plot
   sPlotname <- glue("fairness_plot_{tolower(group)}")
-  sPlotPath <- Get_Plot_Outputpath(sPlotname, mode = "plot")
+  sPlotPath <- Get_Plot_Outputpath(sPlotname, mode = "plot", bestmodel = sBest_model)
 
   suppressWarnings(
         Finalize_Plot(
@@ -364,8 +312,9 @@ for(group in c(lSensitive_attributes)) {
 
 <!-- Cleaning up -->
 
-```{r, echo = FALSE}
+```{r}
 #| label: cleanup
+#| echo: FALSE
 
 # Datasets
 

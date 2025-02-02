@@ -62,7 +62,7 @@ dfModel_results <- data.frame(
 
 ### Toelichting op de methode
 
-Voor de ontwikkeling van prognosemodellen gebruiken we de aanpak van [Tidymodels](https://www.tidymodels.org/). Tidymodels is een framework voor het bouwen van een prognosemodel. Hiermee verzekeren we ons van een systematische, herhaalbare en schaalbare aanpak.
+Voor de ontwikkeling van prognosemodellen gebruiken we de aanpak van [Tidymodels](https://www.tidymodels.org/). Tidymodels is een framework voor het bouwen van een prognosemodel. Hiermee verzekeren we ons van een systematische, herhaalbare en schaalbare aanpak. De code in deze pagina wordt getoond als deze hoort bij de ontwikkeling van een model. Overige code, voor bijvoorbeeld algemene tabellen of grafieken, kan zichtbaar gemaakt worden.
 
 ### Toelichting op de data
 
@@ -72,7 +72,7 @@ De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verr
 2.  *Vooropleidingskenmerken*: toelaatgevende vooropleiding, studiekeuzeprofiel en gemiddeld eindcijfer in de vooropleiding.
 3.  *Aanmeldingskenmerken*: aansluiting (direct na diploma, tussenjaar, switch), dag van aanmelding, aantal parallelle studies aan De HHs en collegejaar.
 
-Deze variabelen zijn gekozen omdat we uit eerder onderzoek weten dat ze voorspellende waarde kunnen hebben voor studiesucces [@Bakker.2022] of omdat ze behoren tot sensitieve kenmerken die in fairness analyse gebruikt worden.
+De variabelen die we hebben geselecteerd voor analyse is op basis van standaardgegevens van een popoluatie (leeftijd en geslacht), eerdere analsyes op voorspelkracht voor `r tolower(params$succes)`  [@Bakker.2022], of omdat een kenmerk volgens Europese normen geldt als een sensitief kenmerk voor discriminatie [@handboek.2018].
 
 ```{r}
 #| label: tbl-data-dictionary
@@ -91,7 +91,9 @@ Get_tblData_Dictionary(dfData_dictionary)
 
 We toetsen in deze analyse *`r sSucces_model_text`*, voortaan **Retentie** genoemd.
 
-Retentie is gedefinieerd als ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijvoorbeeld van voltijd in jaar 1 naar duaal in jaar 2, geldt ook als retentie. Uitval is het tegenovergestelde van retentie: niet ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijvoorbeeld van voltijd in jaar 1 naar duaal in jaar 2, geldt *niet* als uitval.
+-   Retentie is gedefinieerd als ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. Een wisseling van opleidingsvorm binnen de opleiding, bijvoorbeeld van voltijd in jaar 1 naar duaal in jaar 2, geldt ook als retentie. 
+-   Uitval is het tegenovergestelde van retentie: niet ingeschreven staan in dezelfde opleiding in een aansluitend collegejaar. 
+-   Een wisseling van opleidingsvorm binnen de opleiding, bijvoorbeeld van voltijd in jaar 1 naar duaal in jaar 2, geldt *niet* als uitval.
 
 <!-- Data -->
 
@@ -130,11 +132,13 @@ if(params$use_synthetic_data) {
     range = "eerstejaars")
 }
 
-# Rearrange the levels
-# Set_Levels(dfOpleiding_inschrijvingen_base)
-
-dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>  
+# Adjust dfOpleiding_inschrijvingen_base
+dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |> 
   
+  # Rearrange the levels
+  mutate(across(all_of(names(lLevels_formal)), ~ factor(.x, 
+                                                   levels = lLevels_formal[[cur_column()]]))) |> 
+
   # Create a simple success variable
   Mutate_Retentie(sSucces_model) |>
   
@@ -145,20 +149,19 @@ dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>
   # Filter_Propedeusediploma(sPropedeusediploma) |>
 
   # Make the Dual Study variable a Yes/No variable
-  mutate(INS_Dubbele_studie = ifelse(INS_Aantal_inschrijvingen > 1, "Ja", "Nee")) |>  
+  Mutate_Dubbele_studie() |>  
 
   # Remove INS_Aantal_inschrijvingen
-  select(-INS_Aantal_inschrijvingen) |> 
+  select(-INS_Aantal_inschrijvingen) 
 
-  # Adjust levels for some variables
-  Mutate_Levels(
-  c(
-    "VOP_Studiekeuzeprofiel_LTA_afkorting",
-    "INS_Aansluiting_LTA",
-    "VOP_Toelaatgevende_vooropleiding_soort"
-  ),
-    list(lLevels[["Studiekeuzeprofiel"]], lLevels[["Aansluiting"]], lLevels[["Vooropleiding"]])
-  )
+  ## Adjust the levels of sensitive variables
+  for(i in lSentitive_formal_variables){
+    dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>
+      Mutate_Levels(
+        i,
+        list(lLevels_formal[[i]])
+      )
+  }
   
 # B Huidtherapie: Filter on only students with a grade number (selection)
 if(opleiding == "HDT") {
@@ -170,75 +173,32 @@ if(opleiding == "HDT") {
 
 ### Selecteer en inspecteer de data
 
-We selecteren eerst de relevante variabelen. We verwijderen daarbij variabelen die maar 1 waarde hebben. We inspecteren de variabelen in een samenvatting in relatie tot retentie en corrigeren daarbij voor multiple testing; de gecorrigeerde significantie-waarden staan vermeld als *q-value*. Daarnaast inspecteren we de kwaliteit van de data op missende waarden.
+We selecteren eerst de relevante variabelen. We verwijderen daarbij variabelen die maar één waarde hebben, omdat die geen voorspellende waarde kunnen hebben. 
 
 ```{r}
 #| label: select-inspect-data
 
-lSelect <- c(
-    "INS_Student_UUID_opleiding_vorm",
-    "CBS_APCG_tf",
-    "DEM_Geslacht",
-    "DEM_Leeftijd_1_oktober",
-    "GIS_Tijd_fiets_OV",
-    "INS_Collegejaar",
-    "INS_Dagen_tussen_aanmelding_en_1_september",
-    "INS_Dubbele_studie",
-    "INS_Aansluiting_LTA",
-    "SES_Deelscore_arbeid",
-    "SES_Deelscore_welvaart",
-    "SES_Totaalscore",
-    "SUC_Retentie",
-    "VOP_Gemiddeld_cijfer_cijferlijst",
-    "VOP_Gemiddeld_eindcijfer_VO_van_de_hoogste_vooropleiding_voor_het_HO",
-    "VOP_Cijfer_CE1_nederlands",
-    "VOP_Cijfer_CE1_engels",
-    "VOP_Cijfer_CE_proxy_wiskunde",
-    "VOP_Cijfer_CE1_natuurkunde",
-    "VOP_Studiekeuzeprofiel_LTA_afkorting",
-    "VOP_Toelaatgevende_vooropleiding_soort"
-  )
+lSelect <- Get_lSelect(dfVariables, "VAR_Formal_variable")
 
-# B Huidtherapie: add the variable RNK_Rangnummer
+# B Huidtherapie: add the variable RNK_Rangnummer unless it is HDT
 if(opleiding == "HDT") {
   lSelect <- c(lSelect, "RNK_Rangnummer")
 }
+
+# Create a mapping with formal and simple maes
+lName_mapping <- setNames(dfVariables$VAR_Simple_variable, dfVariables$VAR_Formal_variable)
 
 # Create a subset
 dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen_base |>
   
   # Select the relevant variables
-  select_at(lSelect) |>
+  select(all_of(lSelect)) |>
   
   # Rename variables for more readable names
-  rename(
-    ID                    = INS_Student_UUID_opleiding_vorm,
-    Geslacht              = DEM_Geslacht,
-    Leeftijd              = DEM_Leeftijd_1_oktober,
-    Reistijd              = GIS_Tijd_fiets_OV,
-    Dubbele_studie        = INS_Dubbele_studie,
-    Collegejaar           = INS_Collegejaar,
-    Aanmelding            = INS_Dagen_tussen_aanmelding_en_1_september,
-    Aansluiting           = INS_Aansluiting_LTA,
-    APCG                  = CBS_APCG_tf,
-    SES_Arbeid            = SES_Deelscore_arbeid,
-    SES_Welvaart          = SES_Deelscore_welvaart,
-    SES_Totaal            = SES_Totaalscore,          
-    Retentie              = SUC_Retentie,
-    Cijfer_SE_VO          = VOP_Gemiddeld_cijfer_cijferlijst,
-    Cijfer_CE_VO          = VOP_Gemiddeld_eindcijfer_VO_van_de_hoogste_vooropleiding_voor_het_HO,
-    Cijfer_CE_Nederlands  = VOP_Cijfer_CE1_nederlands,
-    Cijfer_CE_Engels      = VOP_Cijfer_CE1_engels,
-    Cijfer_CE_Wiskunde    = VOP_Cijfer_CE_proxy_wiskunde,
-    Cijfer_CE_Natuurkunde = VOP_Cijfer_CE1_natuurkunde,
-    Studiekeuzeprofiel    = VOP_Studiekeuzeprofiel_LTA_afkorting,
-    Vooropleiding         = VOP_Toelaatgevende_vooropleiding_soort
-  ) |> 
+  rename_with(~ lName_mapping[.x], .cols = everything()) |> 
   
   # Adjust CBS_APCG_tf to a factor
-  mutate(APCG = case_when(APCG == TRUE ~ "Ja",
-                          APCG == FALSE ~ "Nee",
-                          .default = "Onbekend")) |>
+  Mutate_APCG() |>
 
   # Indicate where missing numbers are in VO
   Mutate_Cijfers_VO() |>
@@ -246,13 +206,8 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen_base |>
   # Remove variables, where there is only 1 value
   select(where(~ n_distinct(.) > 1)) |>
   
+  # Sort
   arrange(Collegejaar, ID)
-
-# B Huidtherapie: rename the variable RNK_Rangnummer
-if(opleiding == "HDT") {
-  dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |> 
-    rename(Rangnummer = RNK_Rangnummer)
-} 
 
 dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |> 
  ltabase::sort_distinct()
@@ -262,9 +217,12 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |>
 
 ```
 
-```{r, echo=FALSE, results='asis'}
+We inspecteren de variabelen in een samenvatting in relatie tot retentie en corrigeren daarbij voor multiple testing; de gecorrigeerde significantie-waarden staan vermeld als *q-value*. 
+
+```{r}
 #| label: tbl-summary-data
-#| tbl-cap: "Variabelen in relatie tot de uitkomstmaat: params$succes"
+#| tbl-cap: !expr 'glue("Variabelen in relatie tot de uitkomstmaat: {params$succes}")'
+#| results: asis
 
 # Create a summary of the data
 dfSummary <- dfOpleiding_inschrijvingen |>
@@ -290,6 +248,8 @@ tbl_dfSummary <- Get_tblSummary(dfSummary)
 tbl_dfSummary
   
 ```
+
+Daarnaast inspecteren we de kwaliteit van de data op missende waarden.
 
 ```{r}
 #| label: tbl-summarizy-missing-before
@@ -321,7 +281,7 @@ detach("package:dlookr", unload = TRUE)
 -   Om bias te voorkomen verwijderen we geen rijen met missende waarden, maar vullen die op (*imputatie*). We bewerken de data zo dat alle missende waarden worden opgevuld: bij numerieke waarden met het gemiddelde en bij categorische variabelen met 'Onbekend'.
 -   We passen het type van sommige variabelen aan, zodat ze in het model gebruikt kunnen worden: tekstvelden zetten we om naar factor (een categorische variabele); logische variabelen (Ja/Nee) zetten we om naar een numerieke variabele (1/0).
 -   De uitkomstvariabele, `Retentie`, leiden we af van de variabele `SUC_Uitval_aantal_jaar_LTA`. Als de waarde daar 1 is, is de student na 1 jaar uitgevallen, 2 na 2 jaar, etc. Zolang de waarde daar 0 is, is de student niet uitgevallen.
--   Een fictief studentnummer (`INS_Student_UUID_opleiding_vorm`) gebruiken we, zodat we - als er afwijkende resultaten zijn - de dataset gericht kunnen onderzoeken als dat nodig is.
+-   Een fictief studentnummer (`INS_Student_UUID_opleiding_vorm`) gebruiken we, zodat we -- als er afwijkende resultaten zijn -- de dataset gericht kunnen onderzoeken als dat nodig is.
 
 ```{r}
 #| label: tbl-summarizy-missing-after
@@ -373,9 +333,17 @@ detach("package:dlookr", unload = TRUE)
 
 ```
 
-### Bekijk de onderlinge correlaties
+### Inspecteer de onderlinge correlaties
 
 Het is verstandig om voorafgaand aan het bouwen van een model te kijken naar de onderlinge correlaties tussen numerieke variabelen. Dit geeft inzicht in de data en kan helpen bij het maken van keuzes voor het model of de duiding van de uitkomsten.
+
+We selecteren uitsluitend numerieke waarden en variabelen die een standaard deviatie hebben die groter is dan 0. We clusteren de data op basis van 4 clusters. De correlatie van de diagonaal verbergen we, aangezien deze altijd 1 is.
+
+Clusters in correlaties kunnen per opleiding verschillen. Onderzoek in de correlaties hoe sterk deze zijn, welke clusters gevormd worden en of deze -- vanuit de context van de opleiding, faculteit of onderwijsinstelling -- logisch zijn. Verwerk de inzichten eventueel in een oplegger. Gangbare clusters zijn:
+
+-   Cijfers: Een correlatie tussen Cijfer SO en Cijfer VO: dit geeft aan dat het schoolexamen hetzelfde meet als het centraal examen. Exacte vakken en talen kunnen met elkaar correleren.
+-   Reistijd en SES: Deze zijn gecorreleerd aangezien SES scores zijn afgeleid van wijken. Wijken hebben een specifieke reistijd en positionering ten opzichte van de vestigingslocaties van De HHs kennen.
+-   Leeftijd is vaak niet gecorreleerd met andere variabelen.
 
 ```{r}
 #| label: fig-corplot-data
@@ -383,18 +351,41 @@ Het is verstandig om voorafgaand aan het bouwen van een model te kijken naar de 
 
 # Create a plot of the intercorrelations in numerical variables
 # Remove columns with a standard deviation of 0
-dfOpleiding_inschrijvingen |> 
+dfCorrelation <- dfOpleiding_inschrijvingen |> 
   select(-Collegejaar) |>
   select(where(is.numeric)) |> 
   select_if(~ sd(.) != 0) |>
-  cor() |> 
-  corrplot::corrplot(
-    order = 'hclust', 
-    addrect = 4,
-    method = "number",  
-    tl.cex = 0.8,       
-    tl.col = "black",
-    diag = FALSE)
+  cor()
+
+dfCorrelation |>  
+corrplot::corrplot(
+  order = 'hclust', 
+  addrect = 4,
+  method = "number",
+  hclust.method = "complete",
+  tl.cex = 0.8,       
+  tl.col = "black",
+  diag = FALSE)
+
+```
+
+```{r}
+#| label: fig-corplot-dendrogram
+#| fig-cap: "Dendrogram van de correlatiematrix"
+
+# Apply hierarchical clustering
+dist   <- as.dist(1 - dfCorrelation)      # Create a distance matrix
+hclust <- hclust(dist, method = "complete")  # Hierarchical clustering
+
+# Plot the dendrogram
+# plot(hclust, cex = 0.8)
+
+# Create a clustering
+dfClusters <- cutree(hclust, k = 4)
+
+# Show clustering
+# dfClusters
+
 ```
 
 ### Bouw de trainingset, validatieset en testset
@@ -433,9 +424,10 @@ dfRetentie_validation <- validation_set(splits)
 dfRetentie_resamples  <- vfold_cv(dfRetentie_train, strata = Retentie)
 ```
 
-```{r, echo=FALSE}
+```{r}
 #| label: tbl-split-data
 #| tbl-cap: "Verhouding van de uitkomstvariabele in de training- en testset"
+#| echo: FALSE
 
 # Training set proportions
 dfRetentie_train_prop <- dfRetentie_train |> 
@@ -488,7 +480,7 @@ Vervolgens zetten we meerdere stappen in een 'recipe':
 -   We verwijderen vervolgens de oorspronkelijke student-ID en het collegejaar uit de data, omdat deze verder niet gebruikt moeten worden in het model.
 -   We converteren factoren naar dummy variabelen: voor elke categorie wordt er een nieuwe logische variabele (Ja/Nee) aangemaakt.
 -   We verwijderen variabelen die geen waarde toevoegen: variabelen met uitsluitend nullen.
--   We normaliseren numerieke variabelen om ze met elkaar te kunnen vergelijken door ze te centreren en schalen.
+-   We normaliseren numerieke variabelen om ze met elkaar te kunnen vergelijken door ze te centreren en schalen: het transformeert numerieke gegevens zodat ze een standaard deviatie van één en een gemiddelde van nul hebben.
 -   Sterk gecorreleerde waarden verwijderen we nu niet, omdat we later in de analyse de eventuele samenhang met andere variabelen in een prognosemodel nog willen kunnen visualiseren.
 
 ```{r}
@@ -500,6 +492,8 @@ lr_recipe <-
   recipe(Retentie ~ ., data = dfRetentie_train) |>  
   update_role(ID, new_role = "ID") |>           # Set the student ID as an ID variable
   step_rm(ID, Collegejaar) |>                   # Remove ID and college year from the model
+  step_unknown(Studiekeuzeprofiel, 
+               new_level = "Onbekend skp") |>   # Add unknown skp
   step_dummy(all_nominal_predictors()) |>       # Create dummy variables from categorical variables
   step_zv(all_predictors()) |>                  # Remove zero values
   step_normalize(all_numeric_predictors())      # Center and scale numeric variables
@@ -522,9 +516,10 @@ tidy(lr_recipe) |>
 
 De variabelen die nu nog overblijven zijn:
 
-```{r, echo=FALSE}
+```{r}
 #| label: tbl-lr-recipe-final
 #| tbl-cap: "Resterende variabelen voor logistische regressie na bewerkingen"
+#| echo: FALSE
 
 # Show the variables remaining
 model_vars <- lr_recipe |> 
@@ -775,6 +770,8 @@ We maken een recipe voor het random forest model. We verwijderen de student ID e
 # Create the recipe: random forest
 rf_recipe <- 
   recipe(Retentie ~ ., data = dfRetentie_train) |> 
+  step_unknown(Studiekeuzeprofiel, 
+               new_level = "Onbekend skp") |>   # Add unknown skp
   step_rm(ID, Collegejaar)                      # Remove ID and Collegejaar from the model
 ```
 
@@ -903,7 +900,6 @@ rf_best|>
 ```{r}
 #| label: tbl-rf-predictions
 #| tbl-cap: "Predicties voor random forest"
-#| code-fold: true
 
 # Collect the predictions
 rf_res |> 
@@ -984,24 +980,21 @@ sBest_model     <- dfModel_results$model[dfModel_results$best == TRUE]
 sBest_model_auc <- round(dfModel_results$auc[dfModel_results$best == TRUE], 4)
 ```
 
-```{r, echo=FALSE, results='asis'}
+```{r}
 #| label: best-model-auc-roc-text
+#| echo: FALSE
+#| results: asis
 
 # Build the text for the best models
-sText_best_model <- ""
-
-walk(1:nrow(dfModel_results), function(i) {
-  sText_best_model <-
-    glue(
-      sText_best_model,
-      "Het {dfModel_results[i,]$model} model heeft een AUC van {round(dfModel_results[i,]$auc, 4)}. "
-    )
-})
+sText_best_model <- dfModel_results |> 
+  filter(best == FALSE) |> 
+  glue_data("Het {model} model heeft een AUC van {round(auc, 4)}. ") |> 
+  stringr::str_flatten()
 
 # Rearrange the final text for a clear summary
 sText_best_model <-
   glue(
-    "Het beste model is het **{sBest_model}** model met een **AUC/ROC van {sBest_model_auc}**. {sText_best_model} We ronden de analyse verder af met het {sBest_model} model."
+    "Het beste model is het **{sBest_model}** model met een **AUC/ROC van {sBest_model_auc}**. {sText_best_model} We ronden de analyse verder af met het {sBest_model} model op de validatieset."
   )
 
 ```
@@ -1010,8 +1003,10 @@ sText_best_model <-
 
 ### Maak het finale model
 
-```{r, echo=FALSE, results='asis'}
+```{r}
 #| label: text-final-model
+#| echo: FALSE
+#| results: asis
 
 # Build the text for the final model
 if(sBest_model == "Logistisch Regressie") {
@@ -1115,7 +1110,7 @@ saveRDS(dfOpleiding_inschrijvingen, file = sData_outputpath)
 
 ### Evalueer het finale model: metrieken en variable importance
 
-We evalueren het finale model op basis van 4 metrieken: 1) accuraatheid, 2) ROC/AUC en 3) de [Brier score](https://en.wikipedia.org/wiki/Brier_score) (de Mean Squared Error).
+We evalueren het finale model nu grondiger op basis van 4 metrieken: 1) accuraatheid, 2) ROC/AUC en 3) de [Brier score](https://en.wikipedia.org/wiki/Brier_score) (de Mean Squared Error). Het is zinvol om accuraatheid, ROC/AUC en de Brier-score pas bij het finale model toe te passen, omdat dit efficiënter is en overfitting voorkomt. Zo combineren we een snelle modelselectie met een grondige evaluatie van het uiteindelijke model.
 
 ```{r}
 #| label: last-fit-metrics-vi
@@ -1153,12 +1148,12 @@ Get_ROC_Plot(auc_lf, position = 3)
 
 <!-- Conclusions -->
 
-::: {.content-hidden unless-meta="includes.conclusies"}
 ## Conclusies
 
-```{r, echo = FALSE}
+```{r}
 #| label: conclusions-accuracy
 #| code-fold: false
+#| echo: false
 
 # Determine model accuracy, average retention rate and base model
 Last_fit_Accuracy   <- last_fit |>
@@ -1377,7 +1372,6 @@ Naast de accuraatheid van het model is het ook belangrijk om te weten welke fact
 Ongeacht de mate van accuraatheid, is het voor onderzoek naar kansengelijkheid essentieel om te weten welke factoren het meest bijdragen aan de voorspelling van `r tolower(sSucces_model)`. Het gaat erom dat we het belang van de factoren in de voorspellingen kunnen begrijpen en duiden. Machine Learning is hiervoor uitstekend geschikt, omdat het de mogelijkheid biedt om de belangrijkste factoren en hun invloed te leren kennen [@Shmueli.2010; @Shmueli.2011].
 
 <!-- -   `r sConclusie_text` -->
-:::
 
 <!-- FOOTER -->
 
@@ -1395,8 +1389,9 @@ Ongeacht de mate van accuraatheid, is het voor onderzoek naar kansengelijkheid e
 
 <!-- Cleaning up -->
 
-```{r, echo = FALSE}
+```{r}
 #| label: cleanup
+#| echo: FALSE
 
 # Datasets
 rm(

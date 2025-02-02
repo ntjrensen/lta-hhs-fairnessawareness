@@ -80,6 +80,7 @@ Zie voor een verdere onderbouwing van deze uitkomsten de volgende hoofdstukken i
 
 <!-- Cleaning up -->
 
-```{r, echo = FALSE}
+```{r}
 #| label: cleanup
+#| echo: FALSE
 ```

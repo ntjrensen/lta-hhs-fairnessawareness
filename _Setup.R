@@ -185,9 +185,25 @@ if(bSetup_executed == F) {
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.4  Config ####
 
+  if(!exists("params")) {
+    params <- list()
+    params$succes                   <- "Retentie na 1 jaar"
+    params$model                    <- "Retentie na 1 jaar"
+    params$propedeusediploma        <- "Nvt"
+    params$use_synthetic_data       <- TRUE
+    params$recreateplots            <- FALSE
+    params$faculteit                <- "ITD"
+    params$opleidingsnaam           <- "B Communication and Multimedia Design"
+    params$opleiding                <- "CMD"
+    params$opleidingsvorm           <- "voltijd"
+    params$opleidingsvorm_afkorting <- "VT"
+    params$selectie                 <- FALSE
+  }
+  
   sSucces_model      <- params$succes
   sPropedeusediploma <- params$propedeusediploma
-
+  sSucces_label      <- "Kans op retentie"
+  
   sSucces_model_text <- Get_Succes_Model_Text(sPropedeusediploma, sSucces_model)
 
   # Create the variables for the current study programme based on the programme name and type of education
@@ -240,7 +256,6 @@ if(bSetup_executed == F) {
   nPlotWidth  <- 640
   nPlotHeight <- 550
   
-  
   # . ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 4. CONTENT ####
@@ -254,52 +269,37 @@ if(bSetup_executed == F) {
   faculteit_lang      <- Get_Faculteitsnaam_Lang(params$faculteit)
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 4.2 Sensitive attributes ####
+  # 4.2 Variables and levels ####
   
-  dfSensitive <- rio::import(file.path("R/data/", "dfSensitive_variables.xlsx"))
-  
-  lSensitive_attributes       <- dfSensitive$VAR_Sensitive_variable_label  |> unique()
-  lSentitive_variables        <- dfSensitive$VAR_Sensitive_simple_variable |> unique()
-  lSentitive_formal_variables <- dfSensitive$VAR_Sensitive_formal_variable |> unique()
-  
-  lSenstive_levels_breakdown <- list()
-  for(i in lSensitive_attributes) {
-    lSenstive_levels_breakdown[[i]] <- dfSensitive |> 
-      filter(VAR_Sensitive_variable_label == i,
-             VAR_Breakdown_tf == TRUE) |>
-      select(VAR_Level_NL) |> 
-      pull()
-  }
+  dfVariables    <- Get_dfVariables()
+  dfLevels       <- Get_dfLevels()
+  lLevels        <- Get_lLevels(dfLevels)
+  lLevels_formal <- Get_lLevels(dfLevels, formal = TRUE)
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 4.3 Succes label ####
+  # 4.3 Sensitive variables and labels ####
   
-  sSucces_label <- "Kans op retentie"
-  
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 4.4 Levels of variables ####
-  
-  # Determine the order of some levels
-  lLevels <- Get_Levels()
-  lLevels <- Set_Levels(dfOpleiding_inschrijvingen_base, lLevels)
+  lSentitive_formal_variables <- Get_lSensitive(dfVariables, "VAR_Formal_variable")
+  lSentitive_variables        <- Get_lSensitive(dfVariables, "VAR_Simple_variable")
+  lSensitive_labels           <- Get_lSensitive(dfVariables, "VAR_Variable_label")
+  lSensitive_levels_breakdown <- Get_lSensitive_Levels_Breakdown(dfLevels, lSentitive_formal_variables)
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 4.5 Paths for data, last fits and model results ####
+  # 4.4 Paths for data, last fits and model results ####
   
   # Define the paths
-  sData_outputpath         <- Get_Model_Outputpath(mode = "data")
-  sFittedmodels_outputpath <- Get_Model_Outputpath(mode = "last-fits")
-  sModelresults_outputpath <- Get_Model_Outputpath(mode = "modelresults")
+  sData_outputpath            <- Get_Model_Outputpath(mode = "data")
+  sFittedmodels_outputpath    <- Get_Model_Outputpath(mode = "last-fits")
+  sModelresults_outputpath    <- Get_Model_Outputpath(mode = "modelresults")
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 4.6 Data for training, last fits and results ####
+  # 4.5 Data for training, last fits and results ####
   
-  # Load data for training: dates, last fits and model results
+  # Load data for training: data, last fits and model results
   dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE) |> 
-    mutate(across(all_of(dfSensitive$Sensitive_variable), 
-                  ~ factor(.x, 
-                           levels = lLevels[[dfSensitive$Sensitive_attribute[dfSensitive$Sensitive_variable == cur_column()]]])
-    ))
+    mutate(across(all_of(names(lLevels)), ~ factor(.x, 
+                                                   levels = lLevels[[cur_column()]])))
+  
   lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
   dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
   
@@ -308,3 +308,4 @@ if(bSetup_executed == F) {
   dfOpleiding_inschrijvingen$Retentie <- as.numeric(dfOpleiding_inschrijvingen$Retentie) - 1
   
 }
+

@@ -126,6 +126,7 @@ Deze analyse kent drie hoofdstukken:
 
 <!-- Cleaning up -->
 
-```{r, echo = FALSE}
+```{r}
 #| label: cleanup
+#| echo: FALSE
 ```
