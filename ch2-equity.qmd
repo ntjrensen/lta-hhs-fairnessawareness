@@ -58,7 +58,7 @@ De analyse van kansengelijkheid heeft de volgende stappen:
 
 1.  We lezen een bewerkte dataset in en prognosemodellen die we in een basis-analyse hebben gemaakt (zie hoofdstuk 3).
 2.  We maken een *explainer* om de modellen beter te begrijpen en te kunnen uitleggen.
-3.  Vervolgens berekenen we of er *bias* bestaat voor verschillende groepen studenten naar geslacht, vooropleiding en vorm van aansluiting. We analyseren daarvoor de verdeling van kansen en mate van fairness in het prognosemodel dat we hebben ontwikkeld.
+3.  Vervolgens berekenen we of er *bias* bestaat voor verschillende groepen studenten naar `r Concatenate_List(lSentitive_variables, tolower = TRUE)`. We analyseren daarvoor de verdeling van kansen en mate van fairness in het prognosemodel dat we hebben ontwikkeld.
 4.  We trekken er conclusies uit over de mate van bias binnen de opleiding voor `r tolower(params$model)`.
 :::
 
@@ -74,7 +74,11 @@ We laden de bewerkte data en het beste prognosemodel in voor:
 **Opleiding**: `r params$faculteit` \| `r Get_Opleidingsnaam_Synth(params$opleidingsnaam)` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
 <!-- Include load-dfpersona -->
-{{< include R/qmd/load-dfpersona.qmd >}}
+```{r}
+#| label: load-dfpersona
+#| eval: true
+#| file: R/scripts/load-dfpersona.R
+```
 
 ### Maak een explainer
 
@@ -83,10 +87,18 @@ Om het model beter te begrijpen en te kunnen uitleggen, maken we met behulp van 
 DALEX is onder andere ontwikkeld om uit te kunnen leggen welke verklarende variabelen van belang zijn en wat deze voor een effect hebben in een model. Een explainer is een model-onafhankelijke *wrapper*, die inzicht geeft in de voorspellingen van het model en de bijdrage van de variabelen aan de prognose. Een explainer maakt het verder mogelijk om modellen onderling te vergelijken en benchmarken.
 
 <!-- Include the fitted model -->
-{{< include R/qmd/fitted-model.qmd >}}
+```{r}
+#| label: fitted-model
+#| eval: true
+#| file: R/scripts/fitted-model.R
+```
 
 <!-- Include the last fit explainer -->
-{{< include R/qmd/lf-explainer.qmd >}}
+```{r}
+#| label: lf-explainer
+#| eval: true
+#| file: R/scripts/lf-explainer.R
+```
 
 :::
 <!-- Equity of opportunity -->
@@ -96,7 +108,7 @@ DALEX is onder andere ontwikkeld om uit te kunnen leggen welke verklarende varia
 We onderzoeken kansengelijkheid door bias in de data te onderzoeken. Dit wordt ook wel een *fairness analyse* genoemd. Bias voor verschillende groepen studenten kan een teken zijn van kansenongelijkheid. 
 
 ::: {.content-visible when-profile="advanced"}
-Het leidende werk voor fairness analyses is [*Fairness and Machine Learning: Limitations and Opportunities*](https://fairmlbook.org/pdf/fairmlbook.pdf) [@Barocas.2023]. De methode die we in deze analyse hanteren hierop gebaseerd. We maken gebruik van de `DALEX` explainer en onderzoeken de invloed van de variabelen op de `r tolower(sSucces_label)` voor verschillende groepen studenten naar geslacht, vooropleiding en aansluiting.
+Het leidende werk voor fairness analyses is [*Fairness and Machine Learning: Limitations and Opportunities*](https://fairmlbook.org/pdf/fairmlbook.pdf) [@Barocas.2023]. De methode die we in deze analyse hanteren hierop gebaseerd. We maken gebruik van de `DALEX` explainer en onderzoeken de invloed van de variabelen op de `r tolower(sSucces_label)` voor verschillende groepen studenten naar `r Concatenate_List(lSentitive_variables, tolower = TRUE)`.
 :::
 
 De volgende **definities** zijn van belang:
@@ -113,11 +125,11 @@ De volgende **definities** zijn van belang:
 
 ### Aantallen en percentages per groep
 
-Voor de variabelen `Geslacht`, `Vooropleiding` en `Aansluiting` is de verdeling binnen deze opleiding als volgt:
+Voor de variabelen `r Concatenate_List(lSentitive_variables)` is de verdeling binnen deze opleiding als volgt:
 
 ```{r}
 #| label: tbl-amount-and-percentages-per-group
-#| tbl-cap: "Aantallen en percentages naar geslacht, vooropleiding en aansluiting in relatie tot retentie"
+#| tbl-cap: !expr 'glue("Aantallen en percentages naar {Concatenate_List(lSentitive_variables, tolower = TRUE)} in relatie tot retentie")'
 #| results: asis
 
 # Create a table with numbers and percentages for the 3 sensitive 
@@ -162,7 +174,7 @@ Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we de *v
 -   De boxplot geeft de vier quartielen aan van de data: de box staat voor de middelste 50% van de data, met een streep die de mediaan aangeeft (de middelste waarde van de data). De lijnen (*whiskers*) geven de 1e 25% en laatste 25% van de data.
 -   De boxplot wordt gecombineerd met de violin plot, waarbij de breedte van de violin de dichtheid van de data aangeeft. Het kan zijn dat het lijkt alsof er geen violin is; in dat geval is de verdeling van het aantal studenten zeer breed en de violin vorm daardoor heel smal.
 -   Samen geven deze twee visualisaties een goed beeld van de verdeling van de voorspelde kansen van het model.
--   De blauwe gestippelde lijn geeft de 50% kans aan; alle waarden die boven deze lijn vallen hebben een kans van 50% of meer op retentie. Hiervan voorspelt het model dat zij zeker doorstuderen. Deze grenslijn kan door de verdeling van de groepen heen lopen.
+-   De blauwe gestippelde lijn geeft de 50% kans aan; alle waarden die boven deze lijn vallen hebben een kans van 50% of meer op retentie. Hiervan voorspelt het model dat zij zeker doorstuderen. Deze grenslijn kan door de verdeling van groepen heen lopen. Bedenk in zo'n situatie dat voor een deel van de studenten het model voorspelt dat zij juist wel doorstromen (50% of meer) of juist niet (minder dan 50%).
 
 ```{r}
 #| label: bias-analysis-density

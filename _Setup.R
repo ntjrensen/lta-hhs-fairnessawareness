@@ -43,7 +43,7 @@ if(bSetup_executed == F) {
 
   # . ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1. LOAD LTABASE PACKAGE ####
+  # 1. PACKAGE & FUNCTIONS ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -69,16 +69,14 @@ if(bSetup_executed == F) {
   ltabase::load_lta_datasets(message = TRUE)
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1.4 Laad extra bibliotheken ####
+  # 1.4 Load additional libraries ####
   
   # Laad extra bibliotheken
   library(conflicted)   # to solve conflicts
-  library(tidymodels)   # for machine learning
   library(rio)          # for reading files
+  library(doParallel)   # for parallel processing
+  library(fs)           # for file system functions
   
-  library(vip)          # for variable importance plots
-  library(forcats)      # to edit factor variables
-  library(performance)  # for performance measurements on lr models
   #library(dlookr)      # to inspect data > causes conflicts because of showtext_auto()
   library(gtsummary)    # for descriptive summary tables
   library(flextable)    # for flextables
@@ -87,42 +85,40 @@ if(bSetup_executed == F) {
   library(gtExtras)     # for sparklines
   library(cli)          # for cli texts
   library(glue)         # for string interpolation
+  
+  library(tidymodels)   # for machine learning
+  library(forcats)      # to edit factor variables
+  library(performance)  # for performance measurements on lr models
+  library(vip)          # for variable importance plots
   library(probably)     # for probabilistic models
   library(discrim)      # discriminant analysis
   library(klaR)         # for classification and visualization
   library(betacal)      # for beta calibration
-  
-  library(doParallel)   # for parallel processing
   library(DALEX)        # for explainable AI
   library(DALEXtra)     # for explainable AI
   library(lobstr)       # for measuring objects
   library(butcher)      # for shrinking models
   library(iBreakDown)   # for explaining models
-  library(ggtext)       # for creating formatting in titles
+  library(ingredients)  # for feature importance
+  library(fairmodels)   # for fairness in models
   
+  library(ggtext)       # for creating formatting in titles
   library(showtext)     # for setting fonts
   library(ggplot2)      # for creating plots
-  library(cvms)         # for confusion matrices
-  library(ggimage)      # for confusion matrices
-  library(rsvg)         # for confusion matrices
-  library(ggnewscale)   # for confusion matrices
-  
   library(ggpubr)       # for saving plots
   library(bbplot)       # for saving plots
   library(grid)         # for saving plots
-  
   library(gridGraphics) # for saving plots
   library(extrafont)    # for saving plots
   library(sysfonts)     # for fonts
   library(systemfonts)  # for fonts
   
-  library(fairmodels)   # for fairness in models
-  
-  library(fs)           # for file system functions
+  library(cvms)         # for confusion matrices
+  library(ggimage)      # for confusion matrices
+  library(rsvg)         # for confusion matrices
+  library(ggnewscale)   # for confusion matrices
   
   library(quartostamp)  # for additional quarto add-in functionality
-  
-  library(ingredients)  # for feature importance
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.5 Fonts ####
@@ -147,14 +143,14 @@ if(bSetup_executed == F) {
   Set_LTA_Theme()
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1.9 Tidymodels ####
+  # 1.9 Tidymodels preferences ####
 
   # When conflicts arise, give preference to the tidymodels package
   tidymodels_prefer(quiet = TRUE)
 
   # . ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2. BASIC VARIABLES / PATHS ####
+  # 2. CONFIG ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -167,14 +163,14 @@ if(bSetup_executed == F) {
   Network_directory <- ltabase::get_lta_network_directory()
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.2 Debug settings ####
+  # 2.2 Debug ####
 
   # Set debug options: icecream package settings
   ltabase::set_icecream_options()
   icecream::ic_disable()
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.3 Gtsummary settings ####
+  # 2.3 Gtsummary ####
 
   # Define the default settings of gtsummary
   list("style_number-arg:big.mark" = ".",
@@ -183,7 +179,7 @@ if(bSetup_executed == F) {
   invisible(theme_gtsummary_compact())
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.4  Config ####
+  # 2.4  Parameters ####
 
   if(!exists("params")) {
     params <- list()
@@ -215,13 +211,8 @@ if(bSetup_executed == F) {
   # Based on this, determine derived variables
   Set_Current_Opleiding_Vars(current_opleiding, debug = T)
 
-  # . ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 3. BASIC QUERY ####
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 3.1 Enrollments  ####
+  # 2.5 Enrollments  ####
 
   dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
     board = "HHs/Inschrijvingen",
@@ -232,10 +223,10 @@ if(bSetup_executed == F) {
     range = "eerstejaars")
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 3.2 Settings ####
+  # 2.6 Settings ####
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 3.2.1 Metadata ####
+  # 2.6.1 Metadata ####
 
   lResearch_settings <- list()
   lResearch_settings[["sResearch_path"]] <- "Kansengelijkheid"
@@ -245,12 +236,12 @@ if(bSetup_executed == F) {
   lMetadata <- Get_Metadata()
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 3.2.2 Caption ####
+  # 2.6.2 Caption ####
 
   sCaption <- Get_sCaption()
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 3.2.3 Plots ####
+  # 2.6.3 Plot height and width ####
 
   # Determine the height and width of images
   nPlotWidth  <- 640
@@ -258,18 +249,18 @@ if(bSetup_executed == F) {
   
   # . ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 4. CONTENT ####
+  # 3. CONTENT ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 4.1 Names of the study programme and type of education ####
+  # 3.1 Names of the study programme and type of education ####
   
   # Determine the long name of the type of education and faculty
   opleidingsvorm_lang <- Get_Opleidingsvorm_Lang(params$opleidingsvorm_afkorting)
   faculteit_lang      <- Get_Faculteitsnaam_Lang(params$faculteit)
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 4.2 Variables and levels ####
+  # 3.2 Variables and levels ####
   
   dfVariables    <- Get_dfVariables()
   dfLevels       <- Get_dfLevels()
@@ -277,7 +268,7 @@ if(bSetup_executed == F) {
   lLevels_formal <- Get_lLevels(dfLevels, formal = TRUE)
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 4.3 Sensitive variables and labels ####
+  # 3.3 Sensitive variables and labels ####
   
   lSentitive_formal_variables <- Get_lSensitive(dfVariables, "VAR_Formal_variable")
   lSentitive_variables        <- Get_lSensitive(dfVariables, "VAR_Simple_variable")
@@ -285,7 +276,7 @@ if(bSetup_executed == F) {
   lSensitive_levels_breakdown <- Get_lSensitive_Levels_Breakdown(dfLevels, lSentitive_formal_variables)
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 4.4 Paths for data, last fits and model results ####
+  # 3.4 Paths for data, last fits and model results ####
   
   # Define the paths
   sData_outputpath            <- Get_Model_Outputpath(mode = "data")
@@ -293,19 +284,21 @@ if(bSetup_executed == F) {
   sModelresults_outputpath    <- Get_Model_Outputpath(mode = "modelresults")
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 4.5 Data for training, last fits and results ####
+  # 3.5 Data for training, last fits and results ####
   
   # Load data for training: data, last fits and model results
+  # Adjust the Retention variable to numeric (0/1),
   dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE) |> 
     mutate(across(all_of(names(lLevels)), ~ factor(.x, 
-                                                   levels = lLevels[[cur_column()]])))
+                                                   levels = lLevels[[cur_column()]]))) |> 
+    mutate(Retentie = as.numeric(Retentie) - 1)
   
   lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
   dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
-  
-  # Adjust the Retention variable to numeric (0/1), 
-  # so it can be made into an explainer
-  dfOpleiding_inschrijvingen$Retentie <- as.numeric(dfOpleiding_inschrijvingen$Retentie) - 1
+  # 
+  # # Adjust the Retention variable to numeric (0/1), 
+  # # so it can be used for an explainer
+  # dfOpleiding_inschrijvingen$Retentie <- as.numeric(dfOpleiding_inschrijvingen$Retentie) - 1
   
 }
 

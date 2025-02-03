@@ -1,0 +1,15 @@
+# Extract the fitted model and workflow
+fitted_model <- last_fit |>
+  extract_fit_parsnip()
+
+workflow <- last_fit |>
+  extract_workflow()
+
+# Create an explainer
+explain_lf <- DALEX::explain(
+  model = workflow,
+  data = dfOpleiding_inschrijvingen |> select(-Retentie),
+  y = dfOpleiding_inschrijvingen$Retentie,
+  colorize = TRUE,
+  verbose = TRUE,
+  label = sBest_model)

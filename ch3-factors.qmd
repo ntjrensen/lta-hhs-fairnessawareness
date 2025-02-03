@@ -11,7 +11,7 @@ params:
   model: "Retentie na 1 jaar"
   propedeusediploma: "Nvt"
   use_synthetic_data: true
-  recreateplots: false
+  recreateplots: true
 
   faculteit: "ITD"
   opleidingsnaam: "B Communication and Multimedia Design"
@@ -85,21 +85,33 @@ We laden de bewerkte data en prognosemodellen in voor:
 **Opleiding**: `r params$faculteit` \| `r Get_Opleidingsnaam_Synth(params$opleidingsnaam)` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
 <!-- Include load-dfpersona -->
-{{< include R/qmd/load-dfpersona.qmd >}}
+```{r}
+#| label: load-dfpersona
+#| eval: true
+#| file: R/scripts/load-dfpersona.R
+```
 
 ## Verdiepende analyse van het model
 
-We van de factoren nog niet hoe en in welke richting ze retentie verklaren: dragen ze sterk bij of juist niet, verhogen of verlagen ze retentie? 
+We weten van de factoren nog niet hoe en in welke richting ze retentie verklaren: dragen ze sterk bij of juist niet, verhogen of verlagen ze retentie? 
 
 ### Maak een explainer
 
 We gaan nu een stap verder met behulp van het `DALEX` package. Op basis van het tidymodels model (zie hoofdstuk 3) extraheren we de informatie voor de explainer van Dalex.
 
 <!-- Include the fitted model -->
-{{< include R/qmd/fitted-model.qmd >}}
+```{r}
+#| label: fitted-model
+#| eval: true
+#| file: R/scripts/fitted-model.R
+```
 
 <!-- Include the last fit explainer -->
-{{< include R/qmd/lf-explainer.qmd >}}
+```{r}
+#| label: lf-explainer
+#| eval: true
+#| file: R/scripts/lf-explainer.R
+```
 
 :::
 
@@ -120,7 +132,7 @@ De eerste analyse is de Root Mean Square Error (RMSE) na permutaties.
 **Waarom is RMSE na permutaties nodig?**
 
 -   **Modelvalidatie**: Door de variabelen te permuteren en de RMSE te berekenen, kunnen we de prestatie van het model vergelijken met een willekeurige schatting. Variabelen die significant beter presteren dan de gemiddelde RMSE na permutaties hebben meer voorspellende kracht.
--   **Overfit detectie**: Als de RMSE van het originele model niet veel beter is dan het RMSE na permutaties, kan dit een indicatie zijn dat het model overfit op de trainingsdata en niet goed generaliseert naar nieuwe data.
+-   **Overfit detectie**: Als de RMSE van het originele model niet veel beter is dan de RMSE na permutaties, kan dit een indicatie zijn dat het model overfit op de trainingsdata en niet goed generaliseert naar nieuwe data.
 
 De meeste voorspellende factoren en hun RMSE zijn:
 :::
@@ -136,8 +148,9 @@ sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_model_parts_rmse",
 # If the plot does not exist or if recreateplots - T, create a new plot
 if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
-  # Calculate the model parts based on the RMSE
-  mp_rmse <- model_parts(explain_lf, loss_function = loss_root_mean_square)
+  # Calculate the model parts based on the RMSE; remove ID
+  mp_rmse <- model_parts(explain_lf, loss_function = loss_root_mean_square) |> 
+    filter(variable != "ID")
   
   # Create a plot of the RMSE
   mp_rmse_plot <- Get_RMSE_Plot(mp_rmse)
@@ -171,17 +184,15 @@ Het valt op dat de meest voorspellende variabelen ook een hoge RMSE hebben. Dit 
 
 ### Inspecteer variabelen met de meeste invloed
 
-Een volgende analyse is een toepassing van het model op de meest voorkomende student. We kijken eerst naar de meest voorkomende student in het algemeen. Vervolgens analyseren we de meest voorkomende student in meerdere groepen: naar `r Concatenate_List(lSensitive_labels, extend = F, tolower = T)`, etc. Om de meest voorkomende student te bepalen, gebruiken we de meeste frequente waarden van de verklarende variabelen in de dataset per groep.
+Een volgende analyse gaat in op de variabelen met de meeste invloed. Doordat deze analyse rekening houdt met interactie effecten, niet lineaire effecten en collineariteit, kan de volgorde van variabelen wat verschillen van die van een op RMSE gebaseerde analyse. 
 
-Doordat deze analyse rekening houdt met interactie effecten, niet lineaire effecten en collineariteit, kan de volgorde van variabelen wat verschillen van die van een op RMSE gebaseerde analyse. 
-
-NB. Het kan goed zijn dat we combinaties krijgen van waarden van variabelen die niet kunnen voorkomen, bijv. een student van het mbo met een E&M profiel. Dit is wel correct: het is een fictieve student die de meest voorkomende kenmerken van de totale populatie van studenten van deze opleiding vertegenwoordigt.
+Deze analyse passen we toe op de meest voorkomende student. We onderzoeken eerst de meest voorkomende student in de gehele populatie van deze opleiding. Vervolgens analyseren we de meest voorkomende student in meerdere groepen: naar `r Concatenate_List(lSensitive_labels, extend = F, tolower = T)`, etc. We gebruiken hiervoor bij numerieke variabelen de mediaan en van categorische variabelen de meest frequente categorie. 
 
 ::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
-Stel dat we een onderscheid maken tussen mbo en havo studenten, dan bepalen we de mediaan van numerieke variabelen en de meest frequente waarde van categorische variabelen. Van de leeftijd kan misschien 20 het vaakst voorkomen, etc.
+Stel dat we een onderscheid maken tussen mannen en vrouwen, dan zullen zij verschillen in bijvoorbeeld de meest voorkomende leeftijd, het meest voorkomende studiekeuzeprofiel, etc. Zo ontstaat er per groep een unieke selectie van variabelen en waarden. De volgorde in belangrijkheid kan ook per groep verschillen. 
 :::
 
-We onderzoeken zo de voorspelling van het model per groep en de bijdrage van de verklarende variabelen aan die specifieke voorspelling. Dit geeft een verder inzicht in de werking van het model. Een categorie met 20 studenten of minder laten we buiten beschouwing.
+We onderzoeken zo de voorspelling van het model per groep en de bijdrage van de verklarende variabelen aan die specifieke voorspelling. Dit geeft een verder inzicht in de werking van het model. Een categorie met 20 studenten of minder laten we buiten beschouwing. 
 
 ```{r}
 #| label: lf-break-down-all
@@ -218,8 +229,6 @@ Uiteindelijk tellen alle verklarende variabelen op tot een definitieve voorspell
 #### De meest voorkomende student (totaal)
 
 We onderzoeken eerst de meest voorkomende student in de opleiding. We analyseren de `r tolower(sSucces_label)` voor deze *fictieve* student en de bijdrage van de variabelen aan die kans. Daarbij tonen we de verdeling van de voorspellingen voor deze student voor alle variabelen en per variabele. Dit laat zien welke variabelen belangrijk zijn, naar welke kant de verdeling neigt en welke spreiding de kansverdeling heeft.
-
-
 
 **Toelichting**
 
@@ -580,12 +589,12 @@ for (group in lSensitive_labels) {
 
 Tot slot analyseren we *Partial Dependence*. Hierbij onderzoeken we de invloed van individuele variabelen op de `r tolower(sSucces_label)`, ongeacht de combinatie van de meest voorkomende studenten. Per (numerieke) variabele analyseren we de variantie binnen de kansen op retentie. We gebruiken hiervoor het gemiddelde van alle Ceteris Paribus profielen. Vandaar dat we ook wel spreken over Partial Dependence profielen (PDP's). 
 
-We analyseren eerst de variabelen voor alle studenten. We tonen niet alleen de gemiddelde lijn, maar ook de lijnen van de individuele CP-profielen. Vervolgens analyseren op dezelfde manier de variabelen per groep: `r Concatenate_List(lSensitive_labels, tolower = T)`.
+We analyseren eerst de variabelen voor alle studenten. We tonen niet alleen de gemiddelde lijn, maar ook de lijnen van individuele CP-profielen. Vervolgens analyseren op dezelfde manier de variabelen per groep: `r Concatenate_List(lSensitive_labels, tolower = T)`.
 
 **Toelichting**
 
 -   De *gemiddelde lijn* geeft de gemiddelde `r tolower(sSucces_label)` weer voor alle studenten in de dataset voor alle waarden per variabele.
--   De *individuele lijnen* geven de `r tolower(sSucces_label)` weer voor de individuele studenten in de dataset voor alle waarden per variabele. De bandbreedte van de individuele lijnen geeft de spreiding van de `r tolower(sSucces_label)` weer binnen de variabele. Het toont dat de `r tolower(sSucces_label)` per student kan verschillen, zelfs als de variabele gelijk is; de richting van het verband is wel gelijk.
+-   De *individuele lijnen* geven de `r tolower(sSucces_label)` weer voor individuele studenten in de dataset voor alle waarden per variabele. De bandbreedte van de individuele lijnen geeft de spreiding van de `r tolower(sSucces_label)` weer binnen de variabele. Het toont dat de `r tolower(sSucces_label)` per student kan verschillen, zelfs als de variabele gelijk is; de richting van het verband is wel gelijk.
 -   Standaard worden 100 willekeurige profielen gekozen om deze afbeeldingen op te bouwen; door deze selectie kan het zijn dat sommige categorieën met weinig observaties in de populatie niet afgebeeld worden.
 -   Doordat lijnen kunnen overlappen kan het zijn dat sommige lijnen niet zichtbaar zijn. De legenda geeft aan welke mogelijke categorieën voorkomen in de analyse.
 
