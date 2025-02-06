@@ -82,5 +82,5 @@ Zie voor een verdere onderbouwing van deze uitkomsten de volgende hoofdstukken i
 
 ```{r}
 #| label: cleanup
-#| echo: FALSE
+#| echo: false
 ```

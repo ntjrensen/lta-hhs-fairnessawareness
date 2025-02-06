@@ -5,7 +5,7 @@
 # Copyright 2025 THUAS
 # Web Page: http://www.thuas.com
 # Contact: Theo Bakker (t.c.bakker@hhs.nl)
-# Distribution outside THUAS: No
+# Distribution outside THUAS: Yes
 #
 # Purpose: A setup file to perform standard funciontality of the project.
 #
@@ -28,7 +28,12 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 0.1 Reset Setup ####
+# 0.1 Set environment profile #### 
+
+sEnvironment_profile <- "development"
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 0.2 Reset Setup ####
 
 # Set this variable to T to reset this page or restart the session
 bReset_Setup <- F
@@ -59,14 +64,20 @@ if(bSetup_executed == F) {
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.2 ltabase package (install if necessary) ####
   
-  source("R/functions/load.ltabase.R")
+  if(sEnvironment_profile == "production") {
+    source("R/functions/ltabase.helpers.R")
+  } else {
+    source("R/functions/load.ltabase.R")
+  }
   source("R/functions/fairness.helpers.R")
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
   
   # Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
-  ltabase::load_lta_datasets(message = TRUE)
+  if(sEnvironment_profile == "development") {
+    ltabase::load_lta_datasets(message = TRUE)
+  }
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.4 Load additional libraries ####
@@ -140,7 +151,11 @@ if(bSetup_executed == F) {
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.8 Determine preferred themes ####
 
-  Set_LTA_Theme()
+  if(sEnvironment_profile == "production") {
+    Set_LTA_Theme()
+  } else {
+    Set_LTA_Theme()
+  }
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.9 Tidymodels preferences ####
@@ -156,17 +171,23 @@ if(bSetup_executed == F) {
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.1 Network paths ####
 
-  # If LTA_ROOT, LTA_DATA or LTA_BOARD do not exist, the environment is reset
-  ltabase::set_lta_sys_env()
-
   # Define the network directory
-  Network_directory <- ltabase::get_lta_network_directory()
+  if(sEnvironment_profile == "production") {
+    Network_directory <- "R/data"
+  } else {
+    ltabase::set_lta_sys_env()
+    Network_directory <- ltabase::get_lta_network_directory()
+  }
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.2 Debug ####
 
   # Set debug options: icecream package settings
-  ltabase::set_icecream_options()
+  if(sEnvironment_profile == "production") {
+    Set_Icecream_Options()
+  } else {
+    ltabase::set_icecream_options()
+  }
   icecream::ic_disable()
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -214,13 +235,23 @@ if(bSetup_executed == F) {
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.5 Enrollments  ####
 
-  dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
-    board = "HHs/Inschrijvingen",
-    faculty = faculteit,
-    studyprogram = opleidingsnaam_huidig,
-    studytrack = opleiding,
-    studyform = toupper(opleidingsvorm),
-    range = "eerstejaars")
+  if(sEnvironment_profile == "production") {
+    dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
+      board = "HHs/Inschrijvingen",
+      faculty = params$faculteit,
+      studyprogram = current_opleiding$INS_Opleidingsnaam_huidig,
+      studytrack = current_opleiding$INS_Opleiding,
+      studyform = toupper(current_opleiding$INS_Opleidingsvorm),
+      range = "eerstejaars")
+  } else {
+    dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
+      board = "HHs/Inschrijvingen",
+      faculty = params$faculteit,
+      studyprogram = current_opleiding$INS_Opleidingsnaam_huidig,
+      studytrack = current_opleiding$INS_Opleiding,
+      studyform = toupper(current_opleiding$INS_Opleidingsvorm),
+      range = "eerstejaars")
+  }
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.6 Settings ####
@@ -295,10 +326,6 @@ if(bSetup_executed == F) {
   
   lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
   dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
-  # 
-  # # Adjust the Retention variable to numeric (0/1), 
-  # # so it can be used for an explainer
-  # dfOpleiding_inschrijvingen$Retentie <- as.numeric(dfOpleiding_inschrijvingen$Retentie) - 1
   
 }
 

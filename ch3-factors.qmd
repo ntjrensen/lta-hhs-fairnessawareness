@@ -11,7 +11,7 @@ params:
   model: "Retentie na 1 jaar"
   propedeusediploma: "Nvt"
   use_synthetic_data: true
-  recreateplots: true
+  recreateplots: false
 
   faculteit: "ITD"
   opleidingsnaam: "B Communication and Multimedia Design"
@@ -685,10 +685,7 @@ for (group in c("Alle studenten", lSensitive_labels)) {
 
 ```{r}
 #| label: cleanup
-#| echo: FALSE
-
-# Datasets
-
+#| echo: false
 
 # Collect garbage
 invisible(gc())

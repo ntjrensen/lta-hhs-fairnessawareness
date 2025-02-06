@@ -326,7 +326,7 @@ for(group in c(lSensitive_labels)) {
 
 ```{r}
 #| label: cleanup
-#| echo: FALSE
+#| echo: false
 
 # Datasets
 

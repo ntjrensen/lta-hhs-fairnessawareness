@@ -37,8 +37,9 @@ includes:
 
 <!-- Title -->
 
-```{r setup, include = FALSE}
+```{r setup}
 #| label: setup
+#| include: false
 
 prognose_titel <- paste("Prognosemodel", tolower(params$model)) ## Set the title
 
@@ -429,7 +430,7 @@ dfRetentie_resamples  <- vfold_cv(dfRetentie_train, strata = Retentie)
 ```{r}
 #| label: tbl-split-data
 #| tbl-cap: "Verhouding van de uitkomstvariabele in de training- en testset"
-#| echo: FALSE
+#| echo: false
 
 # Training set proportions
 dfRetentie_train_prop <- dfRetentie_train |> 
@@ -521,7 +522,7 @@ De variabelen die nu nog overblijven zijn:
 ```{r}
 #| label: tbl-lr-recipe-final
 #| tbl-cap: "Resterende variabelen voor logistische regressie na bewerkingen"
-#| echo: FALSE
+#| echo: false
 
 # Show the variables remaining
 model_vars <- lr_recipe |> 
@@ -984,7 +985,7 @@ sBest_model_auc <- round(dfModel_results$auc[dfModel_results$best == TRUE], 4)
 
 ```{r}
 #| label: best-model-auc-roc-text
-#| echo: FALSE
+#| echo: false
 #| results: asis
 
 # Build the text for the best models
@@ -1007,7 +1008,7 @@ sText_best_model <-
 
 ```{r}
 #| label: text-final-model
-#| echo: FALSE
+#| echo: false
 #| results: asis
 
 # Build the text for the final model
@@ -1393,7 +1394,7 @@ Ongeacht de mate van accuraatheid, is het voor onderzoek naar kansengelijkheid e
 
 ```{r}
 #| label: cleanup
-#| echo: FALSE
+#| echo: false
 
 # Datasets
 rm(

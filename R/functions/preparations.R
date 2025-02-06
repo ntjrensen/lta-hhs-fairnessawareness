@@ -5,13 +5,13 @@
 # Copyright 2025 THUAS
 # Web Page: http://www.thuas.com
 # Contact: Theo Bakker (t.c.bakker@hhs.nl)
-# Distribution outside THUAS: No
+# Distribution outside THUAS: Yes
 #
 # Purpose: De specifieke functies en libraries voor dit project worden ingeladen
 #
 # Dependencies: None
 #
-# Datasets: geen
+# Datasets: None
 #
 # Remarks:
 # 1) ...
@@ -29,7 +29,7 @@
 
 # . ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 0. LOAD LTABASE PACKAGE + STANDARD DATABASES ####
+# 0. LOAD PACKAGE + STANDARD DATABASES ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -45,27 +45,18 @@ purrr::walk(packages, function(pkg) {
   library(pkg, character.only = TRUE)
 })
 
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 0.2 ltabase package (install if necessary) ####
-
-source("R/functions/load.ltabase.R")
-
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 0.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
-
-# Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
-ltabase::load_lta_datasets(message = TRUE)
-
 # . ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 1. BASIC VARIABLES / PATHS ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# If LTA_ROOT, LTA_DATA or LTA_BOARD do not exist, the environment is reset
-ltabase::set_lta_sys_env()
-
 # Define the network directory
-Network_directory <- ltabase::get_lta_network_directory()
+if(sEnvironment_profile == "production") {
+  Network_directory <- "R/data"
+} else {
+  ltabase::set_lta_sys_env()
+  Network_directory <- ltabase::get_lta_network_directory()
+}
 
 # . ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -73,7 +64,11 @@ Network_directory <- ltabase::get_lta_network_directory()
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Set debug options: icecream package settings
-ltabase::set_icecream_options()
+if(sEnvironment_profile == "production") {
+  Set_Icecream_Options()
+} else {
+  ltabase::set_icecream_options()
+}
 icecream::ic_disable()
 
 # . ####
@@ -82,7 +77,11 @@ icecream::ic_disable()
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Install and load the packages + default settings
-install_and_load_packages(plot = TRUE, spatial = TRUE, message = TRUE)
+if(sEnvironment_profile == "production") {
+  Install_and_Load_Packages(plot = FALSE, spatial = FALSE, message = FALSE)
+} else {
+  ltabase::install_and_load_packages(plot = TRUE, spatial = TRUE, message = TRUE)
+}
 
 # . ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -98,7 +97,11 @@ set.seed(79515660)
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Read the documentation in to memory
-Documentatie <- ltabase::get_lta_documentation_enrollments(network_directory = Network_directory)
+if(sEnvironment_profile == "production") {
+  Documentatie <- Get_Documentation()
+} else {
+  Documentatie <- ltabase::get_lta_documentation_enrollments(network_directory = Network_directory)
+}
 
 # . ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -106,7 +109,11 @@ Documentatie <- ltabase::get_lta_documentation_enrollments(network_directory = N
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Read in general Tableau colors: these must be known in advance.
-lColors_Tableau <- ltabase::get_colors_tableau()
+if(sEnvironment_profile == "production") {
+  lColors_Tableau <- Get_Colors_Tableau()
+} else {
+  lColors_Tableau <- ltabase::get_colors_tableau()
+}
 
 # [1] "#fc7d0b" "#1170aa" "#a3acb9" "#c85200" "#a3cce9" "#57606c" "#ffbc79" "#5fa2ce" "#7b848f" "#f28e2b" "#c8d0d9"
 # [12] "#b6992d" "#f1ce63" "#9467BD" "#C5B0D5" "#E377C2" "#F7B6D2" "#17BECF" "#9EDAE5" "#8C564b" "#C49C94" "#2CA02C"

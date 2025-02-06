@@ -5,13 +5,13 @@
 # Copyright 2025 THUAS
 # Web Page: http://www.thuas.com
 # Contact: Theo Bakker (t.c.bakker@hhs.nl)
-# Distribution outside THUAS: No
+# Distribution outside THUAS: Yes
 #
-# Purpose: Aangepaste functies uit het fairness package, om deze beter te kunnen tonen in html.
+# Purpose: Custom functions from the fairness package, to better display in html.
 #
 # Dependencies: None
 #
-# Datasets: Geen
+# Datasets: None
 #
 # Remarks:
 # 1) None.

@@ -5,7 +5,7 @@
 # Copyright 2025 THUAS
 # Web Page: http://www.thuas.com
 # Contact: Theo Bakker (t.c.bakker@hhs.nl)
-# Distribution outside THUAS: No
+# Distribution outside THUAS: Yes
 #
 # Purpose: Rendering analyses for multiple study programmes in book form
 #

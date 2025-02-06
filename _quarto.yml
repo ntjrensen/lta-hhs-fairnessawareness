@@ -55,6 +55,10 @@ format:
     link-external-icon: true
     html-math-method: katex
     
+    # Comments
+    comments:
+      hypothesis: true
+    
     # Theme settings
     theme: 
     - lumen

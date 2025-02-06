@@ -128,5 +128,5 @@ Deze analyse kent drie hoofdstukken:
 
 ```{r}
 #| label: cleanup
-#| echo: FALSE
+#| echo: false
 ```

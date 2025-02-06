@@ -5,7 +5,7 @@
 # Copyright 2025 THUAS
 # Web Page: http://www.thuas.com
 # Contact: Theo Bakker (t.c.bakker@hhs.nl)
-# Distribution outside THUAS: No
+# Distribution outside THUAS: Yes
 #
 # Purpose: Doel
 #
@@ -138,7 +138,7 @@ Get_sOpleiding <- function() {
 
 # . ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 2. PAD FUNCTIONS ####
+# 2. PATH FUNCTIONS ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Function to determine the path to flextables
