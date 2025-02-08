@@ -2,19 +2,16 @@
 project:
   type: book
   
-# LTA Template
-ltatemplate: 0.9.1.9000
-
 # Book settings
 book:
-  author: "Theo Bakker"
+  author: "Dr. Theo Bakker, lector Learning Technology & Analytics, De Haagse Hogeschool"
   date: last-modified
   bread-crumbs: false
   navbar: 
     right:
       - icon: info-square
-        href: https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics
-        aria-label: Over het lectoraat Learning Technology & Analytics
+        href: https://www.dehaagsehogeschool.nl/onderzoek/centres-expertise/no-fairness-without-awareness
+        aria-label: Over het onderzoek No Fairness without Awareness
   repo-url: https://github.com/LTA-HHs/lta-hhs-tidymodels-studiesucces/
   repo-branch: main
   repo-actions: [issue]
@@ -55,6 +52,9 @@ format:
     link-external-icon: true
     html-math-method: katex
     
+    # Fontsize
+    fontsize: 1.1em
+    
     # Comments
     comments:
       hypothesis: true
@@ -63,7 +63,7 @@ format:
     theme: 
     - lumen
     - brand
-    - "R/scss/lta.scss"
+    - "brand/scss/default.scss"
     
     # Output settings
     self-contained: true
@@ -79,3 +79,7 @@ format:
         href: https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics
       - text: "Over het onderzoeksprogramma 'No Fairness without Awareness'"
         href: https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness
+        
+# Other settings
+config:
+  environment: "development" # options: development, production

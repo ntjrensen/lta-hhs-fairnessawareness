@@ -1790,7 +1790,7 @@ Get_dfFairness_Check_Data <- function(fobject, group) {
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Determine the basic theme
-Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
+Set_Theme <- function(title.font = c("sans"), type = "plot") {
   theme_set(theme_minimal())
   theme_update(
     
@@ -1853,10 +1853,10 @@ Set_LTA_Theme <- function(title.font = c("sans"), type = "plot") {
   
 }
 
-# Function to add LTA theme elements
-Add_LTA_Theme_Elements <- function(p,
-                                   title_subtitle = TRUE,
-                                   extended = FALSE) {
+# Function to add theme elements
+Add_Theme_Elements <- function(p,
+                               title_subtitle = TRUE,
+                               extended = FALSE) {
   
   # Customize theme with or without title and subtitle
   if(title_subtitle) {
@@ -1996,8 +1996,8 @@ Get_ROC_Plot <- function(models, position = NULL) {
       axis.title.x = element_text(margin = margin(t = 20))
     )
     
-    # Add LTA elements
-    roc_plot <- Add_LTA_Theme_Elements(roc_plot,
+    # Add elements
+    roc_plot <- Add_Theme_Elements(roc_plot,
                                        title_subtitle = FALSE)
   
   return(roc_plot)
@@ -2029,10 +2029,10 @@ Get_Confusion_Plot <- function(dfConf_matrix) {
       caption = sCaption
     ) +
     
-    Set_LTA_Theme()
+    Set_Theme()
   
-  # Add LTA elements
-  confusion_plot <- Add_LTA_Theme_Elements(confusion_plot, 
+  # Add elements
+  confusion_plot <- Add_Theme_Elements(confusion_plot, 
                                            title_subtitle = TRUE)
   
   return(confusion_plot)
@@ -2046,7 +2046,7 @@ Get_RMSE_Plot <- function(mp_rmse) {
   mp_rmse_plot <- plot(mp_rmse) +
     
     # Themes
-    Set_LTA_Theme() +
+    Set_Theme() +
     
     # Title, subtitle and caption
     labs(
@@ -2062,8 +2062,8 @@ Get_RMSE_Plot <- function(mp_rmse) {
       legend.position = "none"
     )
   
-  # Add LTA elements
-  mp_rmse_plot <- Add_LTA_Theme_Elements(mp_rmse_plot)
+  # Add elements
+  mp_rmse_plot <- Add_Theme_Elements(mp_rmse_plot)
   
   return(mp_rmse_plot)
 
@@ -2140,11 +2140,11 @@ Get_Breakdown_Plot_All <- function(breakdown_lf_all, lTitles) {
   # Determine the y axis
   lY_Axis <- Set_XY_Axis(axis = "y")
 
-  # Complete the plot based on the LTA design
+  # Complete the plot based on the specific theme
   breakdown_plot <- breakdown_plot +
 
     # Themes
-    Set_LTA_Theme() +
+    Set_Theme() +
 
     # Define the title, subtitle and caption
     labs(
@@ -2178,8 +2178,8 @@ Get_Breakdown_Plot_All <- function(breakdown_lf_all, lTitles) {
       legend.position = "none"
     )
 
-  # Add LTA elements
-  breakdown_plot <- Add_LTA_Theme_Elements(breakdown_plot)
+  # Add elements
+  breakdown_plot <- Add_Theme_Elements(breakdown_plot)
   
   return(breakdown_plot)
   
@@ -2366,13 +2366,13 @@ Get_Ceteris_Paribus_Plot <- function(cp_lf_all, group) {
          y = NULL,
          caption = sCaption) +
 
-    # Apply the LTA theme
-    Set_LTA_Theme()
+    # Apply the theme
+    Set_Theme()
     
-  # Add LTA elements
-  cp_plot <- Add_LTA_Theme_Elements(cp_plot, 
-                                    title_subtitle = TRUE, 
-                                    extended = TRUE) +
+  # Add elements
+  cp_plot <- Add_Theme_Elements(cp_plot, 
+                                title_subtitle = TRUE, 
+                                extended = TRUE) +
     theme(legend.position = "bottom",
           legend.title = element_blank()) +
     guides(colour = guide_legend(nrow = 1))
@@ -2442,13 +2442,13 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
          y = NULL,
          caption = sCaption) +
     
-    # Apply the LTA theme
-    Set_LTA_Theme()
+    # Apply the theme
+    Set_Theme()
     
-  # Add LTA elements
-    pdp_plot <- Add_LTA_Theme_Elements(pdp_plot, 
-                                       title_subtitle = TRUE, 
-                                       extended = TRUE) +
+  # Add elements
+    pdp_plot <- Add_Theme_Elements(pdp_plot,
+                                   title_subtitle = TRUE,
+                                   extended = TRUE) +
       theme(legend.position = "bottom",
             legend.title = element_blank()) +
       guides(colour = guide_legend(nrow = 1))
@@ -2516,8 +2516,8 @@ Get_Density_Plot <- function(fairness_object, group) {
       vjust = -0.3,
       color = lColors_default[["sPositive_color"]]) +
     
-    # Apply the LTA theme
-    Set_LTA_Theme()  +
+    # Apply the theme
+    Set_Theme()  +
     
     # Customize some theme elements
     theme(
@@ -2526,9 +2526,9 @@ Get_Density_Plot <- function(fairness_object, group) {
       strip.text = element_blank()
     )
   
-  # Add LTA elements.
-  density_plot <- Add_LTA_Theme_Elements(density_plot,
-                                         title_subtitle = TRUE) +
+  # Add elements.
+  density_plot <- Add_Theme_Elements(density_plot,
+                                     title_subtitle = TRUE) +
     theme(legend.position = "bottom",
           legend.title = element_blank()) +
     guides(fill = guide_legend(nrow = 1))
@@ -2548,7 +2548,7 @@ Get_Fairness_Plot <- function(fairness_object, group, privileged) {
   fairness_plot <- fairness_object |> 
     plot() +
     theme_minimal() +
-    Set_LTA_Theme() +
+    Set_Theme() +
     
     # Add title and subtitle
     labs(
@@ -2574,9 +2574,9 @@ Get_Fairness_Plot <- function(fairness_object, group, privileged) {
     # Adjust the y-axis scale
     scale_y_continuous(breaks = y_breaks)
     
-    # Add LTA elements.
-    fairness_plot <- Add_LTA_Theme_Elements(fairness_plot,
-                                            title_subtitle = TRUE) +
+    # Add elements.
+    fairness_plot <- Add_Theme_Elements(fairness_plot,
+                                        title_subtitle = TRUE) +
     
     # Customize some theme elements
     theme(
@@ -2668,36 +2668,42 @@ Get_Metadata <- function() {
     "sDataset_label" = "Dataset",
     "sPlot_label"    = "Plot",
     "sAnalyse_label" = "Analyse",
-    "sInstelling"    = "De HHs",
-    "sBron"          = "De HHs, IR & Analytics",
+    "sInstelling"    = lResearch_settings[["sInstelling"]],
+    "sBron"          = lResearch_settings[["sBron"]],
     "sDataset"       = lResearch_settings[["sDataset"]],
     "sOpleiding"     = lResearch_settings[["sOpleiding"]],
-    "sAnalyse"       = "De HHs, Lectoraat Learning Technology & Analytics"
+    "sAnalyse"       = lResearch_settings[["sAnalyse"]]
   )
   
   return(lMetadata)
 }
 
 # Function to concatenate a list of strings
-Concatenate_List <- function(l, lang = "nl", extend = TRUE, tolower = FALSE) {
+Concatenate_List <- function(l, 
+                             lang = "nl", 
+                             extend = TRUE, 
+                             tolower = FALSE, 
+                             backtick = FALSE) {
   
-  if(lang == "nl") {
-    if(extend){
-      sCollapse <- glue_collapse(l, sep = ", ", last = " en ")
+  if(tolower){
+    l <- tolower(l)
+  }
+  if(backtick) {
+    l <- backtick(l)
+  }
+  if(lang == "en"){
+    sLast <- ", and "
+  } else if(lang == "nl") {
+    sLast <- " en "
+  } else {
+    sLast <- ", "
+  }
+  
+  if(extend){
+      sCollapse <- glue_collapse(l, sep = ", ", last = sLast)
     } else {
       sCollapse <- glue_collapse(l, sep = ", ")
     }
-  } else if(lang == "en") {
-    if(extend){
-      sCollapse <- glue_collapse(l, sep = ", ", last = ", and ") 
-    } else {
-      sCollapse <- glue_collapse(l, sep = ", ") 
-      }
-  }
-  
-  if(tolower){
-    sCollapse <- tolower(sCollapse)
-  }
   
   return(sCollapse)
   

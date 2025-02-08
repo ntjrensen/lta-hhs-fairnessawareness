@@ -19,12 +19,11 @@ params:
   opleiding: "CMD"
   opleidingsvorm: "voltijd"
   opleidingsvorm_afkorting: "VT"
-  selectie: false
+  instroomselectie: false
 
 # Content
 includes:
   inleiding:      true
-  data:           true
   model_lr:       true
   model_rf:       true
   model_svm:      false
@@ -605,8 +604,8 @@ lr_plot <-
     y = "Penalty"
   )
   
-  # Add LTA elements
-  lr_plot <- Add_LTA_Theme_Elements(lr_plot, title_subtitle = FALSE)
+  # Add theme elements
+  lr_plot <- Add_Theme_Elements(lr_plot, title_subtitle = FALSE)
   
 # Find the penalty value with the max AUC
 max_auc_penalty <- lr_res |> 
@@ -871,8 +870,8 @@ autoplot <- autoplot(rf_res) +
     caption = sCaption
   )
   
-  # Add LTA elements
-  autoplot <- Add_LTA_Theme_Elements(autoplot, title_subtitle = FALSE)
+  # Add theme elements
+  autoplot <- Add_Theme_Elements(autoplot, title_subtitle = FALSE)
   
   print(autoplot)
 
@@ -1358,10 +1357,10 @@ confusion_plot <- plot_confusion_matrix(
       caption = sCaption
     ) +
     
-    Set_LTA_Theme()
+    Set_Theme()
   
-  # Add LTA elements
-  confusion_plot <- Add_LTA_Theme_Elements(confusion_plot, 
+  # Add theme elements
+  confusion_plot <- Add_Theme_Elements(confusion_plot, 
                                            title_subtitle = TRUE)
   
   print(confusion_plot)

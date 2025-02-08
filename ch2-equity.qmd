@@ -18,12 +18,11 @@ params:
   opleiding: "CMD"
   opleidingsvorm: "voltijd"
   opleidingsvorm_afkorting: "VT"
-  selectie: false
+  instroomselectie: false
 
 # Content
 includes:
   inleiding:      true
-  data:           true
   model_lr:       true
   model_rf:       true
   model_svm:      false
@@ -125,7 +124,7 @@ De volgende **definities** zijn van belang:
 
 ### Aantallen en percentages per groep
 
-Voor de variabelen `r Concatenate_List(lSentitive_variables)` is de verdeling binnen deze opleiding als volgt:
+Voor de variabelen `r Concatenate_List(lSentitive_variables, extend = TRUE, backtick = TRUE)` is de verdeling binnen deze opleiding als volgt:
 
 ```{r}
 #| label: tbl-amount-and-percentages-per-group

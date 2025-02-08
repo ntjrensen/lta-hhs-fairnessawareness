@@ -4,4 +4,4 @@
 ---
  
 
-In deze analyse onderzoeken we **`r sSucces_model`** voor de opleiding **`r Get_Opleidingsnaam_Synth(params$opleidingsnaam)`** (`r params$opleiding`), `r opleidingsvorm_lang`, eerstejaars, van de faculteit `r Get_Faculteitsnaam_Lang(params$faculteit)` (`r params$faculteit`).
+In deze analyse onderzoeken we **`r sSucces_model`** voor de opleiding **`r Get_Opleidingsnaam_Synth(params$opleidingsnaam)`** (`r params$opleiding`), `r sOpleidingsvorm_lang`, eerstejaars, van de faculteit `r Get_Faculteitsnaam_Lang(params$faculteit)` (`r params$faculteit`).

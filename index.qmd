@@ -1,13 +1,6 @@
 ---
 subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.model >}})"
 
-# Author and date
-author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
-date: last-modified
-
-# LTA Template
-ltatemplate: 0.9.1.9000
-
 # Parameters
 params:
   versie: "1.0"
@@ -22,12 +15,11 @@ params:
   opleiding: "CMD"
   opleidingsvorm: "voltijd"
   opleidingsvorm_afkorting: "VT"
-  selectie: false
+  instroomselectie: false
 
 # Content
 includes:
   inleiding:      true
-  data:           true
   model_lr:       true
   model_rf:       true
   model_svm:      false
@@ -40,9 +32,10 @@ includes:
 
 # Samenvatting {.unnumbered}
 
-```{r setup, include = FALSE}
+```{r setup}
 #| label: setup
 #| echo: false
+#| include: false
 
 # Include the _Setup.R file
 source("_Setup.R")
@@ -77,10 +70,3 @@ Zie voor een verdere onderbouwing van deze uitkomsten de volgende hoofdstukken i
 ::: {.content-hidden unless-meta="includes.copyright"}
 {{< include R/qmd/footer-copyright.qmd >}}
 :::
-
-<!-- Cleaning up -->
-
-```{r}
-#| label: cleanup
-#| echo: false
-```

@@ -75,7 +75,7 @@ The index is made up of a number of components:
 - The **YAML header** with:
     - `title`, `subtitle`: the title and the subtitle. Parts of these you set through the `params` further in the yml file. Using `params` will automatically adjust the title and subtitle if we create the file via Render for multiple study programmes.
     - `output-file`: the name of the pdf being generated.
-    - `ltatemplate`: the version number of the LTA template; the number corresponds to the news page
+    - `ltatemplate`: the version number of the Template; the number corresponds to the news page
     - `params` with options for the study programme and report:
         - `version`: the version of the report
         - `uitval`: the type of success for which we are modeling

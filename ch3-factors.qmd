@@ -18,12 +18,11 @@ params:
   opleiding: "CMD"
   opleidingsvorm: "voltijd"
   opleidingsvorm_afkorting: "VT"
-  selectie: false
+  instroomselectie: false
   
 # Content
 includes:
   inleiding:      true
-  data:           true
   model_lr:       true
   model_rf:       true
   model_svm:      false
@@ -38,9 +37,10 @@ includes:
 
 # Analyse van factoren {#sec-factoranalyse}
 
-```{r setup, include = FALSE}
+```{r setup}
 #| label: setup
 #| echo: false
+#| include: false
 
 ## Include the _Setup.R file
 source("_Setup.R")

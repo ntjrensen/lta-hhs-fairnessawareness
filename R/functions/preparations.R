@@ -51,7 +51,7 @@ purrr::walk(packages, function(pkg) {
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Define the network directory
-if(sEnvironment_profile == "production") {
+if(sEnvironment == "production") {
   Network_directory <- "R/data"
 } else {
   ltabase::set_lta_sys_env()
@@ -64,7 +64,7 @@ if(sEnvironment_profile == "production") {
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Set debug options: icecream package settings
-if(sEnvironment_profile == "production") {
+if(sEnvironment == "production") {
   Set_Icecream_Options()
 } else {
   ltabase::set_icecream_options()
@@ -77,7 +77,7 @@ icecream::ic_disable()
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Install and load the packages + default settings
-if(sEnvironment_profile == "production") {
+if(sEnvironment == "production") {
   Install_and_Load_Packages(plot = FALSE, spatial = FALSE, message = FALSE)
 } else {
   ltabase::install_and_load_packages(plot = TRUE, spatial = TRUE, message = TRUE)
@@ -97,7 +97,7 @@ set.seed(79515660)
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Read the documentation in to memory
-if(sEnvironment_profile == "production") {
+if(sEnvironment == "production") {
   Documentatie <- Get_Documentation()
 } else {
   Documentatie <- ltabase::get_lta_documentation_enrollments(network_directory = Network_directory)
@@ -109,7 +109,7 @@ if(sEnvironment_profile == "production") {
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Read in general Tableau colors: these must be known in advance.
-if(sEnvironment_profile == "production") {
+if(sEnvironment == "production") {
   lColors_Tableau <- Get_Colors_Tableau()
 } else {
   lColors_Tableau <- ltabase::get_colors_tableau()

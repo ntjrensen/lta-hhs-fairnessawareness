@@ -13,7 +13,7 @@ format:
     highlight-style: github
      # Theme settings
     theme: 
-    - "R/scss/advanced.scss"
+    - "brand/scss/advanced.scss"
     
 # Execute settings
 execute:
@@ -32,4 +32,5 @@ book:
         - ch3-factors.qmd
         - ch4-models.qmd
         - ch5-references.qmd
-
+  appendices:
+    - x-a-appendix-packages.qmd

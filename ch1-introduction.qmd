@@ -5,11 +5,8 @@ subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.mod
 output-file: "ch1-introduction.html"
 
 # Author and date
-author: "Theo Bakker, lector Learning Technology & Analytics, De HHs"
+author: "{{< meta book.author >}}"
 date: last-modified
-
-# LTA Template
-ltatemplate: 0.9.1.9000
 
 # Parameters
 params:
@@ -25,7 +22,7 @@ params:
   opleiding: "CMD"
   opleidingsvorm: "voltijd"
   opleidingsvorm_afkorting: "VT"
-  selectie: false
+  instroomselectie: false
 
 # Content
 includes:
@@ -43,9 +40,10 @@ includes:
 
 # Inleiding
 
-```{r setup, include = FALSE}
+```{r setup}
 #| label: setup
 #| echo: false
+#| include: false
 
 # Include the _Setup.R file
 source("_Setup.R")

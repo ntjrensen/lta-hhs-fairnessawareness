@@ -30,7 +30,11 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 0.1 Set environment profile #### 
 
-sEnvironment_profile <- "development"
+if(!is.null(rmarkdown::metadata$config$environment)) {
+  sEnvironment <- rmarkdown::metadata$config$environment
+} else {
+  sEnvironment <- "development"
+}
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 0.2 Reset Setup ####
@@ -64,7 +68,7 @@ if(bSetup_executed == F) {
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.2 ltabase package (install if necessary) ####
   
-  if(sEnvironment_profile == "production") {
+  if(sEnvironment == "production") {
     source("R/functions/ltabase.helpers.R")
   } else {
     source("R/functions/load.ltabase.R")
@@ -75,7 +79,7 @@ if(bSetup_executed == F) {
   # 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
   
   # Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
-  if(sEnvironment_profile == "development") {
+  if(sEnvironment == "development") {
     ltabase::load_lta_datasets(message = TRUE)
   }
   
@@ -96,6 +100,7 @@ if(bSetup_executed == F) {
   library(gtExtras)     # for sparklines
   library(cli)          # for cli texts
   library(glue)         # for string interpolation
+  library(yaml)         # for yaml files
   
   library(tidymodels)   # for machine learning
   library(forcats)      # to edit factor variables
@@ -132,33 +137,34 @@ if(bSetup_executed == F) {
   library(quartostamp)  # for additional quarto add-in functionality
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1.5 Fonts ####
+  # 1.5 Brand #### 
+  
+  # Load the brand settings
+  brand_data <- read_yaml("brand/_brand.yml")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 1.6 Fonts ####
   
   extrafont::loadfonts(quiet = TRUE)
-  systemfonts::get_from_google_fonts("GT Walsheim")
-  systemfonts::get_from_google_fonts("Aktiv Grotesk")
+  systemfonts::get_from_google_fonts("Liter")
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1.6 Load additional features ####
+  # 1.7 Load additional features ####
 
   source("R/functions/report.helpers.R")
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1.7 Colors ####
+  # 1.8 Colors ####
   
-  source("R/scripts/colors.R")
+  source("brand/colors/colors.R")
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1.8 Determine preferred themes ####
+  # 1.9 Determine preferred themes ####
 
-  if(sEnvironment_profile == "production") {
-    Set_LTA_Theme()
-  } else {
-    Set_LTA_Theme()
-  }
+  Set_Theme()
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1.9 Tidymodels preferences ####
+  # 1.10 Tidymodels preferences ####
 
   # When conflicts arise, give preference to the tidymodels package
   tidymodels_prefer(quiet = TRUE)
@@ -172,7 +178,7 @@ if(bSetup_executed == F) {
   # 2.1 Network paths ####
 
   # Define the network directory
-  if(sEnvironment_profile == "production") {
+  if(sEnvironment == "production") {
     Network_directory <- "R/data"
   } else {
     ltabase::set_lta_sys_env()
@@ -183,7 +189,7 @@ if(bSetup_executed == F) {
   # 2.2 Debug ####
 
   # Set debug options: icecream package settings
-  if(sEnvironment_profile == "production") {
+  if(sEnvironment == "production") {
     Set_Icecream_Options()
   } else {
     ltabase::set_icecream_options()
@@ -214,15 +220,19 @@ if(bSetup_executed == F) {
     params$opleiding                <- "CMD"
     params$opleidingsvorm           <- "voltijd"
     params$opleidingsvorm_afkorting <- "VT"
-    params$selectie                 <- FALSE
+    params$instroomselectie         <- FALSE
   }
   
-  sSucces_model      <- params$succes
-  sPropedeusediploma <- params$propedeusediploma
-  sSucces_label      <- "Kans op retentie"
+  sSucces_model                     <- params$succes
+  sPropedeusediploma                <- params$propedeusediploma
+  sSucces_label                     <- "Kans op retentie"
   
-  sSucces_model_text <- Get_Succes_Model_Text(sPropedeusediploma, sSucces_model)
+  sSucces_model_text                <- Get_Succes_Model_Text(sPropedeusediploma, 
+                                                             sSucces_model)
 
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.5  Opleidingsinformatie ####
+  
   # Create the variables for the current study programme based on the programme name and type of education
   current_opleiding <- Get_Current_Opleiding(
     opleiding = params$opleiding,
@@ -233,9 +243,9 @@ if(bSetup_executed == F) {
   Set_Current_Opleiding_Vars(current_opleiding, debug = T)
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.5 Enrollments  ####
+  # 2.6 Enrollments  ####
 
-  if(sEnvironment_profile == "production") {
+  if(sEnvironment == "production") {
     dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
       board = "HHs/Inschrijvingen",
       faculty = params$faculteit,
@@ -254,15 +264,18 @@ if(bSetup_executed == F) {
   }
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.6 Settings ####
+  # 2.7 Other settings ####
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.6.1 Metadata ####
+  # 2.7.1 Metadata ####
 
   lResearch_settings <- list()
   lResearch_settings[["sResearch_path"]] <- "Kansengelijkheid"
   lResearch_settings[["sDataset"]]       <- Get_sDataset(dfOpleiding_inschrijvingen_base)
   lResearch_settings[["sOpleiding"]]     <- Get_sOpleiding()
+  lResearch_settings[["sInstelling"]]    <- "HHs"
+  lResearch_settings[["sBron"]]          <- "De HHs, IR & Analytics"
+  lResearch_settings[["sAnalyse"]]       <- "De HHs, Lectoraat Learning Technology & Analytics"
 
   lMetadata <- Get_Metadata()
 
@@ -287,23 +300,23 @@ if(bSetup_executed == F) {
   # 3.1 Names of the study programme and type of education ####
   
   # Determine the long name of the type of education and faculty
-  opleidingsvorm_lang <- Get_Opleidingsvorm_Lang(params$opleidingsvorm_afkorting)
-  faculteit_lang      <- Get_Faculteitsnaam_Lang(params$faculteit)
+  sOpleidingsvorm_lang        <- Get_Opleidingsvorm_Lang(params$opleidingsvorm_afkorting)
+  sFaculteit_lang             <- Get_Faculteitsnaam_Lang(params$faculteit)
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.2 Variables and levels ####
   
-  dfVariables    <- Get_dfVariables()
-  dfLevels       <- Get_dfLevels()
-  lLevels        <- Get_lLevels(dfLevels)
-  lLevels_formal <- Get_lLevels(dfLevels, formal = TRUE)
+  dfVariables                 <- Get_dfVariables()
+  dfLevels                    <- Get_dfLevels()
+  lLevels                     <- Get_lLevels(dfLevels)
+  lLevels_formal              <- Get_lLevels(dfLevels, formal = TRUE)
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.3 Sensitive variables and labels ####
   
-  lSentitive_formal_variables <- Get_lSensitive(dfVariables, "VAR_Formal_variable")
-  lSentitive_variables        <- Get_lSensitive(dfVariables, "VAR_Simple_variable")
-  lSensitive_labels           <- Get_lSensitive(dfVariables, "VAR_Variable_label")
+  lSentitive_formal_variables <- Get_lSensitive(dfVariables, var = "VAR_Formal_variable")
+  lSentitive_variables        <- Get_lSensitive(dfVariables, var = "VAR_Simple_variable")
+  lSensitive_labels           <- Get_lSensitive(dfVariables, var = "VAR_Variable_label")
   lSensitive_levels_breakdown <- Get_lSensitive_Levels_Breakdown(dfLevels, lSentitive_formal_variables)
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

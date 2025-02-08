@@ -1,0 +1,72 @@
+/* colors and fonts are defined in brand/_brand.yml */
+
+$logo-path: "brand/logos/logo-nl-grijs-hex-lowres.png";
+
+/*-- scss:rules --*/
+.navbar {
+  background-color: $brand-institution-color-two;
+  border: none;
+}
+
+.navbar-title {
+  color: white;
+}
+
+h1 {
+  color: $brand-institution-color-one;
+}
+
+h2#toc-title, .quarto-other-links h2 {
+  color: $brand-institution-color-one;
+ }
+
+#quarto-margin-sidebar {
+  background-image: url($logo-path);
+  background-size: 150px;
+  background-repeat: no-repeat;
+  background-origin: content-box;
+  margin: 10px 0 0 0;
+}
+
+#TOC {
+  margin: 50px 0 0 0;
+}
+
+.metrics-red {
+  color: $brand-metrics-color-red;
+}
+
+.metrics-green {
+  color: $brand-metrics-color-green;
+}
+
+.metrics-blue {
+  color: $brand-metrics-color-blue;
+}
+
+.metrics-orange {
+  color: $brand-metrics-color-orange;
+}
+
+.example {
+  color: $brand-institution-color-two;
+}
+
+.breadcrumb {
+  background-color: white;
+  border: none;
+  padding: 0 0 10px 0;
+}
+
+div.sidebar-item-container .active {
+    color: $brand-institution-color-two;
+}
+
+/* Fix padding for Other links if there no TOC */
+body:has(#toc-title) .quarto-other-links {
+  padding: 0;  // Reset padding if #toc-title exists
+}
+
+body:not(:has(#toc-title)) .quarto-other-links {
+  padding: 40px 0 0 0; // Add padding if #toc-title does not exist
+}
