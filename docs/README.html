@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>readme_nl</title>
+<title>readme</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -20,19 +20,53 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="README_NL_files/libs/clipboard/clipboard.min.js"></script>
-<script src="README_NL_files/libs/quarto-html/quarto.js"></script>
-<script src="README_NL_files/libs/quarto-html/popper.min.js"></script>
-<script src="README_NL_files/libs/quarto-html/tippy.umd.min.js"></script>
-<script src="README_NL_files/libs/quarto-html/anchor.min.js"></script>
-<link href="README_NL_files/libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="README_NL_files/libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="README_NL_files/libs/bootstrap/bootstrap.min.js"></script>
-<link href="README_NL_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="README_NL_files/libs/bootstrap/bootstrap-973236bd072d72a04ee9cd82dcc9cb29.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="README_files/libs/clipboard/clipboard.min.js"></script>
+<script src="README_files/libs/quarto-html/quarto.js"></script>
+<script src="README_files/libs/quarto-html/popper.min.js"></script>
+<script src="README_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="README_files/libs/quarto-html/anchor.min.js"></script>
+<link href="README_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="README_files/libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="README_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="README_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="README_files/libs/bootstrap/bootstrap-973236bd072d72a04ee9cd82dcc9cb29.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 
 
 </head>
@@ -46,223 +80,172 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="fairness-analyse" class="level1">
-<h1>Fairness Analyse</h1>
-<p>Door Theo Bakker, lector Learning Technology &amp; Analytics, t.c.bakker@hhs.nl</p>
-<p><em>Naar de <a href="NEWS.md">versiegeschiedenis van het template</a>.</em></p>
-<p>Dit template wordt gebruikt om een fairness analyse te maken voor de Learning Technology &amp; Analytics Research Group (LTA) van De Haagse Hogeschool. Het template is gebaseerd op de huisstijl van De Haagse Hogeschool en maakt gebruik van Quarto.</p>
-<section id="software" class="level2">
-<h2 class="anchored" data-anchor-id="software">Software</h2>
-<p>Om dit template te gebruiken heb je de volgende software, packages en fonts nodig:</p>
+<p><a name="top" href=""></a></p>
+<section id="fairness-awareness-analysis-of-equity-in-progression-of-students-in-educational-institutions" class="level1">
+<h1>Fairness Awareness: Analysis of Equity in Progression of Students in Educational Institutions</h1>
+<!-- badges: start -->
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" class="img-fluid figure-img" alt="Lifecycle: experimental"></a></p>
+<figcaption>Lifecycle: experimental</figcaption>
+</figure>
+</div>
+<!-- badges: end -->
+<p>This <a href="https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda">Npuls CEDA</a> project makes it possible to create a fairness analysis to study equity (<em>kansengelijkheid</em>) within progression of students in educational institutions in The Netherlands (mbo, hbo, and wo).</p>
+<section id="table-of-contents" class="level2">
+<h2 class="anchored" data-anchor-id="table-of-contents">Table of contents</h2>
 <ul>
-<li><a href="https://quarto.org/docs/get-started/">Quarto</a> versie 1.6.39 of hoger</li>
-<li><a href="https://www.xquartz.org/">XQuartz</a> (alleen voor Mac)</li>
-<li>De libraries uit <code>_Setup.R</code> (worden automatisch geïnstalleerd)</li>
-</ul>
-</section>
-<section id="opbouw-bestanden-en-folders" class="level2">
-<h2 class="anchored" data-anchor-id="opbouw-bestanden-en-folders">Opbouw bestanden en folders</h2>
-<p>Het template is opgebouwd uit de volgende <strong>bestanden</strong>:</p>
+<li><a href="#about">About</a></li>
+<li><a href="#getting-started">Getting started</a>
 <ul>
-<li>De index van het rapport: <code>Index.qmd</code> (voortaan Index genoemd)</li>
-<li><code>_quarto.yml</code> met de algemene instelligen</li>
-<li><code>_quarto-advanced.yml</code> met instellingen voor het advanced rapport</li>
-<li><code>_quarto-basic.yml</code> met instellingen voor het basic rapport</li>
-<li><code>_Setup.R</code> met algemene instellingen voor R</li>
-<li><code>ch1-introduction.qmd</code> met de introductie (hoofdstuk 1)</li>
-<li><code>ch2-equity.qmd</code> met de fairness analyse (hoofdstuk 2)</li>
-<li><code>ch3-factores.qmd</code> met de analyse van factoren (hoofdstuk 3)</li>
-<li><code>ch4-models.qmd</code> met de bouw van de voorspelmodellen (hoofdstuk 4)</li>
-<li><code>ch5-references.qmd</code> met de referenties (hoofdstuk 5)</li>
-<li><code>render-multiple.R</code> met een script om meerdere rapporten te maken</li>
-<li><code>render-single.R</code> met een script om 1 rapport te maken</li>
-<li><code>renv.lock</code> met de versies van de packages</li>
-</ul>
-<p>Het bevat daarnaast de volgende <strong>folders</strong>:</p>
-<ul>
-<li><code>_advanced</code> en <code>_basic</code> met de rapporten die bij een automatische rendering worden gemaakt in twee varianten.</li>
-<li><code>_extensions</code> met Quarto extensions voor pandoc</li>
-<li><code>_freeze</code> met elementen die onveranderd zijn en worden hergebruikt</li>
-<li><code>_output</code> met rapporten per faculteit en opleiding</li>
-<li><code>bibiograhy</code> met referenties</li>
-<li><code>brand</code> met de huisstijlbestanden (logo’s, kleuren, lettertypes, opmaak in scss)</li>
-<li><code>docs</code> voor de documentatiebestanden (README en NEWS)</li>
-<li><code>R/data</code> met algemene datasets</li>
-<li><code>R/functions</code> met .R-bestanden voor verschillende soorten functies</li>
-<li><code>R/images</code> met afbeeldingen</li>
-<li><code>R/qmd</code> met .qmd-bestanden die worden ingesloten (tekst snippets)</li>
-<li><code>R/scripts</code> met .R-bestanden die worden ingesloten (UITWERKEN)</li>
-<li><code>R/vars</code> met de datadictonary van de variabelen</li>
-<li><code>renv</code> voor de packages uit de R omgeving</li>
-</ul>
-<p><strong>NB Git ignore</strong></p>
-<ul>
-<li>Het <code>.gitignore</code> bestand is zo ingericht dat folders die specifieke output bevatten niet meegaan naar de repo (bijv. <code>_log</code>, <code>_test</code> en <code>_graveyard</code>).</li>
-</ul>
-</section>
-<section id="vooraf" class="level2">
-<h2 class="anchored" data-anchor-id="vooraf">Vooraf</h2>
-<ul>
-<li>Run voordat je dit template gebruikt 1x <code>_Setup.R</code> door op ‘Source’ te klikken.</li>
-<li>Je krijgt nu bericht welke libraries je nog moet installeren.</li>
-<li>Start nadat de installatie klaar is een nieuwe sessie.</li>
-</ul>
-</section>
-<section id="gebruik-van-dit-template" class="level2">
-<h2 class="anchored" data-anchor-id="gebruik-van-dit-template">Gebruik van dit template</h2>
-<p>Als je het template voor de eerste keer gebruikt, doorloop dan na het runnen van <code>_Setup.R</code> de volgende stappen:</p>
-<ul>
-<li>Configuratie
-<ul>
-<li>Pas de instellingen in <code>_quarto.yml</code> aan naar de wensen van je project.</li>
-<li>Pas de instellingen in <code>_quarto-advanced.yml</code> en <code>_quarto-basic.yml</code> aan naar de wensen van je project. [Verder uitwerken]</li>
+<li><a href="#prerequisites">Prerequisites</a></li>
+<li><a href="#installing">Installing</a></li>
 </ul></li>
+<li><a href="#rendering-your-first-reports">Rendering your first reports</a>
+<ul>
+<li><a href="#render-the-_basic-project-with-the-default-settings">Render the <code>_basic</code> project</a></li>
+<li><a href="#render-the-_advanced-project-with-the-default-settings">Render the <code>_advanced</code> project</a></li>
+<li><a href="#create-and-render-your-own-reports">Render your own reports</a></li>
+</ul></li>
+<li><a href="#deployment">Deployment</a></li>
+<li><a href="#built-with">Built with</a></li>
+<li><a href="#contributing">Contributing</a></li>
+<li><a href="#versioning">Versioning</a></li>
+<li><a href="#authors">Authors</a></li>
+<li><a href="#license">License</a></li>
+<li><a href="#acknowledgments">Acknowledgments</a></li>
 </ul>
 </section>
-<section id="opbouw-van-individuele-bestanden" class="level2">
-<h2 class="anchored" data-anchor-id="opbouw-van-individuele-bestanden">Opbouw van individuele bestanden</h2>
-<section id="index" class="level3">
-<h3 class="anchored" data-anchor-id="index">Index</h3>
-<p>Het bestand index.qmd moet bestaan als je in Quarto een book template gebruikt; index.qmd is opgebouwd uit de volgende onderdelen:</p>
+<section id="about" class="level2">
+<h2 class="anchored" data-anchor-id="about">🎓 About</h2>
+<p>This project is a template for creating a <strong>fairness analysis of the progression of students in educational institutions in The Netherlands</strong>. The template is based on the <a href="https://quarto.org/docs/get-started/">Quarto</a> framework and uses the <a href="https://www.tidyverse.org/">Tidyverse</a> coding standard. The template is developed by the <a href="https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics">Learning Technology &amp; Analytics (LTA)</a> research group of The Hague University of Applied Sciences for the Npuls CEDA programma.</p>
+</section>
+<section id="getting-started" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started">🚀 Getting started</h2>
+<p>These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See the deployment for notes on how to deploy the project on a live system.</p>
+<section id="prerequisites" class="level3">
+<h3 class="anchored" data-anchor-id="prerequisites">Prerequisites</h3>
+<p>To start working with this project, make sure you have the following software installed following the links provided:</p>
+<p><strong>R, Rstudio, Quarto, XQuartz (for Mac only)</strong></p>
 <ul>
-<li>De <strong>YAML header</strong> met:
+<li>RStudio version 2024.12.0 or higher with R version 4.4.2 or higher - <a href="https://posit.co/download/rstudio-desktop/">Posit</a></li>
+<li>XQuartz 2.8.5 or higher (for Mac only) - <a href="https://www.xquartz.org/">XQuartz</a></li>
+<li>Quarto version 1.6.39 or higher - <a href="https://quarto.org/docs/get-started/">Quarto</a></li>
+</ul>
+<p><strong>Github, Github Desktop</strong></p>
 <ul>
-<li><code>subtitle</code>: de ondertitel. Een deel hiervan stel je in via de <code>params</code> verder in het yml bestand. Door <code>params</code> te gebruiken wordt de ondertitel automatisch aangepast als je het bestand rendert.</li>
-<li><code>params</code> met opties voor de opleiding en het rapport:
+<li>A Github account and (optionally) GitHub Desktop version 3.4.16 - <a href="https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop">Github</a></li>
+</ul>
+<p><strong>R packages, fonts</strong></p>
 <ul>
-<li><code>versie</code>: de versie van het rapport</li>
-<li><code>succes</code>: het soort succes waarvoor we een fairness analyse maken (bijv. Retentie na 1 jaar, Retentie na 2 jaar, etc.)</li>
-<li><code>model</code>: de naam van het model. Dit kan dezelfe naam hebben als de succes parameter.</li>
-<li><code>use_synthetic_data</code>: of je gebruik maakt van synthetische data (false of true)</li>
-<li><code>recreateplots</code>: of je de plots opnieuw wilt maken (false of true)</li>
-<li><code>faculteit</code>: de faculteit waarvoor het rapport wordt gemaakt</li>
-<li><code>opleidingsnaam</code>: de volledige naam van de opleiding</li>
-<li><code>opleiding</code>: de code van de opleiding</li>
-<li><code>opleidingsvorm</code>: de opleidingsvorm voluit (voltijd, deeltijd, duaal)</li>
-<li><code>opleidingsvorm_afkorting</code>: de opleidingsvorm afgekort (VT, DT, DU)</li>
-<li><code>instroomselectie</code>: of de opleiding een instroomselectie heeft (false of true) - op basis hiervan wordt variabele <code>Rank</code> ingesloten of niet.</li>
-</ul></li>
-<li><code>includes</code> met opties om onderdelen van pagina’s wel of niet te tonen
-<ul>
-<li><code>inleiding</code>: toon wel of niet de inleiding</li>
-<li><code>data</code>: ??</li>
-<li><code>model_lr</code>: bouw wel of niet het lineaire regressiemodel</li>
-<li><code>model_rf</code>: bouw wel of niet het random forest model</li>
-<li><code>model_svm</code>: bouw wel of niet het support vector machine model</li>
-<li><code>final_fit</code>: toon wel of niet de final fit</li>
-<li><code>conclusions</code>: toon wel of niet de conclusies</li>
-<li><code>contact</code>: toon wel of niet de contactgegevens</li>
-<li><code>justification</code>: toon wel of niet de verantwoording</li>
-<li><code>copyright</code>: toon wel of niet de copyright informatie</li>
-</ul></li>
-<li>Doordat <code>_quarto.yml</code> altijd wordt uitgevoerd, hoeft er niet meer in de index te worden opgenomen
-<ul>
-<li>in <code>_quarto.yml</code> worden onder meer de datum van het bestand automatisch bepaald, maar ook de instellingen voor de HTML pagina.</li>
-</ul></li>
-</ul></li>
-<li>De <strong>setup</strong> met de packages en opties via <code>_Setup.R</code>: zie de verder uitleg hieronder.</li>
-<li>De <strong>opleidingsinformatie</strong> via R/qmd/header-studyprogram.qmd</li>
-<li>De <strong>samenvatting van de kansengelijkheidsanalyse</strong> via R/qmd/equity-conclusions.qmd</li>
-<li>De <strong>contact</strong> informatie via R/qmd/footer-contact.qmd - deze pagina kan wel of niet worden getoond</li>
-<li>De <strong>copyright</strong> informatie via R/qmd/footer-copyright.qmd - deze pagina kan wel of niet worden getoond</li>
+<li>All other packages and fonts are installed automatically by running the <code>_Setup.R</code> file of the project on your local machine. You will find instructions below.</li>
 </ul>
 </section>
-<section id="setup.r" class="level3">
-<h3 class="anchored" data-anchor-id="setup.r">_Setup.R</h3>
-<ul>
-<li><strong>_Setup.R mag niet aangepast worden</strong>.</li>
-<li>Omdat de <code>setup</code> chunk uit de <code>index.qmd</code> niet goed gelezen wordt in ingesloten .qmd bestanden, is deze vervangen door een <code>_Setup.R</code> bestand dat wordt ingesloten in elke pagina.</li>
-<li>Dit bestand wordt per sessie slechts 1x uitgevoerd; als er een nieuwe versie is terwijl je werkt aan je project, herstart dan je R omgeving voor een nieuwe sessie of pas de variabele <code>bReset_Setup &lt;- F</code> eenmalig aan naar <code>T</code>.</li>
-<li>In <code>_Setup.R</code> vind je:
-<ul>
-<li>Een check op de omgeving: development of production</li>
-<li>Instellingen voor packages en functies:
-<ul>
-<li>libraries + voorkeuren voor bepaalde functies bij conflicten</li>
-<li>het inladen van fonts</li>
-<li>het inladen van extra functies</li>
-<li>het inladen van kleuren</li>
-<li>het bepalen van het thema voor afbeeldingen</li>
-<li>een voorkeur voor de tidymodels instellingen</li>
-<li>algemene opties voor het renderen van knitr</li>
-</ul></li>
-<li>Configuratie voor:
-<ul>
-<li>bestandspaden</li>
-<li>debug opties</li>
-<li>gt-summary instellingen</li>
-<li>default parameters voor de rapporten als $params niet bestaat</li>
-<li>opleidingsinformatie</li>
-<li>het inladen van de data</li>
-<li>overige instellingen: onderzoeksinstellingen, de caption bij afbeeldingen, plotinstellingen</li>
-</ul></li>
-<li>Content instellingen:
-<ul>
-<li>de lange naam van de opleidings of faculteit</li>
-<li>de variabelen en hun levels</li>
-<li>de sensitieve variabelen (waarop fairness wordt onderzocht)</li>
-<li>de outputpaden voor de data en de modellen</li>
-<li>de instellingen voor de modellen</li>
-<li>de data voor training, last fits and resultaten</li>
-</ul></li>
-</ul></li>
-<li>Zie de inline documentatie voor de verdere toelichting.</li>
-</ul>
-</section>
-<section id="quarto-yaml" class="level3">
-<h3 class="anchored" data-anchor-id="quarto-yaml">Quarto YAML</h3>
-<p>Het template werkt met twee profielen: <code>basic</code> en <code>advanced</code>. Het basic profiel bevat de conclusies, de fairness analyse en de factoren analyse. De advanced analyse bevat ook een hoofdstuk over de achterliggende voorspelmodellen, legt de achterliggende concepten uit en toont alle relevante R-code. Om dit te realiseren wordt gebruik gemaakt van drie bestanden: <code>_quarto-basic.yml</code>, <code>_quarto-basic.yml</code> en <code>_quarto-advanced.yml</code>. Het _quarto.yml bestand bevat de algemene instellingen voor beide rapporten; de andere twee bestanden bevatten de specifieke instellingen voor de basic en advanced rapporten.</p>
-<p>Het <strong>_quarto.yml</strong> bestand heeft de volgende opties:</p>
-<ul>
-<li>De project instellingen (book) en bijbehorende details: auteur, datum (op basis van de laatste aanpassing), navigatie</li>
-<li>De beide profielen: basic en advanced. Als geen profiel wordt opgegeven wordt het eerste profiel gebruikt.</li>
-<li>De branding instellingen: de locatie van de huisstijlbestanden</li>
-<li>De editor instellingen: werk met de brondcode</li>
-<li>De executie instellingen: bewaar geen markdown files en toon niet de console output</li>
-<li>De citatie instellingen: de locatie van de bibliografie en de Citation Style Language (apa)</li>
-<li>De taal instellingen: de taal van het rapport</li>
-<li>De lightbox instellingen: afbeeldingen worden uitvergroot als je erop klikt</li>
-<li>De html instellingen: nummering, scrollen, de engine voor wiskundige teksten, de fontgrootte (110%), mogelijkheid voor commentaar (via hypothesis), het thema, de output instellingen, de inhoudsopgave en links onder ‘Meer informatie’.</li>
-<li>Overige instellingen: configuratie</li>
-</ul>
-<p>Het <strong>_quarto-basic.yml</strong> bestand heeft de volgende opties:</p>
-<ul>
-<li>De naam van het project en de output-directory.</li>
-<li>De specifieke thema instellingen: een eigen scss bestand.</li>
-<li>De specifieke executie instellingen: bewaar bestanden die niet veranderd zijn (freeze); deze instelling zorgt ervoor dat bij het renderen een _freeze folder wordt aangemaakt met elementen die niet veranderen en worden hergebruikt in dit template.</li>
-<li>De boek instellingen: de titel, de volgorde van de hoofdstukken en appendices. NB. Dit template verbergt hoofdstuk 4: de ontwikkeling van voorspelmodellen</li>
-</ul>
-<p>Het <strong>_quarto-advanced.yml</strong> bestand heeft de volgende opties:</p>
-<ul>
-<li>De naam van het project en de output-directory.</li>
-<li>De specifieke thema instellingen: instellingen voor het tonen van R-code en het eigen scss bestand.</li>
-<li>De specifieke executie instellingen: toon de uitkomsten van de R-chunks (echo: true). Dit template maakt geen gebruik van de freeze optie om te voorkomen dat te veel materiaal wordt hergebruikt.</li>
-<li>De boek instellingen: de titel, de volgorde van de hoofdstukken en appendices. NB. Dit template toont juist wel hoofdstuk 4: de ontwikkeling van voorspelmodellen.</li>
-</ul>
-<p>Wil je meer leren over het gebruik van profielen? Bezoek dan de <a href="https://quarto.org/docs/projects/profiles.html">Quarto documentatie</a>.</p>
+<section id="installing" class="level3">
+<h3 class="anchored" data-anchor-id="installing">Installing</h3>
+<ol type="1">
+<li>First make a fork of the repository to your own Github account. Then clone the repository to your local machine, using the following commands or GitHub Desktop. See <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository">Cloning a repository</a> for an explanation.</li>
+<li>Once you have cloned the repository, open the project in RStudio and run the <code>_Setup.R</code> file by clicking on ‘Source’. This will install all the necessary packages and fonts.</li>
+</ol>
 </section>
 </section>
+<section id="rendering-your-first-fairness-reports" class="level2">
+<h2 class="anchored" data-anchor-id="rendering-your-first-fairness-reports">📚 Rendering your first fairness reports</h2>
+<section id="render-the-_basic-project-with-the-default-settings" class="level3">
+<h3 class="anchored" data-anchor-id="render-the-_basic-project-with-the-default-settings">Render the <code>_basic</code> project with the default settings</h3>
+<p>Run the <code>_basic</code> project with the default settings.</p>
+<ul>
+<li>You will create a report for the The Hague University of Applied Sciences (THUAS) with the default settings. The report is based on synthesized data of the bachelor Communication &amp; Multimedia Design (CMD), and will be created in the <code>_basic</code> folder.</li>
+<li>The first time you create this report, it will take several minutes.</li>
+<li>Once the rendering has finished, click on _basic/index.html and choose <code>View in Web Browser</code>. The report will open in your default browser.</li>
+<li>If you don’t see this file, click the refresh icon on the top right. If you still don’t see the report, check the console for any errors.</li>
+<li>When you rerun the report, the output will be removed and then a new report will be created. If you want to keep the output, copy the folder to a location outside of you project.</li>
+</ul>
+<p><strong>Follow these steps:</strong></p>
+<p>Since the template has several dependencies, you will have to render the pages using the terminal.</p>
+<ol type="1">
+<li>Open a terminal in RStudio (second tab at the bottom of your screen).</li>
+<li>Run the following command for the <em>basic</em> report:</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>quarto render <span class="sc">--</span>profile basic to render the basic report.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="inhoud" class="level1">
-<h1>Inhoud</h1>
+<section id="render-the-_advanced-project-with-the-default-settings" class="level3">
+<h3 class="anchored" data-anchor-id="render-the-_advanced-project-with-the-default-settings">Render the <code>_advanced</code> project with the default settings</h3>
+<p>Next, run the <code>_advanced</code> project with the default settings.</p>
 <ul>
-<li>Het prognosemodel is gebouwd met het <a href="https://www.tidymodels.org/">tidymodels</a> package uit de tidyverse. Een package dat volop wordt doorontwikkeld met een actieve ontwikkelaarsgroep.</li>
-<li>Als je tidymodels wilt aanleren, volg dan eerst de <a href="https://www.tidymodels.org/start/">tutorials</a> en lees daarna het online boek: <a href="https://www.tmwr.org/">Tidy Modeling with R</a> .</li>
-<li>We maken twee modellen (penalized lineaire regressie en random forest), naar verhouding weinig rekenkracht vragen en waarvan de variabelen en hun bijdrage aan het model bekend zijn (een <em>whitebox</em> model).</li>
-<li>De werking van de modellen wordt – in advanced modus – uitgelegd in de tekst. Elk rapport is daarmee zelfstandig te lezen.</li>
-<li>Het beste model wordt automatisch geselecteerd. Op basis van dat model trekken we conclusies over de kansengelijkheidsdynamiek in een opleiding.</li>
+<li>This time, you will create an extended report. It contains more detailed information about the fairness analysis: prediction models, R-code and an explanation of each step with references.</li>
+<li>You will create the report on synthesized data of the bachelor Communication &amp; Multimedia Design (CMD) in the <code>_advanced</code> folder.</li>
+<li>Once it has finished, click on _advanced/index.html and choose <code>View in Web Browser</code>.</li>
+<li>The first time you create this report, it will take several minutes. The report will open in your default browser.</li>
+<li>If you don’t see this file, click the refresh icon on the top right. If you still don’t see the report, check the console for any errors.</li>
+<li>When you rerun the report, the output will be removed and then a new report will be created. If you want to keep the output, copy the folder to a location outside of you project.</li>
 </ul>
-<section id="bekende-issues" class="level2">
-<h2 class="anchored" data-anchor-id="bekende-issues">Bekende issues</h2>
+<p><strong>Follow these steps:</strong></p>
+<p>Since the template has several dependencies, you will have to render the pages using the terminal.</p>
+<ol type="1">
+<li>Open a terminal in RStudio (second tab at the bottom of your screen).</li>
+<li>Run the following command for the <em>advanced</em> report:</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>quarto render <span class="sc">--</span>profile advanced to render the advanced report.</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="create-and-render-your-own-reports" class="level3">
+<h3 class="anchored" data-anchor-id="create-and-render-your-own-reports">Create and render your own reports</h3>
+<p>Finally, you can create your own report by changing the settings in the <code>_quarto.yml</code> file.</p>
 <ul>
-<li>Geen</li>
+<li>You can change the settings for the layout, the educational institution, faculty or academy, the study program, the version of the report, the success factors, the model, the use of synthetic data, the recreation of plots, the enrollment selection and the includes.</li>
+<li>Start small and work your way up to more complex settings.</li>
+<li>Follow the <a href="TUTORIAL.html">Tutorial</a> to learn you to create and render your own reports.</li>
 </ul>
 </section>
-<section id="wensen" class="level2">
-<h2 class="anchored" data-anchor-id="wensen">Wensen</h2>
+</section>
+<section id="deployment" class="level2">
+<h2 class="anchored" data-anchor-id="deployment">🏁 Deployment</h2>
+<p>The reports are created in the <code>_basic</code> and <code>advanced</code> folders. You can deploy the reports to a web server or share them with others by copying the folder to a location outside of your project. You can also share the reports by uploading them to a web server or by using a service like GitHub Pages.</p>
+</section>
+<section id="learn-more-on-fairness-awareness-and-equity" class="level2">
+<h2 class="anchored" data-anchor-id="learn-more-on-fairness-awareness-and-equity">💡 Learn more on Fairness, Awareness, and Equity</h2>
+<p>To learn more about the concepts of Fairness, Awareness, and Equity, read the inaugural speech <a href="https://zenodo.org/records/14204674">No Fairness without Awareness</a> by Theo Bakker.</p>
+</section>
+<section id="built-with" class="level2">
+<h2 class="anchored" data-anchor-id="built-with">🔨 Built with</h2>
 <ul>
-<li>Geen</li>
+<li><a href="https://quarto.org/docs/get-started/">Quarto</a> - The web framework used in combination with R.</li>
+<li><a href="https://www.tidyverse.org/">Tidyverse</a> - The R coding standard used.</li>
+<li><a href="https://www.tidymodels.org/">Tidymodels</a> - The R package used for building the prediction models.</li>
+<li><a href="https://dalex.drwhy.ai/">Dalex</a> - The R package used for explaining the prediction models and creating the fairness analysis. The implementation of the fairness analysis is based on the <a href="https://fairness.drwhy.ai/">Fairness</a> package.</li>
 </ul>
+<p>The Dalex implementation is adjusted by the LTA-HHs team to improve usability and make it suitable for the use in the educational sector in The Netherlands.</p>
+</section>
+<section id="contributing" class="level2">
+<h2 class="anchored" data-anchor-id="contributing">🔧 Contributing</h2>
+<p>TODO: Please read <a href="xxx">CONTRIBUTING.md</a> for details on our code of conduct, and the process for submitting pull requests to us.</p>
+</section>
+<section id="versioning" class="level2">
+<h2 class="anchored" data-anchor-id="versioning">🔩 Versioning</h2>
+<p>TODO: We use <a href="http://semver.org/">SemVer</a> for versioning. For the versions available, see the <a href="https://github.com/your/project/tags">tags on this repository</a>.</p>
+</section>
+<section id="authors" class="level2">
+<h2 class="anchored" data-anchor-id="authors">✒️ Authors</h2>
+<ul>
+<li><strong>Theo Bakker</strong>, Professor of Learning Technology &amp; Analytics of The Hague University of Applied Sciences (THUAS), t.c.bakker@hhs.nl - <em>Initial work</em> - <a href="https://github.com/tcbakker">Theo Bakker</a> and <a href="https://github.com/LTA-HHs">LTA-HHs</a></li>
+</ul>
+</section>
+<section id="license" class="level2">
+<h2 class="anchored" data-anchor-id="license">🚦 License</h2>
+<p>This project is licensed under the Creative Comms Attribution Share Alike 4.0 International - see the <a href="LICENSE.md">LICENSE.md</a> file for details</p>
+</section>
+<section id="acknowledgments" class="level2">
+<h2 class="anchored" data-anchor-id="acknowledgments">🔆 Acknowledgments</h2>
+<ul>
+<li>We want to thank the developers of Quarto, Tidyverse, Tidymodels and Dalex for their great work and support.</li>
+<li>We want to thank Npuls and CEDA for their support in the development of this template.</li>
+</ul>
+</section>
+<section id="contact" class="level2">
+<h2 class="anchored" data-anchor-id="contact">📫 Contact</h2>
+<p>If you have any questions or suggestions, please contact the author of this template: <a href="mailto:t.c.bakker@hhs.nl">Theo Bakker</a></p>
+<p><em>To the <a href="NEWS.md">versionhistory of the template</a>.</em></p>
+<p><a href="#top">Back to top</a></p>
 </section>
 </section>
 
