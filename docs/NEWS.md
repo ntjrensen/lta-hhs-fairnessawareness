@@ -1,9 +1,18 @@
-# Fairness Forecast Model Template Learning Technology & Analytics (LTA)
+# No Fairness Without Awareness: News
+Theo Bakker, The Hague University of Applied Sciences
+2025-02-11
 
-*To the [explanation of the template](README.md).*
+<a name="top"></a>
 
-# *News*
+# Read more
 
-# Instroomrapport 0.9.1.9000 *(2024-05-04)*
+To the [explanation of the template](README.md). To the
+[tutorial](TUTORIAL.md).
 
--   Provided the template with an initial README and NEWS file.
+# News
+
+## Instroomrapport 0.9.1.9000 *(2025-02-11)*
+
+- Provided the template with an initial README and NEWS file.
+
+[Back to top](#top)
