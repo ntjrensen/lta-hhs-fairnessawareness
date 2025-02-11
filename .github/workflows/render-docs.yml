@@ -1,0 +1,33 @@
+name: Render Quarto Documents in docs/
+
+on:
+  push:
+    paths:
+      - "docs/*.qmd"  # Start alleen als een .qmd-bestand in de docs/ folder verandert
+  workflow_dispatch:  # Handmatige uitvoering mogelijk
+
+jobs:
+  render-quarto:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 🛠️ Installeer Quarto
+        uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: "1.3.450"  # Of de nieuwste stabiele versie
+
+      - name: 📝 Render alle .qmd-bestanden in docs/ naar .md
+        run: |
+          for file in docs/*.qmd; do
+            quarto render "$file" --to gfm
+          done
+
+      - name: 🔄 Commit en push als er wijzigingen zijn
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/*.md
+          git diff --cached --quiet || (git commit -m "Automatisch gerenderde Quarto documenten in docs/" && git push)
