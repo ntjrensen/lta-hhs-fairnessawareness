@@ -15,7 +15,7 @@ order: 1
 #| echo: false
 #| include: false
 
-# Include the _Setup.R file
+# Include the badger library
 library(badger)
 
 ```
@@ -29,7 +29,7 @@ library(badger)
 
 <img src="figures/fairness-awareness-hex.png" align="right" height="160" alt="" /> 
 
-Test 250. This [Npuls CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda) project makes it possible to create a fairness analysis to study equity (_kansengelijkheid_) within progression of students in educational institutions in The Netherlands (mbo, hbo, and wo). 
+This [Npuls CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda) project makes it possible to create a fairness analysis to study equity (_kansengelijkheid_) within progression of students in educational institutions in The Netherlands (mbo, hbo, and wo). 
 
 ## Table of contents
 
