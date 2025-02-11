@@ -46,8 +46,6 @@ institutions in The Netherlands (mbo, hbo, and wo).
 
 ## 🎓 About
 
-{{< fa brands thumbs-up >}}
-
 This project is a template for creating a **fairness analysis of
 students’ progression in educational institutions in The Netherlands**.
 The template is based on the
