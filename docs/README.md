@@ -173,7 +173,7 @@ settings in the `_quarto.yml` file.
   version, the success factors, the model, the use of synthetic data,
   the recreation of plots, the enrollment selection and the includes.
 - Start small and work your way up to more complex settings.
-- Follow the [Tutorial](TUTORIAL.html) to learn how to create and render
+- Follow the [Tutorial](TUTORIAL.md) to learn how to create and render
   your institutional reports.
 
 ## 🏁 Deployment

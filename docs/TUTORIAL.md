@@ -1,5 +1,6 @@
 # No Fairness Without Awareness: Tutorial
-
+Theo Bakker, The Hague University of Applied Sciences
+2025-02-11
 
 <a name="top"></a>
 

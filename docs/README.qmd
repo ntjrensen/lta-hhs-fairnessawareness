@@ -133,7 +133,7 @@ Finally, you can create your institutional report by changing the settings in th
 
 - You can change the settings for the layout, the educational institution, faculty or academy, the study program, the report's version, the success factors, the model, the use of synthetic data, the recreation of plots, the enrollment selection and the includes. 
 - Start small and work your way up to more complex settings. 
-- Follow the [Tutorial](TUTORIAL.html) to learn how to create and render your institutional reports.
+- Follow the [Tutorial](TUTORIAL.md) to learn how to create and render your institutional reports.
 
 ## 🏁 Deployment
 
