@@ -23,7 +23,7 @@ jobs:
 
       - name: 📦 Install R packages
         run: |
-          R -e "install.packages(c('badger'))" # Vervang met de namen van je packages
+          R -e "install.packages(c('badger','rmarkdown','knitr'))"
 
       - name: 📝 Render all .qmd files in docs/ to .md
         run: |
