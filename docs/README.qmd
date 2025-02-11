@@ -73,6 +73,10 @@ To start working with this project, make sure you have the following software in
 
 - A Github account and (optionally) GitHub Desktop version 3.4.16 - [Github](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
 
+**GFortran**
+
+- GFortran - [Fortran](https://fortran-lang.org/en/learn/os_setup/install_gfortran/). Installation will take several minutes. 
+
 **R packages, fonts**
 
 - All other packages and fonts are installed automatically by running the project `_Setup.R` file on your local machine. Instructions are below.
@@ -102,7 +106,7 @@ Since the template has several dependencies, you must render the pages using the
 2. Run the following command for the _basic_ report:
 
 ``` r
-quarto render --profile basic to render the basic report.
+quarto render --profile basic
 ```
 
 ### Render the `_advanced` project using the default settings
@@ -124,7 +128,7 @@ Since the template has several dependencies, you must render the pages using the
 2. Run the following command for the _advanced_ report:
 
 ``` r
-quarto render --profile advanced to render the advanced report.
+quarto render --profile advanced
 ```
 
 ### Create and render your institutional reports

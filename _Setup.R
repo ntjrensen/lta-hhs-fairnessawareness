@@ -86,7 +86,20 @@ if(bSetup_executed == F) {
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.4 Load additional libraries ####
   
-  # Laad extra bibliotheken
+  # Install devtools to install bbplot
+  if(!requireNamespace("devtools", quietly = TRUE)) {
+    install.packages("devtools")
+  }
+  library(devtools)
+  if(!requireNamespace("bbplot", quietly = TRUE)) {
+    devtools::install_github('bbc/bbplot')
+  }
+  if(!requireNamespace("quartostamp", quietly = TRUE)) {
+    devtools::install_github("matt-dray/quartostamp")
+  }
+
+  
+  # Load aditional bibliotheken
   library(conflicted)   # to solve conflicts
   library(rio)          # for reading files
   library(doParallel)   # for parallel processing
@@ -122,19 +135,21 @@ if(bSetup_executed == F) {
   library(showtext)     # for setting fonts
   library(ggplot2)      # for creating plots
   library(ggpubr)       # for saving plots
-  library(bbplot)       # for saving plots
+  library(bbplot)       # for saving plots > TODO: uitfaseren
   library(grid)         # for saving plots
   library(gridGraphics) # for saving plots
   library(extrafont)    # for saving plots
   library(sysfonts)     # for fonts
   library(systemfonts)  # for fonts
+  library(janitor)      # for cleaning names
+  library(pins)         # for data sharing
   
   library(cvms)         # for confusion matrices
   library(ggimage)      # for confusion matrices
   library(rsvg)         # for confusion matrices
   library(ggnewscale)   # for confusion matrices
   
-  library(quartostamp)  # for additional quarto add-in functionality
+  #library(quartostamp)  # for additional quarto add-in functionality
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.5 Brand #### 

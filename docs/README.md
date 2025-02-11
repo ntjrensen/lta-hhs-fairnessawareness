@@ -128,7 +128,7 @@ using the terminal.
 2.  Run the following command for the *basic* report:
 
 ``` r
-quarto render --profile basic to render the basic report.
+quarto render --profile basic
 ```
 
 ### Render the `_advanced` project using the default settings
@@ -160,7 +160,7 @@ using the terminal.
 2.  Run the following command for the *advanced* report:
 
 ``` r
-quarto render --profile advanced to render the advanced report.
+quarto render --profile advanced
 ```
 
 ### Create and render your institutional reports
