@@ -82,4 +82,4 @@ format:
         
 # Other settings
 config:
-  environment: "development" # options: development, production
+  environment: "ceda" # options: ceda, hhs

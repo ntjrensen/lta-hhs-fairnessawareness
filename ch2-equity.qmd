@@ -107,7 +107,7 @@ DALEX is onder andere ontwikkeld om uit te kunnen leggen welke verklarende varia
 We onderzoeken kansengelijkheid door bias in de data te onderzoeken. Dit wordt ook wel een *fairness analyse* genoemd. Bias voor verschillende groepen studenten kan een teken zijn van kansenongelijkheid. 
 
 ::: {.content-visible when-profile="advanced"}
-Het leidende werk voor fairness analyses is [*Fairness and Machine Learning: Limitations and Opportunities*](https://fairmlbook.org/pdf/fairmlbook.pdf) [@Barocas.2023]. De methode die we in deze analyse hanteren hierop gebaseerd. We maken gebruik van de `DALEX` explainer en onderzoeken de invloed van de variabelen op de `r tolower(sSucces_label)` voor verschillende groepen studenten naar `r Concatenate_List(lSentitive_variables, tolower = TRUE)`.
+Het leidende werk voor fairness analyses is [*Fairness and Machine Learning: Limitations and Opportunities*](https://fairmlbook.org/pdf/fairmlbook.pdf) [@Barocas.2023]. De methode die we in deze analyse hanteren hierop gebaseerd. We maken gebruik van de `DALEX` explainer en onderzoeken de invloed van de variabelen op de `r tolower(lResearch_settings[['sSucces_label']])` voor verschillende groepen studenten naar `r Concatenate_List(lSentitive_variables, tolower = TRUE)`.
 :::
 
 De volgende **definities** zijn van belang:
@@ -212,7 +212,7 @@ for(group in c(lSensitive_labels)) {
         ))
 
   # Show the existing plot
-  sPlot <- glue("![Verdeling en dichtheid van {tolower(sSucces_label)} naar  {tolower(group)}]({sPlotPath}){{#fig-fairness-check-{tolower(group)}}}")
+  sPlot <- glue("![Verdeling en dichtheid van {tolower(lResearch_settings[['sSucces_label']])} naar  {tolower(group)}]({sPlotPath}){{#fig-fairness-check-{tolower(group)}}}")
   Knit_Print_Rule(sPlot)
 
 }

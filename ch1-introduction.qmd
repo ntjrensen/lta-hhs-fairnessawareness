@@ -27,7 +27,6 @@ params:
 # Content
 includes:
   inleiding:      true
-  data:           true
   model_lr:       true
   model_rf:       true
   model_svm:      false

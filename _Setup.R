@@ -16,10 +16,6 @@
 # Remarks:
 # 1) None.
 # 2) ___
-#
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Version history:
-# 01-05-2024: TB: File creation
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # . ####
@@ -28,16 +24,21 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 0.1 Set environment profile #### 
+# 0.1 Load Setup config #### 
+
+source("_Setup_config.R")
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 0.2 Set environment profile #### 
 
 if(!is.null(rmarkdown::metadata$config$environment)) {
   sEnvironment <- rmarkdown::metadata$config$environment
 } else {
-  sEnvironment <- "development"
+  sEnvironment <- "ceda"
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 0.2 Reset Setup ####
+# 0.3 Reset Setup ####
 
 # Set this variable to T to reset this page or restart the session
 bReset_Setup <- F
@@ -66,21 +67,25 @@ if(bSetup_executed == F) {
   }
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1.2 ltabase package (install if necessary) ####
+  # 1.2 Base and fairness functions ####
   
-  if(sEnvironment == "production") {
-    source("R/functions/ltabase.helpers.R")
+  source("R/functions/base.helpers.R")
+  
+  if(sEnvironment == "ceda") {
+    source("R/functions/base.helpers.R")
   } else {
     source("R/functions/load.ltabase.R")
   }
   source("R/functions/fairness.helpers.R")
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
+  # 1.3 Default datasets ####
   
   # Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
-  if(sEnvironment == "development") {
-    ltabase::load_lta_datasets(message = TRUE)
+  if(sEnvironment == "ceda") {
+    Load_Datasets(message = TRUE)
+  } else {
+    ltabase::load_ltabase_datasets(message = TRUE)
   }
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -94,10 +99,6 @@ if(bSetup_executed == F) {
   if(!requireNamespace("bbplot", quietly = TRUE)) {
     devtools::install_github('bbc/bbplot')
   }
-  if(!requireNamespace("quartostamp", quietly = TRUE)) {
-    devtools::install_github("matt-dray/quartostamp")
-  }
-
   
   # Load aditional bibliotheken
   library(conflicted)   # to solve conflicts
@@ -105,7 +106,6 @@ if(bSetup_executed == F) {
   library(doParallel)   # for parallel processing
   library(fs)           # for file system functions
   
-  #library(dlookr)      # to inspect data > causes conflicts because of showtext_auto()
   library(gtsummary)    # for descriptive summary tables
   library(flextable)    # for flextables
   library(officer)      # for formatting in tables
@@ -130,12 +130,13 @@ if(bSetup_executed == F) {
   library(iBreakDown)   # for explaining models
   library(ingredients)  # for feature importance
   library(fairmodels)   # for fairness in models
+  library(ranger)       # for random forest
   
   library(ggtext)       # for creating formatting in titles
   library(showtext)     # for setting fonts
   library(ggplot2)      # for creating plots
   library(ggpubr)       # for saving plots
-  library(bbplot)       # for saving plots > TODO: uitfaseren
+  library(bbplot)       # for saving plots > TODO: phase out [?]
   library(grid)         # for saving plots
   library(gridGraphics) # for saving plots
   library(extrafont)    # for saving plots
@@ -149,7 +150,7 @@ if(bSetup_executed == F) {
   library(rsvg)         # for confusion matrices
   library(ggnewscale)   # for confusion matrices
   
-  #library(quartostamp)  # for additional quarto add-in functionality
+  library(cardx)        # for extra analysis results data utilities
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.5 Brand #### 
@@ -160,9 +161,9 @@ if(bSetup_executed == F) {
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.6 Fonts ####
   
+  # Load fonts
   extrafont::loadfonts(quiet = TRUE)
-  systemfonts::get_from_google_fonts("Liter")
-
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.7 Load additional features ####
 
@@ -186,14 +187,14 @@ if(bSetup_executed == F) {
 
   # . ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2. CONFIG ####
+  # 2. GENERAL CONFIG ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.1 Network paths ####
-
+  
   # Define the network directory
-  if(sEnvironment == "production") {
+  if(sEnvironment == "ceda") {
     Network_directory <- "R/data"
   } else {
     ltabase::set_lta_sys_env()
@@ -202,75 +203,48 @@ if(bSetup_executed == F) {
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.2 Debug ####
-
+  
   # Set debug options: icecream package settings
-  if(sEnvironment == "production") {
-    Set_Icecream_Options()
-  } else {
-    ltabase::set_icecream_options()
-  }
+  Set_Icecream_Options()
   icecream::ic_disable()
-
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.3 Gtsummary ####
-
+  
   # Define the default settings of gtsummary
   list("style_number-arg:big.mark" = ".",
        "style_number-arg:decimal.mark" = ",") |>
     set_gtsummary_theme()
   invisible(theme_gtsummary_compact())
-
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.4  Parameters ####
-
-  if(!exists("params")) {
-    params <- list()
-    params$succes                   <- "Retentie na 1 jaar"
-    params$model                    <- "Retentie na 1 jaar"
-    params$propedeusediploma        <- "Nvt"
-    params$use_synthetic_data       <- TRUE
-    params$recreateplots            <- FALSE
-    params$faculteit                <- "ITD"
-    params$opleidingsnaam           <- "B Communication and Multimedia Design"
-    params$opleiding                <- "CMD"
-    params$opleidingsvorm           <- "voltijd"
-    params$opleidingsvorm_afkorting <- "VT"
-    params$instroomselectie         <- FALSE
-  }
+  # 2.4 Succes model ####
   
   sSucces_model                     <- params$succes
   sPropedeusediploma                <- params$propedeusediploma
-  sSucces_label                     <- "Kans op retentie"
-  
   sSucces_model_text                <- Get_Succes_Model_Text(sPropedeusediploma, 
                                                              sSucces_model)
-
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.5  Opleidingsinformatie ####
+  # 2.5  Educational programme information ####
   
   # Create the variables for the current study programme based on the programme name and type of education
   current_opleiding <- Get_Current_Opleiding(
     opleiding = params$opleiding,
     opleidingsvorm = params$opleidingsvorm_afkorting
   )
-
+  
   # Based on this, determine derived variables
   Set_Current_Opleiding_Vars(current_opleiding, debug = T)
-
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.6 Enrollments  ####
-
-  if(sEnvironment == "production") {
-    dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
-      board = "HHs/Inschrijvingen",
-      faculty = params$faculteit,
-      studyprogram = current_opleiding$INS_Opleidingsnaam_huidig,
-      studytrack = current_opleiding$INS_Opleiding,
-      studyform = toupper(current_opleiding$INS_Opleidingsvorm),
-      range = "eerstejaars")
+  # 2.6 Enrollment data  ####
+  
+  if(sEnvironment == "ceda") {
+    dfOpleiding_inschrijvingen_base <- Get_dfOpleiding_inschrijvingen_base_syn()
   } else {
-    dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
-      board = "HHs/Inschrijvingen",
+    dfOpleiding_inschrijvingen_base <- ltabase::get_lta_studyprogram_enrollments_pin(
+      board = sPinBoard,
       faculty = params$faculteit,
       studyprogram = current_opleiding$INS_Opleidingsnaam_huidig,
       studytrack = current_opleiding$INS_Opleiding,
@@ -279,29 +253,28 @@ if(bSetup_executed == F) {
   }
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.7 Other settings ####
+  # 2.7 Metadata & research settings ####
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.7.1 Metadata ####
-
-  lResearch_settings <- list()
-  lResearch_settings[["sResearch_path"]] <- "Kansengelijkheid"
+  lMetadata <- Get_Metadata()
+  
+  if(is.null(lResearch_settings)) {
+    cli_alert_warning("lResearch_settings is not defined. Please define it in the _Setup_config.R file.")
+  }
+  
   lResearch_settings[["sDataset"]]       <- Get_sDataset(dfOpleiding_inschrijvingen_base)
   lResearch_settings[["sOpleiding"]]     <- Get_sOpleiding()
-  lResearch_settings[["sInstelling"]]    <- "HHs"
-  lResearch_settings[["sBron"]]          <- "De HHs, IR & Analytics"
-  lResearch_settings[["sAnalyse"]]       <- "De HHs, Lectoraat Learning Technology & Analytics"
-
-  lMetadata <- Get_Metadata()
-
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.6.2 Caption ####
-
+  # 2.8 Plot information ####
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.8.1 Caption
+  
   sCaption <- Get_sCaption()
-
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 2.6.3 Plot height and width ####
-
+  # 2.8.2 Plot height and width ####
+  
   # Determine the height and width of images
   nPlotWidth  <- 640
   nPlotHeight <- 550
@@ -352,6 +325,7 @@ if(bSetup_executed == F) {
                                                    levels = lLevels[[cur_column()]]))) |> 
     mutate(Retentie = as.numeric(Retentie) - 1)
   
+  ## TODO: if these paths and objects don't exist
   lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
   dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
   

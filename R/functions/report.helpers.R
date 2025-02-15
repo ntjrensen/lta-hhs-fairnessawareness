@@ -16,14 +16,6 @@
 # Remarks:
 # 1) None.
 # 2) ___
-#
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# TODO:
-# 1) ___.
-#
-# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# Version history:
-# 30-04-2024: TB: File creation
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # . ####
@@ -359,7 +351,7 @@ Get_tblData_Dictionary <- function(df) {
 Get_Studyprogram_Enrollments_Synthetic <- function(studytrack,
                                                        studyform) {
   
-  sInput_path <- file.path(Network_directory, "LTA/Simulatiedataset")
+  sInput_path <- "R/data/syn"
   
   df <- readRDS(file.path(sInput_path, "dfOpleiding_inschrijvingen_syn.rds")) |> 
     filter(INS_Opleiding == studytrack,
@@ -1443,13 +1435,16 @@ Get_dfShapley <- function(shapley_object) {
 }
 
 # Function to create a fairness object
-Get_objFairness <- function(explainer, protected_var, privileged, verbose = FALSE) {
+Get_objFairness <- function(explainer,
+                            protected_var, 
+                            privileged, 
+                            verbose = FALSE) {
   
   # Define the protected variable
   .protected <- dfOpleiding_inschrijvingen |> 
     select(-Retentie) |>
     select(all_of({{protected_var}})) |>
-    pull()
+    pull() 
   
   # Create a fairness object
   fobject <- fairness_check(explainer,
@@ -2092,11 +2087,11 @@ Get_Breakdown_Titles <- function(bd, df, j,
   # Build the title
   if(mode == "all") {
     student_current_title <- glue(
-      "Opbouw van de {tolower(sSucces_label)} ({tolower(student_groep)})"
+      "Opbouw van de {tolower(lResearch_settings[['sSucces_label']])} ({tolower(student_groep)})"
     )
   } else if(mode == "group") {
     student_current_title <- glue(
-      "Opbouw van de {tolower(sSucces_label)} naar {tolower(student_groep)}"
+      "Opbouw van de {tolower(lResearch_settings[['sSucces_label']])} naar {tolower(student_groep)}"
     )
   }  
   
@@ -2106,7 +2101,7 @@ Get_Breakdown_Titles <- function(bd, df, j,
   
   # Define the subtitle
   student_current_subtitle <- glue(
-    " | {tolower(sSucces_label)}: {nRetentie}%"
+    " | {tolower(lResearch_settings[['sSucces_label']])}: {nRetentie}%"
   )
   
   if(mode == "all") {
@@ -2362,7 +2357,7 @@ Get_Ceteris_Paribus_Plot <- function(cp_lf_all, group) {
 
     # Customize the labels
     labs(title = "Ceteris-paribus profiel",
-         subtitle = glue("{sSucces_label} voor de meest voorkomende studenten naar **{tolower(group)}**"),
+         subtitle = glue("{lResearch_settings[['sSucces_label']]} voor de meest voorkomende studenten naar **{tolower(group)}**"),
          y = NULL,
          caption = sCaption) +
 
@@ -2399,9 +2394,9 @@ Get_Partial_Dependence_Plot <- function(pdp_lf,
   
   # Build the subtitle
   if(group == "all") {
-    .subtitle <- glue("{sSucces_label}")
+    .subtitle <- glue("{lResearch_settings[['sSucces_label']]}")
   } else {
-    .subtitle <- glue("{sSucces_label} naar **{tolower(group)}**")
+    .subtitle <- glue("{lResearch_settings[['sSucces_label']]} naar **{tolower(group)}**")
   }
   
   # Remove from pdp_lf[[“agr_profiles”]][[“_label_”]] the name of the model
@@ -2478,7 +2473,7 @@ Get_Density_Plot <- function(fairness_object, group) {
     
     # Add title and subtitle
     labs(
-      title = glue("Verdeling en dichtheid van {tolower(sSucces_label)}"),
+      title = glue("Verdeling en dichtheid van {tolower(lResearch_settings[['sSucces_label']])}"),
       subtitle = glue("Naar **{group}**"),
       caption = sCaption,
       x = NULL,

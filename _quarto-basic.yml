@@ -27,5 +27,5 @@ book:
         - ch3-factors.qmd
         - ch5-references.qmd
   appendices:
-    - x-a-appendix-packages.qmd
+    - x-a-appendix-abbreviations.qmd
 

@@ -3,6 +3,9 @@
 
 output-file: "ch5-references.html"
 
+# Parameters
+params:
+  model: "Retentie na 1 jaar"
 ---
 
 # Referenties {.unnumbered}

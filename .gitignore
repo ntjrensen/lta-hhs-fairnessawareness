@@ -44,6 +44,7 @@ _freeze
 _test
 _graveyard
 _log
+_tmpthuas
 
 # Hidden quarto folder
 /.quarto/

@@ -210,7 +210,7 @@ dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen_base |>
   arrange(Collegejaar, ID)
 
 dfOpleiding_inschrijvingen <- dfOpleiding_inschrijvingen |> 
- ltabase::sort_distinct()
+ Sort_Distinct()
 
 ## Remove the base dataset
 #rm(dfOpleiding_inschrijvingen_base)

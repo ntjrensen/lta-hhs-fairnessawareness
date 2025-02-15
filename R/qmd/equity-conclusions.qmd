@@ -3,11 +3,8 @@
 
 ---
 
-De uitkomsten van de fairness analyses zijn:
-
 ```{r}
-#| label: tbl-fairness-conclusions
-#| tbl-cap: "Fairness conclusies per groep"
+#| label: df-txt-fairness-conclusions
 #| results: asis
 
 lDfFairness <- list()
@@ -24,23 +21,11 @@ for(i in c(lSensitive_labels)) {
 # Create a table from the fairness analysis
 dfFairness_wide  <- Get_dfFairness_Wide(lDfFairness)
 
-# Create a flextable
-ftFairness_table <- Get_ftFairness(flextable(dfFairness_wide))
-
-# Print the flextable
-ftFairness_table
 ```
 
-**Toelichting:**
+De uitkomsten van de kansengelijkheidsanalyse is:
 
--   Bij rood is er sprake van een negatieve bias.
--   Bij groen is er sprake van een positieve bias.
--   Bij oranje is er sprake van een bias, maar zijn de aantallen studenten te laag om conclusies over een negatieve of positieve bias aan te verbinden. 
--   Er zijn vijf aspecten op basis waarvan de mate van bias gescoord wordt; het aantal in de kolommen geeft aan op hoeveel aspecten het oordeel over bias is gebaseerd. Voor een oordeel moet er minimaal op twee aspecten sprake zijn van bias.
--   We hanteren een minimum van 15 studenten per categorie binnen een variabele.
--   De bevoorrechte groep is grijs. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
-
-**Tekstuele samenvatting:**
+<!-- Tekstuele samenvatting -->
 
 ```{r}
 #| label: txt-fairness-conclusions
@@ -61,3 +46,27 @@ for (i in lSensitive_labels) {
 }
 
 ```
+
+<!-- Tabel samenvatting -->
+
+```{r}
+#| label: tbl-fairness-conclusions
+#| tbl-cap: "Fairness conclusies per groep"
+#| results: asis
+#| 
+#| # Create a flextable
+ftFairness_table <- Get_ftFairness(flextable(dfFairness_wide))
+
+# Print the flextable
+ftFairness_table
+```
+
+**Toelichting:**
+
+-   Bij rood is er sprake van een negatieve bias.
+-   Bij groen is er sprake van een positieve bias.
+-   Bij oranje is er sprake van een bias, maar zijn de aantallen studenten te laag om conclusies over een negatieve of positieve bias aan te verbinden. 
+-   Er zijn vijf aspecten op basis waarvan de mate van bias gescoord wordt; het aantal in de kolommen geeft aan op hoeveel aspecten het oordeel over bias is gebaseerd. Voor een oordeel moet er minimaal op twee aspecten sprake zijn van bias.
+-   We hanteren een minimum van 15 studenten per categorie binnen een variabele.
+-   De bevoorrechte groep is grijs. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
+

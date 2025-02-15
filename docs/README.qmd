@@ -53,11 +53,11 @@ This [Npuls CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-4
 ## 🎓 About
 
 This project is a template for creating a **fairness analysis of students' progression in educational institutions in The Netherlands**. The template is based on the [Quarto](https://quarto.org/docs/get-started/) framework and uses the [Tidyverse](https://www.tidyverse.org/) coding standard. The template is developed by the [Learning Technology & Analytics (LTA)](https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics)
-research group of The Hague University of Applied Sciences for the Npuls CEDA programma.
+research group of The Hague University of Applied Sciences for the [Npuls CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda) project project.
 
 ## 🚀 Getting started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing. See the deployment for notes on deploying the project on a live system.
+These instructions will get you a copy of the project up and running on your local machine for development and testing. See the [deployment](#deployment) for notes on deploying the project on a live system.
 
 ### Prerequisites
 
@@ -79,12 +79,13 @@ To start working with this project, make sure you have the following software in
 
 **R packages, fonts**
 
-- All other packages and fonts are installed automatically by running the project `_Setup.R` file on your local machine. Instructions are below.
+- All other packages are installed automatically by running the project `_Setup.R` file on your local machine. Instructions are below.
+- The installation of the Liter font is optional - [Google](https://fonts.google.com/specimen/Liter). Follow the instructions from Google to install this font. 
 
 ### Installing
 
 1. First, make a fork of the repository to your own Github account. Then clone the repository to your local machine using the following commands or GitHub Desktop. See [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) for an explanation.
-2. Once you have cloned the repository, open the project in RStudio and run the `_Setup.R` file by clicking on 'Source'. This action will install all the necessary packages and fonts.
+2. Once you have cloned the repository, open the project in RStudio and run the `_Setup.R` file by clicking on 'Source'. Don't change any settings yet. This action will install all the necessary packages and fonts.
 
 ## 📚 Rendering your first fairness reports
 
@@ -92,13 +93,13 @@ To start working with this project, make sure you have the following software in
 
 Run the `_basic` project using the default settings. 
 
-- You will create a report for the The Hague University of Applied Sciences (THUAS) with the default settings. The report is based on synthesized data from the bachelor's Communication & Multimedia Design (CMD), and will be created in the `_basic` folder. 
+- You will create a report for The Hague University of Applied Sciences (THUAS) with the default settings. The report is based on synthesized data from the bachelor's Communication & Multimedia Design (CMD), and will be created in the `_basic` folder of your project. 
 - The first time you create this report, it will take several minutes. 
 - Once the rendering has finished, click on _basic/index.html and choose `View in Web Browser`. The report will open in your default browser. 
-- If you don't see this file, click the refresh icon at the top right. If you still don't see the report, check the console for any errors. 
-- When you rerun the report, the output will be removed and a new report will be created. If you want to keep the output, copy the folder to a location outside of your project.
+- If you don't see this file, click the refresh icon at the top right of the folder. If you still don't see the report, check the console for any errors. 
+- When you rerun the report, the output will be removed and a new report will be created. If you want to keep the previously rendered output, copy the entire folder to a location outside of your project.
 
-**Follow these steps:**
+**To render the project, follow these steps:**
 
 Since the template has several dependencies, you must render the pages using the terminal.
 
@@ -114,13 +115,13 @@ quarto render --profile basic
 Next, run the `_advanced` project using the default settings. 
 
 - This time, you will create an extended report. It contains more detailed information about the fairness analysis: prediction models, R-code and an explanation of each step with references. 
-- You will create the report on synthesized data from the bachelor's Communication & Multimedia Design (CMD) in the `_advanced` folder.
+- You will create the report on the same synthesized data from the bachelor's Communication & Multimedia Design (CMD), but this time in the `_advanced` folder.
 - Once finished, click on _advanced/index.html and choose `View in Web Browser`. 
 - The first time you create this report, it will take several minutes. The report will open in your default browser. 
-- If you don't see this file, click the refresh icon at the top right. If you still don't see the report, check the console for errors.
-- When you rerun the report, the output will be removed and a new report will be created. If you want to keep the output, copy the folder to a location outside of your project.
+- If you don't see this file, click the refresh icon at the top right of the folder. If you still don't see the report, check the console for errors.
+- When you rerun the report, the output will be removed and a new report will be created. If you want to keep the previously rendered output, copy the entire folder to a location outside of your project.
 
-**Follow these steps:**
+**To render the project, follow these steps:**
 
 Since the template has several dependencies, you must render the pages using the terminal.
 
@@ -158,11 +159,11 @@ The LTA-HHs team adjusted the Dalex implementation to improve usability and make
 
 ## 🔧 Contributing
 
-TODO: Please read [CONTRIBUTING.md](xxx) for details on our code of conduct and the process for submitting pull requests to us.
+In the next version of this template, we will explain how you can contribute to this project. Until then, please get in touch with Theo Bakker if you have any suggestions.
 
 ## 🔩 Versioning
 
-TODO: We use [SemVer](http://semver.org/) for versioning. See the [tags on this repository](https://github.com/your/project/tags) for the available versions. 
+We use [SemVer](http://semver.org/) for versioning. See the [tags on this repository](https://github.com/LTA-HHs/lta-hhs-fairnessawareness/tags) for the available versions. 
 
 ## ✒️ Authors
 
@@ -174,14 +175,23 @@ This project is licensed under the Creative Comms Attribution Share Alike 4.0 In
 
 ## 🔆 Acknowledgments
 
-* We want to thank the developers of Quarto, Tidyverse, Tidymodels and Dalex for their excellent work and support.
+* We want to thank the developers of Quarto, Tidyverse, Tidymodels and Dalex for their excellent work.
 * We want to thank Npuls and CEDA for their support in developing this template.
+
+## 📌 Known issues
+
+- None
+
+## 📎 Wishes
+
+- Be able to include logo in _brand.yml for subsequent use in basic.scss.
+- Remove Warnings while rendering .qmd files without parameters
 
 ## 📫 Contact
 
 If you have any questions or suggestions, please contact the author of this template: [Theo Bakker](mailto:t.c.bakker\@hhs.nl)
 
-*To the [versionhistory of the template](NEWS.md).*
+*To the [version history of the template](NEWS.md).*
 
 [Back to top](#top)
 

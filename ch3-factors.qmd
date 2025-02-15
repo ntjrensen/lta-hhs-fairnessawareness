@@ -214,32 +214,32 @@ sIntercept <- Change_Number_Marks(nIntercept, digits = 1)
 
 ```
 
-#### Toelichting op de opbouw van de `r tolower(sSucces_label)`
+#### Toelichting op de opbouw van de `r tolower(lResearch_settings$sSucces_label)`
 
-De opbouw van het model bestaat uit een *intercept*, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de **basis`r tolower(sSucces_label)`** voor alle studenten. Deze kans is voor de `r params$opleidingsnaam` (`r params$opleiding`) `r params$opleidingsvorm` **`r sIntercept`%**. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de `r tolower(sSucces_label)` verhoogt, een negatieve bijdrage betekent dat het de `r tolower(sSucces_label)` verlaagt.
+De opbouw van het model bestaat uit een *intercept*, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de **basis`r tolower(lResearch_settings$sSucces_label)`** voor alle studenten. Deze kans is voor de `r params$opleidingsnaam` (`r params$opleiding`) `r params$opleidingsvorm` **`r sIntercept`%**. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de `r tolower(lResearch_settings$sSucces_label)` verhoogt, een negatieve bijdrage betekent dat het de `r tolower(lResearch_settings$sSucces_label)` verlaagt.
 
 Het kan zijn dat nieuwe variabelen geen invloed meer hebben op de kans. Dit betekent niet per se dat ze niet belangrijk zijn. Het kan zijn dat de invloed die ze hebben op de kans al is 'afgevangen' door variabelen die eerder in het model zijn opgenomen.
 
 ::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
-De variabele `Cijfer_CE_VO_missing = Ja` betekent dat een student geen VO cijfers heeft voor het centraal schriftelijk examen. Dit geldt voor vrijwel alle MBO studenten. Doordat de variabele `Cijfer_CE_VO_missing` de `r tolower(sSucces_label)` net wat sterker beïnvloedt, komt `Vooropleiding = MBO` niet meer voor als invloedrijke variabele, maar is dit wel de achterliggende reden dat het cijfer ontbreekt.
+De variabele `Cijfer_CE_VO_missing = Ja` betekent dat een student geen VO cijfers heeft voor het centraal schriftelijk examen. Dit geldt voor vrijwel alle MBO studenten. Doordat de variabele `Cijfer_CE_VO_missing` de `r tolower(lResearch_settings$sSucces_label)` net wat sterker beïnvloedt, komt `Vooropleiding = MBO` niet meer voor als invloedrijke variabele, maar is dit wel de achterliggende reden dat het cijfer ontbreekt.
 :::
 
 Uiteindelijk tellen alle verklarende variabelen op tot een definitieve voorspelling die per persoon verschilt, afhankelijk van hun persoonlijke verschillen per variabele.
 
 #### De meest voorkomende student (totaal)
 
-We onderzoeken eerst de meest voorkomende student in de opleiding. We analyseren de `r tolower(sSucces_label)` voor deze *fictieve* student en de bijdrage van de variabelen aan die kans. Daarbij tonen we de verdeling van de voorspellingen voor deze student voor alle variabelen en per variabele. Dit laat zien welke variabelen belangrijk zijn, naar welke kant de verdeling neigt en welke spreiding de kansverdeling heeft.
+We onderzoeken eerst de meest voorkomende student in de opleiding. We analyseren de `r tolower(lResearch_settings$sSucces_label)` voor deze *fictieve* student en de bijdrage van de variabelen aan die kans. Daarbij tonen we de verdeling van de voorspellingen voor deze student voor alle variabelen en per variabele. Dit laat zien welke variabelen belangrijk zijn, naar welke kant de verdeling neigt en welke spreiding de kansverdeling heeft.
 
 **Toelichting**
 
--   **All data** - De eerste variabele `all data` is eigenlijk geen variabele, maar geeft aan wat alle data samen aan `r tolower(sSucces_label)` voorspellen. Variabelen die daarna bovenaan staan, wegen het zwaarst in de voorspelling van de kans.
--   **Richting** - Als de verdeling van de kansen naar de linkerkant van de x-as gaat, draagt deze variabele meer bij aan een toename op de `r tolower(sSucces_label)`; als deze naar de rechterkant beweegt, draagt deze variabele juist bij aan een afname op de `r tolower(sSucces_label)`
--   **Spreiding** - Als de spreiding breed is, geeft dit aan dat er binnen deze variabele veel variatie is in de `r tolower(sSucces_label)` en er voorzichtig mee omgegaan moet worden. Als de spreiding heel smal is, betekent dit dat de variabele weinig of geen invloed heeft op de `r tolower(sSucces_label)`. Deze variabelen bevinden zich op de intercept.
--   **Vorm** - De vorm achter de variabele (een viool) geeft de verdeling van de `r tolower(sSucces_label)` weer. Hoe breder de viool-vorm, hoe meer studenten op die locatie een `r tolower(sSucces_label)` hebben.
+-   **All data** - De eerste variabele `all data` is eigenlijk geen variabele, maar geeft aan wat alle data samen aan `r tolower(lResearch_settings$sSucces_label)` voorspellen. Variabelen die daarna bovenaan staan, wegen het zwaarst in de voorspelling van de kans.
+-   **Richting** - Als de verdeling van de kansen naar de linkerkant van de x-as gaat, draagt deze variabele meer bij aan een toename op de `r tolower(lResearch_settings$sSucces_label)`; als deze naar de rechterkant beweegt, draagt deze variabele juist bij aan een afname op de `r tolower(lResearch_settings$sSucces_label)`
+-   **Spreiding** - Als de spreiding breed is, geeft dit aan dat er binnen deze variabele veel variatie is in de `r tolower(lResearch_settings$sSucces_label)` en er voorzichtig mee omgegaan moet worden. Als de spreiding heel smal is, betekent dit dat de variabele weinig of geen invloed heeft op de `r tolower(lResearch_settings$sSucces_label)`. Deze variabelen bevinden zich op de intercept.
+-   **Vorm** - De vorm achter de variabele (een viool) geeft de verdeling van de `r tolower(lResearch_settings$sSucces_label)` weer. Hoe breder de viool-vorm, hoe meer studenten op die locatie een `r tolower(lResearch_settings$sSucces_label)` hebben.
 
 ```{r}
 #| label: fig-lf-break-down-distribution-all
-#| fig-cap: !expr 'glue("Opbouw van de {tolower(sSucces_label)}")'
+#| fig-cap: !expr 'glue("Opbouw van de {tolower(lResearch_settings$sSucces_label)}")'
 #| echo: false
 #| results: asis
 
@@ -292,7 +292,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 #### De meest voorkomende student (per groep)
 
-Nu de algemene opbouw van de `r tolower(sSucces_label)` bekend is voor de meest voorkomende student, gaan we verder met een analyse van de meest voorkomende studenten *per groep*.
+Nu de algemene opbouw van de `r tolower(lResearch_settings$sSucces_label)` bekend is voor de meest voorkomende student, gaan we verder met een analyse van de meest voorkomende studenten *per groep*.
 
 De volgorde van de variabelen is zo gesorteerd dat per groep de meest voorspellende variabelen bovenaan staat. De volgorde verschilt per groep en geeft inzicht in wat er per groep speelt. De variabelen zijn vaak proxies voor onderliggende verschillen.
 
@@ -476,7 +476,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 **Toelichting:**
 
--   De variabelen met blauwe balken *verhogen* de `r tolower(sSucces_label)`, de variabelen met rode balken *verlagen* de `r tolower(sSucces_label)`
+-   De variabelen met blauwe balken *verhogen* de `r tolower(lResearch_settings$sSucces_label)`, de variabelen met rode balken *verlagen* de `r tolower(lResearch_settings$sSucces_label)`
 -   De boxplot in iedere balk geeft de spreiding van de bijdrage van de variabelen aan de voorspelling weer. Hoe breder de boxplot, des te meer variatie in de bijdrage van de variabele aan de voorspelling.
 -   De positie van de variabele geeft het belang van de variabele aan in de voorspelling. Hoe hoger de variabele, des te belangrijker de variabele is in de voorspelling.
 
@@ -484,7 +484,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 ### What-if: een Ceteris Paribus analyse
 
-Vervolgens analyseren we een aantal scenario's (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de `r tolower(sSucces_label)` eruit zou zien als telkens een van de variabelen net wat anders was geweest.
+Vervolgens analyseren we een aantal scenario's (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de `r tolower(lResearch_settings$sSucces_label)` eruit zou zien als telkens een van de variabelen net wat anders was geweest.
 
 ::: {.callout-warning appearance="default" icon="true"}
 ### Let op!
@@ -492,10 +492,10 @@ Vervolgens analyseren we een aantal scenario's (wat als...). We nemen opnieuw de
 Dit is de invloed van de variabelen bij de unieke combinatie van deze meest voorkomende student per categorie. Zie voor de invloed van een variabelen ongeacht deze unieke combinatie de analyse van Partial Dependence Profielen in de volgende paragraaf.
 :::
 
-Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde `r tolower(sSucces_label)`. Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
+Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde `r tolower(lResearch_settings$sSucces_label)`. Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
 
 ::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
-Stel dat de student in dit model net een wat hoger eindexamencijfer zou hebben gehad op de middelbare school, wat zou dan de `r tolower(sSucces_label)` zijn geweest? Het is waarschijnlijk dat de `r tolower(sSucces_label)` dan hoger zou zijn geweest. Bij hbo-opleidingen die goed aansluiten hebben met een opleiding aan een universiteit, zou de `r tolower(sSucces_label)` juist lager zijn geweest omdat studenten dan na een hbo-diploma vaak doorstromen naar een universiteit.
+Stel dat de student in dit model net een wat hoger eindexamencijfer zou hebben gehad op de middelbare school, wat zou dan de `r tolower(lResearch_settings$sSucces_label)` zijn geweest? Het is waarschijnlijk dat de `r tolower(lResearch_settings$sSucces_label)` dan hoger zou zijn geweest. Bij hbo-opleidingen die goed aansluiten hebben met een opleiding aan een universiteit, zou de `r tolower(lResearch_settings$sSucces_label)` juist lager zijn geweest omdat studenten dan na een hbo-diploma vaak doorstromen naar een universiteit.
 :::
 
 Opnieuw kijken we naar `r Concatenate_List(lSensitive_labels, tolower = T)`. N.B. Het kan zijn dat een van de categorieën niet zichtbaar is, dit komt doordat deze dan over elkaar heen vallen.
@@ -587,14 +587,14 @@ for (group in lSensitive_labels) {
 
 ### Partial Dependence analyse
 
-Tot slot analyseren we *Partial Dependence*. Hierbij onderzoeken we de invloed van individuele variabelen op de `r tolower(sSucces_label)`, ongeacht de combinatie van de meest voorkomende studenten. Per (numerieke) variabele analyseren we de variantie binnen de kansen op retentie. We gebruiken hiervoor het gemiddelde van alle Ceteris Paribus profielen. Vandaar dat we ook wel spreken over Partial Dependence profielen (PDP's). 
+Tot slot analyseren we *Partial Dependence*. Hierbij onderzoeken we de invloed van individuele variabelen op de `r tolower(lResearch_settings$sSucces_label)`, ongeacht de combinatie van de meest voorkomende studenten. Per (numerieke) variabele analyseren we de variantie binnen de kansen op retentie. We gebruiken hiervoor het gemiddelde van alle Ceteris Paribus profielen. Vandaar dat we ook wel spreken over Partial Dependence profielen (PDP's). 
 
 We analyseren eerst de variabelen voor alle studenten. We tonen niet alleen de gemiddelde lijn, maar ook de lijnen van individuele CP-profielen. Vervolgens analyseren op dezelfde manier de variabelen per groep: `r Concatenate_List(lSensitive_labels, tolower = T)`.
 
 **Toelichting**
 
--   De *gemiddelde lijn* geeft de gemiddelde `r tolower(sSucces_label)` weer voor alle studenten in de dataset voor alle waarden per variabele.
--   De *individuele lijnen* geven de `r tolower(sSucces_label)` weer voor individuele studenten in de dataset voor alle waarden per variabele. De bandbreedte van de individuele lijnen geeft de spreiding van de `r tolower(sSucces_label)` weer binnen de variabele. Het toont dat de `r tolower(sSucces_label)` per student kan verschillen, zelfs als de variabele gelijk is; de richting van het verband is wel gelijk.
+-   De *gemiddelde lijn* geeft de gemiddelde `r tolower(lResearch_settings$sSucces_label)` weer voor alle studenten in de dataset voor alle waarden per variabele.
+-   De *individuele lijnen* geven de `r tolower(lResearch_settings$sSucces_label)` weer voor individuele studenten in de dataset voor alle waarden per variabele. De bandbreedte van de individuele lijnen geeft de spreiding van de `r tolower(lResearch_settings$sSucces_label)` weer binnen de variabele. Het toont dat de `r tolower(lResearch_settings$sSucces_label)` per student kan verschillen, zelfs als de variabele gelijk is; de richting van het verband is wel gelijk.
 -   Standaard worden 100 willekeurige profielen gekozen om deze afbeeldingen op te bouwen; door deze selectie kan het zijn dat sommige categorieën met weinig observaties in de populatie niet afgebeeld worden.
 -   Doordat lijnen kunnen overlappen kan het zijn dat sommige lijnen niet zichtbaar zijn. De legenda geeft aan welke mogelijke categorieën voorkomen in de analyse.
 

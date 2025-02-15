@@ -33,4 +33,4 @@ book:
         - ch4-models.qmd
         - ch5-references.qmd
   appendices:
-    - x-a-appendix-packages.qmd
+    - x-a-appendix-abbreviations.qmd
