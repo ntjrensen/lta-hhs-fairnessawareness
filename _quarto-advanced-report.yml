@@ -1,0 +1,36 @@
+## Quarto file for the advanced-report profile
+project:
+  title: "No Fairness without Awareness - Advanced"
+  output-dir: _advanced-report
+
+## Format settings
+format:
+  html:
+    code-fold: true
+    code-summary: "Toon code"
+    code-block-bg: true
+    code-block-border-left: "#31BAE9"
+    highlight-style: github
+     # Theme settings
+    theme: 
+    - "brand/scss/advanced-report.scss"
+    
+# Execute settings
+execute:
+  echo: true
+
+# Book settings
+book:
+  title: "No Fairness without Awareness - Advanced"
+  chapters:
+    - index.qmd
+    
+    - part: "Analyse"
+      chapters:
+        - ch1-introduction.qmd
+        - ch4-models.qmd
+        - ch3-factors.qmd
+        - ch2-equity.qmd
+        - ch5-references.qmd
+  appendices:
+    - x-a-appendix-abbreviations.qmd

@@ -4,6 +4,23 @@
 ---
  
 
-**Copyright**
+```{r}
+#| label: footer-copyright-license
+#| results: asis
+#| echo: false
 
-{{< meta book.author >}} © 2023-`r as.numeric(format(Sys.Date(), "%Y"))`. Alle rechten voorbehouden. 
+if (sEnvironment == "ceda") {
+  sCopyright_license_text <- "**Creative Commons Licentie**\n\nDe licentie voor dit template is de [Creative Commons Attribution Share Alike 4.0 Internationaal](https://creativecommons.org/licenses/by-sa/4.0/)."
+} else {
+  sCopyright_license_text <- paste0(
+    "**Creative Commons Licentie**\n\n© ",
+    lMetadata$sAnalyse,
+    ", ",
+    as.numeric(format(Sys.Date(), '%Y')),
+    ". Alle rechten voorbehouden."
+  )
+} 
+
+knitr::asis_output(sCopyright_license_text)
+
+```

@@ -1,0 +1,26 @@
+# Grote datasets uitsluiten
+R/data/*
+
+# Cachebestanden van R
+*.RData
+*.rds
+
+# Lokale projectinstellingen
+.Rproj.user/
+.DS_Store
+
+# Output-bestanden van analyses
+_advanced
+_basic
+_examples
+_output
+
+# Niet gebruikte folders
+_graveyard
+_log
+_test
+_tmpthuas
+
+# Specifieke pakketten uitsluiten van snapshot
+renv/library/
+renv/staging/

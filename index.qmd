@@ -37,6 +37,9 @@ includes:
 #| echo: false
 #| include: false
 
+# Current file
+sCurrent_file <- "index.qmd"
+
 # Include the _Setup.R file
 source("_Setup.R")
 
@@ -47,15 +50,24 @@ source("_Setup.R")
 <!-- HEADER -->
 
 <!-- Studyprogram -->
+::: {.content-visible unless-profile="advanced-report"}
 {{< include R/qmd/header-studyprogram.qmd >}}
+:::
 
 <!-- BODY -->
 
 <!-- Equity conclusions -->
+::: {.content-visible unless-profile="advanced-report"}
 ## Samenvatting analyse kansengelijkheid
 {{< include R/qmd/equity-conclusions.qmd >}}
 
 Zie voor een verdere onderbouwing van deze uitkomsten de volgende hoofdstukken in de analyse.
+:::
+
+::: {.content-visible when-profile="advanced-report"}
+## Base model is opgebouwd
+In dit profiel worden alle modellen ontwikkeld en afbeeldingen gebouwd.
+:::
 
 <!-- FOOTER -->
 

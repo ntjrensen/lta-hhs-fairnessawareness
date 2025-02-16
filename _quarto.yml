@@ -18,7 +18,7 @@ book:
 
 profile:
   group: 
-    - [basic, advanced]
+    - [basic-report, advanced-report]
 
 # Brand settings
 brand: brand/_brand.yml  

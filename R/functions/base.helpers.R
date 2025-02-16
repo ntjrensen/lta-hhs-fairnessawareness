@@ -132,144 +132,120 @@ Install_and_Load_Packages <- function (base = TRUE,
   conflicted::conflict_prefer("testthat", "matches", quiet = message)
 }
 
+
 # Function to get the packagelist
-Get_Packagelist <- function (mode = "base") {
+Get_Packagelist <- function (mode = "fairness") {
   stopifnot(mode %in% c(
-    "base",
-    "plots",
-    "reports",
-    "spatial",
-    "models",
-    "testpackage",
-    "git"
+    "fairness"
   ))
-  if (mode == "base") {
+  if (mode == "fairness") {
     packages <- c(
-      "conflicted",
-      "cli",
-      "digest",
-      "htmltools",
-      "devtools",
-      "httr",
-      "purrr",
-      "furrr",
-      "pins",
-      "rio",
-      "readr",
-      "vroom",
-      "readxl",
-      "xlsx",
-      "readtext",
-      "fst",
-      "haven",
-      "stringr",
-      "testthat",
-      "icecream",
-      "checkmate",
-      "utils",
-      "rvest",
-      "scales",
-      "ggplot2",
-      "magrittr",
-      "janitor",
-      "snakecase",
       "glue",
-      "janitor",
-      "textutils",
-      "lubridate",
-      "scriptName",
+      "abind",
+      "backports",
+      "bbplot",
+      "broom",
+      "car",
+      "carData",
+      "cli",
+      "colorspace",
+      "conflicted",
+      "corrplot",
+      "cowplot",
+      "cpp11",
+      "cvms",
+      "data.table",
+      "Deriv",
+      "doBy",
+      "doParallel",
+      "dplyr",
+      "fansi",
+      "farver",
+      "flextable",
+      "Formula",
+      "generics",
+      "ggplot2",
+      "ggpubr",
+      "ggrepel",
+      "ggsci",
+      "ggsignif",
+      "gridExtra",
+      "gtable",
+      "gtExtras",
+      "gtsummary",
+      "isoband",
+      "labeling",
+      "lifecycle",
+      "lme4",
+      "magrittr",
+      "MatrixModels",
+      "microbenchmark",
+      "minqa",
+      "modelr",
+      "munsell",
+      "nloptr",
+      "numDeriv",
+      "pbkrtest",
+      "performance",
+      "pillar",
+      "pkgconfig",
+      "png",
+      "polynom",
+      "purrr",
+      "quantreg",
+      "R6",
+      "rbibutils",
+      "RColorBrewer",
+      "Rcpp",
+      "RcppEigen",
+      "Rdpack",
+      "reformulas",
+      "rio",
+      "rlang",
+      "rstatix",
+      "scales",
+      "SparseM",
+      "stringi",
+      "stringr",
       "tibble",
       "tidyr",
-      "tidyverse",
-      "dplyr",
-      "stringi",
-      "cardx"
-    )
-  }
-  if (mode == "plots") {
-    packages <- c(
-      "ggthemes",
-      "ggtext",
-      "gghighlight",
-      "ggmosaic",
-      "extrafont",
-      "extrafontdb",
-      "showtext",
-      "ggrepel",
-      "ggbump",
-      "cowplot",
-      "geomtextpath",
-      "lemon",
-      "ggblanket",
-      "patchwork",
-      "ggpubr",
-      "gridExtra",
+      "tidyselect",
+      "tidymodels",
+      "utf8",
+      "vctrs",
+      "viridisLite",
+      "vip",
+      "withr",
+      "base",
+      "boot",
+      "class",
+      "cluster",
+      "codetools",
+      "compiler",
+      "datasets",
+      "foreign",
+      "graphics",
+      "grDevices",
       "grid",
-      "Cairo",
-      "ragg",
-      "daiR",
-      "ggpubr",
-      "hrbrthemes",
-      "viridis",
-      "paletteer",
-      "circlize",
-      "magick",
-      "shadowtext"
-    )
-  }
-  if (mode == "reports") {
-    packages <- c(
-      "yaml",
-      "knitr",
-      "kableExtra",
-      "simplermarkdown",
-      "gt",
-      "flextable",
-      "ftExtra",
-      "huxtable",
-      "xtable",
-      "gt",
-      "officer"
-    )
-  }
-  if (mode == "spatial") {
-    packages <- c(
-      "sp",
-      "tmap",
-      "sf",
-      "ggmap",
-      "mapproj",
-      "monochromeR",
-      "cbsodataR",
-      "ggspatial",
-      "gridExtra"
-    )
-  }
-  if (mode == "models") {
-    packages <- c(
-      "stats",
-      "BurStMisc",
-      "caret",
-      "rpart",
-      "randomForest",
-      "xgboost",
-      "glmnet",
+      "KernSmooth",
+      "lattice",
+      "MASS",
+      "Matrix",
+      "methods",
+      "mgcv",
+      "nlme",
       "nnet",
-      "ranger",
-      "caret",
-      "e1071",
-      "kernlab",
-      "xgboost",
-      "gbm",
-      "lightgbm",
-      "catboost"
+      "parallel",
+      "rpart",
+      "spatial",
+      "splines",
+      "stats",
+      "stats4",
+      "survival",
+      "tcltk",
+      "tools",
+      "utils",
     )
-  }
-  if (mode == "testpackage") {
-    packages <- c("datapasta", "intendo")
-  }
-  if (mode == "git") {
-    packages <- c("git2r")
   }
   return(packages)
 }
@@ -395,37 +371,37 @@ Get_dfDocumentatie <- function() {
 
 Get_dfOpleidingen <- function() {
   
-  df <- rio::import("R/data/dfOpleidingen.rda")
+  df <- rio::import("R/data/dfOpleidingen.rda", trust = TRUE)
   return(df)
 }
 
 Get_dfOnderwijsinstellingen <- function() {
   
-  df <- rio::import("R/data/dfOnderwijsinstellingen.rda")
+  df <- rio::import("R/data/dfOnderwijsinstellingen.rda", trust = TRUE)
   return(df)
 }
 
 Get_sectors <- function() {
   
-  df <- rio::import("R/data/sectors.rda")
+  df <- rio::import("R/data/sectors.rda", trust = TRUE)
   return(df)
 }
 
 Get_studyforms <- function() {
   
-  df <- rio::import("R/data/studyforms.rda")
+  df <- rio::import("R/data/studyforms.rda", trust = TRUE)
   return(df)
 }
 
 Get_studytypes <- function() {
   
-  df <- rio::import("R/data/studytypes.rda")
+  df <- rio::import("R/data/studytypes.rda", trust = TRUE)
   return(df)
 }
 
 Get_dfOpleiding_inschrijvingen_base_syn <- function() {
   
-  dfOpleiding_inschrijvingen_base <- rio::import("R/data/syn/dfOpleiding_inschrijvingen_syn.rds")
+  dfOpleiding_inschrijvingen_base <- rio::import("R/data/syn/dfOpleiding_inschrijvingen_syn.rds", trust = TRUE)
   dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>
     filter(INS_Faculteit == params$faculteit,
            INS_Opleidingsnaam_huidig == current_opleiding$INS_Opleidingsnaam_huidig,

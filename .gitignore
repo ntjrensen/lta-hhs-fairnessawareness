@@ -40,6 +40,9 @@ _freeze
 # R Environment Variables
 .Renviron
 
+# Renv
+/renv/library/
+
 # Temporary or private folders
 _test
 _graveyard

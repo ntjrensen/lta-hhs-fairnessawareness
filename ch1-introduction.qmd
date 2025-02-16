@@ -44,6 +44,9 @@ includes:
 #| echo: false
 #| include: false
 
+# Current file
+sCurrent_file <- "ch1-introduction.qmd"
+
 # Include the _Setup.R file
 source("_Setup.R")
 
@@ -70,7 +73,7 @@ Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken
 
 Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de **retentie** van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen. Denk aan een betere voorlichting, onboarding, begeleiding of ontwikkeling van het onderwijs. 
 
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse ``r tolower(params$succes)`` als uitkomstvariabele nemen.
 :::
 
@@ -84,7 +87,7 @@ De prognosemodellen die we in deze analyses ontwikkelen zijn bedoeld om de dynam
 
 ## Opbouw analyse
 
-::: {.content-visible when-profile="basic"}
+::: {.content-visible when-profile="basic-report"}
 Deze analyse kent verder twee hoofdstukken:
 
 -   **Hoofdstuk 2: Kansengelijkheid** - De uitkomsten van analyse op bias en kansengelijkheid.
@@ -93,7 +96,7 @@ Deze analyse kent verder twee hoofdstukken:
 Voor een diepgaande toelichting op de achterliggende voorspelmodellen en berekening van bias is een geavanceerde analyse beschikbaar.
 :::
 
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 Deze analyse kent drie hoofdstukken:
 
 -   **Hoofdstuk 2: Kansengelijkheid** - De uitkomsten van analyse op bias en kansengelijkheid.

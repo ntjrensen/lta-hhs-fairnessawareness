@@ -41,6 +41,9 @@ includes:
 #| label: setup
 #| echo: false
 
+# Current file
+sCurrent_file <- "ch2-equity.qmd"
+
 # Include the _Setup.R file
 source("_Setup.R")
 
@@ -52,7 +55,7 @@ source("_Setup.R")
 
 In dit hoofdstuk gaan we in op de onderwerpen bias, fairness en kansengelijkheid. Het doel is beter te begrijpen of er studenten zijn met minder kans op succes en of dit disproportioneel is. Dit kan duiden op kansenongelijkheid.
 
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 De analyse van kansengelijkheid heeft de volgende stappen:
 
 1.  We lezen een bewerkte dataset in en prognosemodellen die we in een basis-analyse hebben gemaakt (zie hoofdstuk 3).
@@ -63,7 +66,7 @@ De analyse van kansengelijkheid heeft de volgende stappen:
 
 <!-- Data -->
 
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 ## Voorbereidingen
 
 ### Laad de data
@@ -106,7 +109,7 @@ DALEX is onder andere ontwikkeld om uit te kunnen leggen welke verklarende varia
 
 We onderzoeken kansengelijkheid door bias in de data te onderzoeken. Dit wordt ook wel een *fairness analyse* genoemd. Bias voor verschillende groepen studenten kan een teken zijn van kansenongelijkheid. 
 
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 Het leidende werk voor fairness analyses is [*Fairness and Machine Learning: Limitations and Opportunities*](https://fairmlbook.org/pdf/fairmlbook.pdf) [@Barocas.2023]. De methode die we in deze analyse hanteren hierop gebaseerd. We maken gebruik van de `DALEX` explainer en onderzoeken de invloed van de variabelen op de `r tolower(lResearch_settings[['sSucces_label']])` voor verschillende groepen studenten naar `r Concatenate_List(lSentitive_variables, tolower = TRUE)`.
 :::
 
@@ -116,7 +119,7 @@ De volgende **definities** zijn van belang:
 -   **Beschermde groep**: Een groep waarvan wordt verwacht dat deze mogelijk benadeeld wordt (bijv. mannen). Dit zijn in deze analyse, afhankelijke van de variabele, altijd een of meer minderheidsgroepen.
 
 <!-- Explanation of confusion matrix -->
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 {{< include R/qmd/advanced/confusion-matrix-tabset.qmd >}}
 :::
 
@@ -219,7 +222,7 @@ for(group in c(lSensitive_labels)) {
 
 ```
 
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 ### Fairness checks
 
 Nu we de verdeling van de kansen kennen, maken we een fairness analyse voor `r Concatenate_List(lSentitive_variables)`. Voor elke groep berekenen we de maatstaven die we eerder hebben behandeld.
@@ -241,7 +244,7 @@ Als de uitkomstmaat van een model negatief is (zoals uitval), dan moet de interp
 Om de robuustheid en betrouwbaarheid in de detectie van bias te waarborgen, moeten er minstens twee metrieke waarden buiten de epsilon-marges vallen voordat er sprake is van bias [@Barocas.2023].
 
 <!-- Reasons for the use of two metrics to confirm bias -->
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 {{< include R/qmd/advanced/bias-metrics-reasons.qmd >}}
 :::
 

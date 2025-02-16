@@ -1550,7 +1550,7 @@ Get_dfFairness_Wide <- function(lDf) {
   dfVars_Bias <- dfVars |> 
     crossing(dfBias)
   
-  # Totale grootte van de dataset
+  # Total size of the data set
   total_rows <- nrow(bind_rows(lDf))
   
   df <- bind_rows(lDf) |> 
@@ -1612,17 +1612,41 @@ Get_dfFairness_Wide <- function(lDf) {
     filter(N > 0) |> 
     select(Variabele, Groep, N, Perc, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) 
   
-  return(dfWide2)
+  # Add labels and text to the groups
+  dfWide3 <- dfWide2 |> 
+    mutate(
+      Groep_label = case_when(
+        Groep == "M" ~ "mannen",
+        Groep == "V" ~ "vrouwen",
+        Groep == "Direct" ~ "studenten die direct na hun vooropleiding instromen",
+        Groep == "Tussenjaar" ~ "studenten met een of meer tussenjaren",
+        Groep == "Switch intern" ~ "interne switchers",
+        Groep == "Switch extern" ~ "externe switchers",
+        Groep == "2e Studie" ~ "studenten die twee of meer studies volgen",
+        Groep == "Na CD" ~ "studenten die instromen met een 21+ toets of Colloquium Doctum",
+        Groep == "MBO" ~ "mbo-studenten",
+        Groep == "HAVO" ~ "havisten",
+        Groep == "VWO" ~ "vwo-studenten",
+        Groep == "BD" ~ "studenten met buitenlands diploma",
+        Groep == "CD" ~ "studenten die instromen met een 21+ toets of Colloquium Doctum",
+        Groep == "HO" ~ "studenten die instromen met diploma in het hoger onderwijs",
+        TRUE ~ Groep
+      )
+    ) |> 
+    mutate(Text = glue("{Groep_label} ({Groep}: N = {N}, {Perc}%)")) |>
+    select(Variabele, Groep, Groep_label, everything(), Text)
+  
+  return(dfWide3)
 }
 
 
 # Function to create the flextable for fairness analysis
 Get_ftFairness <- function(ft) {
   
-  sColor_Bias_Positive <- "#9DBF9E"
-  sColor_Bias_Negative <- "#A84268"
-  sColor_Bias_Neutral  <- "#FCB97D"
-  sColor_Bias_None     <- "#E5E5E5"
+  sColor_Bias_Positive <- lColors_default[["sColor_Bias_Positive"]] # "#9DBF9E"
+  sColor_Bias_Negative <- lColors_default[["sColor_Bias_Negative"]] # "#A84268"
+  sColor_Bias_Neutral  <- lColors_default[["sColor_Bias_Neutral"]]  # "#FCB97D"
+  sColor_Bias_None     <- lColors_default[["sColor_Bias_None"]]     # "#E5E5E5"
   
   # Merge the 'Variable' column for visual grouping
   # Apply conditional formatting
@@ -1697,20 +1721,16 @@ Get_Fairness_Conclusies <- function(df, variabele, succes = "Retentie na 1 jaar"
     return(sConclusie)
   }
   
-  # Function to replace the last , with ' and '
-  Replace_comma_end <- function(x) {
-    gsub(",([^,]*)$", " en\\1", x)
-  }
-  
   # Determine the groups with negative bias
   if(any(dfVariabele$`Negatieve Bias` > 1)) {
     lNegatieve_Bias <- dfVariabele |>
       filter(`Negatieve Bias` > 1) |> 
-      pull(Groep) |>
+      pull(Text) |>
       paste(collapse = ", ")
-    # Vervang de laatste , door en
-    lNegatieve_Bias <- Replace_comma_end(lNegatieve_Bias)
-    sNegatieve_Bias <- glue("Er is een negatieve bias voor: {lNegatieve_Bias}.")
+    
+    # Replace the final comma by 'en'
+    lNegatieve_Bias <- Concatenate_List(lNegatieve_Bias)
+    sNegatieve_Bias <- glue("Er is een negatieve bias voor {lNegatieve_Bias}.")
   } else {
     sNegatieve_Bias <- ""
   }
@@ -1719,11 +1739,12 @@ Get_Fairness_Conclusies <- function(df, variabele, succes = "Retentie na 1 jaar"
   if(any(dfVariabele$`Positieve Bias` > 1)) {
     lPositieve_Bias <- dfVariabele |>
       filter(`Positieve Bias` > 1) |> 
-      pull(Groep) |>
+      pull(Text) |>
       paste(collapse = ", ")
-    # Replace the last , with and
-    lPositieve_Bias <- Replace_comma_end(lPositieve_Bias)
-    sPositieve_Bias <- glue("Er is een positieve bias voor: {lPositieve_Bias}.")
+    
+    # Replace the final comma by 'en'
+    lPositieve_Bias <- Concatenate_List(lPositieve_Bias)
+    sPositieve_Bias <- glue("Er is een positieve bias voor {lPositieve_Bias}.")
   } else {
     sPositieve_Bias <- ""
   }
@@ -2704,3 +2725,10 @@ Concatenate_List <- function(l,
   
 }
 
+# Function to add a colored square
+Get_Colored_Square <- function(color, bordercolor = "darkgrey", size = 12) {
+  sprintf(
+    '<span style="display:inline-block; width:%dpx; height:%dpx; background-color:%s; border:1px solid %s;"></span>', 
+    size, size, color, bordercolor
+  )
+}

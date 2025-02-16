@@ -42,7 +42,11 @@ includes:
 
 prognose_titel <- paste("Prognosemodel", tolower(params$model)) ## Set the title
 
-source("_Setup.R") # Include the _Setup.R file
+# Current file
+sCurrent_file <- "ch4-models.qmd"
+
+# Include the _Setup.R file
+source("_Setup.R") 
 
 bInclude_Model_LR    <- rmarkdown::metadata$includes$model_lr    # Penalized Logistic Regression
 bInclude_Model_RF    <- rmarkdown::metadata$includes$model_rf    # Random Forest
@@ -1279,12 +1283,12 @@ if(!("Eindcijfer_VO" %in% dfTop_vi$Variable[1:3])
 
 ### Mate van accuraatheid en lift
 
-Een prognosemodel moet minimaal beter presteren dan een *base-model* om waarde op basis van accuraatheid toe te voegen. Het base-model neemt als basis de grootste klasse van de gemiddelde `r tolower(sSucces_model)` van de afgelopen jaren. Stel we zouden tegen alle studenten zeggen dat ze hun studie gaan halen, dan is de mate van accuratesse gelijk aan dit base-model. Dit base-model is dus altijd hoger dan de 50% lijn van de AUC/ROC curve, tenzij het base-model toevallig precies 50% is.
+Een prognosemodel moet minimaal beter presteren dan een *advanced-report* om waarde op basis van accuraatheid toe te voegen. Het advanced-report neemt als basis de grootste klasse van de gemiddelde `r tolower(sSucces_model)` van de afgelopen jaren. Stel we zouden tegen alle studenten zeggen dat ze hun studie gaan halen, dan is de mate van accuratesse gelijk aan dit advanced-report. Dit advanced-report is dus altijd hoger dan de 50% lijn van de AUC/ROC curve, tenzij het advanced-report toevallig precies 50% is.
 
 
 ```{r}
 #| label: fig-basemodel-lift
-#| fig-cap: "Lift afhankelijk van base-model en accuraatheid"
+#| fig-cap: "Lift afhankelijk van advanced-report en accuraatheid"
 #| out-width: 80%
 
 knitr::include_graphics(here::here("R/images", "basemodel-lift.png"))
@@ -1293,9 +1297,9 @@ knitr::include_graphics(here::here("R/images", "basemodel-lift.png"))
 
 **De mate van accuraatheid van het prognosemodel is `r sAccuracy_niveau` (`r Last_fit_Accuracy`%).**
 
--   **Base-model: `r Base_Model_Accuracy`%** -- Voor deze opleiding berekenen we het base-model als volgt. Van alle studenten studeerde `r Avg_Retentie`% door; 100% - `r Avg_Retentie`% = `r Avg_Non_Retentie`% studeerde *niet* door. De grootste klasse van deze twee, `r Base_Model_Accuracy`%, is daarmee de accuratesse van het base-model.
+-   **advanced-report: `r Base_Model_Accuracy`%** -- Voor deze opleiding berekenen we het advanced-report als volgt. Van alle studenten studeerde `r Avg_Retentie`% door; 100% - `r Avg_Retentie`% = `r Avg_Non_Retentie`% studeerde *niet* door. De grootste klasse van deze twee, `r Base_Model_Accuracy`%, is daarmee de accuratesse van het advanced-report.
 -   **Accuratesse prognose: `r Last_fit_Accuracy`%** -- Het model voorspelt `r sSucces_model` met een accuratesse van `r Last_fit_Accuracy`%.
--   **Lift: `r pAccuracy_verschil`** -- Het model scoort in de huidige opbouw met een verschil van `r pAccuracy_verschil` (de *lift*) `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van het base-model.
+-   **Lift: `r pAccuracy_verschil`** -- Het model scoort in de huidige opbouw met een verschil van `r pAccuracy_verschil` (de *lift*) `r sAccuracy_verschil` `r sAccuracy_vergelijking` dan de accuraatheid van het advanced-report.
 
 ### Confusion Matrix
 

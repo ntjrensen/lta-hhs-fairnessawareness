@@ -24,12 +24,22 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 0.1 Load Setup config #### 
+# 0.1 Restore renv ####
+
+if (!exists("bRenv_restored") || bRenv_restored == FALSE) {
+  if (!renv::status()$synchronized) {
+    renv::restore()
+  } 
+  bRenv_restored <- TRUE  
+}
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 0.2 Load Setup config #### 
 
 source("_Setup_config.R")
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 0.2 Set environment profile #### 
+# 0.3 Set environment profile #### 
 
 if(!is.null(rmarkdown::metadata$config$environment)) {
   sEnvironment <- rmarkdown::metadata$config$environment
@@ -38,7 +48,14 @@ if(!is.null(rmarkdown::metadata$config$environment)) {
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-# 0.3 Reset Setup ####
+# 0.4 Determine the current file name ####
+
+if(!exists("sCurrent_file")) {
+  sCurrent_file <- "unknown"
+}
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 0.5 Reset Setup ####
 
 # Set this variable to T to reset this page or restart the session
 bReset_Setup <- F
@@ -57,19 +74,7 @@ if(bSetup_executed == F) {
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1.1 Standard packages needed immediately ####
-  
-  # Install here, cli and icecream if necessary
-  for (i in c("here", "cli", "icecream")) {
-    if(!requireNamespace(i, quietly = TRUE)) {
-      install.packages(i)
-    }
-  }
-  
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.2 Base and fairness functions ####
-  
-  source("R/functions/base.helpers.R")
   
   if(sEnvironment == "ceda") {
     source("R/functions/base.helpers.R")
@@ -90,15 +95,6 @@ if(bSetup_executed == F) {
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.4 Load additional libraries ####
-  
-  # Install devtools to install bbplot
-  if(!requireNamespace("devtools", quietly = TRUE)) {
-    install.packages("devtools")
-  }
-  library(devtools)
-  if(!requireNamespace("bbplot", quietly = TRUE)) {
-    devtools::install_github('bbc/bbplot')
-  }
   
   # Load aditional bibliotheken
   library(conflicted)   # to solve conflicts
@@ -136,7 +132,7 @@ if(bSetup_executed == F) {
   library(showtext)     # for setting fonts
   library(ggplot2)      # for creating plots
   library(ggpubr)       # for saving plots
-  library(bbplot)       # for saving plots > TODO: phase out [?]
+  #library(bbplot)       # for saving plots > TODO: phase out [?]
   library(grid)         # for saving plots
   library(gridGraphics) # for saving plots
   library(extrafont)    # for saving plots
@@ -314,20 +310,70 @@ if(bSetup_executed == F) {
   sData_outputpath            <- Get_Model_Outputpath(mode = "data")
   sFittedmodels_outputpath    <- Get_Model_Outputpath(mode = "last-fits")
   sModelresults_outputpath    <- Get_Model_Outputpath(mode = "modelresults")
+  sPlotresults_outputpath     <- Get_Plot_Outputpath("tmp")
+  
+  # If these folders don't exist yet, create them
+  for (i in c(sData_outputpath, 
+              sFittedmodels_outputpath, 
+              sModelresults_outputpath, 
+              sPlotresults_outputpath)) {
+    if(!dir.exists(dirname(i))) {
+      dir.create(dirname(i), recursive = TRUE)
+    }
+  }
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.5 Data for training, last fits and results ####
   
-  # Load data for training: data, last fits and model results
-  # Adjust the Retention variable to numeric (0/1),
-  dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE) |> 
-    mutate(across(all_of(names(lLevels)), ~ factor(.x, 
-                                                   levels = lLevels[[cur_column()]]))) |> 
-    mutate(Retentie = as.numeric(Retentie) - 1)
+  # Check if we need to check the data
+  if(sCurrent_file != "ch4-models.qmd") {
+    bCheck_data <- TRUE
+  } else {
+    bCheck_data <- FALSE
+  }
   
-  ## TODO: if these paths and objects don't exist
-  lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
-  dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
+  # If one of these files does not exist and we are not in ch4-models.qmd, 
+  # give a cli warning
+  if((
+    !file.exists(sData_outputpath) ||
+    !file.exists(sFittedmodels_outputpath) ||
+    !file.exists(sModelresults_outputpath)
+  ) ) {
+    
+    if(bCheck_data) {
+      
+      cli_h1("Data- of modelbestanden bestaan nog niet")
+      cli_alert_warning(
+        glue(
+          "Een of meer data- of modelbestanden bestaan nog niet.",
+          "\n\n Voer eerst het template in 'advanced-report' modus uit in de terminal:",
+          "\n quarto render --profile advanced-report"
+        )
+      )
+    }
+    
+  } else {
+    
+    cli_h1("Data- of modelbestanden bestaan")
+    cli_alert_info(
+      glue(
+        "Data en modelbestanden worden ingeladen."
+        )
+    )
+    
+    # Data - adjust the Retention variable to numeric (0/1),
+    dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE) |> 
+      mutate(across(all_of(names(lLevels)), ~ factor(.x, 
+                                                     levels = lLevels[[cur_column()]]))) |> 
+      mutate(Retentie = as.numeric(Retentie) - 1)
+    
+    ## Last fits and model results
+    lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
+    dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
+    
+  } 
+  
   
 }
+
 

@@ -79,7 +79,13 @@ lColors_default <- c(
   sMetrics_green              = "#287233",
   sMetrics_red                = "#C8133B",
   sMetrics_yellow             = "#FFD966",
-  sMetrics_blue               = "#5FA2CE"
+  sMetrics_blue               = "#5FA2CE",
+  
+  # Bias colors
+  sColor_Bias_Positive        = "#9DBF9E",
+  sColor_Bias_Negative        = "#A84268",
+  sColor_Bias_Neutral         = "#FCB97D",
+  sColor_Bias_None            = "#E5E5E5"
 )
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

@@ -1,6 +1,6 @@
 # No Fairness Without Awareness: Tutorial
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-15
+2025-02-16
 
 <a name="top"></a>
 
@@ -77,17 +77,18 @@ analysis.
 
 Within the template, we offer two versions:
 
-- The **basic version** – for policymakers – contains the conclusions,
-  the fairness analysis and the analysis of factors.
-- The **advanced version** – for data scientists – contains an
+- The **advanced-report version** – for data scientists – contains an
   additional section on the underlying prediction models, explains the
-  underlying concepts, and shows all relevant R code.
+  underlying concepts, and shows all relevant R code. This version has
+  to be run first.
+- The **basic-report version** – for policymakers – contains the
+  conclusions, the fairness analysis and the analysis of factors.
 
-We reversed the order in which we present the pages within the reports,
-as we start with a summary of the conclusions and end with the
-predictions. This way, the reader can immediately see the results of the
-analysis, as we found out in testing different reports with teachers and
-policymakers in daily practice.
+In the basic-report, we reversed the order in which we present the pages
+within the reports, as we start with a summary of the conclusions and
+end with the predictions. This way, the reader can immediately see the
+results of the analysis, as we found out in testing different reports
+with teachers and policymakers in daily practice.
 
 - **Introduction** (chapter 1)
   - The introduction to the report, the study programme and the research
@@ -111,8 +112,8 @@ policymakers in daily practice.
     forest*), which require comparatively little computing power and
     whose variables and their contributions to the model are known (a
     *whitebox* model).
-  - The operation of the models is explained – in advanced mode – in the
-    text. Thus, each report can be read independently.
+  - The operation of the models is explained – in advanced-report mode –
+    in the text. Thus, each report can be read independently.
   - The best model is selected automatically. Based on that model, we
     will assess the fairness of a study programme.
 
@@ -120,8 +121,8 @@ The reports conclude with two additional pages:
 
 - **References**
   - The references used in the report.
-- **Appendix A: packages**
-  - A list of packages used in the report.
+- **Appendix A: abbreviations**
+  - A list of abbreviations used in the report.
 
 You can **preview** the two versions of the report from the `_examples`
 folder.
@@ -132,8 +133,8 @@ The template is composed of the following **files** (alphabetically):
 
 - The index of the report: `index.qmd` (henceforth called Index)
 - `_quarto.yml` with the general settings
-- `_quarto-advanced.yml` with settings for the advanced report
-- `_quarto-basic.yml` with settings for the basic report
+- `_quarto-advanced-report.yml` with settings for the advanced report
+- `_quarto-basic-report.yml` with settings for the basic report
 - `_Setup.R` with general settings for R
 - `_Setup_config.R` with configurations specific to your educational
   institution
@@ -148,18 +149,17 @@ The template is composed of the following **files** (alphabetically):
 - `renv.lock` with the versions of the packages
 - `x-a-appendix-abbreviations.qmd` with an explanation of the
   abbreviation used in the reports (appendix A)
-- `x-b-appendix-packages.qmd` with the packages used in the reports
-  (appendix B)
 
 It also contains the following **folders** (alphabetically):
 
-- `_advanced` and `_basic` with the reports created during automatic
-  rendering in two variants
-- `_examples` with two examples of an `_advanced` and `_basic` report
-  for your reference
+- `_advanced-report` and `_basic-report` with the reports created during
+  automatic rendering in two variants
+- `_examples` with two examples of an `_advanced-report` and
+  `_basic-report` report for your reference
 - `_extensions` with Quarto extensions for pandoc
 - `_freeze` with elements that are unchanged and reused while rendering
-- `_output` with reports by faculty and study programmes
+- `_output` with reports by faculty and study programmes. The model fit
+  results are stored here to speed up the rendering process.
 - `bibliograhy` with references
 - `brand` with the corporate identity files (logos, colors, fonts,
   layout in scss, colors)
@@ -301,14 +301,15 @@ This file determines part of the configuration of the template.
 
 ### 4. Quarto YAML
 
-As mentioned, the template works with `basic` and `advanced` profiles.
-The basic profile contains the conclusions, fairness analysis and
-factors analysis. The advanced analysis also contains a section on the
-underlying prediction models, explains the underlying concepts, and
-shows all relevant R code. Three files accomplish this:
-`_quarto-basic.yml`, `_quarto-basic.yml` and `_quarto-advanced.yml`. The
-\_quarto.yml file contains both reports’ general settings; the other
-files contain the specific settings for the basic and advanced reports.
+As mentioned, the template works with `basic-report` and
+`advanced-report` profiles. The basic-report profile contains the
+conclusions, fairness analysis and factors analysis. The advanced-report
+analysis also contains a section on the underlying prediction models,
+explains the underlying concepts, and shows all relevant R code. Three
+files accomplish this: `_quarto.yml`, `_quarto-basic-report.yml` and
+`_quarto-advanced-report.yml`. The \_quarto.yml file contains both
+reports’ general settings; the other files contain the specific settings
+for the basic and advanced reports.
 
 The **quarto.yml** file has the following options:
 
@@ -330,10 +331,10 @@ The **quarto.yml** file has the following options:
   links under ‘More information’.
 - Other settings: configuration
 
-The **quarto-basic.yml** file has the following options:
+The **quarto-basic-report.yml** file has the following options:
 
 - The project name and output directory.
-- The specific theme settings: the basic scss file.
+- The specific theme settings: the basic-report scss file.
 - The specific execution settings: save files that have not changed
   (freeze); this setting ensures that when rendering, a \_freeze folder
   is created with elements that do not change and are reused in this
@@ -342,11 +343,11 @@ The **quarto-basic.yml** file has the following options:
 - The book settings: the title, chapter order and appendices. NB. This
   template hides Chapter 4: The development of prediction models.
 
-The **quarto-advanced.yml** file has the following options:
+The **quarto-advanced-report.yml** file has the following options:
 
 - The project name and output directory.
 - The specific theme settings: settings for showing R code and the
-  advanced scss file.
+  advanced-report scss file.
 - The specific execution settings: show the outcomes of the R-chunks
   (echo: true). This template does not use the freeze option to avoid
   reusing too much material.
@@ -420,16 +421,16 @@ To render a template, follow these steps:
 
 1.  Open a terminal in RStudio (second tab at the bottom of your
     screen).
-2.  Run the following command for the *basic* report:
+2.  Run the following command for the *advanced-report* report:
 
 ``` r
-quarto render --profile basic
+quarto render --profile advanced-report
 ```
 
-3.  Run the following command for the *advanced* report:
+3.  Run the following command for the *basic-report* report:
 
 ``` r
-quarto render --profile advanced
+quarto render --profile basic-report
 ```
 
 ### Rendering individual pages of a report using the terminal
@@ -439,26 +440,17 @@ steps:
 
 1.  Open a terminal in RStudio (second tab at the bottom of your
     screen).
-2.  Run the following command for the *basic* report:
+2.  Run the following command for the *advanced-report* report:
 
 ``` r
-quarto render ch2-equity.qmd --profile basic
+quarto render ch2-equity.qmd --profile advanced-report
 ```
 
-3.  Run the following command for the *advanced* report:
+3.  Run the following command for the *basic-report* report:
 
 ``` r
-quarto render ch2-equity.qmd --profile advanced
+quarto render ch2-equity.qmd --profile basic-report
 ```
-
-## 📌 Known issues
-
-- None
-
-## 📎 Wishes
-
-- Be able to include logo in \_brand.yml for subsequent use in
-  basic.scss.
 
 ## 📫 Contact
 

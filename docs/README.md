@@ -1,6 +1,6 @@
 # Fairness Awareness: Analysis of Equity in Education
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-15
+2025-02-16
 
 <a name="top"></a>
 
@@ -29,10 +29,10 @@ institutions in The Netherlands (mbo, hbo, and wo).
   - [Prerequisites](#prerequisites)
   - [Installing](#installing)
 - [Rendering your first reports](#rendering-your-first-reports)
-  - [Render the `_basic`
-    project](#render-the-_basic-project-using-the-default-settings)
-  - [Render the `_advanced`
-    project](#render-the-_advanced-project-using-the-default-settings)
+  - [Render the `_basic-report`
+    project](#render-the-_basic-report-using-the-default-settings)
+  - [Render the `_advanced-report`
+    project](#render-the-_advanced-report-using-the-default-settings)
   - [Render your own reports](#create-and-render-your-own-reports)
 - [Deployment](#deployment)
 - [Learn more on fairness, awareness, and
@@ -112,52 +112,20 @@ software installed following the links provided:
 
 ## 📚 Rendering your first fairness reports
 
-### Render the `_basic` project using the default settings
+### Render the `_advanced-report` using the default settings
 
-Run the `_basic` project using the default settings.
+First, run the `_advanced-report` using the default settings.
 
-- You will create a report for The Hague University of Applied Sciences
-  (THUAS) with the default settings. The report is based on synthesized
-  data from the bachelor’s Communication & Multimedia Design (CMD), and
-  will be created in the `_basic` folder of your project.
-- The first time you create this report, it will take several minutes.
-- Once the rendering has finished, click on \_basic/index.html and
-  choose `View in Web Browser`. The report will open in your default
-  browser.
-- If you don’t see this file, click the refresh icon at the top right of
-  the folder. If you still don’t see the report, check the console for
-  any errors.
-- When you rerun the report, the output will be removed and a new report
-  will be created. If you want to keep the previously rendered output,
-  copy the entire folder to a location outside of your project.
-
-**To render the project, follow these steps:**
-
-Since the template has several dependencies, you must render the pages
-using the terminal.
-
-1.  Open a terminal in RStudio (second tab at the bottom of your
-    screen).
-2.  Run the following command for the *basic* report:
-
-``` r
-quarto render --profile basic
-```
-
-### Render the `_advanced` project using the default settings
-
-Next, run the `_advanced` project using the default settings.
-
-- This time, you will create an extended report. It contains more
-  detailed information about the fairness analysis: prediction models,
-  R-code and an explanation of each step with references.
-- You will create the report on the same synthesized data from the
-  bachelor’s Communication & Multimedia Design (CMD), but this time in
-  the `_advanced` folder.
-- Once finished, click on \_advanced/index.html and choose
+- To start with, you will create an extended report for The Hague
+  University of Applied Sciences (THUAS) with the default settings. It
+  contains detailed information about the fairness analysis: prediction
+  models, R-code and an explanation of each step with references.
+- The report is based on synthesized data from the bachelor’s
+  Communication & Multimedia Design (CMD), and will be created in the
+  `_advanced-report` folder of your project.
+- The first time you create this report, it will take several minutes.  
+- Once finished, click on \_advanced-report/index.html and choose
   `View in Web Browser`.
-- The first time you create this report, it will take several minutes.
-  The report will open in your default browser.
 - If you don’t see this file, click the refresh icon at the top right of
   the folder. If you still don’t see the report, check the console for
   errors.
@@ -172,10 +140,47 @@ using the terminal.
 
 1.  Open a terminal in RStudio (second tab at the bottom of your
     screen).
-2.  Run the following command for the *advanced* report:
+2.  Run the following command for the \_advanced-report:
 
 ``` r
-quarto render --profile advanced
+quarto render --profile advanced-report
+```
+
+### Render the `_basic-report` project using the default settings
+
+Next, run the `_basic-report` using the default settings.
+
+- You will create a report for The Hague University of Applied Sciences
+  (THUAS) with the default settings. The report is based on synthesized
+  data from the bachelor’s Communication & Multimedia Design (CMD), and
+  will be created in the `_basic-report` folder of your project.
+- The first time you create this report, it will take several minutes.
+- Once the rendering has finished, click on \_basic-report/index.html
+  and choose `View in Web Browser`. The report will open in your default
+  browser.
+- If you don’t see this file, click the refresh icon at the top right of
+  the folder. If you still don’t see the report, check the console for
+  any errors.
+- When you rerun the report, the output will be removed and a new report
+  will be created. If you want to keep the previously rendered output,
+  copy the entire folder to a location outside of your project.
+- This report uses the freeze option, which means htmls items will be
+  saved, unless one of your sources files change. This will save you
+  time, when you rerender the report. Freeze files are stored in the
+  `_freeze` folder. If you want to start fresh, simply remove the
+  `_freeze` folder.
+
+**To render the project, follow these steps:**
+
+Since the template has several dependencies, you must render the pages
+using the terminal.
+
+1.  Open a terminal in RStudio (second tab at the bottom of your
+    screen).
+2.  Run the following command for the *basic* report:
+
+``` r
+quarto render --profile basic-report
 ```
 
 ### Create and render your institutional reports
@@ -243,7 +248,7 @@ for the available versions.
 
 ## 🚦 License
 
-This project is licensed under the Creative Comms Attribution Share
+This project is licensed under the Creative Commons Attribution Share
 Alike 4.0 International - see the [LICENSE.md](LICENSE.md) file for
 details
 
@@ -253,6 +258,16 @@ details
   Dalex for their excellent work.
 - We want to thank Npuls and CEDA for their support in developing this
   template.
+
+## 📌 Known issues
+
+- None
+
+## 📎 Wishes
+
+- Be able to include logo in \_brand.yml for subsequent use in
+  basic.scss.
+- Remove Warnings while rendering .qmd files without parameters
 
 ## 📫 Contact
 

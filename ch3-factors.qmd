@@ -42,6 +42,9 @@ includes:
 #| echo: false
 #| include: false
 
+# Current file
+sCurrent_file <- "ch3-factors.qmd"
+
 ## Include the _Setup.R file
 source("_Setup.R")
 
@@ -53,7 +56,7 @@ source("_Setup.R")
 
 In deze verdiepende analyse gaan we in op de **factoren** om beter te begrijpen hoe deze retentie verklaren. 
 
-::: {.content-visible unless-profile="basic"}
+::: {.content-visible unless-profile="basic-model"}
 Deze verdiepende factoranalyse heeft de volgende stappen:
 
 1.  We gebruiken het beste model om de prognose te verklaren en te begrijpen. We kijken naar de bijdrage van de variabelen aan de voorspelling en passen het model toe op de meest voorkomende studenten.
@@ -62,7 +65,7 @@ Deze verdiepende factoranalyse heeft de volgende stappen:
 4.  Tot slot onderzoeken we per variabele de variantie van de voorspellingen met een *Partial Dependence analyse*.\
 :::
 
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 Deze verdiepende factoranalyse heeft 6 stappen:
 
 1.  We lezen de bewerkte dataset in en de modellen die we in de basis-analyse hebben gemaakt.
@@ -75,7 +78,7 @@ Deze verdiepende factoranalyse heeft 6 stappen:
 
 <!-- Data -->
 
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 ## Voorbereidingen
 
 ### Laad de data
@@ -115,13 +118,13 @@ We gaan nu een stap verder met behulp van het `DALEX` package. Op basis van het 
 
 :::
 
-::: {.content-visible when-profile="basic"}
+::: {.content-visible when-profile="basic-report"}
 ### De meest voorspellende factoren
 
 De meeste voorspellende factoren zijn:
 :::
 
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 ### Toets de Root Mean Square Error na permutaties
 
 De eerste analyse is de Root Mean Square Error (RMSE) na permutaties.
@@ -174,11 +177,11 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 }
 ```
 
-::: {.content-visible when-profile="basic"}
+::: {.content-visible when-profile="basic-report"}
 De meest voorspellende variabelen hebben een grote invloed hebben op de voorspelling van het model, maar kunnen per toepassing op een individuele student uit het verleden ook sterk  variëren.
 :::
 
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 Het valt op dat de meest voorspellende variabelen ook een hoge RMSE hebben. Dit betekent dat deze variabelen een grote invloed hebben op de voorspelling van het model, maar per toepassing op een individuele student uit het verleden ook sterk kunnen variëren.
 :::
 
@@ -421,7 +424,7 @@ for(group in names(lDfPersona)) {
 
 Na deze factorentanalyse kijken we naar de stabiliteit van de invloed van de verklarende variabelen. We gebruiken hiervoor *Shapley* waarden. 
 
-::: {.content-visible when-profile="advanced"}
+::: {.content-visible when-profile="advanced-report"}
 Een Shapley analyse houdt rekening met een andere volgorde van de variabelen. De volgorde van de variabelen is cumulatief (additief) en maakt dus uit voor de bijdrage aan het model: als er een andere variabele al in het model is toegevoegd, heeft dat invloed op de daaropvolgende variabele. Een Shapley analyse permuteert de volgorde van de variabelen om daarmee de verschillen te berekenen in de bijdrage aan de voorspelling. Zo krijgen we nog beter zicht op het belang en de invloed van de individuele variabelen in het prognosemodel. Variabelen zonder bijdrage hebben we verwijderd.
 
 De volgorde van de variabelen in deze Shapley analyse is gelijk aan die van @fig-lf-break-down-distribution-all. 
