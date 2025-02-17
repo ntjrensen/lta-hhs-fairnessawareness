@@ -66,9 +66,9 @@ format:
     - "brand/scss/default.scss"
     
     # Output settings
-    self-contained: true
+    self-contained: false
     standalone: true
-    embed-resources: true
+    embed-resources: false
     
     # Hyperlinks on the right
     toc: true

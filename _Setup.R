@@ -310,13 +310,11 @@ if(bSetup_executed == F) {
   sData_outputpath            <- Get_Model_Outputpath(mode = "data")
   sFittedmodels_outputpath    <- Get_Model_Outputpath(mode = "last-fits")
   sModelresults_outputpath    <- Get_Model_Outputpath(mode = "modelresults")
-  sPlotresults_outputpath     <- Get_Plot_Outputpath("tmp")
   
   # If these folders don't exist yet, create them
   for (i in c(sData_outputpath, 
               sFittedmodels_outputpath, 
-              sModelresults_outputpath, 
-              sPlotresults_outputpath)) {
+              sModelresults_outputpath)) {
     if(!dir.exists(dirname(i))) {
       dir.create(dirname(i), recursive = TRUE)
     }

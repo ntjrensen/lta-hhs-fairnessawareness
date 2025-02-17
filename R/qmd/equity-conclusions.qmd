@@ -6,7 +6,9 @@
 ```{r}
 #| label: df-txt-fairness-conclusions
 #| results: asis
-#| eval: !expr 'Sys.getenv("QUARTO_PROFILE") != "advanced-report"'
+#| eval: !expr 'file.exists(Get_Model_Outputpath(mode = "modelresults"))'
+
+##| eval: !expr 'Sys.getenv("QUARTO_PROFILE") != "advanced-report"'
 
 lDfFairness <- list()
 
@@ -31,7 +33,7 @@ De uitkomsten van de kansengelijkheidsanalyse is:
 ```{r}
 #| label: txt-fairness-conclusions
 #| results: asis
-#| eval: !expr 'Sys.getenv("QUARTO_PROFILE") != "advanced-report"'
+#| eval: !expr 'file.exists(Get_Model_Outputpath(mode = "modelresults"))'
 
 # Now create a text per variable from the table
 lConclusies <- list()
@@ -54,7 +56,7 @@ for (i in lSensitive_labels) {
 #| label: tbl-fairness-conclusions
 #| tbl-cap: "Fairness conclusies per groep"
 #| results: asis
-#| eval: !expr 'Sys.getenv("QUARTO_PROFILE") != "advanced-report"'
+#| eval: !expr 'file.exists(Get_Model_Outputpath(mode = "modelresults"))'
 
 # Create a flextable
 ftFairness_table <- Get_ftFairness(flextable(dfFairness_wide |>

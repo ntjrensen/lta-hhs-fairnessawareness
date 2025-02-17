@@ -137,6 +137,8 @@ The reports conclude with two additional pages:
 You can **preview** the two versions of the report from the `_examples`
 folder.
 
+**NB.** The order of the chapters in the advanced report is as follows: Introduction, Models, Factors, Equity, References, Appendix. This order is necessary for the first rendering to build the report elements correctly while considering their interdependence.
+
 ## 📂 Structure of files and folders {#structure-of-files-and-folders}
 
 The template is composed of the following **files** (alphabetically):
