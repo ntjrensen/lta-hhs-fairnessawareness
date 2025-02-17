@@ -1,0 +1,86 @@
+# Fairness Awareness: Prerequisites
+Theo Bakker, The Hague University of Applied Sciences
+2025-02-17
+
+<a name="top"></a>
+
+<img src="figures/fairness-awareness-hex.png" align="right" height="160" alt="" />
+
+This [Npuls
+CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda)
+project makes it possible to create a fairness analysis to study equity
+(*kansengelijkheid*) within progression of students in educational
+institutions in The Netherlands (mbo, hbo, and wo).
+
+## 🎓 About
+
+This project is a template for creating a **fairness analysis of
+students’ progression in educational institutions in The Netherlands**.
+The template is based on the
+[Quarto](https://quarto.org/docs/get-started/) framework and uses the
+[Tidyverse](https://www.tidyverse.org/) coding standard. The template is
+developed by the [Learning Technology & Analytics
+(LTA)](https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics)
+research group of The Hague University of Applied Sciences for the
+[Npuls
+CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda)
+project project.
+
+## 🚀 Getting started
+
+These instructions will get you a copy of the project up and running on
+your local machine for development and testing.
+
+### Prerequisites
+
+To start working with this project, make sure you have the following
+software installed on your local machine following the links provided:
+
+**R, Rstudio, Quarto, XQuartz (for Mac only)**
+
+- RStudio version 2024.12.0 or higher with R version 4.4.2 or higher -
+  [Posit](https://posit.co/download/rstudio-desktop/)
+- XQuartz 2.8.5 or higher (for Mac only) -
+  [XQuartz](https://www.xquartz.org/)
+- Quarto version 1.6.39 or higher -
+  [Quarto](https://quarto.org/docs/get-started/)
+
+**Github, GitHub Desktop**
+
+- A Github account and (optionally) GitHub Desktop version 3.4.16 -
+  [Github](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
+
+**GFortran**
+
+- GFortran -
+  [Fortran](https://fortran-lang.org/en/learn/os_setup/install_gfortran/).
+  Installation will take several minutes.
+
+**R packages, fonts**
+
+- All other packages are installed automatically by running the project
+  `_Setup.R` file on your local machine. Instructions are below.
+- The installation of the Liter font is optional. Follow the
+  instructions from Google to install this font. -
+  [Google](https://fonts.google.com/specimen/Liter)
+
+### Installing
+
+1.  First, make a fork of the repository to your own Github account.
+    Then clone the repository to your local machine using for instance
+    GitHub Desktop. See [Cloning a
+    repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+    for an explanation.
+2.  Once you have cloned the repository, open the project in RStudio and
+    run the `_Setup.R` file by clicking on ‘Source’. Don’t change any
+    settings yet. This action will install all the necessary packages
+    and fonts.
+
+## 🎈 All other stuff…
+
+The rest you will learn at March 10, 2025.
+
+## 📫 Contact
+
+If you have any questions or suggestions, please contact the author of
+this template: [Theo Bakker](mailto:t.c.bakker@hhs.nl)

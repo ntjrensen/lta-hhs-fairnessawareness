@@ -406,7 +406,8 @@ Get_dfOpleiding_inschrijvingen_base_syn <- function() {
     filter(INS_Faculteit == params$faculteit,
            INS_Opleidingsnaam_huidig == current_opleiding$INS_Opleidingsnaam_huidig,
            INS_Opleiding == current_opleiding$INS_Opleiding,
-           INS_Opleidingsvorm == toupper(current_opleiding$INS_Opleidingsvorm))
+           INS_Opleidingsvorm == toupper(current_opleiding$INS_Opleidingsvorm)) |> 
+    mutate(LTA_Dataset = "ASI-Syn 20240124")
   
   return(dfOpleiding_inschrijvingen_base)
 }

@@ -23,6 +23,8 @@
 # 0. ON START ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+cli_h1("0. ON START")
+
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 0.1 Restore renv ####
 
@@ -33,10 +35,16 @@ if (!exists("bRenv_restored") || bRenv_restored == FALSE) {
   bRenv_restored <- TRUE  
 }
 
+cli_h1("Inladen packages")
+cli_alert_success(glue("Alle packages zijn ingeladen."))
+
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 0.2 Load Setup config #### 
 
 source("_Setup_config.R")
+
+cli_h1("Inladen configuratie")
+cli_alert_success(glue("Configuratie is ingeladen."))
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 0.3 Set environment profile #### 
@@ -46,6 +54,9 @@ if(!is.null(rmarkdown::metadata$config$environment)) {
 } else {
   sEnvironment <- "ceda"
 }
+
+cli_h1("Instellen environment")
+cli_alert_success(glue("Environment is {sEnvironment}"))
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 0.4 Determine the current file name ####
@@ -70,8 +81,10 @@ if(bSetup_executed == F) {
 
   # . ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1. PACKAGE & FUNCTIONS ####
+  # 1. PACKAGES & FUNCTIONS ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+  cli_h1("1. PACKAGES & FUNCTIES")
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.2 Base and fairness functions ####
@@ -83,8 +96,13 @@ if(bSetup_executed == F) {
   }
   source("R/functions/fairness.helpers.R")
   
+  cli_h1("Inladen functies")
+  cli_alert_success(glue("Functies zijn ingeladen: basis en fairness"))
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.3 Default datasets ####
+  
+  cli_h1("Inladen standaard dataset")
   
   # Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
   if(sEnvironment == "ceda") {
@@ -94,9 +112,8 @@ if(bSetup_executed == F) {
   }
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  # 1.4 Load additional libraries ####
+  # 1.4 Load libraries ####
   
-  # Load aditional bibliotheken
   library(conflicted)   # to solve conflicts
   library(rio)          # for reading files
   library(doParallel)   # for parallel processing
@@ -132,7 +149,6 @@ if(bSetup_executed == F) {
   library(showtext)     # for setting fonts
   library(ggplot2)      # for creating plots
   library(ggpubr)       # for saving plots
-  #library(bbplot)       # for saving plots > TODO: phase out [?]
   library(grid)         # for saving plots
   library(gridGraphics) # for saving plots
   library(extrafont)    # for saving plots
@@ -148,11 +164,17 @@ if(bSetup_executed == F) {
   
   library(cardx)        # for extra analysis results data utilities
   
+  cli_h1("Inladen libraries")
+  cli_alert_success(glue("Libraries zijn ingeladen."))
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.5 Brand #### 
   
   # Load the brand settings
   brand_data <- read_yaml("brand/_brand.yml")
+  
+  cli_h1("Inladen brand")
+  cli_alert_success(glue("Brand instellingen zijn ingeladen."))
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.6 Fonts ####
@@ -160,32 +182,49 @@ if(bSetup_executed == F) {
   # Load fonts
   extrafont::loadfonts(quiet = TRUE)
   
+  cli_h1("Inladen fonts")
+  cli_alert_success(glue("Fonts zijn ingeladen."))
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.7 Load additional features ####
 
   source("R/functions/report.helpers.R")
   
+  cli_h1("Inladen functies")
+  cli_alert_success(glue("Functies zijn ingeladen: rapport"))
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.8 Colors ####
   
   source("brand/colors/colors.R")
+  
+  cli_h1("Inladen kleuren")
+  cli_alert_success(glue("Kleuren zijn ingeladen"))
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.9 Determine preferred themes ####
 
   Set_Theme()
+  
+  cli_h1("Inladen thema")
+  cli_alert_success(glue("Thema is ingeladen"))
 
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.10 Tidymodels preferences ####
 
   # When conflicts arise, give preference to the tidymodels package
   tidymodels_prefer(quiet = TRUE)
+  
+  cli_h1("Inladen tidymodels")
+  cli_alert_success(glue("Tidymodels voorkeur ingesteld"))
 
   # . ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2. GENERAL CONFIG ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+  cli_h1("2. ALGEMENE INSTELLINGEN")
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.1 Network paths ####
   
@@ -197,12 +236,18 @@ if(bSetup_executed == F) {
     Network_directory <- ltabase::get_lta_network_directory()
   }
   
+  cli_h1("Netwerk pad")
+  cli_alert_success(glue("Netwerkpad is ingesteld: {Network_directory}"))
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.2 Debug ####
   
   # Set debug options: icecream package settings
   Set_Icecream_Options()
   icecream::ic_disable()
+  
+  cli_h1("Debug")
+  cli_alert_success(glue("Debug is ingesteld"))
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.3 Gtsummary ####
@@ -213,6 +258,9 @@ if(bSetup_executed == F) {
     set_gtsummary_theme()
   invisible(theme_gtsummary_compact())
   
+  cli_h1("Gtsummary")
+  cli_alert_success(glue("Gtsummary voorkeuren ingesteld"))
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.4 Succes model ####
   
@@ -221,8 +269,14 @@ if(bSetup_executed == F) {
   sSucces_model_text                <- Get_Succes_Model_Text(sPropedeusediploma, 
                                                              sSucces_model)
   
+  cli_h1("Succes model")
+  cli_alert_success(glue("Model voorkeuren ingesteld"))
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.5  Educational programme information ####
+  
+  cli_h1("Huidige opleiding")
+  cli_alert_success(glue("Huidige opleiding ingesteld"))
   
   # Create the variables for the current study programme based on the programme name and type of education
   current_opleiding <- Get_Current_Opleiding(
@@ -248,6 +302,9 @@ if(bSetup_executed == F) {
       range = "eerstejaars")
   }
   
+  cli_h1("Inschrijvingen")
+  cli_alert_success(glue("Inschrijvingen ingeladen"))
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.7 Metadata & research settings ####
   
@@ -259,6 +316,9 @@ if(bSetup_executed == F) {
   
   lResearch_settings[["sDataset"]]       <- Get_sDataset(dfOpleiding_inschrijvingen_base)
   lResearch_settings[["sOpleiding"]]     <- Get_sOpleiding()
+  
+  cli_h1("Metadata & onderzoeksinstellingen")
+  cli_alert_success(glue("Metadata & onderzoeksinstellingen ingeladen"))
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.8 Plot information ####
@@ -275,10 +335,15 @@ if(bSetup_executed == F) {
   nPlotWidth  <- 640
   nPlotHeight <- 550
   
+  cli_h1("Plot instellingen")
+  cli_alert_success(glue("Plot caption, breedte en hoogte ingesteld"))
+  
   # . ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3. CONTENT ####
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+  cli_h1("3. CONTENT")
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.1 Names of the study programme and type of education ####
@@ -286,6 +351,9 @@ if(bSetup_executed == F) {
   # Determine the long name of the type of education and faculty
   sOpleidingsvorm_lang        <- Get_Opleidingsvorm_Lang(params$opleidingsvorm_afkorting)
   sFaculteit_lang             <- Get_Faculteitsnaam_Lang(params$faculteit)
+  
+  cli_h1("Lange namen")
+  cli_alert_success(glue("Lange namen van opleiding en faculteit ingesteld"))
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.2 Variables and levels ####
@@ -295,6 +363,9 @@ if(bSetup_executed == F) {
   lLevels                     <- Get_lLevels(dfLevels)
   lLevels_formal              <- Get_lLevels(dfLevels, formal = TRUE)
   
+  cli_h1("Variabelen en levels")
+  cli_alert_success(glue("Variabelen en levels ingesteld"))
+  
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.3 Sensitive variables and labels ####
   
@@ -302,6 +373,9 @@ if(bSetup_executed == F) {
   lSentitive_variables        <- Get_lSensitive(dfVariables, var = "VAR_Simple_variable")
   lSensitive_labels           <- Get_lSensitive(dfVariables, var = "VAR_Variable_label")
   lSensitive_levels_breakdown <- Get_lSensitive_Levels_Breakdown(dfLevels, lSentitive_formal_variables)
+  
+  cli_h1("Sensitieve variabelen en labels")
+  cli_alert_success(glue("Sensitieve variabelen ingesteld: {paste(unlist(lSentitive_variables), collapse = ', ')}"))
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.4 Paths for data, last fits and model results ####
@@ -319,6 +393,9 @@ if(bSetup_executed == F) {
       dir.create(dirname(i), recursive = TRUE)
     }
   }
+  
+  cli_h1("Paden voor data, last fits en modelresultaten")
+  cli_alert_success(glue("Paden voor data, last fits en modelresultaten ingesteld"))
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.5 Data for training, last fits and results ####
@@ -340,7 +417,7 @@ if(bSetup_executed == F) {
     
     if(bCheck_data) {
       
-      cli_h1("Data- of modelbestanden bestaan nog niet")
+      cli_h1("Data- en modelbestanden")
       cli_alert_warning(
         glue(
           "Een of meer data- of modelbestanden bestaan nog niet.",
@@ -352,13 +429,7 @@ if(bSetup_executed == F) {
     
   } else {
     
-    cli_h1("Data- of modelbestanden bestaan")
-    cli_alert_info(
-      glue(
-        "Data en modelbestanden worden ingeladen."
-        )
-    )
-    
+    cli_h1("Data- en modelbestanden")
     # Data - adjust the Retention variable to numeric (0/1),
     dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE) |> 
       mutate(across(all_of(names(lLevels)), ~ factor(.x, 
@@ -368,6 +439,13 @@ if(bSetup_executed == F) {
     ## Last fits and model results
     lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
     dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
+    
+    cli_alert_success(
+      glue(
+        "Data en modelbestanden zijn ingeladen."
+      )
+    )
+    
     
   } 
   

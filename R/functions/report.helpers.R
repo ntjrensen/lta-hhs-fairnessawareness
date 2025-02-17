@@ -79,7 +79,7 @@ Set_Current_Opleiding_Vars <- function(current_opleiding, debug = F){
                                                       opleidingsvorm)
   
   if(debug) {
-    Cli_Subheader("Instelling van de huidige opleiding")
+    #Cli_Subheader("Instelling van de huidige opleiding")
   
     Show_Current_Opleiding_Vars()
   }
