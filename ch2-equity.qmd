@@ -1,5 +1,5 @@
 ---
-subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
+subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.model >}})"
 
 # Format and output
 output-file: "ch2-equity.html"
@@ -12,14 +12,10 @@ params:
   propedeusediploma: "Nvt"
   use_synthetic_data: true
   recreateplots: false
-
-  faculteit: "ITD"
-  opleidingsnaam: "B Communication and Multimedia Design"
-  opleiding: "CMD"
-  opleidingsvorm: "voltijd"
-  opleidingsvorm_afkorting: "VT"
   instroomselectie: false
-
+  opleiding: "VD"
+  opleidingsvorm_afkorting: "VT"
+  
 # Content
 includes:
   inleiding:      true
@@ -49,6 +45,11 @@ source("_Setup.R")
 
 ```
 
+<!-- HEADER -->
+
+<!-- Studyprogram short -->
+{{< include R/qmd/header-studyprogram.qmd >}}
+
 <!-- Introduction -->
 
 ## Inleiding
@@ -73,7 +74,7 @@ De analyse van kansengelijkheid heeft de volgende stappen:
 
 We laden de bewerkte data en het beste prognosemodel in voor:
 
-**Opleiding**: `r params$faculteit` \| `r Get_Opleidingsnaam_Synth(params$opleidingsnaam)` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
+**Opleiding**: `r current_opleiding$INS_Faculteit` \| `r Get_Opleidingsnaam_Synth(current_opleiding$INS_Opleidingsnaam_huidig)` (`r current_opleiding$INS_Opleiding`), `r current_opleiding$INS_Opleidingsvorm`, eerstejaars - **`r sSucces_model`**
 
 <!-- Include load-dfpersona -->
 ```{r}

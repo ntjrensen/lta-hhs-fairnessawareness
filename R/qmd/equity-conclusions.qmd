@@ -8,8 +8,6 @@
 #| results: asis
 #| eval: !expr 'file.exists(Get_Model_Outputpath(mode = "modelresults"))'
 
-##| eval: !expr 'Sys.getenv("QUARTO_PROFILE") != "advanced-report"'
-
 lDfFairness <- list()
 
 # Walk over the variables

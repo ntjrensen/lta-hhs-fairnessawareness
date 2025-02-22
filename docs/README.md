@@ -1,6 +1,6 @@
 # Fairness Awareness: Analysis of Equity in Education
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-16
+2025-02-17
 
 <a name="top"></a>
 
@@ -29,10 +29,10 @@ institutions in The Netherlands (mbo, hbo, and wo).
   - [Prerequisites](#prerequisites)
   - [Installing](#installing)
 - [Rendering your first reports](#rendering-your-first-reports)
-  - [Render the `_basic-report`
-    project](#render-the-_basic-report-using-the-default-settings)
   - [Render the `_advanced-report`
     project](#render-the-_advanced-report-using-the-default-settings)
+  - [Render the `_basic-report`
+    project](#render-the-_basic-report-using-the-default-settings)
   - [Render your own reports](#create-and-render-your-own-reports)
 - [Deployment](#deployment)
 - [Learn more on fairness, awareness, and
@@ -94,15 +94,15 @@ software installed following the links provided:
 
 - All other packages are installed automatically by running the project
   `_Setup.R` file on your local machine. Instructions are below.
-- The installation of the Liter font is optional -
-  [Google](https://fonts.google.com/specimen/Liter). Follow the
-  instructions from Google to install this font.
+- The installation of the Liter font is optional. Follow the
+  instructions from Google to install this font. -
+  [Google](https://fonts.google.com/specimen/Liter)
 
 ### Installing
 
 1.  First, make a fork of the repository to your own Github account.
-    Then clone the repository to your local machine using the following
-    commands or GitHub Desktop. See [Cloning a
+    Then clone the repository to your local machine using for instance
+    GitHub Desktop. See [Cloning a
     repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
     for an explanation.
 2.  Once you have cloned the repository, open the project in RStudio and
@@ -124,7 +124,7 @@ First, run the `_advanced-report` using the default settings.
   Communication & Multimedia Design (CMD), and will be created in the
   `_advanced-report` folder of your project.
 - The first time you create this report, it will take several minutes.  
-- Once finished, click on \_advanced-report/index.html and choose
+- Once finished, click on `_advanced-report/index.html` and choose
   `View in Web Browser`.
 - If you don’t see this file, click the refresh icon at the top right of
   the folder. If you still don’t see the report, check the console for
@@ -155,7 +155,7 @@ Next, run the `_basic-report` using the default settings.
   data from the bachelor’s Communication & Multimedia Design (CMD), and
   will be created in the `_basic-report` folder of your project.
 - The first time you create this report, it will take several minutes.
-- Once the rendering has finished, click on \_basic-report/index.html
+- Once the rendering has finished, click on `_basic-report/index.html`
   and choose `View in Web Browser`. The report will open in your default
   browser.
 - If you don’t see this file, click the refresh icon at the top right of

@@ -1,5 +1,5 @@
 ---
-subtitle: "`r params$faculteit` | `r params$opleidingsnaam` (`r params$opleiding`) - `r params$opleidingsvorm` - versie `r params$versie`"
+subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.model >}})"
 
 # Format and output
 output-file: "ch3-factors.html"
@@ -12,13 +12,9 @@ params:
   propedeusediploma: "Nvt"
   use_synthetic_data: true
   recreateplots: false
-
-  faculteit: "ITD"
-  opleidingsnaam: "B Communication and Multimedia Design"
-  opleiding: "CMD"
-  opleidingsvorm: "voltijd"
-  opleidingsvorm_afkorting: "VT"
   instroomselectie: false
+  opleiding: "VD"
+  opleidingsvorm_afkorting: "VT"
   
 # Content
 includes:
@@ -49,6 +45,11 @@ sCurrent_file <- "ch3-factors.qmd"
 source("_Setup.R")
 
 ```
+
+<!-- HEADER -->
+
+<!-- Studyprogram short -->
+{{< include R/qmd/header-studyprogram.qmd >}}
 
 <!-- Introduction -->
 

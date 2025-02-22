@@ -9,14 +9,10 @@ params:
   propedeusediploma: "Nvt"
   use_synthetic_data: true
   recreateplots: false
-
-  faculteit: "ITD"
-  opleidingsnaam: "B Communication and Multimedia Design"
-  opleiding: "CMD"
-  opleidingsvorm: "voltijd"
-  opleidingsvorm_afkorting: "VT"
   instroomselectie: false
-
+  opleiding: "VD"
+  opleidingsvorm_afkorting: "VT"
+  
 # Content
 includes:
   inleiding:      true

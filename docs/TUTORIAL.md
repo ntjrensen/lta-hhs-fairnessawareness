@@ -1,6 +1,6 @@
 # No Fairness Without Awareness: Tutorial
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-16
+2025-02-22
 
 <a name="top"></a>
 
@@ -20,6 +20,7 @@ using the CEDA Fairness Awareness template.
   - [2. \_Setup.R](#_setupr)
   - [3. Quarto YAML](#quarto-yaml)
 - [Structure of the reports](#structure-of-the-reports)
+- [Changing a study programme](#changing-a-study-programme)
 - [Customizing the template](#customizing-the-template)
   - [Adjust design, house style, educational institution
     data](#adjust-design-house-style-educational-institution-data)
@@ -127,6 +128,11 @@ The reports conclude with two additional pages:
 You can **preview** the two versions of the report from the `_examples`
 folder.
 
+**NB.** The order of the chapters in the advanced report is as follows:
+Introduction, Models, Factors, Equity, References, Appendix. This order
+is necessary for the first rendering to build the report elements
+correctly while considering their interdependence.
+
 ## 📂 Structure of files and folders
 
 The template is composed of the following **files** (alphabetically):
@@ -144,8 +150,10 @@ The template is composed of the following **files** (alphabetically):
 - `ch4-models.qmd` with the construction of the prediction models
   (chapter 4)
 - `ch5-references.qmd` with the references (chapter 5)
-- `render-multiple.R` with a script to create multiple reports
-- `render-single.R` with a script to create one report
+- `quarto-render-basic-report.R` with a script to create the basic
+  report with parameters
+- `quarto-render-advanced-report.R` with a script to create the advanced
+  report with parameters
 - `renv.lock` with the versions of the packages
 - `x-a-appendix-abbreviations.qmd` with an explanation of the
   abbreviation used in the reports (appendix A)
@@ -357,6 +365,21 @@ The **quarto-advanced-report.yml** file has the following options:
 
 If you want to learn more about using Quarto profiles, visit the [Quarto
 documentation](https://quarto.org/docs/projects/profiles.html).
+
+## ➿ Changing a study programme
+
+To change a study programme, don’t change the parameters in the yml
+headers on every page (!), but pass the adjusted parameters to the
+template instead. Use `quarto-render-basic-report.R` and
+`quarto-render-advanced-report.R`.
+
+Within these files, you will find a script that uses the `quarto_render`
+function to create a report. Change the values in `lExecute_params` to
+create a new report for another study programme.
+
+The script will remove the `_freeze` folder if you render the basic
+report. Otherwise, the rendering would use existing pages from earlier
+settings.
 
 ## ✂️ Customizing the template
 

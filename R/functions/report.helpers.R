@@ -23,6 +23,12 @@
 # 1. STUDY PROGRAMME-SPECIFIC FUNCTIONS ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+Get_Subtitle <- function() {
+  
+  subtitle <- format(Sys.Date(), '%d-%m-%Y')
+  return(subtitle)
+}
+
 # Function to determine current study programme
 Get_Current_Opleiding <- function(opleiding, opleidingsvorm) {
   
@@ -1612,28 +1618,17 @@ Get_dfFairness_Wide <- function(lDf) {
     filter(N > 0) |> 
     select(Variabele, Groep, N, Perc, Bias, `Geen Bias`, `Negatieve Bias`, `Positieve Bias`) 
   
-  # Add labels and text to the groups
-  dfWide3 <- dfWide2 |> 
+  # Add labels and text to the groups based on dfLevels
+  dfWide3 <- dfWide2 %>%
+    left_join(dfLevels |> 
+                filter(!is.na(VAR_Level_label_NL_description)) |> 
+                select(VAR_Level_NL, VAR_Level_label_NL_description) |> 
+                distinct(), by = c("Groep" = "VAR_Level_NL")) |> 
     mutate(
-      Groep_label = case_when(
-        Groep == "M" ~ "mannen",
-        Groep == "V" ~ "vrouwen",
-        Groep == "Direct" ~ "studenten die direct na hun vooropleiding instromen",
-        Groep == "Tussenjaar" ~ "studenten met een of meer tussenjaren",
-        Groep == "Switch intern" ~ "interne switchers",
-        Groep == "Switch extern" ~ "externe switchers",
-        Groep == "2e Studie" ~ "studenten die twee of meer studies volgen",
-        Groep == "Na CD" ~ "studenten die instromen met een 21+ toets of Colloquium Doctum",
-        Groep == "MBO" ~ "mbo-studenten",
-        Groep == "HAVO" ~ "havisten",
-        Groep == "VWO" ~ "vwo-studenten",
-        Groep == "BD" ~ "studenten met buitenlands diploma",
-        Groep == "CD" ~ "studenten die instromen met een 21+ toets of Colloquium Doctum",
-        Groep == "HO" ~ "studenten die instromen met diploma in het hoger onderwijs",
-        TRUE ~ Groep
-      )
+      Groep_label = if_else(!is.na(VAR_Level_label_NL_description), VAR_Level_label_NL_description, Groep),
+      Text = glue("{Groep_label} ({Groep}: N = {N}, {Perc}%)")
     ) |> 
-    mutate(Text = glue("{Groep_label} ({Groep}: N = {N}, {Perc}%)")) |>
+    select(-VAR_Level_label_NL_description) |> 
     select(Variabele, Groep, Groep_label, everything(), Text)
   
   return(dfWide3)
@@ -1950,7 +1945,7 @@ Get_sCaption <- function() {
   
   sCaption <- paste0(
     paste(
-      lMetadata[["sDataset"]],
+      lResearch_settings[["sDataset"]],
       lResearch_settings[["sResearch_path"]],
       lResearch_settings[["sOpleiding"]],
       sep = ", "

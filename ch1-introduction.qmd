@@ -4,10 +4,6 @@ subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.mod
 # Format and output
 output-file: "ch1-introduction.html"
 
-# Author and date
-author: "{{< meta book.author >}}"
-date: last-modified
-
 # Parameters
 params:
   versie: "1.0"
@@ -16,14 +12,10 @@ params:
   propedeusediploma: "Nvt"
   use_synthetic_data: true
   recreateplots: false
-
-  faculteit: "ITD"
-  opleidingsnaam: "B Communication and Multimedia Design"
-  opleiding: "CMD"
-  opleidingsvorm: "voltijd"
-  opleidingsvorm_afkorting: "VT"
   instroomselectie: false
-
+  opleiding: "VD"
+  opleidingsvorm_afkorting: "VT"
+  
 # Content
 includes:
   inleiding:      true
@@ -36,6 +28,8 @@ includes:
   justification:  true
   copyright:      true
 ---
+
+<!-- Title -->
 
 # Inleiding
 

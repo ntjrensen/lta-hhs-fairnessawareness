@@ -33,10 +33,7 @@ if(!exists("params")) {
   params$propedeusediploma             <- "Nvt"
   params$use_synthetic_data            <- TRUE
   params$recreateplots                 <- FALSE
-  params$faculteit                     <- "ITD"
-  params$opleidingsnaam                <- "B Communication and Multimedia Design"
   params$opleiding                     <- "CMD"
-  params$opleidingsvorm                <- "voltijd"
   params$opleidingsvorm_afkorting      <- "VT"
   params$instroomselectie              <- FALSE
 }

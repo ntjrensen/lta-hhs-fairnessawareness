@@ -351,7 +351,7 @@ Load_Datasets <- function (message = FALSE)
   set_variables_from_list(datasets)
   if (message == TRUE) {
     cli::cli_alert(c(
-      "De volgende datasets zijn geladen: \n",
+      "The following datasets have been loaded: \n",
       "\n",
       paste0(names(datasets), collapse = "\n")
     ))
@@ -403,7 +403,7 @@ Get_dfOpleiding_inschrijvingen_base_syn <- function() {
   
   dfOpleiding_inschrijvingen_base <- rio::import("R/data/syn/dfOpleiding_inschrijvingen_syn.rds", trust = TRUE)
   dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>
-    filter(INS_Faculteit == params$faculteit,
+    filter(INS_Faculteit == current_opleiding$INS_Faculteit,
            INS_Opleidingsnaam_huidig == current_opleiding$INS_Opleidingsnaam_huidig,
            INS_Opleiding == current_opleiding$INS_Opleiding,
            INS_Opleidingsvorm == toupper(current_opleiding$INS_Opleidingsvorm)) |> 
