@@ -9,9 +9,9 @@ params:
   propedeusediploma: "Nvt"
   use_synthetic_data: true
   recreateplots: false
-  instroomselectie: false
-  opleiding: "VD"
+  opleiding: "CMD"
   opleidingsvorm_afkorting: "VT"
+  instroomselectie: false
   
 # Content
 includes:

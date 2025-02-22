@@ -216,26 +216,24 @@ following components:
     file through the `params`. By using `params` the subtitle is
     automatically adjusted when you render the file.
   - `params` with options for the study programme and report:
-    - `version`: the version of the report
-    - `success`: the type of success for which we make a fairness
+    - `versie`: the version of the report
+    - `succes`: the type of success for which we make a fairness
       analysis (e.g. Retention after 1 year, Retention after 2 years,
       etc.)
     - `model`: the name of the model. The model name can have the same
       name as the success parameter.
+    - `propedeusediploma`: whether to take a propedeutic degree into
+      account or not (false or true)  
     - `use_synthetic_data`: whether to use synthetic data (false or
       true).
     - `recreateplots`: whether you want to recreate the plots (false or
       true)
-    - `faculty`: the faculty for which the report is created
-    - `course name`: the full name of the study programme
-    - `study programme`: the code of the study programme
-    - `trainingform`: the type of education in full (full-time,
-      part-time, dual)
-    - `training form_abbreviation`: the type of education abbreviated
-      (VT, DT, DU)
-    - `entry selection`: whether the study programme has entry selection
-      (false or true). Based on this, variable `Rank` is enclosed or
-      not.
+    - `opleiding`: the code of the study programme
+    - `opleidingsvorm_afkorting`: the type of education abbreviated (VT,
+      DT, DU)
+    - `instroomselectie`: whether the study programme has entry
+      selection (false or true). Based on this, variable `Rank` is
+      enclosed or not.
   - `includes` with options to show or hide parts of pages
     - `introduction`: show or hide the introduction
     - `model_lr`: build the linear regression model or not
@@ -375,10 +373,11 @@ template instead. Use `quarto-render-basic-report.R` and
 
 Within these files, you will find a script that uses the `quarto_render`
 function to create a report. Change the values in `lExecute_params` to
-create a new report for another study programme.
+create a new report for another study programme. Just source the page to
+render a report.
 
-The script will remove the `_freeze` folder if you render the basic
-report. Otherwise, the rendering would use existing pages from earlier
+The `quarto-render-basic-report.R` script will remove the `_freeze`
+folder. Otherwise, the rendering would use existing pages from earlier
 settings.
 
 ## ✂️ Customizing the template
