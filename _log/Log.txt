@@ -1,0 +1,440 @@
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Log.txt ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## R code voor lectoraat LTA De Haagse Hogeschool
+## Copyright 2024 De HHs
+## Web Page: http://www.hhs.nl
+## Contact: Theo Bakker (t.c.bakker@hhs.nl)
+## Verspreiding buiten De HHs: Nee
+##
+## Doel: Aanpassingen in het project bijhouden
+##
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## Geschiedenis:
+## 28-04-2024: TB: Aanmaak bestand
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## Plotpagina van Dalex: https://github.com/ModelOriented/DALEX/blob/28a936b067abad5c3a3ff11b8a6b7a4bfdab1db8/R/plot_model_performance.R#L118
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## TUTORIAL ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## Comments
+https://hypothes.is/groups/DJYd4AXi/ceda
+
+## Pre en post execution
+- Pre-execute
+- Post-execute - bijv. git
+
+## Profielen
+- hoe werkt het > definieren en dan 2 _quarto.yml maken
+- let op overrides
+- verschil tussen content-hidden + unless of content-visible + when
+
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## TODO / WERKVOORRAAD ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## Alternatieve modellen
+CEDA [ ] Zonder herinschrijvers
+CEDA [ ] Zonder studenten die vertrekken met hbo-propedeuse
+
+## Extra variabelen
+CEDA [ ] SES
+CEDA [ ] APCG
+CEDA [ ] SKP met Lump
+
+## Overige
+
+[ ] Documentatie
+  CEDA [ ] News bijwerken
+  CEDA [ ] Readme bijwerken
+
+[ ] Plots
+  [x] 50% lijn aan density plots toevoegen
+  CEDA [ ] gam model uitproberen
+    [ ] https://parsnip.tidymodels.org/reference/details_gen_additive_mod_mgcv.html
+    [ ] https://forum.posit.co/t/how-to-define-smoothed-models-for-a-gam-using-tidymodels-and-recipe/144772
+
+[ ] Andere opleidingen proberen
+  [ ] ORM_DT
+      [ ] select_inspect_data   
+      CEDA [ ] te weinig observaties ondervangen
+        [ ] voeg per opleiding het aantal eerstejaars toe en unieke collegejaren.
+        [ ] als dit te weinig observaties of jaren zijn, dan next
+
+[ ] Modellen
+  CEDA [ ] Aan het begin een klein staatje van het aantal retentie per jaar.
+  CEDA [ ] Een workflow set uitproberen:
+    [ ] https://workflowsets.tidymodels.org/
+  CEDA [ ] Diplomarendement
+  [x] Uitval met en zonder prop
+    [x] SUC_P_aantal_jaar
+  
+[ ] Teksten
+  [x] Beste model fits zoals op https://rpubs.com/mikek25/tidymodels_churn
+  CEDA [ ] Teksten voor conclusies herzien
+
+[ ] Bugs
+  CEDA [ ] Metrics met NA's
+  
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+## GEDAAN ####
+## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+## VI
+[-] vip::vi - method permute
+
+[x] WARNING (/Applications/quarto/share/filters/main.lua:17736) Unknown meta key params.model specified in a metadata Shortcode.
+
+## CEDA Klussen
+[x] Hoogte van de afbeeldingen bij CMD is te laag.
+[x] Gemiddelde student anders opbouwen > hoofdklasse geslacht, dan vooropleiding, dan cijfer en skp of beschrijving anders maken!
+  CEDA [x] Alternatieve persona > wel bestaande met cumulatief filter
+
+[x] Purrrrify
+  CEDA [x] Loops vervangen door purrr
+
+[x] book-werk
+  CEDA [x] Een samenvattende pagina met de belangrijkste resultaten
+  [x] Meerdere opleidingen publiceren
+  [-] Op een xterne site publiceren?
+  [-] Opleiding in zijbalk
+
+[x] Consistent gebruik van variabele 'retentie na 1 jaar'
+  [x] Inleiding
+  [x] H1
+  [x] H2
+  [x] H3
+[x] Labels aanpassen van _ naar -
+[x] Tabellen en figuren voorzien van nummer en titel
+  [x] Inleiding
+  [x] H1
+  [x] H2
+    [x] waterfall plots
+    [x] CP en PDP per plaatje aparte cap.
+  [x] H3
+    [x] cap per groep voor uitvalskansen
+    [x] cap per groep voor fairness check
+    
+  
+[x] Fairness draaien voor alle opleidingen
+  [x] Onderdeel maken met tellingen per groep (aantal en percentages) in H3
+  [x] Uitbreiden met waarden die niet zijn opgenomen 
+  [x] Bevoorrechte groep ook waarden toekennen
+  [x] In de juiste volgorde zetten
+  [x] Hier een functie van maken
+  [x] Kleuren aanpassen conform landkaart kleuren plots
+  [x] Conclusies toevoegen aan H3
+  [x] Rekening houden met aantallen
+  [x] Tellingen maken voor alle opleidingen
+[x] Bevoorrechte groepen anders opstellen?
+  [x] Vooropleiding: 3 > VWO of BD, anders HAVO
+  [x] Geslacht: M
+  [x] Aansluiting: Direct
+[x] Sortering van variabelen al eerder toevoegen  
+
+[x] CBS
+  [x] Toevoegen een element van weging
+  [x] tidymodels met weging
+  [x] explainer met weging
+  [x] overige functies met weging
+
+[x] Normalisatie
+  [x] RMSE plot hoger maken
+  [x] Van alle plots een functie maken
+  [x] Van alle plots de optie hebben om deze van schijf te lezen
+
+[x] Andere opleidingen proberen
+  [x] SWE model - Basis
+      [x] Factoranalyse voor RF werkend krijgen
+      
+[x] Navigatie
+  [x] Book vorm maken
+  [-] Configuratie insluiten (params)
+  [x] Html wegschrijven naar separate report folder
+  
+[x] Normalisatie
+  [x] Alle kleuren configureerbaar maken
+  [x] Hoogte shapley plot dynamisch maken
+  [x] Functies aanvullen voor repeterende code
+  [-] Afbeeldingen in andere repo zetten
+  [x] lColors_toelaatgevende_vooropleiding > lColors[["Toelaatgevende_vooropleiding"]]
+  [-] Kopjes van lables > _ vervangen door " "
+  [-] Het woord retentie variabel maken
+  
+[x] Normalisatie
+  [x] Namen van functies consistent maken
+  [x] Colors naar settings overzetten
+  [x] _lm vervangen door _lf
+  [x] naam repo aanpassen
+
+[x] Fairness analyse
+  [x] Basisartikel: https://cran.r-project.org/web/packages/fairmodels/vignettes/Basic_tutorial.html
+    [x] 1.3.2 plot density
+      [x] Standaard density plot met verdeling
+      [x] Waarom geen density bij vooropleiding?
+      [x] Ook alle studenten?
+      [x] Naam van model aan de rechterzijde weghalen
+  [x] Teksten: voorbeelden vanuit het onderwijs
+
+[x] Navigatie
+  [x] logo hhs
+
+[x] Overige analyses
+  [x] Partial Dependence plots: https://ema.drwhy.ai/partialDependenceProfiles.html
+    [x] Analyse en afbeeldingen maken
+    [x] Sortering van de levels
+    [x] Dit ook controleren bij CP analyses
+  [-] Modellen - interactie-effecten toevoegen?
+      Bepalen of er interacties zijn tussen de factoren obv [Partial Dependence Plots](http
+      ://christophm.github.io/interpretable-ml-book/pdp.html) te maken.
+
+[-] violinplot oid voor ceteris paribus
+[x] Printen     
+  [x] Goed printen:
+      Fairness check for models: Linear Regression 
+      Linear Regression passes 0/5 metrics
+      Total loss :  17.90476 
+  
+  [x] Plaatjes per groep hoger maken als er meer variabelen zijn (h2)
+
+[-] metric
+  ## Pas een deel van de data aan
+  # fobject$fairness_check_data <- fobject$fairness_check_data |> 
+  #   mutate(metric = case_when(
+  #     metric == "Accuracy equality ratio    (TP + TN)/(TP + FP + TN + FN)" ~ "Accuracy Equality Ratio",
+  #     metric == "Predictive parity ratio     TP/(TP + FP)" ~ "Predictive Parity Ratio",
+  #     metric == "Predictive equality ratio   FP/(FP + TN)" ~ "Predictive Equality Ratio",
+  #     metric == "Equal opportunity ratio     TP/(TP + FN)" ~ "Equal Opportunity Ratio",
+  #     metric == "Statistical parity ratio   (TP + FP)/(TP + FP + TN + FN)" ~ "Statistical Parity Ratio",
+  #     .default = metric
+  #   ))
+
+[x] Analyses
+  [x] Shapley values: https://ema.drwhy.ai/shapley.html
+  [x] Ceteris Paribus: https://ema.drwhy.ai/ceterisParibus.html
+  
+
+[x] Teksten
+  [x] Moet niet de hele dataset omgekeerd gemaakt worden? > kans op retentie
+        [x] Pagina 1
+        [x] Pagina 2
+        [x] Pagina 3
+      [x] Uitleg verder aanvullen met een CF matrix
+      [x] Disclaimer toevoegen
+
+[x] Opmaak
+      [x] als https://www.dehaagsehogeschool.nl/over-de-haagse/werken-bij-de-haagse/de-haagse-als-werkgever
+[x] Opmaak verbeteren:
+    [x] kopjes naar links
+    [x] kleuren aanpassen
+    [x] hoogte van de afbeelding > met ggsave etc.
+    [-] achtergrond voor cutoff is niet goed (+ .2 ipv .3)
+[x] Omzetten naar een functie
+[x] Foutmeldingen wegwerken
+    Warning in print.fairness_object(fobject) :
+    Omiting NA for models: Linear Regression
+    Information about passed metrics may be inaccurate due to NA present, 
+    it is advisable to check metric_scores plot.
+[x] Warning: Removed 8 rows containing missing values or values 
+    outside the scale range (`geom_bar()`).
+[x] If a bar reaches the red field, it means that for this metric model is exceeding the (epsilon, 1/epsilon) range. In this case the DecisionTreeClassifier has one NaN. In this case appropriate message is given (it can be disabled with verbose=False). >> https://dalex.drwhy.ai/python-dalex-fairness.html
+[x] Pagina 1
+  [x] Kopjes van tabellen aanpassen
+  [x] preprocessing > NL term
+[ ] Pagina 2
+  [ ] Kopjes van tabellen aanpassen
+  [ ] preprocessing > NL term
+[x] Plots
+  [x] Opmaak van alle plots in LTA format brengen
+
+[x] Queries
+  [x] Studentpersonas_opleidingen > opheffen en naar functies brengen
+  
+[x] TODO: ID verwijderen uit model
+
+[x] Referenties
+
+[x] Dalex
+  [x] explainer - https://modeloriented.github.io/DALEXtra/reference/explain_tidymodels.html
+  [x] Functie die Dalex omzet naar LTA opmaak
+        [x] title / subtitle
+        [x] caption
+        [x] points in violin plots
+  
+[x] Warnings
+  [x] Levels aanpassen aan wat er in de dataset set
+
+[x] SWE model - Basis
+  [x] Warning for variable 'Cijfer_CE_Natuurkunde':
+simpleWarning in wilcox.test.default(x = DATA[[1L]], y = DATA[[2L]], ...): cannot compute exact p-value with ties
+  [-] Model parameters needing finalization:
+    # Randomly Selected Predictors ('mtry') See `?dials::finalize` or `?dials::update.parameters` for more information.
+  [x] Uitspraak over basemodel klopt niet  
+  [x] Confusion matrix toevoegen
+  [x] ROC curves plots > 2 met kleur maken en labels aanpassen (naam en positie)
+  [x] Most important plots > positie x label aanpassen
+  
+[x] Personas
+  [x] Prototype bestanden van studenten toevoegen
+  [x] Modellen opslaan en in een 1e pagina de explainer toepassen
+  [x] Ook maken voor:
+    [x] geslacht 
+    [x] aansluiting 
+
+[x] Breakdown plot
+  [x] Tabsets -  https://quarto.org/docs/output-formats/html-basics.html
+  [x] Ook werkend krijgen als we uitgaan van bestaande afbeeldingen
+  [x] Volgorde van de tabs kunnen aanpassen 
+  [x] spatie in naamgeving > een dash
+    
+  [x] labels voor Intercept en Voorspelling vet maken
+    [/] Ook maken voor:
+      [x] geslacht 
+      [x] aansluiting 
+      [-] leeftijd vooropleiding
+      [-] SES
+    [-] Violin plot maken voor algemene student
+    [-] Breakdown violin - https://ema.drwhy.ai/breakDown.html
+    [x] prediction > op laatste plek zetten
+    [x] getallen afronden op 1
+    [x] lump als de bijdrage 0 is
+    [x] kleuren toekennen op basis van + of min
+    [x] waarde van overige is niet goed
+    [x] labels toevoegen >> in % omzetten
+    [x] intercept laten lopen van 0 naar de intercept
+    [x] balkje van prediction laten lopen van intercept naar prediction
+    [x] tekst van - beter uitlijnen
+    [x] kleuren van min en plus verbeteren
+    [x] positie van tekst is niet goed
+    [x] Plots bewaren - als ze niet bestaan, anders inlezen of met parameter opnieuw maken
+    [x] Omzetten naar een handige functie
+    [x] Naam moet ook analyses bevatten
+    [x] Opslag zoals bij bbc in plots project
+    [x] Font problemen oplossen
+    [x] Warnings niet tonen
+    [x] Volgorde moet in lijn zijn met de sortering van de elementen
+  
+
+[x] Splitsen van de algemene pagina en verdiepende analyses
+  [x] Bewaar final fits
+  [x] Maak nieuwe pagina voor verdiepende analyse
+
+[x] Extra variabelen
+  [x] Wiskundecijfer -    VOP_Cijfer_SE_proxy_wiskunde
+  [x] Natuurkundecijfer - VOP_Cijfer_schoolexamen_natuurkunde
+  [x] Nederlands -        VOP_Cijfer_schoolexamen_Nederlands
+  [x] Engels -            VOP_Cijfer_schoolexamen_Engels
+  [x] Wel of geen cijfer
+    [x] Wiskunde_Ja_Nee
+    [x] Natuurkunde_Ja_Nee
+    [x] Cijfer Ja_Nee
+    [x] Engels_Ja_Nee
+    [x] Nederlands_Ja_Nee
+
+[x] Andere opleidingen proberen
+  [x] ITD: CMD
+  [x] TIS: IPO
+  [x] GVS: BT/MT
+  [x] SWE: SW
+  [x] BRV: OR DT
+  [x] BFM: AC
+
+[-] 3 extra modellen: 
+    [-] mgcv = general additive model 
+    [-] svm = support vector machine 
+    [-] boost_tree_xgboost
+    [-] decision tree
+  
+[-] Structuur/herhaalbaarheid
+  [-] Algehele opzet wat meer configureerbaar?
+    [-] op basis van https://rpubs.com/mikek25/tidymodels_churn
+    [-] parallel processing toevoegen
+  [-] https://forum.posit.co/t/error-in-tidymodels-tune-grid-function-call/54150
+  
+[x] Waarschijnlijk werkt de final fit niet goed bij lr
+[x] Dubbele studie > omkatten naar Ja / Nee
+
+[x] Corplot voor hoge correlaties  
+  
+[x] Meer variabelen?
+    [x] Bij HDT: RNK_Rangnummer
+    [x] BUI_Internationale_student_tf
+    [x] > GIS - is dit mijn variabele of die van OKC?
+    [x] SES_Deelscore_arbeid
+    [-] SES_Deelscore_opleiding
+    [x] SES_Deelscore_welvaart
+    [x] VOP_Gemiddeld_cijfer_cijferlijst
+    
+[x] Teksten
+  [x] Conclusies ook configureren
+  
+[x] Plots  
+  [x] De VIP plot kan een stuk beter: kleuren en met aantallen als labels  
+
+[x] Warning: `validation_split()` was deprecated in rsample 1.2.0. ℹ Please use `initial_validation_split()` instead.
+
+[x] Modellen
+  [x] rf: uitzoeken hoe we mtry en min_n bepalen
+  [-] Grouped model (op basis van vooropleiding met of zonder cijfer)
+  
+  [x] Het finale model kunnen kiezen op basis van de beste hyperparameters
+    [x] Hoogste auc bepalen
+    [x] Wisselen van tekst als het model anders is (voorbeeldopleiding hiervoor vinden)
+  
+  [x] Opties
+    [x] Elk model aan of uit kunnen zetten
+    [x] Aan het eind van een model de resultaten in een df zetten 
+    [x] Dit df gebruiken voor teksten
+    [x] Rekening houden met de teksten
+
+[x] Variabelen
+  [x] Eindexamencijfer toevoegen
+  [x] Reistijd toevoegen 
+  [x] Impute missing values voor SES > als stap in de pipeline uitgeprobeerd, maar geeft problemen
+  [x] Verwijder hoog gecorreleerde plots >> geeft problemen en kan alleen met glmnet/lr; voorlopig niet
+  [x] https://stackoverflow.com/questions/69074437/verify-model-assumptions-with-tidymodels
+  [x] Titel bepalen door params
+  [x] Ondertitel bepalen door params
+  [x] Op basis van soort uitval ook de html outputfile aanpassen
+
+[x] Modellen
+  [-] In de split rekening houden met Collegejaren: het laatste jaar moet eigenlijk de validatieset zijn
+  [-] predict; zie https://www.tidymodels.org/start/recipes/
+  [x] uitval na 2 jaar kunnen instellen
+  
+[x] Teksten
+  [x] tekst van de conclusies automatisch genereren
+  [x] Sensitivity en 1-Specificity toelichten
+  [x] beter of slechter teksten automatisch genereren
+  [-] Kleurtje voor de conclusies
+  [x] Meer duiding bij samenstelling van de groepen > one table?
+  [x] Bij een basemodel lager dan 50% andere tekst.
+
+[x] Tables
+  [x] Naast N ook % bij TRUE/FALSE
+  [x] TRUE/FALSE vervangen door Ja/Nee
+  [x] Sorteer volgorde skp in lijn met profielen van havo/vwo en mbo
+
+[x] Plots  
+
+[x] Output/Layout
+  [x] Ipv Table of Contents: Inhoudsopgave
+    [x] Links naar pagina's van het lectoraat
+  [x] Logo's van HHs en GIL
+  [-] Standaardtekst over LTA met copyright
+  [-] Output naar een aparte folder
+  [x] Een algemene footer met copyright
+
+[x] Project
+  [x] Index vereenvoudigen door met includes te werken voor de R code
+  [x] Includes voor delen van de index
+
+[x] Meerdere opleidingen
+  [x] dfOpleidingen gebruiken voor het ophalen van basisinformatie
+      [x] params zetten en dan met behulp van 
+        [x] rmarkdown::render("document.qmd", params = list(titel = "Nieuwe Titel")) (ChatGPT) >
+        eigen functie gevonden en die toegepast;
+        [-] eventueel met post render iets doen: https://github.com/quarto-dev/quarto-cli/discussions/5261
