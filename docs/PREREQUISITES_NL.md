@@ -27,9 +27,9 @@ project.
 
 ## 🚀 Aan de slag
 
-Deze instructies zorgen ervoor dat je een kopie van het project op je
-lokale machine kunt installeren om bij de workshop op 10 maart snel aan
-de slag te kunnen.
+Deze instructies zorgen ervoor dat je een repository van het project op
+je lokale machine kunt installeren om bij de workshop op 10 maart snel
+aan de slag te kunnen.
 
 ### Vereisten
 
