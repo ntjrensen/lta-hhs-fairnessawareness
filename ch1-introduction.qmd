@@ -1,0 +1,126 @@
+---
+subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.model >}})"
+
+# Format and output
+output-file: "ch1-introduction.html"
+
+# Parameters
+params:
+  versie: "1.0"
+  succes: "Retentie na 1 jaar"
+  model: "Retentie na 1 jaar"
+  propedeusediploma: "Nvt"
+  use_synthetic_data: true
+  recreateplots: false
+  instroomselectie: false
+  opleiding: "CMD"
+  opleidingsvorm_afkorting: "VT"
+  
+# Content
+includes:
+  inleiding:      true
+  model_lr:       true
+  model_rf:       true
+  model_svm:      false
+  final_fit:      true
+  conclusions:    true
+  contact:        true
+  justification:  true
+  copyright:      true
+---
+
+<!-- Title -->
+
+# Inleiding
+
+```{r setup}
+#| label: setup
+#| echo: false
+#| include: false
+
+# Current file
+sCurrent_file <- "ch1-introduction.qmd"
+
+# Include the _Setup.R file
+source("_Setup.R")
+
+```
+
+<!-- Introduction -->
+
+<!-- HEADER -->
+
+<!-- Studyprogram -->
+{{< include R/qmd/header-studyprogram.qmd >}}
+
+<!-- BODY -->
+
+## Onderzoek naar kansengelijkheid
+
+Het lectoraat Learning Technology & Analytics (LTA) van De Haagse Hogeschool heeft tot doel kansengelijkheid voor studenten te verhogen met behulp van learning analytics en inzet van learning technology.
+
+Het lectoraat heeft een onderzoeksmethode ontwikkeld om te kunnen analyseren of er sprake is van bias in studiedata in relatie tot het succes van studenten, wat een indicatie kan zijn van een gebrek aan kansengelijkheid. Deze methode gebruikt prognosemodellen op basis van machine learning. Een prognosemodel is dus niet een doel op zich, maar het instrument voor een analyse van kansengelijkheid, ook wel een *fairness* analyse genoemd.
+
+Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken op 21 november 2024, getiteld: '[No Fairness without Awareness. Toegepast onderzoek naar kansengelijkheid in het hoger onderwijs. Intreerede lectoraat Learning Technology & Analytics.](https://zenodo.org/records/14204674)' [@Bakker.2024-intreerede]. Zie voor een verdere toelichting op het gehele onderzoeksprogramma: '[No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness)'.
+
+## Het nut van prognosemodellen
+
+Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de **retentie** van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen. Denk aan een betere voorlichting, onboarding, begeleiding of ontwikkeling van het onderwijs. 
+
+::: {.content-visible when-profile="advanced-report"}
+Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse ``r tolower(params$succes)`` als uitkomstvariabele nemen.
+:::
+
+::: {.callout-warning appearance="default" icon="true"}
+## Disclaimer
+
+De prognosemodellen die we in deze analyses ontwikkelen zijn bedoeld om de dynamiek in het studiesucces van studenten een opleiding beter te begrijpen om kansengelijkheid te bevorderen.
+
+**Deze modellen mogen op geen enkele wijze gebruikt worden om individuele studenten te beoordelen of hun succes te voorspellen.**
+:::
+
+## Opbouw analyse
+
+::: {.content-visible when-profile="basic-report"}
+Deze analyse kent verder twee hoofdstukken:
+
+-   **Hoofdstuk 2: Kansengelijkheid** - De uitkomsten van analyse op bias en kansengelijkheid.
+-   **Hoofdstuk 3: Factoranalyse** - Een verdiepende analyse op de achterliggende factoren.
+
+Voor een diepgaande toelichting op de achterliggende voorspelmodellen en berekening van bias is een geavanceerde analyse beschikbaar.
+:::
+
+::: {.content-visible when-profile="advanced-report"}
+Deze analyse kent drie hoofdstukken:
+
+-   **Hoofdstuk 2: Kansengelijkheid** - De uitkomsten van analyse op bias en kansengelijkheid.
+-   **Hoofdstuk 3: Factoranalyse** - Een verdiepende analyse op de achterliggende factoren.
+-   **Hoofdstuk 4: Prognosemodel `r tolower(params$model)`** - De ontwikkeling van een aantal achterliggende prognosemodellen om `r tolower(params$model)` te voorspellen, waaruit het best presterende model wordt gekozen.
+:::
+
+<!-- Contact -->
+
+::: {.content-hidden unless-meta="includes.contact"}
+{{< include R/qmd/footer-contact.qmd >}}
+:::
+
+<!-- FOOTER -->
+
+<!-- Justification -->
+
+::: {.content-hidden unless-meta="includes.justification"}
+{{< include R/qmd/footer-justification.qmd >}}
+:::
+
+<!-- Copyright -->
+
+::: {.content-hidden unless-meta="includes.copyright"}
+{{< include R/qmd/footer-copyright.qmd >}}
+:::
+
+<!-- Cleaning up -->
+
+```{r}
+#| label: cleanup
+#| echo: false
+```

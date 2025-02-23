@@ -1,0 +1,80 @@
+---
+subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.model >}})"
+
+# Parameters
+params:
+  versie: "1.0"
+  succes: "Retentie na 1 jaar"
+  model: "Retentie na 1 jaar"
+  propedeusediploma: "Nvt"
+  use_synthetic_data: true
+  recreateplots: false
+  opleiding: "CMD"
+  opleidingsvorm_afkorting: "VT"
+  instroomselectie: false
+  
+# Content
+includes:
+  inleiding:      true
+  model_lr:       true
+  model_rf:       true
+  model_svm:      false
+  final_fit:      true
+  conclusions:    true
+  contact:        true
+  justification:  true
+  copyright:      true
+---
+
+# Samenvatting {.unnumbered}
+
+```{r setup}
+#| label: setup
+#| echo: false
+#| include: false
+
+# Current file
+sCurrent_file <- "index.qmd"
+
+# Include the _Setup.R file
+source("_Setup.R")
+
+```
+
+<!-- Introduction -->
+
+<!-- HEADER -->
+
+<!-- Studyprogram -->
+::: {.content-visible unless-profile="advanced-report"}
+{{< include R/qmd/header-studyprogram.qmd >}}
+:::
+
+<!-- BODY -->
+
+<!-- Equity conclusions -->
+::: {.content-visible unless-profile="advanced-report"}
+## Samenvatting analyse kansengelijkheid
+{{< include R/qmd/equity-conclusions.qmd >}}
+
+Zie voor een verdere onderbouwing van deze uitkomsten de volgende hoofdstukken in de analyse.
+:::
+
+::: {.content-visible when-profile="advanced-report"}
+## Base model is opgebouwd
+In dit profiel worden alle modellen ontwikkeld en afbeeldingen gebouwd.
+:::
+
+<!-- FOOTER -->
+
+<!-- Contact -->
+
+::: {.content-hidden unless-meta="includes.contact"}
+{{< include R/qmd/footer-contact.qmd >}}
+:::
+
+<!-- Copyright -->
+
+::: {.content-hidden unless-meta="includes.copyright"}
+{{< include R/qmd/footer-copyright.qmd >}}
+:::

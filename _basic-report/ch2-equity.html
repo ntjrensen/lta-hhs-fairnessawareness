@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="nl" xml:lang="nl"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.39">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Analyse van kansengelijkheid – No Fairness without Awareness</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./ch3-factors.html" rel="next">
+<link href="./ch1-introduction.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-d297743d6b37f23efc101d6e93fd1392.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Geen resultaten",
+    "search-matching-documents-text": "Gevonden documenten",
+    "search-copy-link-title": "Kopieer link om te zoeken",
+    "search-hide-matches-text": "Extra overeenkomsten verbergen",
+    "search-more-match-text": "meer overeenkomst in dit document",
+    "search-more-matches-text": "meer overeenkomsten in dit document",
+    "search-clear-button-title": "Wissen",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Annuleren",
+    "search-submit-button-title": "Verzenden",
+    "search-label": "Zoeken"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script async="" src="https://hypothes.is/embed.js"></script>
+<script>
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    document.body.classList.add('hypothesis-enabled');
+  });
+</script>
+<link href="site_libs/tabwid-1.1.3/tabwid.css" rel="stylesheet">
+<script src="site_libs/tabwid-1.1.3/tabwid.js"></script>
+
+
+</head>
+
+<body class="nav-sidebar floating nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">No Fairness without Awareness</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Zoeken"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Schakel navigatie" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.dehaagsehogeschool.nl/onderzoek/centres-expertise/no-fairness-without-awareness"> <i class="bi bi-info-square" role="img" aria-label="Over het onderzoek No Fairness without Awareness">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+    <a href="https://github.com/LTA-HHs/lta-hhs-tidymodels-studiesucces/" title="Broncode" class="quarto-navigation-tool px-1" aria-label="Broncode"><i class="bi bi-github"></i></a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Schakel zijbalknavigatie" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Schakel zijbalknavigatie" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title"><span id="sec-kansengelijkheid" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Analyse van kansengelijkheid</span></span></h1>
+        </a>     
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Samenvatting</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Analyse</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Schakel sectie">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch1-introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Inleiding</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch2-equity.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Analyse van kansengelijkheid</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch3-factors.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Analyse van factoren</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch5-references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Referenties</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Bijlagen</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Schakel sectie">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./x-a-appendix-abbreviations.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">A</span>&nbsp; <span class="chapter-title">Afkortingen</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Inhoudsopgave</h2>
+   
+  <ul>
+  <li><a href="#inleiding" id="toc-inleiding" class="nav-link active" data-scroll-target="#inleiding"><span class="header-section-number">2.1</span> Inleiding</a></li>
+  <li><a href="#analyse-van-kansengelijkheid" id="toc-analyse-van-kansengelijkheid" class="nav-link" data-scroll-target="#analyse-van-kansengelijkheid"><span class="header-section-number">2.2</span> Analyse van kansengelijkheid</a>
+  <ul class="collapse">
+  <li><a href="#aantallen-en-percentages-per-groep" id="toc-aantallen-en-percentages-per-groep" class="nav-link" data-scroll-target="#aantallen-en-percentages-per-groep"><span class="header-section-number">2.2.1</span> Aantallen en percentages per groep</a></li>
+  <li><a href="#verdeling-van-kansen" id="toc-verdeling-van-kansen" class="nav-link" data-scroll-target="#verdeling-van-kansen"><span class="header-section-number">2.2.2</span> Verdeling van kansen</a></li>
+  </ul></li>
+  <li><a href="#conclusies" id="toc-conclusies" class="nav-link" data-scroll-target="#conclusies"><span class="header-section-number">2.3</span> Conclusies</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/LTA-HHs/lta-hhs-tidymodels-studiesucces/issues/new" class="toc-action"><i class="bi bi-github"></i>Een probleem melden</a></li></ul></div><div class="quarto-other-links"><h2>Meer informatie</h2><ul><li><a href="https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics"><i class="bi bi-link-45deg"></i>Over het lectoraat Learning Technology &amp; Analytics</a></li><li><a href="https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness"><i class="bi bi-link-45deg"></i>Over het onderzoeksprogramma 'No Fairness without Awareness'</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span id="sec-kansengelijkheid" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Analyse van kansengelijkheid</span></span></h1>
+<p class="subtitle lead">Een analyse van kansengelijkheid in studiesucces (Retentie na 1 jaar)</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- Title -->
+<!-- HEADER -->
+<!-- Studyprogram short -->
+<p><strong>Communication and Multimedia Design</strong> (CMD), voltijd, eerstejaars, Faculteit IT &amp; Design (ITD).</p>
+<p>&nbsp;</p>
+<!-- Introduction -->
+<section id="inleiding" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="inleiding"><span class="header-section-number">2.1</span> Inleiding</h2>
+<p>In dit hoofdstuk gaan we in op de onderwerpen bias, fairness en kansengelijkheid. Het doel is beter te begrijpen of er studenten zijn met minder kans op succes en of dit disproportioneel is. Dit kan duiden op kansenongelijkheid.</p>
+<!-- Data -->
+<!-- Equity of opportunity -->
+</section>
+<section id="analyse-van-kansengelijkheid" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="analyse-van-kansengelijkheid"><span class="header-section-number">2.2</span> Analyse van kansengelijkheid</h2>
+<p>We onderzoeken kansengelijkheid door bias in de data te onderzoeken. Dit wordt ook wel een <em>fairness analyse</em> genoemd. Bias voor verschillende groepen studenten kan een teken zijn van kansenongelijkheid.</p>
+<p>De volgende <strong>definities</strong> zijn van belang:</p>
+<ul>
+<li><strong>Bevoorrechte groep</strong>: Een groep die als referentiegroep wordt beschouwd en mogelijk bevoordeeld wordt. Dit is in deze analyse altijd de meerderheidsgroep (bijv. vrouwen). Welke dit is per opleiding kan verschillen.</li>
+<li><strong>Beschermde groep</strong>: Een groep waarvan wordt verwacht dat deze mogelijk benadeeld wordt (bijv. mannen). Dit zijn in deze analyse, afhankelijke van de variabele, altijd een of meer minderheidsgroepen.</li>
+</ul>
+<!-- Explanation of confusion matrix -->
+<!-- Numbers and percentages by group -->
+<section id="aantallen-en-percentages-per-groep" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="aantallen-en-percentages-per-groep"><span class="header-section-number">2.2.1</span> Aantallen en percentages per groep</h3>
+<p>Voor de variabelen <code>Geslacht</code>, <code>Aansluiting</code> en <code>Vooropleiding</code> is de verdeling binnen deze opleiding als volgt:</p>
+<div id="tbl-amount-and-percentages-per-group" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-amount-and-percentages-per-group-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabel&nbsp;2.1: Aantallen en percentages naar geslacht, aansluiting en vooropleiding in relatie tot retentie
+</figcaption>
+<div aria-describedby="tbl-amount-and-percentages-per-group-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="tabwid"><style>.cl-4fcab1f2{table-layout:auto;width:80%;}.cl-4fc7672c{font-family:'Helvetica';font-size:8pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4fc76740{font-family:'Helvetica';font-size:8pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-4fc76741{font-family:'Helvetica';font-size:4.8pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;position: relative;bottom:2.4pt;}.cl-4fc89b10{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:0;padding-top:0;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4fc89b11{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:0;padding-top:0;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4fc89b1a{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:0;padding-top:0;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4fc89b1b{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:0;padding-top:0;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4fc89b24{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:0;padding-top:0;padding-left:15pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-4fc8a9d4{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9de{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9df{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9e8{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9e9{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9ea{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9eb{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9f2{background-color:transparent;vertical-align: middle;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9f3{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9f4{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9fc{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9fd{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9fe{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8a9ff{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa06{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa07{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa08{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa10{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa11{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa1a{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa1b{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa1c{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa1d{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa24{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa25{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa26{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa2e{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa2f{background-color:transparent;vertical-align: top;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa30{background-color:transparent;vertical-align: top;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa38{background-color:transparent;vertical-align: top;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa39{background-color:transparent;vertical-align: top;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa3a{background-color:transparent;vertical-align: top;border-bottom: 1pt solid rgba(0, 0, 0, 1.00);border-top: 1pt solid rgba(190, 190, 190, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa42{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa43{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa44{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-4fc8aa4c{background-color:transparent;vertical-align: middle;border-bottom: 0 solid rgba(255, 255, 255, 0.00);border-top: 0 solid rgba(255, 255, 255, 0.00);border-left: 0 solid rgba(255, 255, 255, 0.00);border-right: 0 solid rgba(255, 255, 255, 0.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-4fcab1f2"><thead><tr style="overflow-wrap:break-word;"><th colspan="3" class="cl-4fc8a9d4"><p class="cl-4fc89b10"><span class="cl-4fc7672c"> </span></p></th><th colspan="2" class="cl-4fc8a9df"><p class="cl-4fc89b11"><span class="cl-4fc76740">Retentie na 1 jaar</span></p></th><th class="cl-4fc8a9e8"><p class="cl-4fc89b11"><span class="cl-4fc7672c"> </span></p></th></tr><tr style="overflow-wrap:break-word;"><th class="cl-4fc8a9e9"><p class="cl-4fc89b10"><span class="cl-4fc76740">Variabele</span></p></th><th class="cl-4fc8a9ea"><p class="cl-4fc89b11"><span class="cl-4fc76740">N</span></p></th><th class="cl-4fc8a9eb"><p class="cl-4fc89b11"><span class="cl-4fc76740">Totaal</span><span class="cl-4fc7672c">  </span><br><span class="cl-4fc7672c">N = 1.613</span><span class="cl-4fc76741">1</span></p></th><th class="cl-4fc8a9eb"><p class="cl-4fc89b11"><span class="cl-4fc76740">Ja</span><span class="cl-4fc7672c">  </span><br><span class="cl-4fc7672c">N = 1.002</span><span class="cl-4fc76741">1</span></p></th><th class="cl-4fc8a9eb"><p class="cl-4fc89b11"><span class="cl-4fc76740">Nee</span><span class="cl-4fc7672c">  </span><br><span class="cl-4fc7672c">N = 611</span><span class="cl-4fc76741">1</span></p></th><th class="cl-4fc8a9f2"><p class="cl-4fc89b11"><span class="cl-4fc76740">p-value</span><span class="cl-4fc76741">2</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9f3"><p class="cl-4fc89b1a"><span class="cl-4fc76740">Geslacht</span></p></td><td class="cl-4fc8a9f4"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">1.613</span></p></td><td class="cl-4fc8a9fc"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8a9fc"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8a9fc"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8a9fd"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">&lt;0,001***</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">M</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">915 (57%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">521 (52%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">394 (64%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">V</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">698 (43%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">481 (48%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">217 (36%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8aa08"><p class="cl-4fc89b1a"><span class="cl-4fc76740">Aansluiting</span></p></td><td class="cl-4fc8aa10"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">1.613</span></p></td><td class="cl-4fc8aa11"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa11"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa11"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa1a"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">&lt;0,001***</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">Direct</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">756 (47%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">455 (45%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">301 (49%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">Tussenjaar</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">176 (11%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">125 (12%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">51 (8,3%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">Switch intern</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">202 (13%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">148 (15%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">54 (8,8%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">Switch extern</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">445 (28%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">254 (25%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">191 (31%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">2e Studie</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">15 (0,9%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">6 (0,6%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">9 (1,5%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">Na CD</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">19 (1,2%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">14 (1,4%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">5 (0,8%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8aa1b"><p class="cl-4fc89b24"><span class="cl-4fc7672c">Overig</span></p></td><td class="cl-4fc8aa1c"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa1d"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa1d"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa1d"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa24"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">Onbekend</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8aa25"><p class="cl-4fc89b1a"><span class="cl-4fc76740">Vooropleiding</span></p></td><td class="cl-4fc8aa26"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">1.613</span></p></td><td class="cl-4fc8aa2e"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa2e"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa2e"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa2f"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0,013*</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">MBO</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">522 (32%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">330 (33%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">192 (31%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">HAVO</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">860 (53%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">548 (55%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">312 (51%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">VWO</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">58 (3,6%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">34 (3,4%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">24 (3,9%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">BD</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">92 (5,7%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">42 (4,2%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">50 (8,2%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">CD</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">30 (1,9%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">21 (2,1%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">9 (1,5%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8a9fe"><p class="cl-4fc89b24"><span class="cl-4fc7672c">HO</span></p></td><td class="cl-4fc8a9ff"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">51 (3,2%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">27 (2,7%)</span></p></td><td class="cl-4fc8aa06"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">24 (3,9%)</span></p></td><td class="cl-4fc8aa07"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8aa1b"><p class="cl-4fc89b24"><span class="cl-4fc7672c">Overig</span></p></td><td class="cl-4fc8aa1c"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa1d"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa1d"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa1d"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa24"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-4fc8aa30"><p class="cl-4fc89b24"><span class="cl-4fc7672c">Onbekend</span></p></td><td class="cl-4fc8aa38"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td><td class="cl-4fc8aa39"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa39"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa39"><p class="cl-4fc89b1b"><span class="cl-4fc7672c">0 (0%)</span></p></td><td class="cl-4fc8aa3a"><p class="cl-4fc89b1b"><span class="cl-4fc7672c"></span></p></td></tr></tbody><tfoot><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-4fc8aa42"><p class="cl-4fc89b10"><span class="cl-4fc76741">1</span><span class="cl-4fc7672c">n (%)</span></p></td></tr><tr style="overflow-wrap:break-word;"><td colspan="6" class="cl-4fc8aa42"><p class="cl-4fc89b10"><span class="cl-4fc76741">2</span><span class="cl-4fc7672c">*p&lt;0.05; **p&lt;0.01; ***p&lt;0.001</span></p></td></tr></tfoot></table></div>
+</div>
+</figure>
+</div>
+<!-- Distribution of opportunities by group -->
+</section>
+<section id="verdeling-van-kansen" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="verdeling-van-kansen"><span class="header-section-number">2.2.2</span> Verdeling van kansen</h3>
+<p>Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we de <em>verdeling van de kansen</em> op retentie voor verschillende groepen studenten voor Geslacht, Aansluiting en Vooropleiding. De verdeling van deze kansen is uniek per opleiding.</p>
+<p><strong>Toelichting</strong></p>
+<ul>
+<li>De verdeling van de kansen is te zien door de <em>boxplot</em> en de <em>violin plot</em>.</li>
+<li>De boxplot geeft de vier quartielen aan van de data: de box staat voor de middelste 50% van de data, met een streep die de mediaan aangeeft (de middelste waarde van de data). De lijnen (<em>whiskers</em>) geven de 1e 25% en laatste 25% van de data.</li>
+<li>De boxplot wordt gecombineerd met de violin plot, waarbij de breedte van de violin de dichtheid van de data aangeeft. Het kan zijn dat het lijkt alsof er geen violin is; in dat geval is de verdeling van het aantal studenten zeer breed en de violin vorm daardoor heel smal.</li>
+<li>Samen geven deze twee visualisaties een goed beeld van de verdeling van de voorspelde kansen van het model.</li>
+<li>De blauwe gestippelde lijn geeft de 50% kans aan; alle waarden die boven deze lijn vallen hebben een kans van 50% of meer op retentie. Hiervan voorspelt het model dat zij zeker doorstuderen. Deze grenslijn kan door de verdeling van groepen heen lopen. Bedenk in zo’n situatie dat voor een deel van de studenten het model voorspelt dat zij juist wel doorstromen (50% of meer) of juist niet (minder dan 50%).</li>
+</ul>
+<section id="geslacht" class="level4" data-number="2.2.2.1">
+<h4 data-number="2.2.2.1" class="anchored" data-anchor-id="geslacht"><span class="header-section-number">2.2.2.1</span> Geslacht</h4>
+<div id="fig-fairness-check-geslacht" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fairness-check-geslacht-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="_output/itd/b-cmd-vt-synth/plots/density_plot_geslacht_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figuur&nbsp;2.1: Verdeling en dichtheid van kans op retentie naar geslacht"><img src="_output/itd/b-cmd-vt-synth/plots/density_plot_geslacht_random_forest.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fairness-check-geslacht-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figuur&nbsp;2.1: Verdeling en dichtheid van kans op retentie naar geslacht
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="aansluiting" class="level4" data-number="2.2.2.2">
+<h4 data-number="2.2.2.2" class="anchored" data-anchor-id="aansluiting"><span class="header-section-number">2.2.2.2</span> Aansluiting</h4>
+<div id="fig-fairness-check-aansluiting" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fairness-check-aansluiting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="_output/itd/b-cmd-vt-synth/plots/density_plot_aansluiting_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figuur&nbsp;2.2: Verdeling en dichtheid van kans op retentie naar aansluiting"><img src="_output/itd/b-cmd-vt-synth/plots/density_plot_aansluiting_random_forest.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fairness-check-aansluiting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figuur&nbsp;2.2: Verdeling en dichtheid van kans op retentie naar aansluiting
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="vooropleiding" class="level4" data-number="2.2.2.3">
+<h4 data-number="2.2.2.3" class="anchored" data-anchor-id="vooropleiding"><span class="header-section-number">2.2.2.3</span> Vooropleiding</h4>
+<div id="fig-fairness-check-vooropleiding" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-fairness-check-vooropleiding-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="_output/itd/b-cmd-vt-synth/plots/density_plot_vooropleiding_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figuur&nbsp;2.3: Verdeling en dichtheid van kans op retentie naar vooropleiding"><img src="_output/itd/b-cmd-vt-synth/plots/density_plot_vooropleiding_random_forest.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-fairness-check-vooropleiding-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figuur&nbsp;2.3: Verdeling en dichtheid van kans op retentie naar vooropleiding
+</figcaption>
+</figure>
+</div>
+<!-- Equity conclusions -->
+</section>
+</section>
+</section>
+<section id="conclusies" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="conclusies"><span class="header-section-number">2.3</span> Conclusies</h2>
+<p>De uitkomsten van de kansengelijkheidsanalyse is:</p>
+<!-- Tekstuele samenvatting -->
+<ol type="1">
+<li><strong>Geslacht</strong>: Er is sprake van bias in Retentie na 1 jaar op basis van geslacht. Er is een positieve bias voor vrouwen (V: N = 698, 43,3%).</li>
+<li><strong>Aansluiting</strong>: Er is sprake van bias in Retentie na 1 jaar op basis van aansluiting. Er is een negatieve bias voor studenten die twee of meer studies volgen (2e Studie: N = 15, 0,9%).<br>
+</li>
+<li><strong>Vooropleiding</strong>: Er is sprake van bias in Retentie na 1 jaar op basis van vooropleiding. Er is een negatieve bias voor studenten met een buitenlands diploma (BD: N = 92, 5,7%).</li>
+</ol>
+<!-- Tabel samenvatting -->
+<div id="tbl-fairness-conclusions" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-fairness-conclusions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabel&nbsp;2.2: Fairness conclusies per groep
+</figcaption>
+<div aria-describedby="tbl-fairness-conclusions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="tabwid"><style>.cl-513bdff2{}.cl-5138f0da{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-5138f0e4{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:italic;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-5138f0e5{font-family:'Helvetica';font-size:11pt;font-weight:normal;font-style:normal;text-decoration:none;color:rgba(0, 0, 0, 1.00);background-color:transparent;}.cl-5138f0ee{font-family:'Helvetica';font-size:11pt;font-weight:bold;font-style:normal;text-decoration:none;color:rgba(255, 255, 255, 1.00);background-color:transparent;}.cl-513a02ea{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-513a02eb{margin:0;text-align:left;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-513a02f4{margin:0;text-align:center;border-bottom: 0 solid rgba(0, 0, 0, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);padding-bottom:5pt;padding-top:5pt;padding-left:5pt;padding-right:5pt;line-height: 1;background-color:transparent;}.cl-513a0efc{width:1.22in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0efd{width:1.202in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0efe{width:0.54in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0eff{width:0.583in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f00{width:0.608in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f06{width:1.032in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f07{width:1.372in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f08{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 1.5pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f10{width:1.22in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f11{width:1.202in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f12{width:0.54in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f1a{width:0.583in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f1b{width:0.608in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f24{width:1.032in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f25{width:1.372in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f26{width:1.321in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0 solid rgba(0, 0, 0, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f2e{width:1.22in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f2f{width:1.202in;background-color:rgba(157, 191, 158, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f30{width:0.54in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f38{width:0.583in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f39{width:0.608in;background-color:rgba(157, 191, 158, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f3a{width:1.032in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f42{width:1.372in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f43{width:1.321in;background-color:rgba(157, 191, 158, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f44{width:1.22in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f4c{width:1.202in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f4d{width:0.54in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f4e{width:0.583in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f56{width:0.608in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f57{width:1.032in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f58{width:1.372in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f59{width:1.321in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f60{width:1.202in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f61{width:0.54in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f6a{width:0.583in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f6b{width:0.608in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f6c{width:1.032in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f74{width:1.372in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f75{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f76{width:1.202in;background-color:rgba(168, 66, 104, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f77{width:0.608in;background-color:rgba(168, 66, 104, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f7e{width:1.372in;background-color:rgba(168, 66, 104, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f7f{width:1.22in;background-color:transparent;vertical-align: top;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f80{width:1.202in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f88{width:0.54in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f89{width:0.583in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f8a{width:0.608in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f8b{width:1.032in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f8c{width:1.372in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f92{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f93{width:1.22in;background-color:transparent;vertical-align: top;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f94{width:1.202in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f95{width:0.54in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f96{width:0.583in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f9c{width:0.608in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f9d{width:1.032in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0f9e{width:1.372in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0fa6{width:1.321in;background-color:rgba(229, 229, 229, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0fa7{width:1.202in;background-color:rgba(168, 66, 104, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0fa8{width:0.608in;background-color:rgba(168, 66, 104, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0fa9{width:1.372in;background-color:rgba(168, 66, 104, 1.00);vertical-align: middle;border-bottom: 0.75pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0fb0{width:1.202in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0fb1{width:0.54in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0fb2{width:0.583in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0fb3{width:0.608in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0fba{width:1.032in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0fbb{width:1.372in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}.cl-513a0fbc{width:1.321in;background-color:transparent;vertical-align: middle;border-bottom: 1.5pt solid rgba(102, 102, 102, 1.00);border-top: 0.75pt solid rgba(102, 102, 102, 1.00);border-left: 0 solid rgba(0, 0, 0, 1.00);border-right: 0 solid rgba(0, 0, 0, 1.00);margin-bottom:0;margin-top:0;margin-left:0;margin-right:0;}</style><table data-quarto-disable-processing="true" class="cl-513bdff2"><thead><tr style="overflow-wrap:break-word;"><th class="cl-513a0efc"><p class="cl-513a02ea"><span class="cl-5138f0da">Variabele</span></p></th><th class="cl-513a0efd"><p class="cl-513a02eb"><span class="cl-5138f0da">Groep</span></p></th><th class="cl-513a0efe"><p class="cl-513a02f4"><span class="cl-5138f0da">N</span></p></th><th class="cl-513a0eff"><p class="cl-513a02f4"><span class="cl-5138f0da">%</span></p></th><th class="cl-513a0f00"><p class="cl-513a02f4"><span class="cl-5138f0da">Bias</span></p></th><th class="cl-513a0f06"><p class="cl-513a02f4"><span class="cl-5138f0da">Geen Bias</span></p></th><th class="cl-513a0f07"><p class="cl-513a02f4"><span class="cl-5138f0da">Negatieve Bias</span></p></th><th class="cl-513a0f08"><p class="cl-513a02f4"><span class="cl-5138f0da">Positieve Bias</span></p></th></tr></thead><tbody><tr style="overflow-wrap:break-word;"><td rowspan="2" class="cl-513a0f10"><p class="cl-513a02ea"><span class="cl-5138f0e4">Geslacht</span></p></td><td class="cl-513a0f11"><p class="cl-513a02eb"><span class="cl-5138f0e5">M</span></p></td><td class="cl-513a0f12"><p class="cl-513a02f4"><span class="cl-5138f0e5">915</span></p></td><td class="cl-513a0f1a"><p class="cl-513a02f4"><span class="cl-5138f0e5">56,7</span></p></td><td class="cl-513a0f1b"><p class="cl-513a02f4"><span class="cl-5138f0e5">NTB</span></p></td><td class="cl-513a0f24"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0f25"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0f26"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-513a0f2f"><p class="cl-513a02eb"><span class="cl-5138f0ee">V</span></p></td><td class="cl-513a0f30"><p class="cl-513a02f4"><span class="cl-5138f0e5">698</span></p></td><td class="cl-513a0f38"><p class="cl-513a02f4"><span class="cl-5138f0e5">43,3</span></p></td><td class="cl-513a0f39"><p class="cl-513a02f4"><span class="cl-5138f0ee">Ja</span></p></td><td class="cl-513a0f3a"><p class="cl-513a02f4"><span class="cl-5138f0e5">3</span></p></td><td class="cl-513a0f42"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0f43"><p class="cl-513a02f4"><span class="cl-5138f0ee">2</span></p></td></tr><tr style="overflow-wrap:break-word;"><td rowspan="6" class="cl-513a0f44"><p class="cl-513a02ea"><span class="cl-5138f0e4">Aansluiting</span></p></td><td class="cl-513a0f4c"><p class="cl-513a02eb"><span class="cl-5138f0e5">Direct</span></p></td><td class="cl-513a0f4d"><p class="cl-513a02f4"><span class="cl-5138f0e5">756</span></p></td><td class="cl-513a0f4e"><p class="cl-513a02f4"><span class="cl-5138f0e5">46,9</span></p></td><td class="cl-513a0f56"><p class="cl-513a02f4"><span class="cl-5138f0e5">NTB</span></p></td><td class="cl-513a0f57"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0f58"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0f59"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-513a0f60"><p class="cl-513a02eb"><span class="cl-5138f0e5">Tussenjaar</span></p></td><td class="cl-513a0f61"><p class="cl-513a02f4"><span class="cl-5138f0e5">176</span></p></td><td class="cl-513a0f6a"><p class="cl-513a02f4"><span class="cl-5138f0e5">10,9</span></p></td><td class="cl-513a0f6b"><p class="cl-513a02f4"><span class="cl-5138f0e5">Nee</span></p></td><td class="cl-513a0f6c"><p class="cl-513a02f4"><span class="cl-5138f0e5">5</span></p></td><td class="cl-513a0f74"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0f75"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-513a0f60"><p class="cl-513a02eb"><span class="cl-5138f0e5">Switch intern</span></p></td><td class="cl-513a0f61"><p class="cl-513a02f4"><span class="cl-5138f0e5">202</span></p></td><td class="cl-513a0f6a"><p class="cl-513a02f4"><span class="cl-5138f0e5">12,5</span></p></td><td class="cl-513a0f6b"><p class="cl-513a02f4"><span class="cl-5138f0e5">Nee</span></p></td><td class="cl-513a0f6c"><p class="cl-513a02f4"><span class="cl-5138f0e5">5</span></p></td><td class="cl-513a0f74"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0f75"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-513a0f60"><p class="cl-513a02eb"><span class="cl-5138f0e5">Switch extern</span></p></td><td class="cl-513a0f61"><p class="cl-513a02f4"><span class="cl-5138f0e5">445</span></p></td><td class="cl-513a0f6a"><p class="cl-513a02f4"><span class="cl-5138f0e5">27,6</span></p></td><td class="cl-513a0f6b"><p class="cl-513a02f4"><span class="cl-5138f0e5">Nee</span></p></td><td class="cl-513a0f6c"><p class="cl-513a02f4"><span class="cl-5138f0e5">5</span></p></td><td class="cl-513a0f74"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0f75"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-513a0f76"><p class="cl-513a02eb"><span class="cl-5138f0ee">2e Studie</span></p></td><td class="cl-513a0f61"><p class="cl-513a02f4"><span class="cl-5138f0e5">15</span></p></td><td class="cl-513a0f6a"><p class="cl-513a02f4"><span class="cl-5138f0e5"> 0,9</span></p></td><td class="cl-513a0f77"><p class="cl-513a02f4"><span class="cl-5138f0ee">Ja</span></p></td><td class="cl-513a0f6c"><p class="cl-513a02f4"><span class="cl-5138f0e5">3</span></p></td><td class="cl-513a0f7e"><p class="cl-513a02f4"><span class="cl-5138f0ee">2</span></p></td><td class="cl-513a0f75"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-513a0f60"><p class="cl-513a02eb"><span class="cl-5138f0e5">Na CD</span></p></td><td class="cl-513a0f61"><p class="cl-513a02f4"><span class="cl-5138f0e5">19</span></p></td><td class="cl-513a0f6a"><p class="cl-513a02f4"><span class="cl-5138f0e5"> 1,2</span></p></td><td class="cl-513a0f6b"><p class="cl-513a02f4"><span class="cl-5138f0e5">Nee</span></p></td><td class="cl-513a0f6c"><p class="cl-513a02f4"><span class="cl-5138f0e5">4</span></p></td><td class="cl-513a0f74"><p class="cl-513a02f4"><span class="cl-5138f0e5">1</span></p></td><td class="cl-513a0f75"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td rowspan="6" class="cl-513a0f7f"><p class="cl-513a02ea"><span class="cl-5138f0e4">Vooropleiding</span></p></td><td class="cl-513a0f80"><p class="cl-513a02eb"><span class="cl-5138f0e5">MBO</span></p></td><td class="cl-513a0f88"><p class="cl-513a02f4"><span class="cl-5138f0e5">522</span></p></td><td class="cl-513a0f89"><p class="cl-513a02f4"><span class="cl-5138f0e5">32,4</span></p></td><td class="cl-513a0f8a"><p class="cl-513a02f4"><span class="cl-5138f0e5">Nee</span></p></td><td class="cl-513a0f8b"><p class="cl-513a02f4"><span class="cl-5138f0e5">5</span></p></td><td class="cl-513a0f8c"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0f92"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-513a0f94"><p class="cl-513a02eb"><span class="cl-5138f0e5">HAVO</span></p></td><td class="cl-513a0f95"><p class="cl-513a02f4"><span class="cl-5138f0e5">860</span></p></td><td class="cl-513a0f96"><p class="cl-513a02f4"><span class="cl-5138f0e5">53,3</span></p></td><td class="cl-513a0f9c"><p class="cl-513a02f4"><span class="cl-5138f0e5">NTB</span></p></td><td class="cl-513a0f9d"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0f9e"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0fa6"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-513a0f80"><p class="cl-513a02eb"><span class="cl-5138f0e5">VWO</span></p></td><td class="cl-513a0f88"><p class="cl-513a02f4"><span class="cl-5138f0e5">58</span></p></td><td class="cl-513a0f89"><p class="cl-513a02f4"><span class="cl-5138f0e5"> 3,6</span></p></td><td class="cl-513a0f8a"><p class="cl-513a02f4"><span class="cl-5138f0e5">Nee</span></p></td><td class="cl-513a0f8b"><p class="cl-513a02f4"><span class="cl-5138f0e5">5</span></p></td><td class="cl-513a0f8c"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0f92"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-513a0fa7"><p class="cl-513a02eb"><span class="cl-5138f0ee">BD</span></p></td><td class="cl-513a0f88"><p class="cl-513a02f4"><span class="cl-5138f0e5">92</span></p></td><td class="cl-513a0f89"><p class="cl-513a02f4"><span class="cl-5138f0e5"> 5,7</span></p></td><td class="cl-513a0fa8"><p class="cl-513a02f4"><span class="cl-5138f0ee">Ja</span></p></td><td class="cl-513a0f8b"><p class="cl-513a02f4"><span class="cl-5138f0e5">3</span></p></td><td class="cl-513a0fa9"><p class="cl-513a02f4"><span class="cl-5138f0ee">2</span></p></td><td class="cl-513a0f92"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-513a0f80"><p class="cl-513a02eb"><span class="cl-5138f0e5">CD</span></p></td><td class="cl-513a0f88"><p class="cl-513a02f4"><span class="cl-5138f0e5">30</span></p></td><td class="cl-513a0f89"><p class="cl-513a02f4"><span class="cl-5138f0e5"> 1,9</span></p></td><td class="cl-513a0f8a"><p class="cl-513a02f4"><span class="cl-5138f0e5">Nee</span></p></td><td class="cl-513a0f8b"><p class="cl-513a02f4"><span class="cl-5138f0e5">4</span></p></td><td class="cl-513a0f8c"><p class="cl-513a02f4"><span class="cl-5138f0e5">1</span></p></td><td class="cl-513a0f92"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr><tr style="overflow-wrap:break-word;"><td class="cl-513a0fb0"><p class="cl-513a02eb"><span class="cl-5138f0e5">HO</span></p></td><td class="cl-513a0fb1"><p class="cl-513a02f4"><span class="cl-5138f0e5">51</span></p></td><td class="cl-513a0fb2"><p class="cl-513a02f4"><span class="cl-5138f0e5"> 3,2</span></p></td><td class="cl-513a0fb3"><p class="cl-513a02f4"><span class="cl-5138f0e5">Nee</span></p></td><td class="cl-513a0fba"><p class="cl-513a02f4"><span class="cl-5138f0e5">5</span></p></td><td class="cl-513a0fbb"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td><td class="cl-513a0fbc"><p class="cl-513a02f4"><span class="cl-5138f0e5">0</span></p></td></tr></tbody></table></div>
+</div>
+</figure>
+</div>
+<p><strong>Toelichting:</strong></p>
+<ul>
+<li><span style="display:inline-block; width:12px; height:12px; background-color:#A84268; border:1px solid darkgrey;"></span> Negatieve bias.</li>
+<li><span style="display:inline-block; width:12px; height:12px; background-color:#9DBF9E; border:1px solid darkgrey;"></span> Positieve bias.</li>
+<li><span style="display:inline-block; width:12px; height:12px; background-color:#FCB97D; border:1px solid darkgrey;"></span> Bias, maar de aantallen studenten zijn te laag om conclusies over een negatieve of positieve bias aan te verbinden.</li>
+<li><span style="display:inline-block; width:12px; height:12px; background-color:#E5E5E5; border:1px solid darkgrey;"></span> De bevoorrechte groep. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.</li>
+<li>Er zijn vijf aspecten op basis waarvan de mate van bias gescoord wordt; het aantal in de kolommen geeft aan op hoeveel aspecten het oordeel over bias is gebaseerd. Voor een oordeel moet er minimaal op twee aspecten sprake zijn van bias.</li>
+<li>We hanteren een minimum van 15 studenten per categorie binnen een variabele om een oordeel te geven.</li>
+</ul>
+<!-- FOOTER -->
+<!-- Justification -->
+<p>&nbsp;</p>
+<p><strong>Verantwoording</strong></p>
+<p>Deze analyse maakt deel uit van het onderzoek naar kansengelijkheid van het lectoraat Learning Technology &amp; Analytics van De Haagse Hogeschool: <a href="https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness">No Fairness without Awareness</a> | Het rapport is door het lectoraat ontwikkeld in <a href="https://quarto.org/">Quarto</a> 1.6.39.</p>
+<!-- Copyright -->
+<p><strong>Creative Commons Licentie</strong></p>
+<p>De licentie voor dit template is de <a href="https://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution Share Alike 4.0 Internationaal</a>.</p>
+<!-- Cleaning up -->
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Gekopieerd!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Gekopieerd!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // default icon
+          link.classList.add("external");
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./ch1-introduction.html" class="pagination-link" aria-label="Inleiding">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Inleiding</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./ch3-factors.html" class="pagination-link" aria-label="Analyse van factoren">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Analyse van factoren</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/LTA-HHs/lta-hhs-tidymodels-studiesucces/issues/new" class="toc-action"><i class="bi bi-github"></i>Een probleem melden</a></li></ul></div></div></div></footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

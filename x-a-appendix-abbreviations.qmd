@@ -1,0 +1,59 @@
+---
+title: "Afkortingen"
+
+## Format and output
+output-file: "x-a-appendix-abbreviations.html"
+
+# Parameters
+params:
+  model: "Retentie na 1 jaar"
+---
+
+In dit onderzoek worden de volgende afkortingen gehanteerd:
+
+## 1  Studiekeuzeprofielen {.unnumbered}
+
+| **Vooropleiding** | **Afkorting** | **Studiekeuzeprofiel** |
+|:---|:---|:---|
+| *MBO* | AHO | Afbouw, hout en onderhoud |
+|  | ALG | Ambacht, laboratorium en gezondheidstechniek |
+|  | BI | Bouw en infra |
+|  | EA | Economie en administratie |
+|  | HO | Handel en ondernemerschap |
+|  | HB | Horeca en bakkerij |
+|  | ICT | Informatie en communicatietechnologie |
+|  | MedV | Media en vormgeving |
+|  | MobV | Mobiliteit en voertuigen |
+|  | TP | Techniek en procesindustrie |
+|  | TR | Toerisme en recreatie |
+|  | TSL | Transport, scheepvaart en logistiek |
+|  | UV | Uiterlijke verzorging |
+|  | VS | Veiligheid en sport |
+|  | VNL | Voedsel, natuur en leefomgeving |
+|  | ZW | Zorg en welzijn |
+| *HAVO/VWO* | CM | Cultuur en maatschappij |
+|  | EM | Economie en maatschappij |
+|  | EM&CM | Economie en maatschappij & Cultuur en maatschappij |
+|  | NG | Natuur en gezondheid |
+|  | NT | Natuur en techniek |
+|  | NG&NT | Natuur en gezondheid & Natuur en techniek |
+|  | NG&CM | Natuur en gezondheid & Cultuur en maatschappij |
+|  | NG&EM | Natuur en gezondheid & Economie en maatschappij |
+|  | NT&CM | Natuur en techniek & Cultuur en maatschappij |
+|  | NT&EM | Natuur en techniek & Economie en maatschappij |
+|  | OS | Oude stijl |
+|  | CERT | Certificaat |
+
+: Afkortingen van studiekeuzeprofielen (SKP) per vooropleiding
+
+## 2  Overige afkortingen {.unnumbered}
+
+| **Onderwerp**   | **Afkorting** | **Betekenis**       |
+|:----------------|:--------------|:--------------------|
+| *Geslacht*      | M             | Man                 |
+|                 | V             | Vrouw               |
+| *Vooropleiding* | BD            | Buitenlands diploma |
+|                 | CD            | Colloquium Doctum   |
+|                 | HO            | Hoger onderwijs     |
+
+: Overige afkortingen per onderwerp

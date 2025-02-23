@@ -1,0 +1,9 @@
+---
+# No title for this page
+
+---
+ 
+
+**Verantwoording**
+  
+  Deze analyse maakt deel uit van het onderzoek naar kansengelijkheid van het lectoraat Learning Technology & Analytics van De Haagse Hogeschool: [No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness) \| Het rapport is door het lectoraat ontwikkeld in [Quarto](https://quarto.org/) `r quarto::quarto_version()`.

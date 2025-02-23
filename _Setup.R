@@ -1,239 +1,466 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## _Setup.R ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## R code voor Lectoraat Learning Technology & Analytics De Haagse Hogeschool
-## Copyright 2024 De HHs
-## Web Page: http://www.hhs.nl
-## Contact: Theo Bakker (t.c.bakker@hhs.nl)
-## Verspreiding buiten De HHs: Nee
-##
-## Doel: Een setup bestand om standaard funciontaliteit van het project uit te voeren.
-##
-## Afhankelijkheden: Geen
-##
-## Datasets: Geen
-##
-## Opmerkingen:
-## 1) Geen.
-## 2) ___
-##
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## Geschiedenis:
-## 01-05-2024: TB: Aanmaak bestand
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# _Setup.R ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# R code of the Learning Technology & Analytics Research Group of THUAS
+# Copyright 2025 THUAS
+# Web Page: http://www.thuas.com
+# Contact: Theo Bakker (t.c.bakker@hhs.nl)
+# Distribution outside THUAS: Yes
+#
+# Purpose: A setup file to perform standard funciontality of the project.
+#
+# Dependencies: None
+#
+# Datasets: None
+#
+# Remarks:
+# 1) None.
+# 2) ___
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## . ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 0. ONSTART ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# . ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 0. ON START ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## 0.1 Reset Setup ####
+# Install cli and glue if not yet installed and load the library
+if(!requireNamespace("cli", quietly = TRUE)) {
+  install.packages("cli")
+}
+if(!requireNamespace("glue", quietly = TRUE)) {
+  install.packages("glue")
+}
+library(cli)
+library(glue)
 
-# Zet deze variabele op T om deze pagina te resetten of herstart de sessie
+# Show the start of the document
+cli_h1("0. ON START")
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 0.1 Restore renv ####
+
+if (!exists("bRenv_restored") || bRenv_restored == FALSE) {
+  if (!renv::status()$synchronized) {
+    renv::restore()
+  } 
+  bRenv_restored <- TRUE  
+  
+}
+
+cli_h1("Installing packages")
+cli_alert_success("All packages are installed")
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 0.2 Load Setup config #### 
+
+source("_Setup_config.R")
+
+cli_h1("Load configuration")
+cli_alert_success("Configuration has been loaded.")
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 0.3 Set environment profile #### 
+
+if(!is.null(rmarkdown::metadata$config$environment)) {
+  sEnvironment <- rmarkdown::metadata$config$environment
+} else {
+  sEnvironment <- "ceda"
+}
+
+cli_h1("Setting environment")
+cli_alert_success(glue("Environment is {sEnvironment}"))
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 0.4 Determine the current file name ####
+
+if(!exists("sCurrent_file")) {
+  sCurrent_file <- "unknown"
+}
+
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# 0.5 Reset Setup ####
+
+# Set this variable to T to reset this page or restart the session
 bReset_Setup <- F
 
-## De setup nog niet is uitgevoerd, voer deze dan alsnog uit, tenzij er een reset is
+# The setup has not yet been performed, please perform it unless there is a reset
 if(!exists("bSetup_executed") || bReset_Setup){
   bSetup_executed <- F
 }
 
-## Run op basis van de setup de rest van dit document wel of niet
+# Based on the setup, do or do not run the rest of this document
 if(bSetup_executed == F) {
 
-  ## . ####
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1. LAAD LTABASE PACKAGE fS ####
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # . ####
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 1. PACKAGES & FUNCTIONS ####
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.1 Standaard packages die direct nodig zijn ####
+  cli_h1("1. PACKAGES & FUNCTIES")
   
-  ## Installeer here, cli en icecream indien nodig
-  for (i in c("here", "cli", "icecream")) {
-    if(!requireNamespace(i, quietly = TRUE)) {
-      install.packages(i)
-    }
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 1.2 Base and fairness functions ####
+  
+  if(sEnvironment == "ceda") {
+    source("R/functions/base.helpers.R")
+  } else {
+    source("R/functions/load.ltabase.R")
+  }
+  source("R/functions/fairness.helpers.R")
+  
+  cli_h1("Load functions")
+  cli_alert_success("Functions have been loaded: basis and fairness")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 1.3 Default datasets ####
+  
+  cli_h1("Load standard datasets")
+  
+  # Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
+  if(sEnvironment == "ceda") {
+    Load_Datasets(message = TRUE)
+  } else {
+    ltabase::load_ltabase_datasets(message = TRUE)
   }
   
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.2 ltabase package in (installeer indien nodig) ####
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 1.4 Load libraries ####
   
-  source("99. Functies & Libraries/Inladen_ltabase.R")
-  source("99. Functies & Libraries/Fairness_functies.R")
+  library(conflicted)   # to solve conflicts
+  library(rio)          # for reading files
+  library(doParallel)   # for parallel processing
+  library(fs)           # for file system functions
   
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.3 Default datasets: dfOpleidigen, sectors, studytypes, studyforms ####
+  library(gtsummary)    # for descriptive summary tables
+  library(flextable)    # for flextables
+  library(officer)      # for formatting in tables
+  library(gt)           # for tables
+  library(gtExtras)     # for sparklines
+  library(cli)          # for cli texts
+  library(yaml)         # for yaml files
   
-  ## Laad de default datasets: dfOpleidigen, sectors, studytypes, studyforms
-  ltabase::load_lta_datasets(message = TRUE)
-  
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.4 Laad extra bibliotheken ####
-  
-  ## Laad extra bibliotheken
-  library(conflicted)   # om conflicten op te lossen
-  library(tidymodels)   # voor machine learning
-  
-  library(vip)          # voor variable importance plots
-  library(forcats)      # om factor variabelen te bewerken
-  library(performance)  # voor performance metingen op lr modellen
-  #library(dlookr)      # om data te inspecteren > geeft conflicten vanwege showtext_auto()
-  library(gtsummary)    # voor beschrijvende summary tabellen
-  library(gt)           # voor tabellen
-  library(gtExtras)     # voor sparklines
-  library(cli)          # voor cli teksten
-  library(glue)         # voor string interpolatie
-  library(probably)     # voor probabilistische modellen
+  library(tidymodels)   # for machine learning
+  library(forcats)      # to edit factor variables
+  library(performance)  # for performance measurements on lr models
+  library(vip)          # for variable importance plots
+  library(probably)     # for probabilistic models
   library(discrim)      # discriminant analysis
-  library(klaR)         # voor classificatie en visualisatie
-  library(betacal)      # voor beta calibration
+  library(klaR)         # for classification and visualization
+  library(betacal)      # for beta calibration
+  library(DALEX)        # for explainable AI
+  library(DALEXtra)     # for explainable AI
+  library(lobstr)       # for measuring objects
+  library(butcher)      # for shrinking models
+  library(iBreakDown)   # for explaining models
+  library(ingredients)  # for feature importance
+  library(fairmodels)   # for fairness in models
+  library(ranger)       # for random forest
   
-  library(doParallel)   # voor parallel processing
-  library(DALEX)        # voor explainable AI
-  library(DALEXtra)     # voor explainable AI
-  library(lobstr)       # voor het meten van objecten
-  library(butcher)      # voor het verkleinen van modellen
-  library(iBreakDown)   # voor het uitleggen van modellen
-  library(ggtext)       # voor het maken van opmaak in titels
+  library(ggtext)       # for creating formatting in titles
+  library(showtext)     # for setting fonts
+  library(ggplot2)      # for creating plots
+  library(ggpubr)       # for saving plots
+  library(grid)         # for saving plots
+  library(gridGraphics) # for saving plots
+  library(extrafont)    # for saving plots
+  library(sysfonts)     # for fonts
+  library(systemfonts)  # for fonts
+  library(janitor)      # for cleaning names
+  library(pins)         # for data sharing
   
-  library(showtext)     # voor het instellen van lettertypes
-  library(ggplot2)      # voor het maken van plots
-  library(cvms)         # voor confusion matrices
-  library(ggimage)      # voor confusion matrices
-  library(rsvg)         # voor confusion matrices
-  library(ggnewscale)   # voor confusion matrices
+  library(cvms)         # for confusion matrices
+  library(ggimage)      # for confusion matrices
+  library(rsvg)         # for confusion matrices
+  library(ggnewscale)   # for confusion matrices
   
-  library(ggpubr)       # voor het bewaren van plots
-  library(bbplot)       # voor het bewaren van plots
-  library(grid)         # voor het bewaren van plots
+  library(cardx)        # for extra analysis results data utilities
   
-  library(gridGraphics) # voor het bewaren van plots
-  library(extrafont)    # voor het bewaren van plots
-  library(sysfonts)     # voor fonts
+  cli_h1("Load libraries")
+  cli_alert_success("Libraries have been loaded.")
   
-  library(fairmodels)   # voor fairness in modellen
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 1.5 Brand #### 
   
-  library(quartostamp)  # voor extra quarto 
+  # Load the brand settings
+  brand_data <- read_yaml("brand/_brand.yml")
   
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.5 Fonts ####
+  cli_h1("Load brand setting")
+  cli_alert_success("Brand settings have been loaded.")
   
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 1.6 Fonts ####
+  
+  # Load fonts
   extrafont::loadfonts(quiet = TRUE)
-
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.6 Laad extra functies ####
-
-  source("99. Functies & Libraries/Rapport_functies.R")
   
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.7 Kleuren ####
+  cli_h1("Load fonts")
+  cli_alert_success("Fonts have been loaded.")
   
-  source("01. Includes/Include_Colors.R")
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 1.7 Load additional features ####
 
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.8 Bepaal de voorkeur voor de thema's ####
+  source("R/functions/report.helpers.R")
+  
+  cli_h1("Load functions")
+  cli_alert_success("Functions are loaded: report")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 1.8 Colors ####
+  
+  source("brand/colors/colors.R")
+  
+  cli_h1("Load colors")
+  cli_alert_success("Colors have been loaded.")
 
-  Set_LTA_Theme()
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 1.9 Determine preferred themes ####
 
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 1.9 Tidymodels ####
+  Set_Theme()
+  
+  cli_h1("Load theme")
+  cli_alert_success("Theme has been loaded")
 
-  ## Geef de voorkeur bij conflicten aan het tidymodels package
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 1.10 Tidymodels preferences ####
+
+  # When conflicts arise, give preference to the tidymodels package
   tidymodels_prefer(quiet = TRUE)
+  
+  cli_h1("Load tidymodels preferences")
+  cli_alert_success("Tidymodels preference set")
 
-  ## . ####
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2. BASISVARIABELEN / PADEN ####
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # . ####
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2. GENERAL SETTINGS ####
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2.1 Netwerkpaden ####
-
-  # Als LTA_ROOT, LTA_DATA of LTA_BOARD niet bestaan, dan wordt de omgeving opnieuw ingesteld
-  ltabase::set_lta_sys_env()
-
-  ## Bepaal de netwerkdirectory
-  Network_directory <- ltabase::get_lta_network_directory()
-
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2.2 Debuginstellingen ####
-
-  ## Stel de debug opties in: icecream package settings
-  ltabase::set_icecream_options()
+  cli_h1("2. GENERAL SETTINGS")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.1 Network paths ####
+  
+  # Define the network directory
+  if(sEnvironment == "ceda") {
+    Network_directory <- "R/data"
+  } else {
+    ltabase::set_lta_sys_env()
+    Network_directory <- ltabase::get_lta_network_directory()
+  }
+  
+  cli_h1("Set network path")
+  cli_alert_success(glue("Network path is set: {Network_directory}."))
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.2 Debug ####
+  
+  # Set debug options: icecream package settings
+  Set_Icecream_Options()
   icecream::ic_disable()
-
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2.3 Gtsummary instellingen ####
-
-  ## Bepaal de standaard instellingen van gtsummary
+  
+  cli_h1("Debug settings")
+  cli_alert_success("Debug is set.")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.3 Gtsummary ####
+  
+  # Define the default settings of gtsummary
   list("style_number-arg:big.mark" = ".",
        "style_number-arg:decimal.mark" = ",") |>
     set_gtsummary_theme()
   invisible(theme_gtsummary_compact())
-
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2.4 Levels van variabelen ####
-
-  ## Bepaal de volgorde van een aantal levels
-  Get_Levels()
-
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 2.5  Config ####
-
-  sSucces_model <- params$succes
-  sPropedeusediploma <- params$propedeusediploma
-
-  sSucces_model_text <- Get_Succes_Model_Text(sPropedeusediploma, sSucces_model)
-
-  ## Maak de variabelen voor de huidige opleiding op basis van de opleidingsnaam en opleidingsvorm
+  
+  cli_h1("Gtsummary settings")
+  cli_alert_success("Gtsummary preferences set.")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.4 Succes model ####
+  
+  sSucces_model                     <- params$succes
+  sPropedeusediploma                <- params$propedeusediploma
+  sSucces_model_text                <- Get_Succes_Model_Text(sPropedeusediploma, 
+                                                             sSucces_model)
+  
+  cli_h1("Succes model settings")
+  cli_alert_success("Model settings set")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.5  Educational programme information ####
+  
+  cli_h1("Current study programme")
+  cli_alert_success("Current study programme set")
+  
+  # Create the variables for the current study programme based on the programme name and type of education
   current_opleiding <- Get_Current_Opleiding(
     opleiding = params$opleiding,
     opleidingsvorm = params$opleidingsvorm_afkorting
   )
-
-  ## Bepaal op basis hiervan afgeleide variabelen
-  Set_Current_Opleiding_Vars(current_opleiding, debug = T)
-
-  ## . ####
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 3. BASISQUERY ####
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 3.1 Inschrijvingen  ####
-
-  dfOpleiding_inschrijvingen_base <- get_lta_studyprogram_enrollments_pin(
-    board = "HHs/Inschrijvingen",
-    faculty = faculteit,
-    studyprogram = opleidingsnaam_huidig,
-    studytrack = opleiding,
-    studyform = toupper(opleidingsvorm),
-    range = "eerstejaars")
   
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 3.2 Settings ####
-
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 3.2.1 Metadata ####
-
-  lResearch_settings <- list()
-  lResearch_settings[["sResearch_path"]] <- "Kansengelijkheid"
+  # Based on this, determine derived variables
+  Set_Current_Opleiding_Vars(current_opleiding, debug = T)
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.6 Enrollment data  ####
+  
+  if(sEnvironment == "ceda") {
+    dfOpleiding_inschrijvingen_base <- Get_dfOpleiding_inschrijvingen_base_syn()
+  } else {
+    dfOpleiding_inschrijvingen_base <- ltabase::get_lta_studyprogram_enrollments_pin(
+      board = sPinBoard,
+      faculty = current_opleiding$INS_Faculteit,
+      studyprogram = current_opleiding$INS_Opleidingsnaam_huidig,
+      studytrack = current_opleiding$INS_Opleiding,
+      studyform = toupper(current_opleiding$INS_Opleidingsvorm),
+      range = "eerstejaars")
+  }
+  
+  cli_h1("Enrollments")
+  cli_alert_success("Enrollments loaded")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.7 Metadata & research settings ####
+  
+  lMetadata <- Get_Metadata()
+  
+  if(is.null(lResearch_settings)) {
+    cli_alert_warning("lResearch_settings is not defined. Please define it in the _Setup_config.R file.")
+  }
+  
   lResearch_settings[["sDataset"]]       <- Get_sDataset(dfOpleiding_inschrijvingen_base)
   lResearch_settings[["sOpleiding"]]     <- Get_sOpleiding()
-
-  lMetadata <- Get_Metadata()
-
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 3.2.2 Caption ####
-
+  
+  cli_h1("Metadata & research settings")
+  cli_alert_success("Metadata & research settings loaded")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.8 Plot information ####
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.8.1 Caption
+  
   sCaption <- Get_sCaption()
-
-  ## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-  ## 3.2.3 Plots ####
-
-  ## Bepaal de hoogte en breedte van afbeeldingen
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 2.8.2 Plot height and width ####
+  
+  # Determine the height and width of images
   nPlotWidth  <- 640
   nPlotHeight <- 550
   
+  cli_h1("Plot settings")
+  cli_alert_success("Plot caption, width and height set")
+  
+  # . ####
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 3. CONTENT ####
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  
+  cli_h1("3. CONTENT")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 3.1 Names of the study programme and type of education ####
+  
+  # Determine the long name of the type of education and faculty
+  sOpleidingsvorm_lang        <- Get_Opleidingsvorm_Lang(params$opleidingsvorm_afkorting)
+  sFaculteit_lang             <- Get_Faculteitsnaam_Lang(current_opleiding$INS_Faculteit)
+  
+  cli_h1("Long names")
+  cli_alert_success("Long names of study programme and faculty set.")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 3.2 Variables and levels ####
+  
+  dfVariables                 <- Get_dfVariables()
+  dfLevels                    <- Get_dfLevels()
+  lLevels                     <- Get_lLevels(dfLevels)
+  lLevels_formal              <- Get_lLevels(dfLevels, formal = TRUE)
+  
+  cli_h1("Variables and levels")
+  cli_alert_success("Variables and levels set")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 3.3 Sensitive variables and labels ####
+  
+  lSentitive_formal_variables <- Get_lSensitive(dfVariables, var = "VAR_Formal_variable")
+  lSentitive_variables        <- Get_lSensitive(dfVariables, var = "VAR_Simple_variable")
+  lSensitive_labels           <- Get_lSensitive(dfVariables, var = "VAR_Variable_label")
+  lSensitive_levels_breakdown <- Get_lSensitive_Levels_Breakdown(dfLevels, lSentitive_formal_variables)
+  
+  cli_h1("Sensitive variables and labels")
+  cli_alert_success(glue("Sensitive variables set: {paste(unlist(lSentitive_variables), collapse = ', ')}"))
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 3.4 Paths for data, last fits and model results ####
+  
+  # Define the paths
+  sData_outputpath            <- Get_Model_Outputpath(mode = "data")
+  sFittedmodels_outputpath    <- Get_Model_Outputpath(mode = "last-fits")
+  sModelresults_outputpath    <- Get_Model_Outputpath(mode = "modelresults")
+  
+  # If these folders don't exist yet, create them
+  for (i in c(sData_outputpath, 
+              sFittedmodels_outputpath, 
+              sModelresults_outputpath)) {
+    if(!dir.exists(dirname(i))) {
+      dir.create(dirname(i), recursive = TRUE)
+    }
+  }
+  
+  cli_h1("Paths for data, last fits and model results")
+  cli_alert_success("Paths for data, last fits and model results set.")
+  
+  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # 3.5 Data for training, last fits and results ####
+  
+  # Check if we need to check the data
+  if(sCurrent_file != "ch4-models.qmd") {
+    bCheck_data <- TRUE
+  } else {
+    bCheck_data <- FALSE
+  }
+  
+  # If one of these files does not exist and we are not in ch4-models.qmd, 
+  # give a cli warning
+  if((
+    !file.exists(sData_outputpath) ||
+    !file.exists(sFittedmodels_outputpath) ||
+    !file.exists(sModelresults_outputpath)
+  ) ) {
+    
+    if(bCheck_data) {
+      
+      cli_h1("Data and model files.")
+      cli_alert_warning(
+        glue(
+          "One or more data or model files do not yet exist.",
+          "\n\n First, run the template in 'advanced-report' mode in the terminal:",
+          "\n quarto render --profile advanced-report"
+        )
+      )
+    }
+    
+  } else {
+    
+    cli_h1("Data and model files.")
+    # Data - adjust the Retention variable to numeric (0/1),
+    dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE) |> 
+      mutate(across(all_of(names(lLevels)), ~ factor(.x, 
+                                                     levels = lLevels[[cur_column()]]))) |> 
+      mutate(Retentie = as.numeric(Retentie) - 1)
+    
+    ## Last fits and model results
+    lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
+    dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
+    
+    cli_alert_success(
+      glue(
+        "Data and model files have been loaded."
+      )
+    )
+    
+    
+  } 
+  
+  
 }
+
+

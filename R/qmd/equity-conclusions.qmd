@@ -1,0 +1,75 @@
+---
+# No title for this page
+
+---
+
+```{r}
+#| label: df-txt-fairness-conclusions
+#| results: asis
+#| eval: !expr 'file.exists(Get_Model_Outputpath(mode = "modelresults"))'
+
+lDfFairness <- list()
+
+# Walk over the variables
+for(i in c(lSensitive_labels)) {
+  sFairness_outputpath  <- Get_Model_Outputpath(mode = "fairness", group = i)
+  lDfFairness[[i]]      <- readRDS(sFairness_outputpath) |>
+    mutate(FRN_Bias = case_when(FRN_Score < 0.8 ~ "Negatieve Bias",
+                                FRN_Score > 1.25 ~ "Positieve Bias",
+                                .default = "Geen Bias"))
+}
+
+# Create a table from the fairness analysis
+dfFairness_wide  <- Get_dfFairness_Wide(lDfFairness)
+
+```
+
+De uitkomsten van de kansengelijkheidsanalyse is:
+
+<!-- Tekstuele samenvatting -->
+
+```{r}
+#| label: txt-fairness-conclusions
+#| results: asis
+#| eval: !expr 'file.exists(Get_Model_Outputpath(mode = "modelresults"))'
+
+# Now create a text per variable from the table
+lConclusies <- list()
+for(i in lSensitive_labels) {
+  lConclusies[[i]] <- Get_Fairness_Conclusies(dfFairness_wide, i)
+}
+
+# Dynamically generate the conclusions in text
+j <- 1
+for (i in lSensitive_labels) {
+  cat(glue("{j}.  **{i}**: {lConclusies[[i]]} \n\n"))
+  j <- j + 1
+}
+
+```
+
+<!-- Tabel samenvatting -->
+
+```{r}
+#| label: tbl-fairness-conclusions
+#| tbl-cap: "Fairness conclusies per groep"
+#| results: asis
+#| eval: !expr 'file.exists(Get_Model_Outputpath(mode = "modelresults"))'
+
+# Create a flextable
+ftFairness_table <- Get_ftFairness(flextable(dfFairness_wide |>
+                                               select(-c(Groep_label, Text))))
+
+# Print the flextable
+ftFairness_table
+```
+
+**Toelichting:**
+
+-   `r Get_Colored_Square(color = lColors_default[["sColor_Bias_Negative"]])` Negatieve bias.
+-   `r Get_Colored_Square(color = lColors_default[["sColor_Bias_Positive"]])` Positieve bias.
+-   `r Get_Colored_Square(color = lColors_default[["sColor_Bias_Neutral"]])` Bias, maar de aantallen studenten zijn te laag om conclusies over een negatieve of positieve bias aan te verbinden. 
+-   `r Get_Colored_Square(color = lColors_default[["sColor_Bias_None"]])` De bevoorrechte groep. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
+-   Er zijn vijf aspecten op basis waarvan de mate van bias gescoord wordt; het aantal in de kolommen geeft aan op hoeveel aspecten het oordeel over bias is gebaseerd. Voor een oordeel moet er minimaal op twee aspecten sprake zijn van bias.
+-   We hanteren een minimum van 15 studenten per categorie binnen een variabele om een oordeel te geven.
+

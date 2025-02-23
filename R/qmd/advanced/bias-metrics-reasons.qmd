@@ -1,0 +1,14 @@
+---
+# No title for this page
+
+---
+
+Hiervoor is een aantal redenen:
+
+**1. Meerdere indicatoren**: Het gebruik van meerdere maatstaven zorgt ervoor dat we de detectie van bias niet baseren op slechts een, mogelijk ruisgevoelige, indicator. Als slechts één metriek buiten de marges valt, kan dit toeval zijn of te wijten zijn aan andere niet-systematische fouten in de data. We spreken dan nog niet over bias. Meerdere metrieke afwijkingen geven een sterkere indicatie van een systematisch probleem.
+
+**2. Differentie van bias types**: Bias kan zich op verschillende manieren manifesteren, bijvoorbeeld in termen van ongelijksoortige impact, ongelijke kansen in voorspellingen of ongelijke behandeling. Door meerdere maatstaven te evalueren, onderzoeken we een breder spectrum van potentiële bias en zien we geen aspecten over het hoofd.
+
+**3. Normatieve overwegingen**: Vaak is er een normatieve basis voor het definiëren van wat eerlijk is. Het vergelijken van meerdere maatstaven kan helpen om genuanceerder en vollediger beeld te krijgen van hoe een model presteert ten opzichte van verschillende fairness criteria.
+
+De keuze voor twee maatstaven als minimum baseren we op een combinatie van statistische overwegingen en praktische normen binnen het machine learning vakgebied om een goed evenwicht te vinden tussen sensitiviteit (het detecteren van daadwerkelijke bias) en specificiteit (het vermijden van vals positieven) [@Barocas.2023].

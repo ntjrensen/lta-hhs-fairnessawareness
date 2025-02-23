@@ -1,9 +1,18 @@
-# Prognosemodel Template Learning Technology & Analytics (LTA)
+# Fairness Awareness: News
+Theo Bakker, The Hague University of Applied Sciences
+2025-02-23
 
-*Naar de [uitleg over het template](README.md).*
+<a name="top"></a>
 
-# *News*
+# Read more
 
-# Instroomrapport 0.9.1.9000 *(2024-05-04)*
+- To the [explanation of the template](README.md).
+- To the [tutorial](TUTORIAL.md).
 
--   Het template voorzien van een eerste README en NEWS bestand.
+# News
+
+## 0.9.1.9000 *(2025-02-23)*
+
+- Provided the template with an initial README, NEWS and TUTORIAL file.
+
+[Back to top](#top)

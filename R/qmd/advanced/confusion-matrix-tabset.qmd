@@ -1,0 +1,158 @@
+---
+# No title for this page
+
+---
+
+### Ratio's om kansengelijkheid te beoordelen
+
+Voor elke groep onderzoeken we **5 ratio's**, ook wel maatstaven of metrieken genoemd. Deze ratio's zijn afgeleid van verhoudingen in de confusion matrix; ze geven inzicht in de mate van bias en kansengelijkheid vanuit verschillende perspectieven van een prognosemodel. 
+
+```{r}
+#| label: fig-confusion-matrix-explanation
+#| fig-cap: "Confusion matrix in relatie tot BSA"
+
+knitr::include_graphics(here::here("R/images", "confusion-matrix-fairness-lta-hhs.png"))
+
+```
+
+:::::::: panel-tabset
+### 1. Accuracy Equality
+
+`r kableExtra::text_spec("**1. Accuracy Equality Ratio**", color = lColors[["institution"]][["institution-color-two"]])`
+
+*In welke mate voorspelt het model zowel de positieve als negatieve uitkomsten goed?*
+
+Deze maatstaf wordt gebruikt om te beoordelen of een model even accuraat is voor verschillende subgroepen binnen de dataset. Het vergelijkt de nauwkeurigheid van het model voor een beschermde groep (een minderheidsgroep) met de nauwkeurigheid voor een bevoorrechte groep (de meerderheidsgroep). Deze ratio wordt berekend als de verhouding tussen de nauwkeurigheid voor de beschermde groep en de nauwkeurigheid voor de bevoorrechte groep.
+
+**Formule**
+
+$$ \text{ACC} = \frac{TP + TN}{TP + FP + TN + FN} $$
+
+**Definities**
+
+-   **Nauwkeurigheid (Accuracy)**: Het percentage correcte voorspellingen van het model. Dit wordt berekend als het aantal juiste voorspellingen gedeeld door het totale aantal voorspellingen.
+
+**Interpretatie**
+
+-   **Ratio = 1**: Het model is even accuraat voor beide groepen.
+-   **Ratio \< 1**: Het model is minder accuraat voor de beschermde groep dan voor de bevoorrechte groep, wat wijst op mogelijke bias tegen de beschermde groep.
+-   **Ratio \> 1**: Het model is meer accuraat voor de beschermde groep dan voor de bevoorrechte groep, wat ook op een vorm van bias kan wijzen, maar in het voordeel van de beschermde groep.
+
+::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
+Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de nauwkeurigheid van het model voor havisten 80% is en voor mbo-ers 70%. De Accuracy Equality Ratio is dan 0,875 (70% / 80%). Dit betekent dat het model minder accuraat is voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).
+:::
+
+### 2. Equal Opportunity
+
+`r kableExtra::text_spec("**2. Equal Opportunity Ratio**", color = lColors[["institution"]][["institution-color-two"]])`
+
+*In welke mate zijn de terecht positieve voorspellingen gelijk?*
+
+Deze maatstaf beoordeelt de gelijkheid van kansen die een model biedt aan verschillende subgroepen in termen van de 'True Positive Rate' (TPR). Het vergelijkt de kans dat een model correct een positieve uitkomst voorspelt voor een beschermde groep versus een bevoorrechte groep.
+
+De True Positive Rate (TPR) is een andere term voor de **sensitiviteit** (ook wel recall) genoemd. De Equal Opportunity Ratio wordt berekend als het aantal true positives gedeeld door het totaal aantal werkelijke positives.
+
+**Formule**
+
+$$ \text{TPR} = \frac{TP}{TP + FN} $$
+
+**Definities**
+
+-   **TP**: True Positives (correcte voorspellingen van positieve uitkomsten)
+-   **FN**: False Negatives (werkelijke positieve uitkomsten die foutief als negatief zijn voorspeld)
+
+**Interpretatie**
+
+-   **Ratio = 1**: Het model biedt gelijke kansen aan beide groepen in termen van het correct voorspellen van positieve uitkomsten.
+-   **Ratio \< 1**: Het model biedt minder kansen aan de beschermde groep in vergelijking met de bevoorrechte groep, wat wijst op mogelijke bias tegen de beschermde groep.
+-   **Ratio \> 1**: Het model biedt meer kansen aan de beschermde groep in vergelijking met de bevoorrechte groep, wat ook op een vorm van bias kan wijzen, maar in het voordeel van de beschermde groep.
+
+::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
+Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de True Positive Rate voor havisten 70% is en voor mbo-ers 60%. De Equal Opportunity Ratio is dan 0,857 (60% / 70%). Dit betekent dat het model minder kans biedt aan de beschermde groep (mbo-ers) om correct positieve uitkomsten te voorspellen dan aan de bevoorrechte groep (havisten).
+:::
+
+### 3. Predictive Equality
+
+`r kableExtra::text_spec("**3. Predictive Equality Ratio**", color = lColors[["institution"]][["institution-color-two"]])`
+
+*In welke mate zijn de vals positieve voorspellingen gelijk?*
+
+Deze maatstaf beoordeelt de gelijkheid van het aantal False Positives (vals-positieven) tussen verschillende subgroepen. Het vergelijkt de False Positive Rate (FPR) voor een beschermde groep met de FPR voor een bevoorrechte groep.
+
+De FPR is de verhouding van het aantal vals-positieve voorspellingen (False Positives, FP) ten opzichte van het totaal aantal werkelijke negatieve gevallen (True Negatives, TN en False Positives, FP). De Predictive Equality Ratio wordt berekend als de verhouding tussen de FPR voor de beschermde groep en de FPR voor de bevoorrechte groep.
+
+**Formule**
+
+$$ \text{FPR} = \frac{FP}{FP + TN} $$
+
+**Definities**
+
+-   **FP**: False Positives (foutieve voorspellingen van positieve uitkomsten)
+-   **TN**: True Negatives (correcte voorspellingen van negatieve uitkomsten)
+
+**Interpretatie**
+
+-   **Ratio = 1**: Het model heeft een gelijke kans om False Positives te maken voor beide groepen.
+-   **Ratio \< 1**: Het model heeft minder kans om False Positives te maken voor de beschermde groep dan voor de bevoorrechte groep, wat wijst op mogelijke bias ten nadele van de bevoorrechte groep.
+-   **Ratio \> 1**: Het model heeft meer kans om False Positives te maken voor de beschermde groep dan voor de bevoorrechte groep, wat wijst op mogelijke bias ten nadele van de beschermde groep.
+
+::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
+Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de False Positive Rate voor havisten 20% is en voor mbo-ers 30%. De Predictive Equality Ratio is dan 1,5 (30% / 20%). Dit betekent dat het model meer kans heeft om vals-positieve voorspellingen te maken voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).
+:::
+
+### 4. Predictive Parity
+
+`r kableExtra::text_spec("**4. Predictive Parity Ratio**", color = lColors[["institution"]][["institution-color-two"]])`
+
+*In welke mate zijn de terecht positieve voorspellingen gelijk?*
+
+Deze maatstaf beoordeelt de gelijkheid van de nauwkeurigheid van de voorspelling tussen verschillende subgroepen door de positieve voorspellende waarde (Positive Predictive Value, PPV) van het model voor een beschermde groep te vergelijken met die voor een bevoorrechte groep. De PVV wordt ook wel de **precisie** genoemd en wordt berekend als het aantal true positives (TP) gedeeld door het totaal aantal voorspelde positives (TP en FP). Het is een maat voor de nauwkeurigheid van de positieve voorspellingen van het model.
+
+**Formule**
+
+$$ \text{PPV} = \frac{TP}{TP + FP} $$
+
+**Definities**
+
+-   **TP**: True Positives (correcte voorspellingen van positieve uitkomsten)
+-   **FP**: False Positives (foutieve voorspellingen van positieve uitkomsten)
+
+**Interpretatie**
+
+-   **Ratio = 1**: Het model heeft een gelijke nauwkeurigheid in voorspellingen voor beide groepen.
+-   **Ratio \< 1**: Het model is minder nauwkeurig in het voorspellen van positieve uitkomsten voor de beschermde groep dan voor de bevoorrechte groep, wat wijst op mogelijke bias tegen de beschermde groep.
+-   **Ratio \> 1**: Het model is nauwkeuriger in het voorspellen van positieve uitkomsten voor de beschermde groep dan voor de bevoorrechte groep, wat ook op een vorm van bias kan wijzen, maar in het voordeel van de beschermde groep.
+
+::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
+Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de Positive Predictive Value voor havisten 80% is en voor mbo-ers 70%. De Predictive Parity Ratio is dan 0,875 (70% / 80%). Dit betekent dat het model minder nauwkeurig is in het voorspellen van positieve uitkomsten voor de beschermde groep (mbo-ers) dan voor de bevoorrechte groep (havisten).
+:::
+
+### 5. Statistical Parity
+
+`r kableExtra::text_spec("**5. Statistical Parity Ratio**", color = lColors[["institution"]][["institution-color-two"]])`
+
+*In welke mate zijn de positieve voorspellingen gelijk?*
+
+Deze maatstaf beoordeelt de gelijkheid van de positieve voorspellingen (ongeacht of ze correct zijn of niet) tussen verschillende subgroepen. Het vergelijkt de kans dat een model een positieve uitkomst voorspelt voor een beschermde groep met de kans dat het een positieve uitkomst voorspelt voor een bevoorrechte groep. De Statistical Parity Ratio wordt berekend als de verhouding tussen de kans op een positieve voorspelling voor de beschermde groep en de kans op een positieve voorspelling voor de bevoorrechte groep.
+
+**Formule**
+
+$$ \text{SPR} = \frac{TP + FP}{TP + FP + TN + FN} $$
+
+**Definities**
+
+-   **Positieve Voorspelling**: Een voorspelling waarin het model een positieve uitkomst voorspelt (bijv. aangenomen worden, krediet goedkeuring, etc.).
+
+**Interpretatie**
+
+-   **Ratio = 1**: Het model voorspelt even vaak positieve uitkomsten voor beide groepen.
+-   **Ratio \< 1**: Het model voorspelt minder vaak positieve uitkomsten voor de beschermde groep dan voor de bevoorrechte groep, wat wijst op mogelijke bias tegen de beschermde groep.
+-   **Ratio \> 1**: Het model voorspelt vaker positieve uitkomsten voor de beschermde groep dan voor de bevoorrechte groep, wat kan wijzen op bias ten nadele van de bevoorrechte groep.
+
+::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
+Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspellen en de kans op een positieve voorspelling voor havisten 80% is en voor mbo-ers 70%. De Statistical Parity Ratio is dan 0,875 (70% / 80%). Dit betekent dat het model minder vaak positieve uitkomsten voorspelt voor de beschermde groep (havisten) dan voor de bevoorrechte groep (mbo-ers).
+:::
+::::::::
+
+Nu we deze begrippen hebben gedefinieerd, kunnen we de bias en kansengelijkheid van het model voor verschillende groepen studenten analyseren. Hiervoor gebruiken we het `fairmodels` package van `DALEX`.
+

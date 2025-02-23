@@ -1,0 +1,25 @@
+meta:
+  name: 
+    short: "De HHs"
+    full:  "De Haagse Hogeschool"
+    
+  link:
+    home: https://www.dehaagsehogeschool.nl/
+
+color:
+  palette:
+    institution-color-one:    "#9EA700" # Green
+    institution-color-two:    "#00B2CD" # Blue
+    institution-color-three:  "#FFA500" # Orange
+    metrics-color-red:        "#C8133B"
+    metrics-color-green:      "#287233"
+    metrics-color-blue:       "#5FA2CE"
+    metrics-color-yellow:     "#FFD966"
+    metrics-color-orange:     "#FFA500"
+
+typography:
+  fonts:
+    - family: Liter, sans-serif
+  headings: Liter, sans-serif
+
+

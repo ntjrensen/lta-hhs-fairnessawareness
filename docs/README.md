@@ -1,109 +1,275 @@
-# Prognosemodel Template Learning Technology & Analytics (LTA)
+# Fairness Awareness: Analysis of Equity in Education
+Theo Bakker, The Hague University of Applied Sciences
+2025-02-22
 
-Door Theo Bakker, lector Learning Technology & Analytics, t.c.bakker\@hhs.nl
+<a name="top"></a>
 
-*Naar de [versiegeschiedenis van het template](NEWS.md).*
+<!-- badges: start -->
 
-Dit template wordt gebruikt om prognosemodellen te maken voor het lectoraat Learning Technology & Analytics (LTA) van De HHS. Het template is gebaseerd op de huisstijl van De HHS en maakt gebruikt Quarto.
+<!-- badges: begin -->
 
-## Software
+[![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![](https://img.shields.io/github/last-commit/LTA-HHs/lta-hhs-tidymodels-studiesucces.svg)](https://github.com/LTA-HHs/lta-hhs-tidymodels-studiesucces/commits/main)
+[![License: Attribution-ShareAlike 4.0
+International](https://img.shields.io/badge/license-Attribution--ShareAlike%204.0%20International-blue.svg)](https://cran.r-project.org/web/licenses/Attribution-ShareAlike%204.0%20International)
+<!-- badges: end -->
 
-Om dit template te gebruiken heb je de volgende software, packages en fonts nodig:
+<img src="figures/fairness-awareness-hex.png" align="right" height="160" alt="" />
 
--   [Quarto](https://quarto.org/docs/get-started/) versie 1.4.11 of hoger
--   [XQuartz](https://www.xquartz.org/) (alleen voor Mac)
--   De libraries uit `_Config.R` (worden automatisch geïnstalleerd):
-    -   `library(tidymodels)`
-    -   `library(vip)`
-    -   `library(forcats)`
-    -   `library(performance)`
-    -   `library(dlookr)`
-    -   `library(gtsummary)`
-    -   `library(cli)`
-    -   `library(glue)`
-    -   `library(probably)`
-    -   `library(discrim)`
-    -   `library(klaR)`
-    -   `library(betacal)`
-    -   `library(doParallel)`
+This [Npuls
+CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda)
+project makes it possible to create a fairness analysis to study equity
+(*kansengelijkheid*) within progression of students in educational
+institutions in The Netherlands (mbo, hbo, and wo).
 
-## Opbouw bestanden en folders
+## Table of contents
 
-Het template is opgebouwd uit de volgende **bestanden**:
+- [About](#about)
+- [Getting started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installing](#installing)
+- [Rendering your first reports](#rendering-your-first-reports)
+  - [Render the `_advanced-report`
+    project](#render-the-_advanced-report-using-the-default-settings)
+  - [Render the `_basic-report`
+    project](#render-the-_basic-report-using-the-default-settings)
+  - [Render your own reports](#create-and-render-your-own-reports)
+- [Deployment](#deployment)
+- [Learn more on fairness, awareness, and
+  equity](#learn-more-on-fairness-awareness-and-equity)
+- [Built with](#built-with)
+- [Contributing](#contributing) <!-- - [Versioning](#versioning) -->
+- [Authors](#authors)
+- [License](#license)
+- [Acknowledgments](#acknowledgments)
 
--   De index van het rapport: `Index.qmd` (voortaan Index genoemd)
--   `_quarto.yml` met de algemene variabelen
--   `README.Rmd` met deze tekst
--   `NEWS.Rmd` met de versiegeschiedenis
+## 🎓 About
 
-Het bevat de volgende **folders**:
+This project is a template for creating a **fairness analysis of
+students’ progression in educational institutions in The Netherlands**.
+The template is based on the
+[Quarto](https://quarto.org/docs/get-started/) framework and uses the
+[Tidyverse](https://www.tidyverse.org/) coding standard. The template is
+developed by the [Learning Technology & Analytics
+(LTA)](https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics)
+research group of The Hague University of Applied Sciences for the
+[Npuls
+CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda)
+project project.
 
--   `01. Includes` met bestanden die worden ingesloten (afbeeldingen en scss files)
--   `10. Output` met de rapporten die bij een automatische rendering worden gemaakt.
--   `99. Functies & Libraries` met de standaard voorbereidingen, het ltabase package en extra functies
--   `02_Plots` met de afbeeldingen
--   `docs` voor de documentatiebestanden
--   `renv` voor de packages uit de R omgeving
+## 🚀 Getting started
 
-**NB Git ignore**
+These instructions will get you a copy of the project up and running on
+your local machine for development and testing. See the
+[deployment](#deployment) for notes on deploying the project on a live
+system.
 
--   Het `.gitignore` bestand is zo ingericht dat folders die specifieke output bevatten niet meegaan naar de repo (bijv. `00. Log` en `90. Test`.
+### Prerequisites
 
-## Vooraf
+To start working with this project, make sure you have the following
+software installed following the links provided:
 
-Voordat je dit template kan gebruiken kan je het beste 1x `_Setup.R` runnen door op 'Source' te klikken. - Je krijgt nu bericht welke libraries je nog moet installeren.
+**R, Rstudio, Quarto, XQuartz (for Mac only)**
 
-## Gebruik van dit template
+- RStudio version 2024.12.0 or higher with R version 4.4.2 or higher -
+  [Posit](https://posit.co/download/rstudio-desktop/)
+- XQuartz 2.8.5 or higher (for Mac only) -
+  [XQuartz](https://www.xquartz.org/)
+- Quarto version 1.6.39 or higher -
+  [Quarto](https://quarto.org/docs/get-started/)
 
-Als je het template voor de eerste keer gebruikt, doorloop dan na het bovenstaande de volgende stappen:
+**Github, GitHub Desktop**
 
--   **Belangrijk om te weten**:
-    -   Variabele teksten die je kan/moet vervangen staan in de header van Index.qmd.
+- A Github account and (optionally) GitHub Desktop version 3.4.16 -
+  [Github](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
 
-## Opbouw individuele bestanden
+**GFortran**
 
-### Index
+- GFortran -
+  [Fortran](https://fortran-lang.org/en/learn/os_setup/install_gfortran/).
+  Installation will take several minutes.
 
-De index is opgebouwd uit een aantal onderdelen:
+**R packages, fonts**
 
--   De **YAML header** met:
-    -   `title`, `subtitle`: de titel en de ondertitel. Delen hiervan stel je in via de `params` verder in het yml bestand. Door `params` te gebruiken worden de titel en ondertitel automatisch aangepast als we het bestand via Render maken voor meerdere opleidingen.
-    -   `output-file`: de naam van de pdf die wordt gegenereerd.
-    -   `ltatemplate`: het versienummer van het LTA-template; het nummer correspondeert met de nieuwspagina
-    -   `params` met opties voor de opleiding en het rapport:
-        -   `versie`: de versie van het rapport
-        -   `uitval`: de soort uitval waarvoor we een model maken
-        -   `opleidingsnaam`: de volledige naam van de opleiding
-        -   `opleiding`: de code van de opleiding
-        -   `opleidingsvorm`: de opleidingsvorm voluit (voltijd, deeltijd, duaal)
-        -   `opleidingsvorm_afkorting`: de opleidingsvorm afgekort (VT, DT, DU)
-        -   `selectie`: of de opleiding een selectie heeft (false of true) - op basis hiervan worden de rankvariabelen ingesloten of niet.
-    -   Doordat `_quarto.yml` is opgenomen, hoeft er niet meer in de index te worden opgenomen
-        -   in `_quarto.yml` worden onder meer de datum van het bestand automatisch bepaald, maar ook de instellingen voor de HTML pagina.
--   De **setup** met de packages en opties via `_Setup.R`:
-    -   **\_Setup.R mag niet aangepast worden**.
-    -   Omdat de `setup` chunk uit de `Index.qmd` niet goed gelezen wordt in ingesloten .qmd bestanden, is deze vervangen door een `_Setup.R` bestand dat wordt ingesloten in elke pagina.
-    -   Dit bestand wordt per sessie slechts 1x uitgevoerd; als er een nieuwe versie is terwijl je werkt aan je project, herstart dan je R omgeving of pas de variabele `bReset_Setup <- F` eenmalig aan naar `T`.
-    -   In `_Setup.R` vind je:
-        -   libraries + voorkeuren voor bepaalde functies bij conflicten
-        -   basisinstellingen: huidige taal, datum rapport, Tableau kleuren en R6
-        -   standaard-teksten onder afbeeldingen
-        -   algemene opties voor het renderen van knitr
-        -   bestandspaden
-    -   Zie de inline documentatie voor de verdere toelichting.
+- All other packages are installed automatically by running the project
+  `_Setup.R` file on your local machine. Instructions are below.
+- The installation of the Liter font is optional. Follow the
+  instructions from Google to install this font. -
+  [Google](https://fonts.google.com/specimen/Liter)
 
-# Inhoud
+### Installing
 
--   Het prognosemodel is gebouwd met het [tidymodels](https://www.tidymodels.org/) package uit de tidyverse. Een package dat volop wordt doorontwikkeld met een actieve ontwikkelaarsgroep.
--   Als je tidymodels wilt aanleren, doe dan eerst de [tutorials](https://www.tidymodels.org/start/) en lees daarna het online boek: [Tidy Modeling with R](https://www.tmwr.org/) .
--   We maken twee modellen die redelijk goed scoren (penalized lineaire regressie en random forest), naar verhouding weinig rekenkracht vragen en waarvan de variabelen en hun bijdrage aan het model bekend zijn (een *whitebox* model).
--   De werking van de modellen wordt uitgelegd in de tekst. Elk rapport is daarmee zelfstandig te lezen en bevat.
--   Het beste model wordt automatisch geselecteerd. Op basis van dat model trekken we conclusies over de dynamiek in de opleiding.
+1.  First, make a fork of the repository to your own Github account.
+    Then clone the repository to your local machine using for instance
+    GitHub Desktop. See [Cloning a
+    repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+    for an explanation.
+2.  Once you have cloned the repository, open the project in RStudio and
+    run the `_Setup.R` file by clicking on ‘Source’. Don’t change any
+    settings yet. This action will install all the necessary packages
+    and fonts.
 
-## Bekende issues
+## 📚 Rendering your first fairness reports
 
--   Geen
+### Render the `_advanced-report` using the default settings
 
-## Wensen
+First, run the `_advanced-report` using the default settings.
 
--   Geen
+- To start with, you will create an extended report for The Hague
+  University of Applied Sciences (THUAS) with the default settings. It
+  contains detailed information about the fairness analysis: prediction
+  models, R-code and an explanation of each step with references.
+- The report is based on synthesized data from the bachelor’s
+  Communication & Multimedia Design (CMD), and will be created in the
+  `_advanced-report` folder of your project.
+- The first time you create this report, it will take several minutes.  
+- Once finished, click on `_advanced-report/index.html` and choose
+  `View in Web Browser`.
+- If you don’t see this file, click the refresh icon at the top right of
+  the folder. If you still don’t see the report, check the console for
+  errors.
+- When you rerun the report, the output will be removed and a new report
+  will be created. If you want to keep the previously rendered output,
+  copy the entire folder to a location outside of your project.
+
+**To render the project, follow these steps:**
+
+Since the template has several dependencies, you must render the pages
+using the terminal.
+
+1.  Open a terminal in RStudio (second tab at the bottom of your
+    screen).
+2.  Run the following command for the \_advanced-report:
+
+``` r
+quarto render --profile advanced-report
+```
+
+### Render the `_basic-report` project using the default settings
+
+Next, run the `_basic-report` using the default settings.
+
+- You will create a report for The Hague University of Applied Sciences
+  (THUAS) with the default settings. The report is based on synthesized
+  data from the bachelor’s Communication & Multimedia Design (CMD), and
+  will be created in the `_basic-report` folder of your project.
+- The first time you create this report, it will take several minutes.
+- Once the rendering has finished, click on `_basic-report/index.html`
+  and choose `View in Web Browser`. The report will open in your default
+  browser.
+- If you don’t see this file, click the refresh icon at the top right of
+  the folder. If you still don’t see the report, check the console for
+  any errors.
+- When you rerun the report, the output will be removed and a new report
+  will be created. If you want to keep the previously rendered output,
+  copy the entire folder to a location outside of your project.
+- This report uses the freeze option, which means htmls items will be
+  saved, unless one of your sources files change. This will save you
+  time, when you rerender the report. Freeze files are stored in the
+  `_freeze` folder. If you want to start fresh, simply remove the
+  `_freeze` folder.
+
+**To render the project, follow these steps:**
+
+Since the template has several dependencies, you must render the pages
+using the terminal.
+
+1.  Open a terminal in RStudio (second tab at the bottom of your
+    screen).
+2.  Run the following command for the *basic* report:
+
+``` r
+quarto render --profile basic-report
+```
+
+### Create and render your institutional reports
+
+Finally, you can create your institutional report by changing the
+settings in the `_quarto.yml` file.
+
+- You can change the settings for the layout, the educational
+  institution, faculty or academy, the study program, the report’s
+  version, the success factors, the model, the use of synthetic data,
+  the recreation of plots, the enrollment selection and the includes.
+- Start small and work your way up to more complex settings.
+- Follow the [Tutorial](TUTORIAL.md) to learn how to create and render
+  your institutional reports.
+
+## 🏁 Deployment
+
+The reports are created in the `_basic` and `advanced` folders. You can
+deploy the reports to a web server or share them with others by copying
+the folder to a location outside your project. You can also share the
+reports by uploading them to a web server or by using a service like
+GitHub Pages.
+
+## 💡 Learn more on fairness, awareness, and equity
+
+To learn more about the concepts of Fairness, Awareness, and Equity,
+read the inaugural speech [No Fairness without
+Awareness](https://zenodo.org/records/14204674) by Theo Bakker.
+
+## 🔨 Built with
+
+- [Quarto](https://quarto.org/docs/get-started/) - The web framework
+  used with R.
+- [Tidyverse](https://www.tidyverse.org/) - The R coding standard used.
+- [Tidymodels](https://www.tidymodels.org/) - The R package used to
+  build the prediction models.
+- [Dalex](https://dalex.drwhy.ai/) - The R package used to explain the
+  prediction models and create the fairness analysis. The implementation
+  of the fairness analysis is based on the
+  [Fairness](https://fairness.drwhy.ai/) package.
+
+The LTA-HHs team adjusted the Dalex implementation to improve usability
+and make it suitable for use in the educational sector in the
+Netherlands.
+
+## 🔧 Contributing
+
+In the next version of this template, we will explain how you can
+contribute to this project. Until then, please get in touch with Theo
+Bakker if you have any suggestions.
+
+<!-- ## 🔩 Versioning -->
+
+<!-- We use [SemVer](http://semver.org/) for versioning. See the [tags on this repository](https://github.com/LTA-HHs/lta-hhs-fairnessawareness/tags) for the available versions.  -->
+
+## ✒️ Authors
+
+- **Theo Bakker**, Professor of Learning Technology & Analytics of The
+  Hague University of Applied Sciences (THUAS), t.c.bakker@hhs.nl -
+  *Initial work* - [Theo Bakker](https://github.com/tcbakker) and
+  [LTA-HHs](https://github.com/LTA-HHs)
+
+## 🚦 License
+
+This project is licensed under the Creative Commons Attribution Share
+Alike 4.0 International - see the [LICENSE.md](LICENSE.md) file for
+details
+
+## 🔆 Acknowledgments
+
+- We want to thank the developers of Quarto, Tidyverse, Tidymodels and
+  Dalex for their excellent work.
+- We want to thank Npuls and CEDA for their support in developing this
+  template.
+
+## 📌 Known issues
+
+- None
+
+## 📎 Wishes
+
+- Be able to include logo in \_brand.yml for subsequent use in
+  basic.scss.
+- Remove Warnings while rendering .qmd files without parameters
+
+## 📫 Contact
+
+If you have any questions or suggestions, please contact the author of
+this template: [Theo Bakker](mailto:t.c.bakker@hhs.nl)
+
+*To the [version history of the template](NEWS.md).*
+
+[Back to top](#top)

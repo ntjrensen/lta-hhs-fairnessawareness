@@ -1,27 +1,42 @@
+# Project settings
 project:
-  title: "No Fairness without Awareness"
-
-editor: visual
-
-# execute:
-#  keep-md: true
-
-website:
-  navbar:
-    tools:
-      - icon: github
-        menu:
-          - text: Source Code
-            href:  https://code.com
-          - text: Report a Bug
-            href:  https://bugs.com
+  type: book
   
-## Citaties
+# Book settings
+book:
+  author: "Dr. Theo Bakker, lector Learning Technology & Analytics, De Haagse Hogeschool"
+  date: last-modified
+  bread-crumbs: false
+  navbar: 
+    right:
+      - icon: info-square
+        href: https://www.dehaagsehogeschool.nl/onderzoek/centres-expertise/no-fairness-without-awareness
+        aria-label: Over het onderzoek No Fairness without Awareness
+  repo-url: https://github.com/LTA-HHs/lta-hhs-tidymodels-studiesucces/
+  repo-branch: main
+  repo-actions: [issue]
+
+profile:
+  group: 
+    - [basic-report, advanced-report]
+
+# Brand settings
+brand: brand/_brand.yml  
+
+# Editor
+editor: source
+
+# Execute settings (default)
+execute:
+  keep-md: false
+  echo: false
+
+# Citations
 link-citations: true
 bibliography: bibliography/references.bib
 csl: bibliography/apa.csl
 
-# Taalinstellingen
+# Language settings
 lang: nl
 language: 
   other-links-title: "Meer informatie"
@@ -29,7 +44,7 @@ language:
 # Lightbox
 lightbox: true
 
-## Output instellingen
+# Output settings
 format:
   html:
     number-sections: true
@@ -37,28 +52,34 @@ format:
     link-external-icon: true
     html-math-method: katex
     
-    ## Code instellingen
-    code-fold: true
-    code-summary: "Toon code"
+    # Fontsize
+    fontsize: 1.1em
     
-    ## Theme instellingen
+    # Comments
+    comments:
+      hypothesis: true
+    
+    # Theme settings
     theme: 
     - lumen
-    - "01. Includes/scss/lta.scss"
+    - brand
+    - "brand/scss/default.scss"
     
-    ## Output instellingen
-    self-contained: true
+    # Output settings
+    self-contained: false
     standalone: true
-    embed-resources: true
+    embed-resources: false
     
-    ## Links rechterzijde
+    # Hyperlinks on the right
     toc: true
     toc-title: Inhoudsopgave
-    toc-depth: 4
+    toc-depth: 3
     other-links:
       - text: "Over het lectoraat Learning Technology & Analytics"
         href: https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics
       - text: "Over het onderzoeksprogramma 'No Fairness without Awareness'"
         href: https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness
-      - text: "Github repository"
-        href: https://github.com/LTA-HHs/lta-hhs-tidymodels-uitval
+        
+# Other settings
+config:
+  environment: "ceda" # options: ceda, hhs
