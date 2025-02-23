@@ -1,6 +1,6 @@
-# No Fairness Without Awareness: Tutorial
+# Fairness Awareness: Tutorial
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-22
+2025-02-23
 
 <a name="top"></a>
 
@@ -20,17 +20,16 @@ using the CEDA Fairness Awareness template.
   - [2. \_Setup.R](#_setupr)
   - [3. Quarto YAML](#quarto-yaml)
 - [Structure of the reports](#structure-of-the-reports)
+- [Rendering your first reports](#rendering-your-first-reports)
+  - [Rendering all
+    pages](#rendering-all-pages-of-a-report-using-the-terminal)
+  - [Rendering individual
+    pages](#rendering-individual-pages-of-a-report-using-the-terminal)  
 - [Changing a study programme](#changing-a-study-programme)
 - [Customizing the template](#customizing-the-template)
   - [Adjust design, house style, educational institution
     data](#adjust-design-house-style-educational-institution-data)
   - [Texts](#texts)
-- [Rendering your institutions
-  reports](#rendering-your-institutions-reports)
-  - [Rendering all
-    pages](#rendering-all-pages-of-a-report-using-the-terminal)
-  - [Rendering individual
-    pages](#rendering-individual-pages-of-a-report-using-the-terminal)  
 - [Known issues](#known-issues)
 - [Wishes](#wishes)
 
@@ -364,27 +363,76 @@ The **quarto-advanced-report.yml** file has the following options:
 If you want to learn more about using Quarto profiles, visit the [Quarto
 documentation](https://quarto.org/docs/projects/profiles.html).
 
+## 📝️ Rendering your first reports
+
+Now that you know the structure and contents of the project, you can
+build your first report. Since the template has several dependencies,
+you will have to render the pages using the terminal. Do *not* render
+the pages using the Render button within RStudio.
+
+### Rendering all pages of a report using the terminal
+
+To render a template in the terminal, follow these steps:
+
+1.  Open a terminal in RStudio (second tab at the bottom of your
+    screen).
+2.  Run the following command for the *advanced-report* report:
+
+``` r
+quarto render --profile advanced-report
+```
+
+3.  Run the following command for the *basic-report* report:
+
+``` r
+quarto render --profile basic-report
+```
+
+### Rendering individual pages of a report using the terminal
+
+To run an individual file (for example ch2-equity.qmd), follow these
+steps:
+
+1.  Open a terminal in RStudio (second tab at the bottom of your
+    screen).
+2.  Run the following command for the *advanced-report* report:
+
+``` r
+quarto render ch2-equity.qmd --profile advanced-report
+```
+
+3.  Run the following command for the *basic-report* report:
+
+``` r
+quarto render ch2-equity.qmd --profile basic-report
+```
+
 ## ➿ Changing a study programme
 
+### Rendering all pages of a report using a script with parameters
+
 To change a study programme, don’t change the parameters in the yml
-headers on every page (!), but pass the adjusted parameters to the
-template instead. Use `quarto-render-basic-report.R` and
-`quarto-render-advanced-report.R`.
+headers on every page (!), but use `quarto-render-basic-report.R` and
+`quarto-render-advanced-report.R` to pass the adjusted parameters to the
+template instead. These files use the `quarto_render` function to create
+a report.
 
-Within these files, you will find a script that uses the `quarto_render`
-function to create a report. Change the values in `lExecute_params` to
-create a new report for another study programme. Just source the page to
-render a report.
+To render a template with these scripts, follow these steps:
 
-The `quarto-render-basic-report.R` script will remove the `_freeze`
-folder. Otherwise, the rendering would use existing pages from earlier
-settings.
+1.  Open `quarto-render-advanced-report` for the *advanced-report*
+    report and source it.
+2.  Open `quarto-render-basic-report` for the *basic-report* report and
+    source it. This script will remove the `_freeze` folder. Otherwise,
+    the rendering would use existing pages from earlier settings.
+3.  Change the settings in `lExecute_params` to change a programme. The
+    preliminary options are presented after each setting.
 
 ## ✂️ Customizing the template
 
-The template is initially set up for The Hague University of Applied
-Sciences (THUAS), but you can adjust the template to your own
-institution.
+Now you have exercised how to render reports from the terminal or using
+scripts, you can start customizing it. The template is initially set up
+for The Hague University of Applied Sciences (THUAS), but you can adjust
+the template to your own institution.
 
 ### Adjust design, house style, educational institution data
 
@@ -431,48 +479,6 @@ situated in several additional locations.
   - `lResearch_settings[[“sBron”]]`: who provided the dataset you are
     using
   - `lResearch_settings[[“sAnalyse”]]`: who performed the analysis
-
-## 📝️ Rendering your institution’s reports
-
-Since the template has several dependencies, you will have to render the
-pages using the terminal.
-
-### Rendering all pages of a report using the terminal
-
-To render a template, follow these steps:
-
-1.  Open a terminal in RStudio (second tab at the bottom of your
-    screen).
-2.  Run the following command for the *advanced-report* report:
-
-``` r
-quarto render --profile advanced-report
-```
-
-3.  Run the following command for the *basic-report* report:
-
-``` r
-quarto render --profile basic-report
-```
-
-### Rendering individual pages of a report using the terminal
-
-To run an individual file (for example ch2-equity.qmd), follow these
-steps:
-
-1.  Open a terminal in RStudio (second tab at the bottom of your
-    screen).
-2.  Run the following command for the *advanced-report* report:
-
-``` r
-quarto render ch2-equity.qmd --profile advanced-report
-```
-
-3.  Run the following command for the *basic-report* report:
-
-``` r
-quarto render ch2-equity.qmd --profile basic-report
-```
 
 ## 📫 Contact
 

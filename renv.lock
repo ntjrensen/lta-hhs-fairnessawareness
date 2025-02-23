@@ -74,17 +74,6 @@
       ],
       "Hash": "6c7cb21e59aa3528664280fc8630b27d"
     },
-    "DBI": {
-      "Package": "DBI",
-      "Version": "1.2.3",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "methods"
-      ],
-      "Hash": "065ae649b05f1ff66bb0c793107508f5"
-    },
     "Deriv": {
       "Package": "Deriv",
       "Version": "4.1.6",
@@ -480,18 +469,6 @@
       "Repository": "CRAN",
       "Hash": "d972ef991d58c19e6efa71b21f5e144b"
     },
-    "blob": {
-      "Package": "blob",
-      "Version": "1.2.4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "methods",
-        "rlang",
-        "vctrs"
-      ],
-      "Hash": "40415719b5a479b87949f3aa0aee737c"
-    },
     "bookdown": {
       "Package": "bookdown",
       "Version": "0.42",
@@ -591,19 +568,6 @@
         "rlang"
       ],
       "Hash": "cd9a672193789068eb5a2aad65a0dedf"
-    },
-    "callr": {
-      "Package": "callr",
-      "Version": "3.7.6",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "R6",
-        "processx",
-        "utils"
-      ],
-      "Hash": "d7e13f49c19103ece9e58ad2d83a7354"
     },
     "car": {
       "Package": "car",
@@ -938,34 +902,6 @@
       ],
       "Hash": "8a37ad13b9b0db70bf32d6eb2fc0a2aa"
     },
-    "dbplyr": {
-      "Package": "dbplyr",
-      "Version": "2.5.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "DBI",
-        "R",
-        "R6",
-        "blob",
-        "cli",
-        "dplyr",
-        "glue",
-        "lifecycle",
-        "magrittr",
-        "methods",
-        "pillar",
-        "purrr",
-        "rlang",
-        "tibble",
-        "tidyr",
-        "tidyselect",
-        "utils",
-        "vctrs",
-        "withr"
-      ],
-      "Hash": "39b2e002522bfd258039ee4e889e0fd1"
-    },
     "desc": {
       "Package": "desc",
       "Version": "1.4.3",
@@ -1169,25 +1105,6 @@
         "vctrs"
       ],
       "Hash": "fedd9d00c2944ff00a0e2696ccf048ec"
-    },
-    "dtplyr": {
-      "Package": "dtplyr",
-      "Version": "1.3.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "cli",
-        "data.table",
-        "dplyr",
-        "glue",
-        "lifecycle",
-        "rlang",
-        "tibble",
-        "tidyselect",
-        "vctrs"
-      ],
-      "Hash": "54ed3ea01b11e81a86544faaecfef8e2"
     },
     "e1071": {
       "Package": "e1071",
@@ -1445,28 +1362,6 @@
         "utils"
       ],
       "Hash": "0efead26b03bb60716ed29971b1953dc"
-    },
-    "gargle": {
-      "Package": "gargle",
-      "Version": "1.5.2",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "cli",
-        "fs",
-        "glue",
-        "httr",
-        "jsonlite",
-        "lifecycle",
-        "openssl",
-        "rappdirs",
-        "rlang",
-        "stats",
-        "utils",
-        "withr"
-      ],
-      "Hash": "fc0b272e5847c58cd5da9b20eedbd026"
     },
     "gdtools": {
       "Package": "gdtools",
@@ -1749,59 +1644,6 @@
         "methods"
       ],
       "Hash": "5899f1eaa825580172bb56c08266f37c"
-    },
-    "googledrive": {
-      "Package": "googledrive",
-      "Version": "2.1.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "cli",
-        "gargle",
-        "glue",
-        "httr",
-        "jsonlite",
-        "lifecycle",
-        "magrittr",
-        "pillar",
-        "purrr",
-        "rlang",
-        "tibble",
-        "utils",
-        "uuid",
-        "vctrs",
-        "withr"
-      ],
-      "Hash": "e99641edef03e2a5e87f0a0b1fcc97f4"
-    },
-    "googlesheets4": {
-      "Package": "googlesheets4",
-      "Version": "1.1.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "cellranger",
-        "cli",
-        "curl",
-        "gargle",
-        "glue",
-        "googledrive",
-        "httr",
-        "ids",
-        "lifecycle",
-        "magrittr",
-        "methods",
-        "purrr",
-        "rematch2",
-        "rlang",
-        "tibble",
-        "utils",
-        "vctrs",
-        "withr"
-      ],
-      "Hash": "d6db1667059d027da730decdc214b959"
     },
     "gower": {
       "Package": "gower",
@@ -2162,17 +2004,6 @@
         "rlang"
       ],
       "Hash": "562de74e83d59e7e5d71ca856353a525"
-    },
-    "ids": {
-      "Package": "ids",
-      "Version": "1.0.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "openssl",
-        "uuid"
-      ],
-      "Hash": "99df65cfef20e525ed38c3d2577f7190"
     },
     "infer": {
       "Package": "infer",
@@ -3555,28 +3386,6 @@
       ],
       "Hash": "ef233f0e9064fc88c898b340c9add5c2"
     },
-    "reprex": {
-      "Package": "reprex",
-      "Version": "2.1.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "callr",
-        "cli",
-        "clipr",
-        "fs",
-        "glue",
-        "knitr",
-        "lifecycle",
-        "rlang",
-        "rmarkdown",
-        "rstudioapi",
-        "utils",
-        "withr"
-      ],
-      "Hash": "97b1d5361a24d9fb588db7afe3e5bcbf"
-    },
     "rio": {
       "Package": "rio",
       "Version": "1.2.3",
@@ -4154,46 +3963,6 @@
         "withr"
       ],
       "Hash": "829f27b9c4919c16b593794a6344d6c0"
-    },
-    "tidyverse": {
-      "Package": "tidyverse",
-      "Version": "2.0.0",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Requirements": [
-        "R",
-        "broom",
-        "cli",
-        "conflicted",
-        "dbplyr",
-        "dplyr",
-        "dtplyr",
-        "forcats",
-        "ggplot2",
-        "googledrive",
-        "googlesheets4",
-        "haven",
-        "hms",
-        "httr",
-        "jsonlite",
-        "lubridate",
-        "magrittr",
-        "modelr",
-        "pillar",
-        "purrr",
-        "ragg",
-        "readr",
-        "readxl",
-        "reprex",
-        "rlang",
-        "rstudioapi",
-        "rvest",
-        "stringr",
-        "tibble",
-        "tidyr",
-        "xml2"
-      ],
-      "Hash": "c328568cd14ea89a83bd4ca7f54ae07e"
     },
     "timeDate": {
       "Package": "timeDate",

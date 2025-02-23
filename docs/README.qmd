@@ -45,7 +45,7 @@ This [Npuls CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-4
 - [Learn more on fairness, awareness, and equity](#learn-more-on-fairness-awareness-and-equity)
 - [Built with](#built-with)
 - [Contributing](#contributing)
-- [Versioning](#versioning)
+<!-- - [Versioning](#versioning) -->
 - [Authors](#authors)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
@@ -162,9 +162,9 @@ The LTA-HHs team adjusted the Dalex implementation to improve usability and make
 
 In the next version of this template, we will explain how you can contribute to this project. Until then, please get in touch with Theo Bakker if you have any suggestions.
 
-## 🔩 Versioning
+<!-- ## 🔩 Versioning -->
 
-We use [SemVer](http://semver.org/) for versioning. See the [tags on this repository](https://github.com/LTA-HHs/lta-hhs-fairnessawareness/tags) for the available versions. 
+<!-- We use [SemVer](http://semver.org/) for versioning. See the [tags on this repository](https://github.com/LTA-HHs/lta-hhs-fairnessawareness/tags) for the available versions.  -->
 
 ## ✒️ Authors
 

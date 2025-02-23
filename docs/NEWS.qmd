@@ -1,5 +1,5 @@
 ---
-title: "No Fairness Without Awareness: News"
+title: "Fairness Awareness: News"
 format: gfm
 author: "Theo Bakker, The Hague University of Applied Sciences"
 date: last-modified
@@ -10,13 +10,13 @@ order: 3
 
 # Read more
 
-To the [explanation of the template](README.md).
-To the [tutorial](TUTORIAL.md).
+-   To the [explanation of the template](README.md).
+-   To the [tutorial](TUTORIAL.md).
 
 # News
 
-## Instroomrapport 0.9.1.9000 *(2025-02-11)*
+## 0.9.1.9000 *(2025-02-23)*
 
--   Provided the template with an initial README and NEWS file.
+-   Provided the template with an initial README, NEWS and TUTORIAL file.
 
 [Back to top](#top)

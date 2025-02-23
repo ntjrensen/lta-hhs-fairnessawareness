@@ -17,7 +17,7 @@ library(here)
 
 # Define the parameters for the quarto file
 lExecute_params <- list(
-  opleiding                 = "CMD", # CMD or VD
+  opleiding                 = "VD", # CMD or VD
   opleidingsvorm_afkorting  = "VT"
 )
 

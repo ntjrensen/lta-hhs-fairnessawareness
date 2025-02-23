@@ -1,18 +1,18 @@
-# No Fairness Without Awareness: News
+# Fairness Awareness: News
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-11
+2025-02-23
 
 <a name="top"></a>
 
 # Read more
 
-To the [explanation of the template](README.md). To the
-[tutorial](TUTORIAL.md).
+- To the [explanation of the template](README.md).
+- To the [tutorial](TUTORIAL.md).
 
 # News
 
-## Instroomrapport 0.9.1.9000 *(2025-02-11)*
+## 0.9.1.9000 *(2025-02-23)*
 
-- Provided the template with an initial README and NEWS file.
+- Provided the template with an initial README, NEWS and TUTORIAL file.
 
 [Back to top](#top)

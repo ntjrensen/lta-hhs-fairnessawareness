@@ -1,6 +1,6 @@
 # Fairness Awareness: Analysis of Equity in Education
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-17
+2025-02-22
 
 <a name="top"></a>
 
@@ -38,8 +38,7 @@ institutions in The Netherlands (mbo, hbo, and wo).
 - [Learn more on fairness, awareness, and
   equity](#learn-more-on-fairness-awareness-and-equity)
 - [Built with](#built-with)
-- [Contributing](#contributing)
-- [Versioning](#versioning)
+- [Contributing](#contributing) <!-- - [Versioning](#versioning) -->
 - [Authors](#authors)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
@@ -232,12 +231,9 @@ In the next version of this template, we will explain how you can
 contribute to this project. Until then, please get in touch with Theo
 Bakker if you have any suggestions.
 
-## 🔩 Versioning
+<!-- ## 🔩 Versioning -->
 
-We use [SemVer](http://semver.org/) for versioning. See the [tags on
-this
-repository](https://github.com/LTA-HHs/lta-hhs-fairnessawareness/tags)
-for the available versions.
+<!-- We use [SemVer](http://semver.org/) for versioning. See the [tags on this repository](https://github.com/LTA-HHs/lta-hhs-fairnessawareness/tags) for the available versions.  -->
 
 ## ✒️ Authors
 
