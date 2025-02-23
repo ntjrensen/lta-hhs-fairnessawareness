@@ -20,25 +20,24 @@ using the CEDA Fairness Awareness template.
 -   [Introduction](#-introduction)
 -   [Why we study fairness, awareness, and
     equity](#why-we-study-fairness-awareness-and-equity)
--   [Structure of files and folders](#structure-of-files-and-folders)
--   [Using this template](#using-this-template)
--   [Construction of individual
-    files](#construction-of-individual-files)
+-   [Structure of files and folders](#-structure-of-files-and-folders)
+-   [Using this template](#-using-this-template)
+-   [Construction of individual files](#-construction-of-individual-files)
     -   [1. Index](#index)
     -   [2. \_Setup.R](#_setupr)
     -   [3. Quarto YAML](#quarto-yaml)
--   [Structure of the reports](#structure-of-the-reports)
--   [Rendering your first reports](#rendering-your-first-reports)
+-   [Structure of the reports](#-structure-of-the-reports)
+-   [Rendering your first reports](#-rendering-your-first-reports)
     -   [Rendering all
         pages](#rendering-all-pages-of-a-report-using-the-terminal)
     -   [Rendering individual
         pages](#rendering-individual-pages-of-a-report-using-the-terminal)\
--   [Changing a study programme](#changing-a-study-programme)
--   [Customizing the template](#customizing-the-template)
+-   [Changing a study programme](#-changing-a-study-programme)
+-   [Customizing the template](#-customizing-the-template)
     -   [Adjust design, house style, educational institution
         data](#adjust-design-house-style-educational-institution-data)
     -   [Texts](#texts)
--   [Contact](#contact)
+-   [Contact](#-contact)
 
 ## 🎒 Introduction
 
