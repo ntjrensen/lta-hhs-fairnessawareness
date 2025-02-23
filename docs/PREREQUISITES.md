@@ -1,10 +1,10 @@
 # Fairness Awareness: Prerequisites
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-17
+2025-02-23
 
 <a name="top"></a>
 
-<img src="figures/fairness-awareness-hex.png" align="right" height="160" alt="" />
+<img src="figures/fairness-awareness-hex.png" align="right" height="160"/>
 
 This [Npuls
 CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda)
@@ -28,8 +28,9 @@ project project.
 
 ## 🚀 Getting started
 
-These instructions will get you a copy of the project up and running on
-your local machine for development and testing.
+These instructions will allow you to install a repository of the project
+on your local machine to get up and running quickly at the workshop on
+March 10.
 
 ### Prerequisites
 
@@ -59,26 +60,24 @@ software installed on your local machine following the links provided:
 **R packages, fonts**
 
 - All other packages are installed automatically by running the project
-  `_Setup.R` file on your local machine. Instructions are below.
+  `_Setup.R` file on your local machine. Instructions will follow on
+  March 10.
 - The installation of the Liter font is optional. Follow the
   instructions from Google to install this font. -
   [Google](https://fonts.google.com/specimen/Liter)
 
-### Installing
+### Installing the repository
 
-1.  First, make a fork of the repository to your own Github account.
-    Then clone the repository to your local machine using for instance
-    GitHub Desktop. See [Cloning a
-    repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-    for an explanation.
-2.  Once you have cloned the repository, open the project in RStudio and
-    run the `_Setup.R` file by clicking on ‘Source’. Don’t change any
-    settings yet. This action will install all the necessary packages
-    and fonts.
+Finally, make a fork of the
+[repository](https://github.com/LTA-HHs/lta-hhs-fairnessawareness/) to
+your own Github account. Then clone the repository to your local machine
+using for instance GitHub Desktop. See [Cloning a
+repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+for an explanation.
 
 ## 🎈 All other stuff…
 
-The rest you will learn at March 10, 2025.
+The rest you will learn at March 10, 2025. See you there!
 
 ## 📫 Contact
 
