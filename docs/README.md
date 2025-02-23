@@ -30,12 +30,14 @@ institutions in The Netherlands (mbo, hbo, and wo).
 - [Getting started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Installing](#installing)
-- [Rendering your first reports](#-rendering-your-first-reports)
+- [Rendering your first
+  reports](#-rendering-your-first-fairness-reports)
   - [Render the `_advanced-report`
     project](#render-the-_advanced-report-using-the-default-settings)
   - [Render the `_basic-report`
     project](#render-the-_basic-report-using-the-default-settings)
-  - [Render your own reports](#create-and-render-your-own-reports)
+  - [Render your own
+    reports](#create-and-render-your-institutional-reports)
 - [Deployment](#-deployment)
 - [Learn more on fairness, awareness, and
   equity](#-learn-more-on-fairness-awareness-and-equity)
@@ -44,6 +46,9 @@ institutions in The Netherlands (mbo, hbo, and wo).
 - [Authors](#-authors)
 - [License](#-license)
 - [Acknowledgments](#-acknowledgments)
+- [Known issues](#-known-issues)
+- [Wishes](#-wished)
+- [Contact](#-contact)
 
 ## 🎓 About
 
