@@ -366,9 +366,13 @@ documentation](https://quarto.org/docs/projects/profiles.html).
 ## 📝️ Rendering your first reports
 
 Now that you know the structure and contents of the project, you can
-build your first report. Since the template has several dependencies,
-you will have to render the pages using the terminal. Do *not* render
-the pages using the Render button within RStudio.
+build your first report if you have not done so yet. Otherwise, try to
+run a single page following the instructions below or continue to the
+next step: Changing a study programme.
+
+Since the template has several dependencies, you must render the pages
+using the terminal. Do *not* render the pages using the Render button
+within RStudio.
 
 ### Rendering all pages of a report using the terminal
 

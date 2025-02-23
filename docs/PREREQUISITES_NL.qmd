@@ -8,9 +8,9 @@ order: 1
 
 <a name="top"></a>
 
-<img src="figures/fairness-awareness-hex.png" align="right" height="160" alt="" /> 
+<img src="figures/fairness-awareness-hex.png" align="right" height="160"/>
 
-Dit [Npuls CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda) project maakt het mogelijk om een rechtvaardigheidsanalyse te maken om kansengelijkheid binnen de doorstroom van studenten in onderwijsinstellingen in Nederland (mbo, hbo en wo) te bestuderen. 
+Dit [Npuls CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda) project maakt het mogelijk om een rechtvaardigheidsanalyse te maken om kansengelijkheid binnen de doorstroom van studenten in onderwijsinstellingen in Nederland (mbo, hbo en wo) te bestuderen.
 
 ## 🎓 Over
 
@@ -18,7 +18,7 @@ Dit project is een sjabloon voor het maken van een **eerlijkheidsanalyse van de 
 
 ## 🚀 Aan de slag
 
-Deze instructies zorgen ervoor dat je een repository van het project op je lokale machine kunt installeren om bij de workshop op 10 maart snel aan de slag te kunnen. 
+Deze instructies zorgen ervoor dat je een repository van het project op je lokale machine kunt installeren om bij de workshop op 10 maart snel aan de slag te kunnen.
 
 ### Vereisten
 
@@ -26,36 +26,31 @@ Om met dit project aan de slag te gaan, moet je de volgende software op je lokal
 
 **R, Rstudio, Quarto, XQuartz (alleen voor Mac)**
 
-- RStudio versie 2024.12.0 of hoger met R versie 4.4.2 of hoger - [Posit](https://posit.co/download/rstudio-desktop/)
-- XQuartz 2.8.5 of hoger (alleen voor Mac) - [XQuartz](https://www.xquartz.org/)
-- Quarto versie 1.6.39 of hoger - [Quarto](https://quarto.org/docs/get-started/)
+-   RStudio versie 2024.12.0 of hoger met R versie 4.4.2 of hoger - [Posit](https://posit.co/download/rstudio-desktop/)
+-   XQuartz 2.8.5 of hoger (alleen voor Mac) - [XQuartz](https://www.xquartz.org/)
+-   Quarto versie 1.6.39 of hoger - [Quarto](https://quarto.org/docs/get-started/)
 
 **Github, GitHub Desktop**
 
-- Een Github-account en (optioneel) GitHub Desktop versie 3.4.16 - [Github](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
+-   Een Github-account en (optioneel) GitHub Desktop versie 3.4.16 - [Github](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
 
 **GFortran**
 
-- GFortran - [Fortran](https://fortran-lang.org/en/learn/os_setup/install_gfortran/). De installatie duurt enkele minuten. 
+-   GFortran - [Fortran](https://fortran-lang.org/en/learn/os_setup/install_gfortran/). De installatie duurt enkele minuten.
 
 **R packages, lettertypen**
 
-- Alle andere packages worden automatisch geïnstalleerd door het projectbestand `_Setup.R` uit te voeren op je lokale machine. Instructies krijg je op 10 maart.
-- De installatie van het lettertype Liter is optioneel. Volg de instructies van Google om dit lettertype te installeren. - [Google](https://fonts.google.com/specimen/Liter)
+-   Alle andere packages worden automatisch geïnstalleerd door het projectbestand `_Setup.R` uit te voeren op je lokale machine. Instructies krijg je op 10 maart.
+-   De installatie van het lettertype Liter is optioneel. Volg de instructies van Google om dit lettertype te installeren. - [Google](https://fonts.google.com/specimen/Liter)
 
 ### Installeren van de repository
 
 Maak tot slot een fork van de repository naar je eigen Github account. Kloon dan de repository naar je lokale machine met bijvoorbeeld GitHub Desktop. Zie [Een repository klonen](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) voor uitleg.
 
-##  🎈 Alle andere dingen...
+## 🎈 Alle andere dingen...
 
 De rest leer je op 10 maart 2025. Tot dan!
 
 ## 📫 Contact
 
 Als je vragen of suggesties hebt, kun je contact opnemen met de auteur van dit sjabloon: [Theo Bakker](mailto:t.c.bakker@hhs.nl)
-
-
-
-
-

@@ -1,6 +1,6 @@
 # Fairness Awareness: Analysis of Equity in Education
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-22
+2025-02-23
 
 <a name="top"></a>
 
@@ -8,13 +8,15 @@ Theo Bakker, The Hague University of Applied Sciences
 
 <!-- badges: begin -->
 
+<!-- [![](https://img.shields.io/github/last-commit/LTA-HHs/lta-hhs-tidymodels-studiesucces.svg)](https://github.com/LTA-HHs/lta-hhs-tidymodels-studiesucces/commits/main) -->
+
 [![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![](https://img.shields.io/github/last-commit/LTA-HHs/lta-hhs-tidymodels-studiesucces.svg)](https://github.com/LTA-HHs/lta-hhs-tidymodels-studiesucces/commits/main)
 [![License: Attribution-ShareAlike 4.0
 International](https://img.shields.io/badge/license-Attribution--ShareAlike%204.0%20International-blue.svg)](https://cran.r-project.org/web/licenses/Attribution-ShareAlike%204.0%20International)
+
 <!-- badges: end -->
 
-<img src="figures/fairness-awareness-hex.png" align="right" height="160" alt="" />
+<img src="figures/fairness-awareness-hex.png" align="right" height="160"/>
 
 This [Npuls
 CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda)
@@ -135,7 +137,8 @@ First, run the `_advanced-report` using the default settings.
 **To render the project, follow these steps:**
 
 Since the template has several dependencies, you must render the pages
-using the terminal.
+using the terminal. Do not render the pages using the Render button
+within RStudio.
 
 1.  Open a terminal in RStudio (second tab at the bottom of your
     screen).
@@ -172,7 +175,8 @@ Next, run the `_basic-report` using the default settings.
 **To render the project, follow these steps:**
 
 Since the template has several dependencies, you must render the pages
-using the terminal.
+using the terminal. Do not render the pages using the Render button
+within RStudio.
 
 1.  Open a terminal in RStudio (second tab at the bottom of your
     screen).

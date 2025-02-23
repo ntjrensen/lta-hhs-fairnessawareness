@@ -137,7 +137,10 @@ The reports conclude with two additional pages:
 You can **preview** the two versions of the report from the `_examples`
 folder.
 
-**NB.** The order of the chapters in the advanced report is as follows: Introduction, Models, Factors, Equity, References, Appendix. This order is necessary for the first rendering to build the report elements correctly while considering their interdependence.
+**NB.** The order of the chapters in the advanced report is as follows:
+Introduction, Models, Factors, Equity, References, Appendix. This order
+is necessary for the first rendering to build the report elements
+correctly while considering their interdependence.
 
 ## 📂 Structure of files and folders {#structure-of-files-and-folders}
 
@@ -156,8 +159,10 @@ The template is composed of the following **files** (alphabetically):
 -   `ch4-models.qmd` with the construction of the prediction models
     (chapter 4)
 -   `ch5-references.qmd` with the references (chapter 5)
--   `quarto-render-basic-report.R` with a script to create the basic report with parameters
--   `quarto-render-advanced-report.R` with a script to create the advanced report with parameters
+-   `quarto-render-basic-report.R` with a script to create the basic
+    report with parameters
+-   `quarto-render-advanced-report.R` with a script to create the
+    advanced report with parameters
 -   `renv.lock` with the versions of the packages
 -   `x-a-appendix-abbreviations.qmd` with an explanation of the
     abbreviation used in the reports (appendix A)
@@ -227,7 +232,8 @@ following components:
             years, etc.)
         -   `model`: the name of the model. The model name can have the
             same name as the success parameter.
-        -   `propedeusediploma`: whether to take a propedeutic degree into account or not (false or true)    
+        -   `propedeusediploma`: whether to take a propedeutic degree
+            into account or not (false or true)\
         -   `use_synthetic_data`: whether to use synthetic data (false
             or true).
         -   `recreateplots`: whether you want to recreate the plots
@@ -371,8 +377,12 @@ documentation](https://quarto.org/docs/projects/profiles.html).
 
 ## 📝️ Rendering your first reports {#rendering-your-first-reports}
 
-Now that you know the structure and contents of the project, you can build your first report. Since the template has several dependencies, you will have to render the
-pages using the terminal. Do _not_ render the pages using the Render button within RStudio.
+Now that you know the structure and contents of the project, you can
+build your first report if you have not done so yet. Otherwise, try to run a single page following the instructions below or continue to the next step: Changing a study programme. 
+
+Since the template has several dependencies,
+you must render the pages using the terminal. Do *not* render
+the pages using the Render button within RStudio.
 
 ### Rendering all pages of a report using the terminal {#rendering-all-pages-of-a-report-using-the-terminal}
 
@@ -415,19 +425,28 @@ quarto render ch2-equity.qmd --profile basic-report
 
 ### Rendering all pages of a report using a script with parameters {#rendering-all-pages-of-a-report-using-a-script}
 
-To change a study programme, don't change the parameters in the yml headers on every page (!), but use `quarto-render-basic-report.R` and `quarto-render-advanced-report.R` to pass the adjusted parameters to the template instead. These files use the `quarto_render` function to create a report. 
+To change a study programme, don't change the parameters in the yml
+headers on every page (!), but use `quarto-render-basic-report.R` and
+`quarto-render-advanced-report.R` to pass the adjusted parameters to the
+template instead. These files use the `quarto_render` function to create
+a report.
 
 To render a template with these scripts, follow these steps:
 
-1.  Open `quarto-render-advanced-report` for the *advanced-report* report and source it. 
-2.  Open `quarto-render-basic-report` for the *basic-report* report and source it. This script will remove the `_freeze` folder. Otherwise, the rendering would use existing pages from earlier settings.
-3.  Change the settings in `lExecute_params` to change a programme. The preliminary options are presented after each setting.
+1.  Open `quarto-render-advanced-report` for the *advanced-report*
+    report and source it.
+2.  Open `quarto-render-basic-report` for the *basic-report* report and
+    source it. This script will remove the `_freeze` folder. Otherwise,
+    the rendering would use existing pages from earlier settings.
+3.  Change the settings in `lExecute_params` to change a programme. The
+    preliminary options are presented after each setting.
 
 ## ✂️ Customizing the template {#customizing-the-template}
 
-Now you have exercised how to render reports from the terminal or using scripts, you can start customizing it. The template is initially set up for The Hague University of Applied
-Sciences (THUAS), but you can adjust the template to your own
-institution.
+Now you have exercised how to render reports from the terminal or using
+scripts, you can start customizing it. The template is initially set up
+for The Hague University of Applied Sciences (THUAS), but you can adjust
+the template to your own institution.
 
 ### Adjust design, house style, educational institution data {#adjust-design-house-style-educational-institution-data}
 
