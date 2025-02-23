@@ -17,7 +17,7 @@ using the CEDA Fairness Awareness template.
 
 ## Table of contents
 
--   [Introduction](#introduction)
+-   [Introduction](#-introduction)
 -   [Why we study fairness, awareness, and
     equity](#why-we-study-fairness-awareness-and-equity)
 -   [Structure of files and folders](#structure-of-files-and-folders)
@@ -38,10 +38,9 @@ using the CEDA Fairness Awareness template.
     -   [Adjust design, house style, educational institution
         data](#adjust-design-house-style-educational-institution-data)
     -   [Texts](#texts)
--   [Known issues](#known-issues)
--   [Wishes](#wishes)
+-   [Contact](#contact)
 
-## 🎒 Introduction {#introduction}
+## 🎒 Introduction
 
 In this tutorial you will learn the following:
 
@@ -495,7 +494,7 @@ situated in several additional locations.
         are using
     -   `lResearch_settings[[“sAnalyse”]]`: who performed the analysis
 
-## 📫 Contact
+## 📫 Contact{#contact}
 
 If you have any questions or suggestions, please get in touch with the
 author of this template: [Theo Bakker](mailto:t.c.bakker@hhs.nl)

@@ -10,7 +10,7 @@ using the CEDA Fairness Awareness template.
 
 ## Table of contents
 
-- [Introduction](#introduction)
+- [Introduction](#-introduction)
 - [Why we study fairness, awareness, and
   equity](#why-we-study-fairness-awareness-and-equity)
 - [Structure of files and folders](#structure-of-files-and-folders)
@@ -30,8 +30,7 @@ using the CEDA Fairness Awareness template.
   - [Adjust design, house style, educational institution
     data](#adjust-design-house-style-educational-institution-data)
   - [Texts](#texts)
-- [Known issues](#known-issues)
-- [Wishes](#wishes)
+- [Contact](#contact)
 
 ## 🎒 Introduction
 
