@@ -26,24 +26,24 @@ institutions in The Netherlands (mbo, hbo, and wo).
 
 ## Table of contents
 
-- [About](#about)
-- [Getting started](#getting-started)
+- [About](#-about)
+- [Getting started](#-getting-started)
   - [Prerequisites](#prerequisites)
   - [Installing](#installing)
-- [Rendering your first reports](#rendering-your-first-reports)
+- [Rendering your first reports](#-rendering-your-first-reports)
   - [Render the `_advanced-report`
     project](#render-the-_advanced-report-using-the-default-settings)
   - [Render the `_basic-report`
     project](#render-the-_basic-report-using-the-default-settings)
   - [Render your own reports](#create-and-render-your-own-reports)
-- [Deployment](#deployment)
+- [Deployment](#-deployment)
 - [Learn more on fairness, awareness, and
-  equity](#learn-more-on-fairness-awareness-and-equity)
-- [Built with](#built-with)
-- [Contributing](#contributing) <!-- - [Versioning](#versioning) -->
-- [Authors](#authors)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
+  equity](#-learn-more-on-fairness-awareness-and-equity)
+- [Built with](#-built-with)
+- [Contributing](#-contributing) <!-- - [Versioning](#versioning) -->
+- [Authors](#-authors)
+- [License](#-license)
+- [Acknowledgments](#-acknowledgments)
 
 ## 🎓 About
 
