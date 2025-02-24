@@ -15,6 +15,11 @@ order: 3
 
 # News
 
+## 0.9.1.9001 *(2025-02-24)*
+
+-   Improved the hyperlinks in the PREREQUISITES, README, and TUTORIAL files
+-   Improved installation of renv and removed dependencies for ltabase package
+
 ## 0.9.1.9000 *(2025-02-23)*
 
 -   Provided the template with an initial README, NEWS and TUTORIAL file.

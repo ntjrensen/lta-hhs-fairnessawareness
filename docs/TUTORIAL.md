@@ -1,6 +1,6 @@
 # Fairness Awareness: Tutorial
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-23
+2025-02-24
 
 <a name="top"></a>
 
@@ -61,12 +61,13 @@ an ML model can be assessed by examining the quality of its predictions
 for different groups of students expressed in fairness metrics. If the
 differences in predictions are disproportionally large, this is a sign
 of bias within the data, unfairness for some groups of students, and
-inequity \[ref\].
+inequity.
 
 To learn more about the concepts of Fairness, Awareness, and Equity,
-read the inaugural speech [No Fairness without
-Awareness](https://zenodo.org/records/14204674) by Theo Bakker \[ref\].
-The advanced report explains these concepts as well.
+read the inaugural speech
+<a href="https://zenodo.org/records/14204674" target="_blank">No
+Fairness without Awareness</a> <sup>🔗</sup> by Theo Bakker. The
+advanced report explains these concepts as well.
 
 ## 📚 Structure of the fairness reports
 
@@ -102,11 +103,14 @@ with teachers and policymakers in daily practice.
   - The development of prediction models for the students’ progression
     in the study programme.
   - The forecasting model is built with the
-    [tidymodels](https://www.tidymodels.org/) package from the
-    tidyverse. A package that is in full development with an active
-    developer group. If you are not familiar yet with tidy modelling,
-    first follow the [tutorials](https://www.tidymodels.org/start/) or
-    read the online book [Tidy Modeling with R](https://www.tmwr.org/) .
+    <a href="https://www.tidymodels.org/" target="_blank">tidymodels</a>
+    <sup>🔗</sup> package from the tidyverse. A package that is in full
+    development with an active developer group. If you are not familiar
+    yet with tidy modelling, first follow the
+    <a href="https://www.tidymodels.org/start/"
+    target="_blank">tutorials</a> <sup>🔗</sup> or read the online book
+    <a href="https://www.tmwr.org/" target="_blank">Tidy Modeling with R</a>
+    <sup>🔗</sup>.
   - We create two models (*penalized linear regression* and *random
     forest*), which require comparatively little computing power and
     whose variables and their contributions to the model are known (a
@@ -359,8 +363,9 @@ The **quarto-advanced-report.yml** file has the following options:
   appendices. This template shows Chapter 4: the development of
   prediction models.
 
-If you want to learn more about using Quarto profiles, visit the [Quarto
-documentation](https://quarto.org/docs/projects/profiles.html).
+If you want to learn more about using Quarto profiles, visit the
+<a href="https://quarto.org/docs/projects/profiles.html"
+target="_blank">Quarto documentation</a> <sup>🔗</sup>.
 
 ## 📝️ Rendering your first reports
 

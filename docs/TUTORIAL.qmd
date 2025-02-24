@@ -68,11 +68,11 @@ an ML model can be assessed by examining the quality of its predictions
 for different groups of students expressed in fairness metrics. If the
 differences in predictions are disproportionally large, this is a sign
 of bias within the data, unfairness for some groups of students, and
-inequity \[ref\].
+inequity.
 
 To learn more about the concepts of Fairness, Awareness, and Equity,
 read the inaugural speech [No Fairness without
-Awareness](https://zenodo.org/records/14204674) by Theo Bakker \[ref\].
+Awareness](https://zenodo.org/records/14204674){target="_blank"} <sup>🔗</sup> by Theo Bakker.
 The advanced report explains these concepts as well.
 
 ## 📚 Structure of the fairness reports
@@ -109,12 +109,12 @@ with teachers and policymakers in daily practice.
     -   The development of prediction models for the students'
         progression in the study programme.
     -   The forecasting model is built with the
-        [tidymodels](https://www.tidymodels.org/) package from the
+        [tidymodels](https://www.tidymodels.org/){target="_blank"} <sup>🔗</sup> package from the
         tidyverse. A package that is in full development with an active
         developer group. If you are not familiar yet with tidy
         modelling, first follow the
-        [tutorials](https://www.tidymodels.org/start/) or read the
-        online book [Tidy Modeling with R](https://www.tmwr.org/) .
+        [tutorials](https://www.tidymodels.org/start/){target="_blank"} <sup>🔗</sup> or read the
+        online book [Tidy Modeling with R](https://www.tmwr.org/){target="_blank"} <sup>🔗</sup>.
     -   We create two models (*penalized linear regression* and *random
         forest*), which require comparatively little computing power and
         whose variables and their contributions to the model are known
@@ -371,7 +371,7 @@ The **quarto-advanced-report.yml** file has the following options:
     prediction models.
 
 If you want to learn more about using Quarto profiles, visit the [Quarto
-documentation](https://quarto.org/docs/projects/profiles.html).
+documentation](https://quarto.org/docs/projects/profiles.html){target="_blank"} <sup>🔗</sup>.
 
 ## 📝️ Rendering your first reports {#rendering-your-first-reports}
 

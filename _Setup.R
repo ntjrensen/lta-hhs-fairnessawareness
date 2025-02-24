@@ -23,13 +23,14 @@
 # 0. ON START ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Install cli and glue if not yet installed and load the library
-if(!requireNamespace("cli", quietly = TRUE)) {
-  install.packages("cli")
+# Install renv, cli, and glue if not yet installed and load the library
+for(package in c("renv", "cli", "glue")) {
+  if(!requireNamespace(package, quietly = TRUE)) {
+    install.packages(package)
+  }
 }
-if(!requireNamespace("glue", quietly = TRUE)) {
-  install.packages("glue")
-}
+
+library(renv)
 library(cli)
 library(glue)
 
@@ -68,7 +69,7 @@ if(!is.null(rmarkdown::metadata$config$environment)) {
 }
 
 cli_h1("Setting environment")
-cli_alert_success(glue("Environment is {sEnvironment}"))
+cli_alert_success(glue("Environment is {col_red(sEnvironment)}"))
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 0.4 Determine the current file name ####
@@ -101,11 +102,7 @@ if(bSetup_executed == F) {
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.2 Base and fairness functions ####
   
-  if(sEnvironment == "ceda") {
-    source("R/functions/base.helpers.R")
-  } else {
-    source("R/functions/load.ltabase.R")
-  }
+  source("R/functions/base.helpers.R")
   source("R/functions/fairness.helpers.R")
   
   cli_h1("Load functions")

@@ -1,6 +1,6 @@
 # Fairness Awareness: Analysis of Equity in Education
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-23
+2025-02-24
 
 <a name="top"></a>
 
@@ -18,11 +18,12 @@ International](https://img.shields.io/badge/license-Attribution--ShareAlike%204.
 
 <img src="figures/fairness-awareness-hex.png" align="right" height="160"/>
 
-This [Npuls
-CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda)
-project makes it possible to create a fairness analysis to study equity
-(*kansengelijkheid*) within progression of students in educational
-institutions in The Netherlands (mbo, hbo, and wo).
+This <a
+href="https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda"
+target="_blank">Npuls CEDA</a> <sup>🔗</sup> project makes it possible
+to create a fairness analysis to study equity (*kansengelijkheid*)
+within progression of students in educational institutions in The
+Netherlands (mbo, hbo, and wo).
 
 ## Table of contents
 
@@ -55,14 +56,16 @@ institutions in The Netherlands (mbo, hbo, and wo).
 This project is a template for creating a **fairness analysis of
 students’ progression in educational institutions in The Netherlands**.
 The template is based on the
-[Quarto](https://quarto.org/docs/get-started/) framework and uses the
-[Tidyverse](https://www.tidyverse.org/) coding standard. The template is
-developed by the [Learning Technology & Analytics
-(LTA)](https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics)
-research group of The Hague University of Applied Sciences for the
-[Npuls
-CEDA](https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda)
-project project.
+<a href="https://quarto.org/docs/get-started/"
+target="_blank">Quarto</a> <sup>🔗</sup> framework and uses the
+<a href="https://www.tidyverse.org/" target="_blank">Tidyverse</a>
+<sup>🔗</sup> coding standard. The template is developed by the <a
+href="https://www.dehaagsehogeschool.nl/onderzoek/lectoraten/learning-technology-analytics"
+target="_blank">Learning Technology &amp; Analytics (LTA)</a>
+<sup>🔗</sup> research group of The Hague University of Applied Sciences
+for the <a
+href="https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda"
+target="_blank">Npuls CEDA</a> <sup>🔗</sup> project project.
 
 ## 🚀 Getting started
 
@@ -79,22 +82,27 @@ software installed following the links provided:
 **R, Rstudio, Quarto, XQuartz (for Mac only)**
 
 - RStudio version 2024.12.0 or higher with R version 4.4.2 or higher -
-  [Posit](https://posit.co/download/rstudio-desktop/)
+  <a href="https://posit.co/download/rstudio-desktop/"
+  target="_blank">Posit</a> <sup>🔗</sup>
 - XQuartz 2.8.5 or higher (for Mac only) -
-  [XQuartz](https://www.xquartz.org/)
+  <a href="https://www.xquartz.org/" target="_blank">XQuartz</a>
+  <sup>🔗</sup>
 - Quarto version 1.6.39 or higher -
-  [Quarto](https://quarto.org/docs/get-started/)
+  <a href="https://quarto.org/docs/get-started/"
+  target="_blank">Quarto</a> <sup>🔗</sup>
 
 **Github, GitHub Desktop**
 
-- A Github account and (optionally) GitHub Desktop version 3.4.16 -
-  [Github](https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop)
+- A Github account and (optionally) GitHub Desktop version 3.4.16 - <a
+  href="https://docs.github.com/en/desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop"
+  target="_blank">Github</a> <sup>🔗</sup>
 
 **GFortran**
 
 - GFortran -
-  [Fortran](https://fortran-lang.org/en/learn/os_setup/install_gfortran/).
-  Installation will take several minutes.
+  <a href="https://fortran-lang.org/learn/os_setup/install_gfortran/"
+  target="_blank">Fortran</a> <sup>🔗</sup>. Installation will take
+  several minutes.
 
 **R packages, fonts**
 
@@ -102,15 +110,17 @@ software installed following the links provided:
   `_Setup.R` file on your local machine. Instructions are below.
 - The installation of the Liter font is optional. Follow the
   instructions from Google to install this font. -
-  [Google](https://fonts.google.com/specimen/Liter)
+  <a href="https://fonts.google.com/specimen/Liter"
+  target="_blank">Google</a> <sup>🔗</sup>
 
 ### Installing
 
 1.  First, make a fork of the repository to your own Github account.
     Then clone the repository to your local machine using for instance
-    GitHub Desktop. See [Cloning a
-    repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
-    for an explanation.
+    GitHub Desktop. See <a
+    href="https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository"
+    target="_blank">Cloning a repository</a> <sup>🔗</sup> for an
+    explanation.
 2.  Once you have cloned the repository, open the project in RStudio and
     run the `_Setup.R` file by clicking on ‘Source’. Don’t change any
     settings yet. This action will install all the necessary packages
@@ -215,20 +225,25 @@ GitHub Pages.
 ## 💡 Learn more on fairness, awareness, and equity
 
 To learn more about the concepts of Fairness, Awareness, and Equity,
-read the inaugural speech [No Fairness without
-Awareness](https://zenodo.org/records/14204674) by Theo Bakker.
+read the inaugural speech
+<a href="https://zenodo.org/records/14204674" target="_blank">No
+Fairness without Awareness</a> <sup>🔗</sup> by Theo Bakker.
 
 ## 🔨 Built with
 
-- [Quarto](https://quarto.org/docs/get-started/) - The web framework
-  used with R.
-- [Tidyverse](https://www.tidyverse.org/) - The R coding standard used.
-- [Tidymodels](https://www.tidymodels.org/) - The R package used to
-  build the prediction models.
-- [Dalex](https://dalex.drwhy.ai/) - The R package used to explain the
-  prediction models and create the fairness analysis. The implementation
-  of the fairness analysis is based on the
-  [Fairness](https://fairness.drwhy.ai/) package.
+- <a href="https://quarto.org/docs/get-started/"
+  target="_blank">Quarto</a> <sup>🔗</sup> - The web framework used with
+  R.
+- <a href="https://www.tidyverse.org/" target="_blank">Tidyverse</a>
+  <sup>🔗</sup> - The R coding standard used.
+- <a href="https://www.tidymodels.org/" target="_blank">Tidymodels</a>
+  <sup>🔗</sup> - The R package used to build the prediction models.
+- <a href="https://dalex.drwhy.ai/" target="_blank">Dalex</a>
+  <sup>🔗</sup> - The R package used to explain the prediction models
+  and create the fairness analysis. The implementation of the fairness
+  analysis is based on the
+  <a href="https://fairness.drwhy.ai/" target="_blank">Fairness</a>
+  <sup>🔗</sup> package.
 
 The LTA-HHs team adjusted the Dalex implementation to improve usability
 and make it suitable for use in the educational sector in the
@@ -248,14 +263,16 @@ Bakker if you have any suggestions.
 
 - **Theo Bakker**, Professor of Learning Technology & Analytics of The
   Hague University of Applied Sciences (THUAS), t.c.bakker@hhs.nl -
-  *Initial work* - [Theo Bakker](https://github.com/tcbakker) and
-  [LTA-HHs](https://github.com/LTA-HHs)
+  *Initial work* -
+  <a href="https://github.com/tcbakker" target="_blank">Theo Bakker</a>
+  <sup>🔗</sup> and
+  <a href="https://github.com/LTA-HHs" target="_blank">LTA-HHs</a>
+  <sup>🔗</sup>
 
 ## 🚦 License
 
-This project is licensed under the Creative Commons Attribution Share
-Alike 4.0 International - see the [LICENSE.md](LICENSE.md) file for
-details
+This project is licensed under the [Creative Commons Attribution Share
+Alike 4.0 International](LICENSE.md).
 
 ## 🔆 Acknowledgments
 
