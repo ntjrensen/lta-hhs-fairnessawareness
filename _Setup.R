@@ -7,7 +7,7 @@
 # Contact: Theo Bakker (t.c.bakker@hhs.nl)
 # Distribution outside THUAS: Yes
 #
-# Purpose: A setup file to perform standard funciontality of the project.
+# Purpose: A setup file to perform standard functionality of the project.
 #
 # Dependencies: None
 #
