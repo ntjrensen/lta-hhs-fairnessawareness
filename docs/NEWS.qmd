@@ -15,7 +15,11 @@ order: 3
 
 # News
 
-## 0.9.1.9002 *(2025-02-24)*
+## 0.9.1.9003 *(2025-02-26)*
+
+-   Improved documentation and scripts, based on test results
+
+## 0.9.1.9002 *(2025-02-26)*
 
 -   Improved installation of renv and removed final dependencies for ltabase package
 

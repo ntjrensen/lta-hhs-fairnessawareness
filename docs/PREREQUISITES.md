@@ -1,6 +1,6 @@
 # Fairness Awareness: Prerequisites
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-24
+2025-02-26
 
 <a name="top"></a>
 
@@ -50,7 +50,8 @@ software installed on your local machine following the links provided:
   <sup>🔗</sup>
 - Quarto version 1.6.39 or higher -
   <a href="https://quarto.org/docs/get-started/"
-  target="_blank">Quarto</a> <sup>🔗</sup>
+  target="_blank">Quarto</a> <sup>🔗</sup>. Since we use the latest
+  functionalities of Quarto, you will need at least this version.
 
 **Github, GitHub Desktop**
 

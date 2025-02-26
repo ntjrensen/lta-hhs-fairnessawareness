@@ -23,8 +23,8 @@
 # 0. ON START ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Install renv, cli, and glue if not yet installed and load the library
-for(package in c("renv", "cli", "glue")) {
+# Install renv, cli, glue, knitr, and markdown if not yet installed and load the library
+for(package in c("renv", "cli", "glue", "knitr", "markdown")) {
   if(!requireNamespace(package, quietly = TRUE)) {
     install.packages(package)
   }
@@ -33,6 +33,8 @@ for(package in c("renv", "cli", "glue")) {
 library(renv)
 library(cli)
 library(glue)
+library(knitr)
+library(markdown)
 
 # Show the start of the document
 cli_h1("0. ON START")

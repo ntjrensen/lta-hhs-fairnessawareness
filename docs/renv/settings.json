@@ -1,5 +1,11 @@
 {
   "bioconductor.version": null,
+  "external.libraries": [
+    "/Users/theobakker/ownCloud - Theo Bakker@hhs.data.surfsara.nl/LTA-HHS (Projectfolder)/00 LTA Git/Git HHs/LTA_Packages/ltabase_releases"
+  ],
+  "ignored.packages": [
+    "ltabase"
+  ],
   "package.dependency.fields": [
     "Imports",
     "Depends",
