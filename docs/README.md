@@ -1,6 +1,6 @@
 # Fairness Awareness: Analysis of Equity in Education
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-24
+2025-02-26
 
 <a name="top"></a>
 
@@ -89,7 +89,8 @@ software installed following the links provided:
   <sup>🔗</sup>
 - Quarto version 1.6.39 or higher -
   <a href="https://quarto.org/docs/get-started/"
-  target="_blank">Quarto</a> <sup>🔗</sup>
+  target="_blank">Quarto</a> <sup>🔗</sup>. Since we use the latest
+  Quarto functionalities, you will need at least this version.
 
 **Github, GitHub Desktop**
 
@@ -125,6 +126,18 @@ software installed following the links provided:
     run the `_Setup.R` file by clicking on ‘Source’. Don’t change any
     settings yet. This action will install all the necessary packages
     and fonts.
+3.  Ignore any inline suggestions at the top of R Studio to install
+    missing packages.
+4.  When presented with the following question, choose 1.
+
+``` plaintext
+It looks like you've called renv::restore() in a project that hasn't been activated yet.
+How would you like to proceed? 
+
+1: Activate the project and use the project library.
+2: Do not activate the project and use the current library paths.
+3: Cancel and resolve the situation another way.
+```
 
 ## 📚 Rendering your first fairness reports
 
@@ -136,20 +149,8 @@ First, run the `_advanced-report` using the default settings.
   University of Applied Sciences (THUAS) with the default settings. It
   contains detailed information about the fairness analysis: prediction
   models, R-code and an explanation of each step with references.
-- The report is based on synthesized data from the bachelor’s
-  Communication & Multimedia Design (CMD), and will be created in the
-  `_advanced-report` folder of your project.
-- The first time you create this report, it will take several minutes.  
-- Once finished, click on `_advanced-report/index.html` and choose
-  `View in Web Browser`.
-- If you don’t see this file, click the refresh icon at the top right of
-  the folder. If you still don’t see the report, check the console for
-  errors.
-- When you rerun the report, the output will be removed and a new report
-  will be created. If you want to keep the previously rendered output,
-  copy the entire folder to a location outside of your project.
 
-**To render the project, follow these steps:**
+**To render the report, follow these steps:**
 
 Since the template has several dependencies, you must render the pages
 using the terminal. Do not render the pages using the Render button
@@ -163,31 +164,33 @@ within RStudio.
 quarto render --profile advanced-report
 ```
 
+3.  The first time this report is generated, the process may take 5–10
+    minutes. This is normal—please do not interrupt it and allow it to
+    complete.
+4.  The report is based on synthesized data from the bachelor’s
+    Communication & Multimedia Design (CMD), and will be created in the
+    `_advanced-report` folder of your project. Once finished, click on
+    `_advanced-report/index.html` and choose `View in Web Browser`.
+5.  If you don’t see this file, click the refresh icon at the top right
+    of the folder. If you still don’t see the report, check the console
+    for errors.
+6.  When you rerun the report, the output will be removed and a new
+    report will be created. If you want to keep the previously rendered
+    output, copy the entire folder to a location outside of your
+    project.
+
 ### Render the `_basic-report` project using the default settings
 
-Next, run the `_basic-report` using the default settings.
+Next, run the `_basic-report` using the default settings. Follow these
+steps:
 
-- You will create a report for The Hague University of Applied Sciences
-  (THUAS) with the default settings. The report is based on synthesized
-  data from the bachelor’s Communication & Multimedia Design (CMD), and
-  will be created in the `_basic-report` folder of your project.
-- The first time you create this report, it will take several minutes.
-- Once the rendering has finished, click on `_basic-report/index.html`
-  and choose `View in Web Browser`. The report will open in your default
-  browser.
-- If you don’t see this file, click the refresh icon at the top right of
-  the folder. If you still don’t see the report, check the console for
-  any errors.
-- When you rerun the report, the output will be removed and a new report
-  will be created. If you want to keep the previously rendered output,
-  copy the entire folder to a location outside of your project.
-- This report uses the freeze option, which means htmls items will be
-  saved, unless one of your sources files change. This will save you
-  time, when you rerender the report. Freeze files are stored in the
-  `_freeze` folder. If you want to start fresh, simply remove the
-  `_freeze` folder.
+- Again, you will create a report for The Hague University of Applied
+  Sciences (THUAS) with the default settings. The report is based on
+  synthesized data from the bachelor’s Communication & Multimedia Design
+  (CMD), and will be created in the `_basic-report` folder of your
+  project.
 
-**To render the project, follow these steps:**
+**To render the report, follow these steps:**
 
 Since the template has several dependencies, you must render the pages
 using the terminal. Do not render the pages using the Render button
@@ -200,6 +203,25 @@ within RStudio.
 ``` r
 quarto render --profile basic-report
 ```
+
+3.  The first time this report is generated, the process may take about
+    5 minutes. This is normal—please do not interrupt it and allow it to
+    complete.
+4.  Once the rendering has finished, click on `_basic-report/index.html`
+    and choose `View in Web Browser`. The report will open in your
+    default browser.
+5.  If you don’t see this file, click the refresh icon at the top right
+    of the folder. If you still don’t see the report, check the console
+    for any errors.
+6.  When you rerun the report, the output will be removed and a new
+    report will be created. If you want to keep the previously rendered
+    output, copy the entire folder to a location outside of your
+    project.
+7.  This report uses the freeze option, which means htmls items will be
+    saved, unless one of your sources files change. This will save you
+    time, when you rerender the report. Freeze files are stored in the
+    `_freeze` folder. If you want to start fresh, simply remove the
+    `_freeze` folder.
 
 ### Create and render your institutional reports
 

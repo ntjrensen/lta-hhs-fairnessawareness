@@ -7,7 +7,7 @@
 # Contact: Theo Bakker (t.c.bakker@hhs.nl)
 # Distribution outside THUAS: Yes
 #
-# Purpose: A setup file to perform standard funciontality of the project.
+# Purpose: A setup file to perform standard functionality of the project.
 #
 # Dependencies: None
 #
@@ -23,8 +23,8 @@
 # 0. ON START ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-# Install renv, cli, and glue if not yet installed and load the library
-for(package in c("renv", "cli", "glue")) {
+# Install renv, cli, glue, knitr, and markdown if not yet installed and load the library
+for(package in c("renv", "cli", "glue", "knitr", "markdown")) {
   if(!requireNamespace(package, quietly = TRUE)) {
     install.packages(package)
   }
@@ -33,6 +33,8 @@ for(package in c("renv", "cli", "glue")) {
 library(renv)
 library(cli)
 library(glue)
+library(knitr)
+library(markdown)
 
 # Show the start of the document
 cli_h1("0. ON START")
@@ -114,11 +116,7 @@ if(bSetup_executed == F) {
   cli_h1("Load standard datasets")
   
   # Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
-  if(sEnvironment == "ceda") {
-    Load_Datasets(message = TRUE)
-  } else {
-    ltabase::load_ltabase_datasets(message = TRUE)
-  }
+  Load_Datasets(message = TRUE)
   
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.4 Load libraries ####
@@ -237,12 +235,7 @@ if(bSetup_executed == F) {
   # 2.1 Network paths ####
   
   # Define the network directory
-  if(sEnvironment == "ceda") {
-    Network_directory <- "R/data"
-  } else {
-    ltabase::set_lta_sys_env()
-    Network_directory <- ltabase::get_lta_network_directory()
-  }
+  Network_directory <- "R/data"
   
   cli_h1("Set network path")
   cli_alert_success(glue("Network path is set: {Network_directory}."))
@@ -298,17 +291,7 @@ if(bSetup_executed == F) {
   # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.6 Enrollment data  ####
   
-  if(sEnvironment == "ceda") {
-    dfOpleiding_inschrijvingen_base <- Get_dfOpleiding_inschrijvingen_base_syn()
-  } else {
-    dfOpleiding_inschrijvingen_base <- ltabase::get_lta_studyprogram_enrollments_pin(
-      board = sPinBoard,
-      faculty = current_opleiding$INS_Faculteit,
-      studyprogram = current_opleiding$INS_Opleidingsnaam_huidig,
-      studytrack = current_opleiding$INS_Opleiding,
-      studyform = toupper(current_opleiding$INS_Opleidingsvorm),
-      range = "eerstejaars")
-  }
+  dfOpleiding_inschrijvingen_base <- Get_dfOpleiding_inschrijvingen_base_syn()
   
   cli_h1("Enrollments")
   cli_alert_success("Enrollments loaded")
