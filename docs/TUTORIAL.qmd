@@ -168,14 +168,14 @@ The template is composed of the following **files** (alphabetically):
 It also contains the following **folders** (alphabetically):
 
 -   `_advanced-report` and `_basic-report` with the reports created
-    during automatic rendering in two variants
+    during automatic rendering in two variants (you will create these when you render your reports)
 -   `_examples` with two examples of an `_advanced-report` and
     `_basic-report` report for your reference
 -   `_extensions` with Quarto extensions for pandoc
 -   `_freeze` with elements that are unchanged and reused while
-    rendering
+    rendering (you will create these when you render your reports)
 -   `_output` with reports by faculty and study programmes. The model
-    fit results are stored here to speed up the rendering process.
+    fit results are stored here to speed up the rendering process. (You will create these when you render your reports.)
 -   `bibliograhy` with references
 -   `brand` with the corporate identity files (logos, colors, fonts,
     layout in scss, colors)
@@ -277,7 +277,7 @@ following components:
     for a new session or adjust the `bReset_Setup` variable at the top
     of the page from `bReset_Setup <- F` once to `T`.
 -   In `_Setup.R`, you will find:
-    -   A check on the environment: development or production
+    -   A check on the environment: ceda or otherwise
     -   Settings for packages and functions:
         -   libraries + preferences for specific functions in case of
             conflicts

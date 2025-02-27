@@ -1,6 +1,6 @@
 # Fairness Awareness: Analysis of Equity in Education
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-26
+2025-02-27
 
 <a name="top"></a>
 
@@ -127,7 +127,7 @@ software installed following the links provided:
     settings yet. This action will install all the necessary packages
     and fonts.
 3.  Ignore any inline suggestions at the top of R Studio to install
-    missing packages.
+    missing packages. Click on `Don't show again`
 4.  When presented with the following question, choose 1.
 
 ``` plaintext
@@ -181,8 +181,7 @@ quarto render --profile advanced-report
 
 ### Render the `_basic-report` project using the default settings
 
-Next, run the `_basic-report` using the default settings. Follow these
-steps:
+Next, run the `_basic-report` using the default settings.
 
 - Again, you will create a report for The Hague University of Applied
   Sciences (THUAS) with the default settings. The report is based on
