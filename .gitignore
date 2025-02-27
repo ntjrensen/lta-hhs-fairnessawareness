@@ -44,12 +44,14 @@ _freeze
 /renv/library/
 
 # Temporary or private folders
-_advanced-report
-_basic-report
-_test
-_graveyard
-_log
-_tmpthuas
+/_advanced-report/
+/_basic-report/
+/_freeze/
+/_output/
+/_test/
+/_graveyard/
+/_log/
+/_tmpthuas
 
 # Hidden quarto folder
 /.quarto/
