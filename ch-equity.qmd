@@ -2,7 +2,7 @@
 subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.model >}})"
 
 # Format and output
-output-file: "ch2-equity.html"
+output-file: "ch-equity.html"
 
 # Parameters
 params:

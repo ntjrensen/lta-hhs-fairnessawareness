@@ -2,7 +2,7 @@
 subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.model >}})"
 
 # Format and output
-output-file: "ch3-factors.html"
+output-file: "ch-factors.html"
 
 # Parameters
 params:

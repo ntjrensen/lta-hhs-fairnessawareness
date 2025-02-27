@@ -27,10 +27,10 @@ book:
     
     - part: "Analyse"
       chapters:
-        - ch1-introduction.qmd
-        - ch4-models.qmd
-        - ch3-factors.qmd
-        - ch2-equity.qmd
-        - ch5-references.qmd
+        - ch-introduction.qmd
+        - ch-models.qmd
+        - ch-factors.qmd
+        - ch-equity.qmd
+        - ch-references.qmd
   appendices:
     - x-a-appendix-abbreviations.qmd

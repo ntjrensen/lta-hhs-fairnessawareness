@@ -3,7 +3,7 @@ title: "Prognosemodel {{< meta params.model >}}"
 subtitle: "Een analyse van kansengelijkheid in studiesucces ({{< meta params.model >}})"
 
 # Format and output
-output-file: "ch4-models.html"
+output-file: "ch-models.html"
 
 # Parameters
 params:

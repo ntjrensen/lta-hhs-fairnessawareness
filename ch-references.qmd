@@ -1,7 +1,7 @@
 ---
 # No title for this page
 
-output-file: "ch5-references.html"
+output-file: "ch-references.html"
 
 # Parameters
 params:
