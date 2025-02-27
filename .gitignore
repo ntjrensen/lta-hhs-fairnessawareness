@@ -44,6 +44,8 @@ _freeze
 /renv/library/
 
 # Temporary or private folders
+_advanced-report
+_basic-report
 _test
 _graveyard
 _log
