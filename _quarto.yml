@@ -15,6 +15,11 @@ book:
   repo-url: https://github.com/LTA-HHs/lta-hhs-tidymodels-studiesucces/
   repo-branch: main
   repo-actions: [issue]
+  
+include-in-header:
+  text: |
+    <link rel="shortcut icon" href="brand/favicon/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="brand/favicon/favicon.ico">
 
 profile:
   group: 

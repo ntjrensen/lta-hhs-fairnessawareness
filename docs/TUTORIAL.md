@@ -146,12 +146,11 @@ The template is composed of the following **files** (alphabetically):
 - `_Setup.R` with general settings for R
 - `_Setup_config.R` with configurations specific to your educational
   institution
-- `ch1-introduction.qmd` with the introduction (chapter 1)
-- `ch2-equity.qmd` with the fairness analysis (chapter 2)
-- `ch3-factors.qmd` with the analysis of factors (chapter 3)
-- `ch4-models.qmd` with the construction of the prediction models
-  (chapter 4)
-- `ch5-references.qmd` with the references (chapter 5)
+- `ch-introduction.qmd` with the introduction
+- `ch-equity.qmd` with the fairness analysis
+- `ch-factors.qmd` with the analysis of factors
+- `ch-models.qmd` with the construction of the prediction models
+- `ch-references.qmd` with the references
 - `quarto-render-basic-report.R` with a script to create the basic
   report with parameters
 - `quarto-render-advanced-report.R` with a script to create the advanced
@@ -174,8 +173,8 @@ It also contains the following **folders** (alphabetically):
   results are stored here to speed up the rendering process. (You will
   create these when you render your reports.)
 - `bibliograhy` with references
-- `brand` with the corporate identity files (logos, colors, fonts,
-  layout in scss, colors)
+- `brand` with the corporate identity files (logos, favicons, colors,
+  fonts, layout in scss, colors)
 - `docs` for the documentation files (README, TUTORIAL, LICENSE, and
   NEWS)
 - `R/data` with general data sets
@@ -328,23 +327,24 @@ for the basic and advanced reports.
 The **quarto.yml** file has the following options:
 
 - The project settings (book) and associated details: author, date
-  (based on the latest modification date), navigation
+  (based on the latest modification date), navigation.
+- Information on the location of the favicon.  
 - The two profiles basic and advanced. If no profile is specified, the
   first profile prevails.
-- The branding settings: the location of the house-style files
+- The branding settings: the location of the house-style files.
 - The editor settings: work with the source code view instead of the
-  visual view
+  visual view.
 - The execution settings: do not save markdown files and hide console
-  output
+  output.
 - The citation settings: the location of the bibliography and the
-  Citation Style Language (APA)
-- The language settings: the language of the report
-- The lightbox settings: enlarges images when you click on them
+  Citation Style Language (APA).
+- The language settings: the language of the report.
+- The lightbox settings: enlarges images when you click on them.
 - The HTML settings: numbering, scrolling, the engine for mathematical
   texts, the font size (110%), the possibility for comments (via
   hypothesis), the theme, the output settings, the table of contents and
   links under ‘More information’.
-- Other settings: configuration
+- Other settings: configuration.
 
 The **quarto-basic-report.yml** file has the following options:
 
