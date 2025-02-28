@@ -1,6 +1,6 @@
 # Fairness Awareness: Prerequisites
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-26
+2025-02-28
 
 <a name="top"></a>
 
@@ -35,7 +35,32 @@ These instructions will allow you to install a repository of the project
 on your local machine to get up and running quickly at the workshop on
 March 10.
 
-### Prerequisites
+- **It is important you try to finish these instructions before the
+  session, as it takes quite some time to install the minimal
+  prerequisites, unless you go for the Posit Cloud solution (see
+  below).**
+- **To render these reports, you will need to be familiar with git and
+  R.**
+
+## Two flavors: stand alone or Posit Cloud
+
+We have two flavours: a stand-alone installation or a Posit Cloud
+installation.
+
+1.  Installation on Posit Cloud is faster since it doesn’t require
+    installing other software except for R packages. But you need a paid
+    subscription to run the project and render the fairness reports to
+    have enough computing power. If you don’t have installation rights
+    on your computer or (want to) work in Posit Cloud anyway, go for
+    this option.
+2.  Otherwise, go for the stand-alone installation and install the
+    software on your computer.
+
+Follow the instructions below, dependent on your choice.
+
+## Stand alone installation
+
+### Prerequisites for stand alone
 
 To start working with this project, make sure you have the following
 software installed on your local machine following the links provided:
@@ -51,7 +76,7 @@ software installed on your local machine following the links provided:
 - Quarto version 1.6.39 or higher -
   <a href="https://quarto.org/docs/get-started/"
   target="_blank">Quarto</a> <sup>🔗</sup>. Since we use the latest
-  functionalities of Quarto, you will need at least this version.
+  Quarto functionalities, you will need at least this version.
 
 **Github, GitHub Desktop**
 
@@ -78,14 +103,23 @@ software installed on your local machine following the links provided:
 
 ### Installing the repository
 
-Finally, make a fork of the
-<a href="https://github.com/LTA-HHs/lta-hhs-fairnessawareness/"
-target="_blank">repository</a> <sup>🔗</sup> to your own Github account.
-Then clone the repository to your local machine using for instance
-GitHub Desktop. See <a
-href="https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository"
-target="_blank">Cloning a repository</a> <sup>🔗</sup> for an
-explanation.
+- Finally, make a fork of the
+  <a href="https://github.com/LTA-HHs/lta-hhs-fairnessawareness/"
+  target="_blank">repository</a> <sup>🔗</sup> to your own Github
+  account.
+- Then clone the repository to your local machine using for instance
+  GitHub Desktop. See <a
+  href="https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository"
+  target="_blank">Cloning a repository</a> <sup>🔗</sup> for an
+  explanation.
+
+## Posit Cloud installation
+
+### Installing the repository
+
+- Login into Posit Cloud and create a `New Project from Git Repository`.
+- Copy and paste the following url
+  https://github.com/LTA-HHs/lta-hhs-fairnessawareness/. That’s it.
 
 ## 🎈 All other stuff…
 

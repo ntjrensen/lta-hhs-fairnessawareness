@@ -1,6 +1,6 @@
 # Fairness Awareness: Analysis of Equity in Education
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-27
+2025-02-28
 
 <a name="top"></a>
 
@@ -28,8 +28,13 @@ Netherlands (mbo, hbo, and wo).
 ## Table of contents
 
 - [About](#-about)
+- [Why we study fairness, awareness, and
+  equity](#why-we-study-fairness-awareness-and-equity)
 - [Getting started](#-getting-started)
-  - [Prerequisites](#prerequisites)
+  - [Prerequisites for stand-alone
+    installations](#prerequisites-for-stand-alone-installations)
+  - [Prerequisites for Posit Cloud
+    installations](#prerequisites-for-posit-cloud-installations)
   - [Installing](#installing)
 - [Rendering your first
   reports](#-rendering-your-first-fairness-reports)
@@ -37,7 +42,7 @@ Netherlands (mbo, hbo, and wo).
     project](#render-the-_advanced-report-using-the-default-settings)
   - [Render the `_basic-report`
     project](#render-the-_basic-report-using-the-default-settings)
-  - [Render your own
+  - [Render your institutional
     reports](#create-and-render-your-institutional-reports)
 - [Deployment](#-deployment)
 - [Learn more on fairness, awareness, and
@@ -53,9 +58,9 @@ Netherlands (mbo, hbo, and wo).
 
 ## 🎓 About
 
-This project is a template for creating a **fairness analysis of
-students’ progression in educational institutions in The Netherlands**.
-The template is based on the
+This R project offers Dutch educational institutions a template for
+creating a **fairness analysis of students’ progression in educational
+institutions in The Netherlands**. The template is based on the
 <a href="https://quarto.org/docs/get-started/"
 target="_blank">Quarto</a> <sup>🔗</sup> framework and uses the
 <a href="https://www.tidyverse.org/" target="_blank">Tidyverse</a>
@@ -65,7 +70,39 @@ target="_blank">Learning Technology &amp; Analytics (LTA)</a>
 <sup>🔗</sup> research group of The Hague University of Applied Sciences
 for the <a
 href="https://community-data-ai.npuls.nl/groups/view/44d20066-53a8-48c2-b4e9-be348e05d273/project-center-for-educational-data-analytics-ceda"
-target="_blank">Npuls CEDA</a> <sup>🔗</sup> project project.
+target="_blank">Npuls CEDA</a> <sup>🔗</sup> project.
+
+You will have the option to build two reports. The *advanced fairness
+report* you will build, will look like this:
+
+<img src="figures/screenshot-advanced-report.png" align="center" height="300" style = "border: 1px solid #999999"/>
+
+<br/> The *basic fairness report* you will build, will look like this:
+
+<img src="figures/screenshot-basic-report.png" align="center" height="300" style = "border: 1px solid #999999"/>
+
+## 💡 Why we study fairness, awareness, and equity
+
+The Fairness Awareness Template is based on the concepts of Fairness,
+Awareness, and Equity. These concepts are essential for the development
+of a fair educational system. If we don’t study the fairness of our
+institutions, we can’t be aware of the consequences of our actions in
+policy, education or student counseling. If we are not aware of the
+consequences of our actions, we can’t transform unfair educational
+systems.
+
+We use machine learning (ML) models to understand if there is bias in
+the progression of students in educational institutions. The fairness of
+an ML model can be assessed by examining the quality of its predictions
+for different groups of students expressed in fairness metrics. If the
+differences in predictions are disproportionally large, this is a sign
+of bias within the data, unfairness for some groups of students, and
+inequity.
+
+To learn more about the concepts of Fairness, Awareness, and Equity,
+read the inaugural speech
+<a href="https://zenodo.org/records/14204674" target="_blank">No
+Fairness without Awareness</a> <sup>🔗</sup> by Theo Bakker.
 
 ## 🚀 Getting started
 
@@ -74,10 +111,11 @@ your local machine for development and testing. See the
 [deployment](#deployment) for notes on deploying the project on a live
 system.
 
-### Prerequisites
+### Prerequisites for stand-alone installations
 
 To start working with this project, make sure you have the following
-software installed following the links provided:
+software installed following the links provided, unless you use a paid
+version of Posit Cloud:
 
 **R, Rstudio, Quarto, XQuartz (for Mac only)**
 
@@ -102,30 +140,39 @@ software installed following the links provided:
 
 - GFortran -
   <a href="https://fortran-lang.org/learn/os_setup/install_gfortran/"
-  target="_blank">Fortran</a> <sup>🔗</sup>. Installation will take
-  several minutes.
+  target="_blank">Fortran</a> <sup>🔗</sup>. Fortran is needed to work
+  with several machine-learning packages. Installation will take several
+  minutes. You might have to restart your computer after installation.
 
 **R packages, fonts**
 
-- All other packages are installed automatically by running the project
-  `_Setup.R` file on your local machine. Instructions are below.
+- Other packages are installed automatically by running the project on
+  your local machine. Instructions are below.
 - The installation of the Liter font is optional. Follow the
   instructions from Google to install this font. -
   <a href="https://fonts.google.com/specimen/Liter"
   target="_blank">Google</a> <sup>🔗</sup>
 
+### Prerequisites for Posit Cloud installations
+
+- Login into Posit Cloud and create a `New Project from Git Repository`.
+- Copy and paste the following url
+  https://github.com/LTA-HHs/lta-hhs-fairnessawareness/. That’s it.
+
 ### Installing
 
-1.  First, make a fork of the repository to your own Github account.
-    Then clone the repository to your local machine using for instance
-    GitHub Desktop. See <a
+1.  First, make a fork of the repository to your own Github account. A
+    fork is a copy of the original repository you create in your own
+    GitHub account. This allows you to modify it independently without
+    affecting the original project. Then clone the repository to your
+    local machine using for instance GitHub Desktop. See <a
     href="https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository"
     target="_blank">Cloning a repository</a> <sup>🔗</sup> for an
     explanation.
 2.  Once you have cloned the repository, open the project in RStudio and
-    run the `_Setup.R` file by clicking on ‘Source’. Don’t change any
+    run the `_Setup.R` file by clicking on `Source`. Don’t change any
     settings yet. This action will install all the necessary packages
-    and fonts.
+    and fonts. This installation process will take about 5-10 minutes.
 3.  Ignore any inline suggestions at the top of R Studio to install
     missing packages. Click on `Don't show again`
 4.  When presented with the following question, choose 1.
@@ -139,116 +186,17 @@ How would you like to proceed?
 3: Cancel and resolve the situation another way.
 ```
 
-## 📚 Rendering your first fairness reports
+5.  Your session will restart. Run the `_Setup.R` file by clicking on
+    `Source`.
+6.  Answer all questions about installations with Yes (Y or y).
+7.  Once you have all the packages installed, it is best to restart your
+    R session.
 
-### Render the `_advanced-report` using the default settings
+## 📚 Rendering your fairness reports
 
-First, run the `_advanced-report` using the default settings.
-
-- To start with, you will create an extended report for The Hague
-  University of Applied Sciences (THUAS) with the default settings. It
-  contains detailed information about the fairness analysis: prediction
-  models, R-code and an explanation of each step with references.
-
-**To render the report, follow these steps:**
-
-Since the template has several dependencies, you must render the pages
-using the terminal. Do not render the pages using the Render button
-within RStudio.
-
-1.  Open a terminal in RStudio (second tab at the bottom of your
-    screen).
-2.  Run the following command for the \_advanced-report:
-
-``` r
-quarto render --profile advanced-report
-```
-
-3.  The first time this report is generated, the process may take 5–10
-    minutes. This is normal—please do not interrupt it and allow it to
-    complete.
-4.  The report is based on synthesized data from the bachelor’s
-    Communication & Multimedia Design (CMD), and will be created in the
-    `_advanced-report` folder of your project. Once finished, click on
-    `_advanced-report/index.html` and choose `View in Web Browser`.
-5.  If you don’t see this file, click the refresh icon at the top right
-    of the folder. If you still don’t see the report, check the console
-    for errors.
-6.  When you rerun the report, the output will be removed and a new
-    report will be created. If you want to keep the previously rendered
-    output, copy the entire folder to a location outside of your
-    project.
-
-### Render the `_basic-report` project using the default settings
-
-Next, run the `_basic-report` using the default settings.
-
-- Again, you will create a report for The Hague University of Applied
-  Sciences (THUAS) with the default settings. The report is based on
-  synthesized data from the bachelor’s Communication & Multimedia Design
-  (CMD), and will be created in the `_basic-report` folder of your
-  project.
-
-**To render the report, follow these steps:**
-
-Since the template has several dependencies, you must render the pages
-using the terminal. Do not render the pages using the Render button
-within RStudio.
-
-1.  Open a terminal in RStudio (second tab at the bottom of your
-    screen).
-2.  Run the following command for the *basic* report:
-
-``` r
-quarto render --profile basic-report
-```
-
-3.  The first time this report is generated, the process may take about
-    5 minutes. This is normal—please do not interrupt it and allow it to
-    complete.
-4.  Once the rendering has finished, click on `_basic-report/index.html`
-    and choose `View in Web Browser`. The report will open in your
-    default browser.
-5.  If you don’t see this file, click the refresh icon at the top right
-    of the folder. If you still don’t see the report, check the console
-    for any errors.
-6.  When you rerun the report, the output will be removed and a new
-    report will be created. If you want to keep the previously rendered
-    output, copy the entire folder to a location outside of your
-    project.
-7.  This report uses the freeze option, which means htmls items will be
-    saved, unless one of your sources files change. This will save you
-    time, when you rerender the report. Freeze files are stored in the
-    `_freeze` folder. If you want to start fresh, simply remove the
-    `_freeze` folder.
-
-### Create and render your institutional reports
-
-Finally, you can create your institutional report by changing the
-settings in the `_quarto.yml` file.
-
-- You can change the settings for the layout, the educational
-  institution, faculty or academy, the study program, the report’s
-  version, the success factors, the model, the use of synthetic data,
-  the recreation of plots, the enrollment selection and the includes.
-- Start small and work your way up to more complex settings.
-- Follow the [Tutorial](TUTORIAL.md) to learn how to create and render
-  your institutional reports.
-
-## 🏁 Deployment
-
-The reports are created in the `_basic` and `advanced` folders. You can
-deploy the reports to a web server or share them with others by copying
-the folder to a location outside your project. You can also share the
-reports by uploading them to a web server or by using a service like
-GitHub Pages.
-
-## 💡 Learn more on fairness, awareness, and equity
-
-To learn more about the concepts of Fairness, Awareness, and Equity,
-read the inaugural speech
-<a href="https://zenodo.org/records/14204674" target="_blank">No
-Fairness without Awareness</a> <sup>🔗</sup> by Theo Bakker.
+- Follow the [Tutorial](TUTORIAL.md) to learn more about why we study
+  fairness, and how to create and render your institutional fairness
+  reports.
 
 ## 🔨 Built with
 

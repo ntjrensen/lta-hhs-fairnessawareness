@@ -1,6 +1,6 @@
 # Fairness Awareness: Tutorial
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-24
+2025-02-28
 
 <a name="top"></a>
 
@@ -20,7 +20,8 @@ using the CEDA Fairness Awareness template.
   - [2. \_Setup.R](#_setupr)
   - [3. Quarto YAML](#quarto-yaml)
 - [Structure of the reports](#-structure-of-the-reports)
-- [Rendering your first reports](#-rendering-your-first-reports)
+- [Rendering your first fairness
+  reports](#-rendering-your-first-fairness-reports)
   - [Rendering all
     pages](#rendering-all-pages-of-a-report-using-the-terminal)
   - [Rendering individual
@@ -66,8 +67,7 @@ inequity.
 To learn more about the concepts of Fairness, Awareness, and Equity,
 read the inaugural speech
 <a href="https://zenodo.org/records/14204674" target="_blank">No
-Fairness without Awareness</a> <sup>🔗</sup> by Theo Bakker. The
-advanced report explains these concepts as well.
+Fairness without Awareness</a> <sup>🔗</sup> by Theo Bakker.
 
 ## 📚 Structure of the fairness reports
 
@@ -163,13 +163,16 @@ The template is composed of the following **files** (alphabetically):
 It also contains the following **folders** (alphabetically):
 
 - `_advanced-report` and `_basic-report` with the reports created during
-  automatic rendering in two variants
+  automatic rendering in two variants (you will create these when you
+  render your reports)
 - `_examples` with two examples of an `_advanced-report` and
   `_basic-report` report for your reference
 - `_extensions` with Quarto extensions for pandoc
 - `_freeze` with elements that are unchanged and reused while rendering
+  (you will create these when you render your reports)
 - `_output` with reports by faculty and study programmes. The model fit
-  results are stored here to speed up the rendering process.
+  results are stored here to speed up the rendering process. (You will
+  create these when you render your reports.)
 - `bibliograhy` with references
 - `brand` with the corporate identity files (logos, colors, fonts,
   layout in scss, colors)
@@ -194,7 +197,8 @@ It also contains the following **folders** (alphabetically):
 
 ## 🚀 Using this template
 
-If you have not yet installed the necessary software, do so now:
+If you have not yet installed the necessary software, do so now.
+Otherwise, skip this paragraph.
 
 - Open `_Setup.R` and run it once by clicking on ‘Source’.
 - You will now be instructed which libraries you need to install if you
@@ -204,14 +208,16 @@ If you have not yet installed the necessary software, do so now:
 
 ## 🔨 Construction of individual files
 
-Before you render your first customized report, familiarize yourself
-with the construction of the individual files in the template:
+Before you render your first customized report, it is best to
+familiarize yourself with the construction of the individual template
+files. You can skip this section if you want to render your reports
+immediately.
 
 ### 1. Index
 
 The index.qmd file must exist if you are using a book template in
-Quarto, as this template does; index.qmd of this project consists of the
-following components:
+Quarto, as is the case with this template; index.qmd of this project
+consists of the following components:
 
 - The **YAML header** with:
   - `subtitle`: the subtitle. You set part of this further in the yml
@@ -246,13 +252,13 @@ following components:
     - `contact`: show or hide the contact data
     - `justification`: show or hide justification
     - `copyright`: show or hide copyright information
-  - Because `_quarto.yml` is always output, there is no need to include
+  - Because `_quarto.yml` is always run, there is no need to include
     more in the index
     - Among other things, `_quarto.yml` automatically determines the
       files’ date and the HTML page’s settings.
 - The **setup** with the packages and options via `_Setup.R`: see
   explanation below.
-- The **training information** via `R/qmd/header-studyprogram.qmd`
+- The **study program information** via `R/qmd/header-studyprogram.qmd`
 - The **summary of the probability equality analysis** via
   `R/qmd/equity-conclusions.qmd`
 - The **contact** information via `R/qmd/footer-contact.qmd` - this page
@@ -271,7 +277,7 @@ following components:
   session or adjust the `bReset_Setup` variable at the top of the page
   from `bReset_Setup <- F` once to `T`.
 - In `_Setup.R`, you will find:
-  - A check on the environment: development or production
+  - A check on the environment: `ceda` or otherwise
   - Settings for packages and functions:
     - libraries + preferences for specific functions in case of
       conflicts
@@ -302,8 +308,8 @@ following components:
 
 This file determines part of the configuration of the template.
 
-- default parameters for the reports if \$params does not exist (see
-  below)
+- default parameters for the reports if the variable \$params does not
+  exist (see below)
 - research settings that are used to build paths and captions
 - the location of the data
 
@@ -326,7 +332,8 @@ The **quarto.yml** file has the following options:
 - The two profiles basic and advanced. If no profile is specified, the
   first profile prevails.
 - The branding settings: the location of the house-style files
-- The editor settings: work with the source code
+- The editor settings: work with the source code view instead of the
+  visual view
 - The execution settings: do not save markdown files and hide console
   output
 - The citation settings: the location of the bibliography and the
@@ -367,52 +374,123 @@ If you want to learn more about using Quarto profiles, visit the
 <a href="https://quarto.org/docs/projects/profiles.html"
 target="_blank">Quarto documentation</a> <sup>🔗</sup>.
 
-## 📝️ Rendering your first reports
+## 📚 Rendering your first fairness reports
 
 Now that you know the structure and contents of the project, you can
-build your first report if you have not done so yet. Otherwise, try to
-run a single page following the instructions below or continue to the
-next step: Changing a study programme.
+build your first report. As noticed, two reports are available: an
+advanced report for data scientists and a basic report for
+decision-makers. You must start with the advanced report before creating
+the basic report. You find examples of these reports in your
+repository’s `_examples` folder.
 
 Since the template has several dependencies, you must render the pages
 using the terminal. Do *not* render the pages using the Render button
 within RStudio.
 
-### Rendering all pages of a report using the terminal
+### Render the `_advanced-report` using the default settings
 
-To render a template in the terminal, follow these steps:
+First, run the `_advanced-report` using the default settings. In total,
+rendering this report for the first time will take about 5-10 minutes.
+
+- To start with, you will create an extended report for The Hague
+  University of Applied Sciences (THUAS) with the default settings. It
+  contains detailed information about the fairness analysis: prediction
+  models, R-code and an explanation of each step with references.
+
+**To render the report, follow these steps:**
+
+Since the template has several dependencies, you must render the pages
+using the terminal. Do not render the pages using the Render button
+within RStudio.
 
 1.  Open a terminal in RStudio (second tab at the bottom of your
     screen).
-2.  Run the following command for the *advanced-report* report:
+2.  Run the following command for the \_advanced-report:
 
 ``` r
 quarto render --profile advanced-report
 ```
 
-3.  Run the following command for the *basic-report* report:
+3.  The first time this report is generated, the process may take 5–10
+    minutes. This is normal — please do not interrupt it and allow it to
+    complete.
+4.  The report is based on synthesized data from the bachelor’s
+    Communication & Multimedia Design (CMD), and will be created in the
+    `_advanced-report` folder of your project.
+
+**After rendering**
+
+1.  Once finished, click on `_advanced-report/index.html` and choose
+    `View in Web Browser`.
+2.  If you don’t see this file, click the refresh icon at the top right
+    of the folder. If you still don’t see the report, check the console
+    for errors.
+3.  When you rerun the report, the output will be removed and a new
+    report will be created. If you want to keep the previously rendered
+    output, copy the entire folder to a location outside of your
+    project.
+
+### Render the `_basic-report` project using the default settings
+
+Next, run the `_basic-report` using the default settings. In total,
+rendering this report for the first time will take about 5 minutes.
+
+- Again, you will create a report for The Hague University of Applied
+  Sciences (THUAS) with the default settings. The report is based on
+  synthesized data from the bachelor’s Communication & Multimedia Design
+  (CMD), and will be created in the `_basic-report` folder of your
+  project.
+
+**To render the report, follow these steps:**
+
+Since the template has several dependencies, you must render the pages
+using the terminal. Do not render the pages using the Render button
+within RStudio.
+
+1.  Open a terminal in RStudio (second tab at the bottom of your
+    screen).
+2.  Run the following command for the *basic* report:
 
 ``` r
 quarto render --profile basic-report
 ```
 
+3.  The first time this report is generated, the process may take about
+    5 minutes. This is normal—please do not interrupt it and allow it to
+    complete.
+4.  Once the rendering has finished, click on `_basic-report/index.html`
+    and choose `View in Web Browser`. The report will open in your
+    default browser.
+5.  If you don’t see this file, click the refresh icon at the top right
+    of the folder. If you still don’t see the report, check the console
+    for any errors.
+6.  When you rerun the report, the output will be removed and a new
+    report will be created. If you want to keep the previously rendered
+    output, copy the entire folder to a location outside of your
+    project.
+7.  This report uses the freeze option, which means htmls items will be
+    saved, unless one of your sources files change. This will save you
+    time, when you rerender the report. Freeze files are stored in the
+    `_freeze` folder. If you want to start fresh, simply remove the
+    `_freeze` folder.
+
 ### Rendering individual pages of a report using the terminal
 
-To run an individual file (for example ch2-equity.qmd), follow these
-steps:
+In case you want to run an individual file (for example ch-equity.qmd),
+follow these steps:
 
 1.  Open a terminal in RStudio (second tab at the bottom of your
     screen).
 2.  Run the following command for the *advanced-report* report:
 
 ``` r
-quarto render ch2-equity.qmd --profile advanced-report
+quarto render ch-equity.qmd --profile advanced-report
 ```
 
 3.  Run the following command for the *basic-report* report:
 
 ``` r
-quarto render ch2-equity.qmd --profile basic-report
+quarto render ch-equity.qmd --profile basic-report
 ```
 
 ## ➿ Changing a study programme
@@ -440,13 +518,20 @@ To render a template with these scripts, follow these steps:
 Now you have exercised how to render reports from the terminal or using
 scripts, you can start customizing it. The template is initially set up
 for The Hague University of Applied Sciences (THUAS), but you can adjust
-the template to your own institution.
+the template to your own institution by changing the settings in the
+`_quarto.yml` file.
+
+- You can change many settings: for the layout, the educational
+  institution, faculty or academy, the study program, the report’s
+  version, the success factors, the model, the use of synthetic data,
+  the recreation of plots, the enrollment selection and the includes.
+- Start small and work your way up to more complex settings.
 
 ### Adjust design, house style, educational institution data
 
 The design, house style and name of the educational institution in this
 template are based on THUAS. You can adjust this to your insights. Since
-Quarto 1.6, a \_brand.yml file has been available for this purpose.
+Quarto 1.6, a `_brand.yml` file has been available for this purpose.
 However, the possibilities of working with brands are still limited. To
 use the variables from \_brand.yml also in R, the file is also read into
 \_Setup.R.
@@ -487,6 +572,16 @@ situated in several additional locations.
   - `lResearch_settings[[“sBron”]]`: who provided the dataset you are
     using
   - `lResearch_settings[[“sAnalyse”]]`: who performed the analysis
+
+## 🏁 Deployment
+
+Once you have finished this tutorial, the reports are created in the
+`_basic` and `advanced` folders.
+
+- You can deploy the reports to a web server or share them with others
+  by copying the folder to a location outside your project.
+- You can also share the reports by uploading them to a web server or by
+  using a service like GitHub Pages.
 
 ## 📫 Contact
 

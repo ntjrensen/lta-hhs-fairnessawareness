@@ -15,6 +15,10 @@ order: 3
 
 # News
 
+## 0.9.1.9004 *(2025-02-28)*
+
+-   Improved documentation and scripts, based on new test results
+
 ## 0.9.1.9003 *(2025-02-26)*
 
 -   Improved documentation and scripts, based on test results
