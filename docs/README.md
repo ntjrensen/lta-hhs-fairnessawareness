@@ -36,14 +36,7 @@ Netherlands (mbo, hbo, and wo).
   - [Prerequisites for Posit Cloud
     installations](#prerequisites-for-posit-cloud-installations)
   - [Installing](#installing)
-- [Rendering your first
-  reports](#-rendering-your-first-fairness-reports)
-  - [Render the `_advanced-report`
-    project](#render-the-_advanced-report-using-the-default-settings)
-  - [Render the `_basic-report`
-    project](#render-the-_basic-report-using-the-default-settings)
-  - [Render your institutional
-    reports](#create-and-render-your-institutional-reports)
+- [Rendering your fairness reports](#-rendering-your-fairness-reports)
 - [Deployment](#-deployment)
 - [Learn more on fairness, awareness, and
   equity](#-learn-more-on-fairness-awareness-and-equity)
