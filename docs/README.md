@@ -240,8 +240,8 @@ Alike 4.0 International](LICENSE.md).
 
 - We want to thank the developers of Quarto, Tidyverse, Tidymodels and
   Dalex for their excellent work.
-- We want to thank Npuls and CEDA for their support in developing this
-  template.
+- We want to thank Npuls and CEDA for their support in developing and
+  testing this template.
 
 ## 📌 Known issues
 
