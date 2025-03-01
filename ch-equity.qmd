@@ -11,10 +11,10 @@ params:
   model: "Retentie na 1 jaar"
   pd: "Nvt"
   use_synthetic_data: true
-  recreateplots: false
+  recreate_plots: false
   enrollment_selection: false
   sp: "CMD"
-  sp_form_abbreviation: "VT"
+  sp_form: "VT"
   
 # Content
 includes:
@@ -62,7 +62,7 @@ De analyse van kansengelijkheid heeft de volgende stappen:
 1.  We lezen een bewerkte dataset in en prognosemodellen die we in een basis-analyse hebben gemaakt (zie hoofdstuk 3).
 2.  We maken een *explainer* om de modellen beter te begrijpen en te kunnen uitleggen.
 3.  Vervolgens berekenen we of er *bias* bestaat voor verschillende groepen studenten naar `r concatenate_list(sensitive_variables, tolower = TRUE)`. We analyseren daarvoor de verdeling van kansen en mate van fairness in het prognosemodel dat we hebben ontwikkeld.
-4.  We trekken er conclusies uit over de mate van bias binnen de sp voor `r tolower(params$model)`.
+4.  We trekken er conclusies uit over de mate van bias binnen de opleiding voor `r tolower(params$model)`.
 :::
 
 <!-- Data -->
@@ -116,7 +116,7 @@ Het leidende werk voor fairness analyses is [*Fairness and Machine Learning: Lim
 
 De volgende **definities** zijn van belang:
 
--   **Bevoorrechte groep**: Een groep die als referentiegroep wordt beschouwd en mogelijk bevoordeeld wordt. Dit is in deze analyse altijd de meerderheidsgroep (bijv. vrouwen). Welke dit is per sp kan verschillen.
+-   **Bevoorrechte groep**: Een groep die als referentiegroep wordt beschouwd en mogelijk bevoordeeld wordt. Dit is in deze analyse altijd de meerderheidsgroep (bijv. vrouwen). Welke dit is per opleiding kan verschillen.
 -   **Beschermde groep**: Een groep waarvan wordt verwacht dat deze mogelijk benadeeld wordt (bijv. mannen). Dit zijn in deze analyse, afhankelijke van de variabele, altijd een of meer minderheidsgroepen.
 
 <!-- Explanation of confusion matrix -->
@@ -128,7 +128,7 @@ De volgende **definities** zijn van belang:
 
 ### Aantallen en percentages per groep
 
-Voor de variabelen `r concatenate_list(sensitive_variables, extend = TRUE, backtick = TRUE)` is de verdeling binnen deze sp als volgt:
+Voor de variabelen `r concatenate_list(sensitive_variables, extend = TRUE, backtick = TRUE)` is de verdeling binnen deze opleiding als volgt:
 
 ```{r}
 #| label: tbl-amount-and-percentages-per-group
@@ -169,7 +169,7 @@ tbl_summary
 
 ### Verdeling van kansen
 
-Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we de *verdeling van de kansen* op retentie voor verschillende groepen studenten voor `r concatenate_list(sensitive_variables)`. De verdeling van deze kansen is uniek per sp.
+Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we de *verdeling van de kansen* op retentie voor verschillende groepen studenten voor `r concatenate_list(sensitive_variables)`. De verdeling van deze kansen is uniek per opleiding.
 
 **Toelichting**
 
@@ -206,7 +206,7 @@ for (group in c(sensitive_labels)) {
   # Save the plot
   plot_name <- glue("density_plot_{tolower(group)}")
   plot_path <- get_plot_outputpath(plot_name, mode = "plot", 
-                                   bestmodel = best_model)
+                                   best_model = best_model)
 
   suppressWarnings(finalize_plot(
     plot_name = density_plot,
@@ -216,7 +216,9 @@ for (group in c(sensitive_labels)) {
 
   # Show the existing plot
   plot <- glue("![Verdeling en dichtheid van {tolower(research_settings[['succes_label']])} ",
-               "naar {tolower(group)}]({plot_path}) {{#fig-fairness-check-{tolower(group)}}}")
+               "naar {tolower(group)}]({plot_path})",
+               "{{#fig-fairness-check-{tolower(group)}}",
+               "}")
   knit_print_rule(plot)
 
 }
@@ -228,7 +230,7 @@ for (group in c(sensitive_labels)) {
 
 Nu we de verdeling van de kansen kennen, maken we een fairness analyse voor `r concatenate_list(sensitive_variables)`. Voor elke groep berekenen we de maatstaven die we eerder hebben behandeld.
 
-We maken een plot van de fairness analyse, waarbij we per variabele één categorie nemen als de bevoorrechte groep; hiervoor hanteren we -- zoals al aangegeven -- per variabele de meest frequente groep. Het is waarschijnlijk dat in een sp de voorlichting, begeleiding en onderwijs het meest heeft afgestemd op deze groep. 
+We maken een plot van de fairness analyse, waarbij we per variabele één categorie nemen als de bevoorrechte groep; hiervoor hanteren we -- zoals al aangegeven -- per variabele de meest frequente groep. Het is waarschijnlijk dat in een opleiding de voorlichting, begeleiding en onderwijs het meest heeft afgestemd op deze groep. 
 
 Als binnen een variabele een groep een ratio heeft die naar links of naar rechts afwijkt, kan dit duiden op een verschil in kansengelijkheid. Let erop dat de bevoorrechte groep zelf hier niet in is opgenomen (!). Mochten alle overige groepen naar links of rechts afwijken, dan is er sprake van een bias naar de bevoorrechte groep.
 
@@ -283,7 +285,7 @@ for (group in c(sensitive_labels)) {
 
   # Save the plot
   plot_name <- glue("fairness_plot_{tolower(group)}")
-  plot_path <- get_plot_outputpath(plot_name, mode = "plot", bestmodel = best_model)
+  plot_path <- get_plot_outputpath(plot_name, mode = "plot", best_model = best_model)
 
   suppressWarnings(finalize_plot(
     plot_name = fairness_plot,
@@ -293,7 +295,7 @@ for (group in c(sensitive_labels)) {
 
   # Show the existing plot
   plot <- glue("![Fairness check naar {tolower(group)}]({plot_path})",
-               " {{#fig-fairness-check-{tolower(group)}}}")
+               "{{#fig-fairness-check-{tolower(group)}}}")
   knit_print_rule(plot)
   
   # Keep the fairness check data

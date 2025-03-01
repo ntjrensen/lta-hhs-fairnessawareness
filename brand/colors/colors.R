@@ -93,10 +93,10 @@ colors_default <- c(
 
 color_list <- list()
 
-color_list[["gender"]] <- c("M" = "#1170AA",
+color_list[["Geslacht"]] <- c("M" = "#1170AA",
                             "V" = "#FC7D0B")
 
-color_list[["pre_education"]] <- c(
+color_list[["Vooropleiding"]] <- c(
   "MBO"                     = "#1170AA",
   "HAVO"                    = "#FC7D0B",
   "VWO"                     = "#F1CE63",
@@ -107,7 +107,7 @@ color_list[["pre_education"]] <- c(
   "Onbekend"                = "#C8D0D9"
 )
 
-color_list[["connection"]] <- c(
+color_list[["Aansluiting"]] <- c(
   "Direct"                  = "#FC7D0B",
   "Tussenjaar"              = "#1170AA",
   "Switch intern"           = "#5FA2CE",

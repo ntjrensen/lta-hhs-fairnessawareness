@@ -8,9 +8,9 @@ params:
   model: "Retentie na 1 jaar"
   pd: "Nvt"
   use_synthetic_data: true
-  recreateplots: false
+  recreate_plots: false
   sp: "CMD"
-  sp_form_abbreviation: "VT"
+  sp_form: "VT"
   enrollment_selection: false
   
 # Content

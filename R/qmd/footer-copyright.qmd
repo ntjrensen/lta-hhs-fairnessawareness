@@ -12,7 +12,7 @@
 if (environment == "ceda") {
   copyright_license_text <- glue("**Creative Commons Licentie**\n\n",
                                  "De licentie voor dit template is de ",
-                                 "[Creative Commons Attribution Share Alike 4.0",
+                                 "[Creative Commons Attribution Share Alike 4.0 ",
                                  "Internationaal](https://creativecommons.org/",
                                  "licenses/by-sa/4.0/).")
 } else {

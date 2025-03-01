@@ -232,10 +232,10 @@ following components:
             into account or not (false or true)\
         -   `use_synthetic_data`: whether to use synthetic data (false
             or true).
-        -   `recreateplots`: whether you want to recreate the plots
+        -   `recreate_plots`: whether you want to recreate the plots
             (false or true)
         -   `sp`: the code of the study programme
-        -   `sp_form_abbreviation`: the type of education
+        -   `sp_form`: the type of education
             abbreviated (VT, DT, DU)
         -   `enrollment_selection`: whether the study programme has entry
             selection (false or true). Based on this, variable `Rank` is

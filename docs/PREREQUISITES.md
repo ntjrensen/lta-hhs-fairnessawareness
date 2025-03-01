@@ -1,6 +1,6 @@
 # Fairness Awareness: Prerequisites
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-28
+2025-03-01
 
 <a name="top"></a>
 

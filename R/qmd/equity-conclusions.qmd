@@ -12,7 +12,7 @@ df_fairness_list <- list()
 
 # Walk over the variables
 for (i in c(sensitive_labels)) {
-  fairness_output_path  <- get_model_outputpath(mode = "fairness", group = i)
+  fairness_output_path       <- get_model_outputpath(mode = "fairness", group = i)
   df_fairness_list[[i]]      <- readRDS(fairness_output_path) |>
     mutate(FRN_Bias = case_when(FRN_Score < 0.8 ~ "Negatieve Bias",
                                 FRN_Score > 1.25 ~ "Positieve Bias",

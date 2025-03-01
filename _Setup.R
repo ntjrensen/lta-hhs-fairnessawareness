@@ -281,7 +281,7 @@ if (setup_executed == FALSE) {
   # of education
   current_sp <- get_current_sp(
     sp = params$sp,
-    sp_form = params$sp_abbreviation
+    sp_form = params$sp_form
   )
   
   # Based on this, determine derived variables
@@ -340,7 +340,7 @@ if (setup_executed == FALSE) {
   # 3.1 Names of the study programme and type of education ####
   
   # Determine the long name of the type of education and faculty
-  studyprogramme_form_long  <- get_sp_form_long(params$sp_abbreviation)
+  studyprogramme_form_long  <- get_sp_form_long(params$sp_form)
   faculty_long              <- get_faculty_name_long(current_sp$INS_Faculteit)
   
   cli_h1("Long names")

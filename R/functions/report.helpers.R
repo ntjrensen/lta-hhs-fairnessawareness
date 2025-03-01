@@ -48,8 +48,8 @@ get_current_sp <- function(sp, sp_form) {
         sp,
         " with studyprogramme form ",
         sp_form,
-        " does not exist. \n",
-        "Check fif the studyprogramme name and studyprogramme form are correct."
+        " does not exist.\n",
+        "Check if the studyprogramme name and studyprogramme form are correct."
       )
     )
   }
@@ -1777,11 +1777,12 @@ get_df_fairness_check_data <- function(fairness_object, group) {
 
 # Determine the basic theme
 set_theme <- function(title_font = c("sans"), type = "plot") {
+  
   theme_set(theme_minimal())
   theme_update(
     
     # Title and caption
-    plot_title = element_textbox_simple(
+    plot.title = element_textbox_simple(
       size = 16,
       lineheight = 1,
       color = colors_default["title_color"],
@@ -1790,16 +1791,16 @@ set_theme <- function(title_font = c("sans"), type = "plot") {
       margin = margin(5, 0, 5, 0),
       family = title_font
     ),
-    plot_subtitle = element_textbox_simple(
+    plot.subtitle = element_textbox_simple(
       size = 12,
       lineheight = 1,
       color = colors_default["subtitle_color"],
       padding = margin(0, 0, 0, 0),
       margin = margin(5, 0, 15, 0)
     ),
-    plot_title_position = "plot",
-    plot_caption_position = "plot",
-    plot_caption = element_textbox_simple(size = 8,
+    plot.title.position = "plot",
+    plot.caption.position = "plot",
+    plot.caption = element_textbox_simple(size = 8,
                                           color = colors_default["caption_color"],
                                           padding = margin(0, 0, 0, 0),
                                           margin = margin(15, 0, 0, 0)),
@@ -1845,8 +1846,8 @@ add_theme_elements <- function(p,
   # Customize theme with or without title and subtitle
   if (title_subtitle) {
     p <- p + theme(
-      plot_title = element_text(size = 14, face = "bold"),
-      plot_subtitle = element_markdown(),
+      plot.title = element_text(size = 14, face = "bold"),
+      plot.subtitle = element_markdown(),
       axis.text.y = element_text(size = 10),
       plot.caption = element_textbox_simple(
         size = 8,

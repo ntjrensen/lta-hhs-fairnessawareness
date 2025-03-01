@@ -895,11 +895,11 @@ window.addEventListener("pageshow", (_event) => {
 
 function throttle(func, wait) {
   let waiting = false;
-  return function() {
+  return function () {
     if (!waiting) {
       func.apply(this, arguments);
       waiting = true;
-      setTimeout(function() {
+      setTimeout(function () {
         waiting = false;
       }, wait);
     }

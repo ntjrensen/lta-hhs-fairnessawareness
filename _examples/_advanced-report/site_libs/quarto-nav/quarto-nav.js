@@ -39,7 +39,7 @@ const announceRegister = () => {
   }
 };
 
-window.document.addEventListener("DOMContentLoaded", function() {
+window.document.addEventListener("DOMContentLoaded", function () {
   let init = false;
 
   announceRegister();
@@ -58,7 +58,7 @@ window.document.addEventListener("DOMContentLoaded", function() {
   if (btn) {
     window.document.addEventListener(
       "scroll",
-      function() {
+      function () {
         const currentScrollTop =
           window.pageYOffset || document.documentElement.scrollTop;
 
@@ -87,10 +87,10 @@ window.document.addEventListener("DOMContentLoaded", function() {
 
   function throttle(func, wait) {
     var timeout;
-    return function() {
+    return function () {
       const context = this;
       const args = arguments;
-      const later = function() {
+      const later = function () {
         clearTimeout(timeout);
         timeout = null;
         func.apply(context, args);
@@ -152,7 +152,7 @@ window.document.addEventListener("DOMContentLoaded", function() {
       if (!animated) {
         sidebar.classList.add("notransition");
         // Remove the no transition class after the animation has time to complete
-        setTimeout(function() {
+        setTimeout(function () {
           sidebar.classList.remove("notransition");
         }, 201);
       }
@@ -204,7 +204,7 @@ window.document.addEventListener("DOMContentLoaded", function() {
   if (header && window.Headroom) {
     const headroom = new window.Headroom(header, {
       tolerance: 5,
-      onPin: function() {
+      onPin: function () {
         const sidebars = window.document.querySelectorAll(
           ".sidebar, .headroom-target"
         );
@@ -213,7 +213,7 @@ window.document.addEventListener("DOMContentLoaded", function() {
         });
         updateDocumentOffset();
       },
-      onUnpin: function() {
+      onUnpin: function () {
         const sidebars = window.document.querySelectorAll(
           ".sidebar, .headroom-target"
         );
@@ -226,7 +226,7 @@ window.document.addEventListener("DOMContentLoaded", function() {
     headroom.init();
 
     let frozen = false;
-    window.quartoToggleHeadroom = function() {
+    window.quartoToggleHeadroom = function () {
       if (frozen) {
         headroom.unfreeze();
         frozen = false;

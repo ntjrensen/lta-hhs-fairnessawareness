@@ -17,8 +17,8 @@ library(here)
 
 # Define the parameters for the quarto file
 execute_params_list <- list(
-  sp                    = "CMD", # CMD or VD
-  sp_form_abbreviation  = "VT"
+  sp       = "CMD", # CMD or VD
+  sp_form  = "VT"
 )
 
 # Render an advanced report

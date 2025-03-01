@@ -64,7 +64,6 @@ The _basic fairness report_ you will build, will look like this:
 
 <img src="figures/screenshot-basic-report.png" align="center" height="300" style = "border: 1px solid #999999"/>
 
-
 ## 💡 Why we study fairness, awareness, and equity {#why-we-study-fairness-awareness-and-equity}
 
 The Fairness Awareness Template is based on the concepts of Fairness,
