@@ -31,10 +31,10 @@ if (dir.exists("_freeze")) {
 }
 
 # Test if model building for the current study programme has been executed, if not, alert
-if(file.exists(here::here("_advanced-report", "ch4-models.html"))) {
+if(file.exists(here::here("_advanced-report", "ch-models.html"))) {
 
   # Define text and search string
-  sText_content  <- html_text(read_html(here::here("_advanced-report", "ch4-models.html")))
+  sText_content  <- html_text(read_html(here::here("_advanced-report", "ch-models.html")))
   sSearch_string <- sprintf("(%s)", lExecute_params$opleiding)
   
   # Check if the search string is found in the text content
