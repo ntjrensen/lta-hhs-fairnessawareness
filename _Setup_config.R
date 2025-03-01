@@ -26,30 +26,29 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 1.1  Defaults if params don't exist ####
 
-if(!exists("params")) {
+if (!exists("params")) {
   params <- list()
   params$succes                        <- "Retentie na 1 jaar"
   params$model                         <- "Retentie na 1 jaar"
-  params$propedeusediploma             <- "Nvt"
+  params$pd           <- "Nvt"
   params$use_synthetic_data            <- TRUE
   params$recreateplots                 <- FALSE
-  params$opleiding                     <- "CMD"
-  params$opleidingsvorm_afkorting      <- "VT"
-  params$instroomselectie              <- FALSE
+  params$sp               <- "CMD"
+  params$sp_abbreviation  <- "VT"
+  params$enrollment_selection          <- FALSE
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 1.2 Research settings ####
 
-lResearch_settings <- list()
-lResearch_settings[["sResearch_path"]] <- "Kansengelijkheid"
-lResearch_settings[["sSucces_label"]]  <- "Kans op retentie"
-lResearch_settings[["sInstelling"]]    <- "HHs"
-lResearch_settings[["sBron"]]          <- "De HHs, IR & Analytics"
-lResearch_settings[["sAnalyse"]]       <- "De HHs, Lectoraat Learning Technology & Analytics"
+research_settings <- list()
+research_settings[["research_path"]]  <- "Kansengelijkheid"
+research_settings[["succes_label"]]   <- "Kans op retentie"
+research_settings[["institution"]]    <- "HHs"
+research_settings[["data_provider"]]  <- "De HHs, IR & Analytics"
+research_settings[["analysis"]]       <- "De HHs, Lectoraat Learning Technology & Analytics"
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 1.3 Data settings ####
 
-sPinBoard <- "HHs/Inschrijvingen"
-
+pin_board <- "HHs/Inschrijvingen"

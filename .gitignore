@@ -56,6 +56,11 @@ _freeze
 # Hidden quarto folder
 /.quarto/
 
+# Lintr folders and files
+/ins/
+.lintr
+/R/scripts/addins.R
+
 # Icon files
 Icon?
 

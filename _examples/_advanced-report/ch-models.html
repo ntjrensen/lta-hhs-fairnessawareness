@@ -128,7 +128,7 @@ div.csl-indent {
 <style>html{ scroll-behavior: smooth; }</style>
 <script async="" src="https://hypothes.is/embed.js"></script>
 <script>
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
+  window.document.addEventListener("DOMContentLoaded", function(_event) {
     document.body.classList.add('hypothesis-enabled');
   });
 </script>
@@ -398,7 +398,7 @@ Tabel&nbsp;2.1: Variabelen en mogelijke waarden
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the data for this study progamme</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(params<span class="sc">$</span>use_synthetic_data) {</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  dfOpleiding_inschrijvingen_base <span class="ot">&lt;-</span> <span class="fu">Get_Studyprogram_Enrollments_Synthetic</span>(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  df_sp_enrollments <span class="ot">&lt;-</span> <span class="fu">Get_Studyprogram_Enrollments_Synthetic</span>(</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">studytrack =</span> params<span class="sc">$</span>opleiding,</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">studyform =</span> <span class="fu">toupper</span>(params<span class="sc">$</span>opleidingsvorm_afkorting)) <span class="sc">|&gt;</span> </span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
@@ -411,7 +411,7 @@ Tabel&nbsp;2.1: Variabelen en mogelijke waarden
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">INS_Opleidingsnaam_huidig =</span> <span class="fu">paste</span>(INS_Opleidingsnaam_huidig, <span class="st">"(Synth.)"</span>, <span class="at">sep =</span> <span class="st">" "</span>)</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  dfOpleiding_inschrijvingen_base <span class="ot">&lt;-</span> <span class="fu">get_lta_studyprogram_enrollments_pin</span>(</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  df_sp_enrollments <span class="ot">&lt;-</span> <span class="fu">get_lta_studyprogram_enrollments_pin</span>(</span>
 <span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">board =</span> <span class="st">"HHs/Inschrijvingen"</span>,</span>
 <span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">faculty =</span> params<span class="sc">$</span>faculteit,</span>
 <span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">studyprogram =</span> params<span class="sc">$</span>opleidingsnaam,</span>
@@ -420,21 +420,21 @@ Tabel&nbsp;2.1: Variabelen en mogelijke waarden
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">range =</span> <span class="st">"eerstejaars"</span>)</span>
 <span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjust dfOpleiding_inschrijvingen_base</span></span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>dfOpleiding_inschrijvingen_base <span class="ot">&lt;-</span> dfOpleiding_inschrijvingen_base <span class="sc">|&gt;</span> </span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjust df_sp_enrollments</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>df_sp_enrollments <span class="ot">&lt;-</span> df_sp_enrollments <span class="sc">|&gt;</span> </span>
 <span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Rearrange the levels</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(<span class="fu">names</span>(lLevels_formal)), <span class="sc">~</span> <span class="fu">factor</span>(.x, </span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>                                                   <span class="at">levels =</span> lLevels_formal[[<span class="fu">cur_column</span>()]]))) <span class="sc">|&gt;</span> </span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(<span class="fu">names</span>(levels_formal)), <span class="sc">~</span> <span class="fu">factor</span>(.x, </span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>                                                   <span class="at">levels =</span> levels_formal[[<span class="fu">cur_column</span>()]]))) <span class="sc">|&gt;</span> </span>
 <span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a simple success variable</span></span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Mutate_Retentie</span>(sSucces_model) <span class="sc">|&gt;</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Mutate_Retentie</span>(succes_model) <span class="sc">|&gt;</span></span>
 <span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert the success variable into a factor</span></span>
 <span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">SUC_Retentie =</span> <span class="fu">as.factor</span>(SUC_Retentie)) <span class="sc">|&gt;</span> </span>
 <span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Special possibly based on the propaedeutic diploma</span></span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter_Propedeusediploma(sPropedeusediploma) |&gt;</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Filter_propaedeutic_degree(propaedeutic_degree) |&gt;</span></span>
 <span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Make the Dual Study variable a Yes/No variable</span></span>
 <span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Mutate_Dubbele_studie</span>() <span class="sc">|&gt;</span>  </span>
@@ -443,17 +443,17 @@ Tabel&nbsp;2.1: Variabelen en mogelijke waarden
 <span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>INS_Aantal_inschrijvingen) </span>
 <span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  <span class="do">## Adjust the levels of sensitive variables</span></span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> lSentitive_formal_variables){</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    dfOpleiding_inschrijvingen_base <span class="ot">&lt;-</span> dfOpleiding_inschrijvingen_base <span class="sc">|&gt;</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> sensitive_formal_variables){</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    df_sp_enrollments <span class="ot">&lt;-</span> df_sp_enrollments <span class="sc">|&gt;</span></span>
 <span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>      <span class="fu">Mutate_Levels</span>(</span>
 <span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>        i,</span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>        <span class="fu">list</span>(lLevels_formal[[i]])</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>        <span class="fu">list</span>(levels_formal[[i]])</span>
 <span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a>      )</span>
 <span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a>  }</span>
 <span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="co"># B Huidtherapie: Filter on only students with a grade number (selection)</span></span>
 <span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(opleiding <span class="sc">==</span> <span class="st">"HDT"</span>) {</span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>  dfOpleiding_inschrijvingen_base <span class="ot">&lt;-</span> dfOpleiding_inschrijvingen_base <span class="sc">|&gt;</span> </span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>  df_sp_enrollments <span class="ot">&lt;-</span> df_sp_enrollments <span class="sc">|&gt;</span> </span>
 <span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(RNK_Rangnummer)) </span>
 <span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a>} </span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -465,7 +465,7 @@ Tabel&nbsp;2.1: Variabelen en mogelijke waarden
 <div class="cell">
 <details class="code-fold">
 <summary>Toon code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lSelect <span class="ot">&lt;-</span> <span class="fu">Get_lSelect</span>(dfVariables, <span class="st">"VAR_Formal_variable"</span>)</span>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>lSelect <span class="ot">&lt;-</span> <span class="fu">Get_lSelect</span>(df_variables, <span class="st">"VAR_Formal_variable"</span>)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># B Huidtherapie: add the variable RNK_Rangnummer unless it is HDT</span></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(opleiding <span class="sc">==</span> <span class="st">"HDT"</span>) {</span>
@@ -473,10 +473,10 @@ Tabel&nbsp;2.1: Variabelen en mogelijke waarden
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a mapping with formal and simple maes</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>lName_mapping <span class="ot">&lt;-</span> <span class="fu">setNames</span>(dfVariables<span class="sc">$</span>VAR_Simple_variable, dfVariables<span class="sc">$</span>VAR_Formal_variable)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>lName_mapping <span class="ot">&lt;-</span> <span class="fu">setNames</span>(df_variables<span class="sc">$</span>VAR_Simple_variable, df_variables<span class="sc">$</span>VAR_Formal_variable)</span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a subset</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>dfOpleiding_inschrijvingen <span class="ot">&lt;-</span> dfOpleiding_inschrijvingen_base <span class="sc">|&gt;</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>df_sp_enrollments <span class="ot">&lt;-</span> df_sp_enrollments <span class="sc">|&gt;</span></span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Select the relevant variables</span></span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">all_of</span>(lSelect)) <span class="sc">|&gt;</span></span>
@@ -496,18 +496,18 @@ Tabel&nbsp;2.1: Variabelen en mogelijke waarden
 <span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sort</span></span>
 <span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(Collegejaar, ID)</span>
 <span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>dfOpleiding_inschrijvingen <span class="ot">&lt;-</span> dfOpleiding_inschrijvingen <span class="sc">|&gt;</span> </span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a> <span class="fu">Sort_Distinct</span>()</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>df_sp_enrollments <span class="ot">&lt;-</span> df_sp_enrollments <span class="sc">|&gt;</span> </span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a> <span class="fu">sort_distinct</span>()</span>
 <span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="do">## Remove the base dataset</span></span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co">#rm(dfOpleiding_inschrijvingen_base)</span></span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co">#rm(df_sp_enrollments)</span></span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>We inspecteren de variabelen in een samenvatting in relatie tot retentie en corrigeren daarbij voor multiple testing; de gecorrigeerde significantie-waarden staan vermeld als <em>q-value</em>.</p>
 <details class="code-fold">
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a summary of the data</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>dfSummary <span class="ot">&lt;-</span> dfOpleiding_inschrijvingen <span class="sc">|&gt;</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>dfSummary <span class="ot">&lt;-</span> df_sp_enrollments <span class="sc">|&gt;</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Remove columns not relevant to the analysis</span></span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(ID, Collegejaar)) <span class="sc">|&gt;</span> </span>
@@ -547,7 +547,7 @@ Tabel&nbsp;2.2: Variabelen in relatie tot de uitkomstmaat: Retentie na 1 jaar
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(dlookr))</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Show a summary of the data, sorted by missing values</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">diagnose</span>(dfOpleiding_inschrijvingen) <span class="sc">|&gt;</span> </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">diagnose</span>(df_sp_enrollments) <span class="sc">|&gt;</span> </span>
 <span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">missing_percent =</span> <span class="fu">round</span>(missing_percent, <span class="dv">2</span>),</span>
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>         <span class="at">unique_rate =</span> <span class="fu">round</span>(missing_percent, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(missing_percent)) <span class="sc">|&gt;</span></span>
@@ -824,7 +824,7 @@ Tabel&nbsp;2.3: Kwaliteit van de data voor bewerkingen (gesorteerd op missende w
 <details class="code-fold">
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Edit the data</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dfOpleiding_inschrijvingen <span class="ot">&lt;-</span> dfOpleiding_inschrijvingen <span class="sc">|&gt;</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df_sp_enrollments <span class="ot">&lt;-</span> df_sp_enrollments <span class="sc">|&gt;</span> </span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Imputate all numeric variables with the mean</span></span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">ifelse</span>(</span>
@@ -848,13 +848,13 @@ Tabel&nbsp;2.3: Kwaliteit van de data voor bewerkingen (gesorteerd op missende w
 <span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Retentie, <span class="fu">everything</span>()) </span>
 <span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="do">## View the data</span></span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co"># glimpse(dfOpleiding_inschrijvingen) </span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a><span class="co"># glimpse(df_sp_enrollments) </span></span>
 <span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Load dlookr (temporary to avoid conflicts)</span></span>
 <span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="fu">suppressMessages</span>(<span class="fu">library</span>(dlookr))</span>
 <span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Diagnose the data</span></span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="fu">diagnose</span>(dfOpleiding_inschrijvingen) <span class="sc">|&gt;</span> </span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a><span class="fu">diagnose</span>(df_sp_enrollments) <span class="sc">|&gt;</span> </span>
 <span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">missing_percent =</span> <span class="fu">round</span>(missing_percent, <span class="dv">2</span>),</span>
 <span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>         <span class="at">unique_rate =</span> <span class="fu">round</span>(unique_rate, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Variabelen"</span>,</span>
@@ -1121,7 +1121,7 @@ Tabel&nbsp;2.4: Kwaliteit van de data na bewerkingen (gesorteerd op missende waa
 <h3 data-number="2.2.4" class="anchored" data-anchor-id="inspecteer-de-onderlinge-correlaties"><span class="header-section-number">2.2.4</span> Inspecteer de onderlinge correlaties</h3>
 <p>Het is verstandig om voorafgaand aan het bouwen van een model te kijken naar de onderlinge correlaties tussen numerieke variabelen. Dit geeft inzicht in de data en kan helpen bij het maken van keuzes voor het model of de duiding van de uitkomsten.</p>
 <p>We selecteren uitsluitend numerieke waarden en variabelen die een standaard deviatie hebben die groter is dan 0. We clusteren de data op basis van 4 clusters. De correlatie van de diagonaal verbergen we, aangezien deze altijd 1 is.</p>
-<p>Clusters in correlaties kunnen per opleiding verschillen. Onderzoek in de correlaties hoe sterk deze zijn, welke clusters gevormd worden en of deze – vanuit de context van de opleiding, faculteit of onderwijsinstelling – logisch zijn. Verwerk de inzichten eventueel in een oplegger. Gangbare clusters zijn:</p>
+<p>Clusters in correlaties kunnen per opleiding verschillen. Onderzoek in de correlaties hoe sterk deze zijn, welke clusters gevormd worden en of deze – vanuit de context van de opleiding, faculteit of onderwijinstitution – logisch zijn. Verwerk de inzichten eventueel in een oplegger. Gangbare clusters zijn:</p>
 <ul>
 <li>Cijfers: Een correlatie tussen Cijfer SO en Cijfer VO: dit geeft aan dat het schoolexamen hetzelfde meet als het centraal examen. Exacte vakken en talen kunnen met elkaar correleren.</li>
 <li>Reistijd en SES: Deze zijn gecorreleerd aangezien SES scores zijn afgeleid van wijken. Wijken hebben een specifieke reistijd en positionering ten opzichte van de vestigingslocaties van De HHs kennen.</li>
@@ -1132,7 +1132,7 @@ Tabel&nbsp;2.4: Kwaliteit van de data na bewerkingen (gesorteerd op missende waa
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a plot of the intercorrelations in numerical variables</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove columns with a standard deviation of 0</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>dfCorrelation <span class="ot">&lt;-</span> dfOpleiding_inschrijvingen <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>dfCorrelation <span class="ot">&lt;-</span> df_sp_enrollments <span class="sc">|&gt;</span> </span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>Collegejaar) <span class="sc">|&gt;</span></span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="fu">where</span>(is.numeric)) <span class="sc">|&gt;</span> </span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select_if</span>(<span class="sc">~</span> <span class="fu">sd</span>(.) <span class="sc">!=</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
@@ -1214,7 +1214,7 @@ Figuur&nbsp;2.2: Splitsing van de dataset in trainingset, validatieset en testse
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">0821</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Split the data into 3 parts: 60%, 20% and 20%</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>splits      <span class="ot">&lt;-</span> <span class="fu">initial_validation_split</span>(dfOpleiding_inschrijvingen,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>splits      <span class="ot">&lt;-</span> <span class="fu">initial_validation_split</span>(df_sp_enrollments,</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">strata =</span> Retentie,</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">prop =</span> <span class="fu">c</span>(<span class="fl">0.6</span>, <span class="fl">0.2</span>))</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
@@ -1581,7 +1581,7 @@ Computational engine: glmnet </code></pre>
 <span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Define the title, subtitle and caption</span></span>
 <span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> sCaption,</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> caption,</span>
 <span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Area under the ROC Curve"</span>,</span>
 <span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Penalty"</span></span>
 <span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>  )</span>
@@ -1874,9 +1874,9 @@ Figuur&nbsp;2.4: ROC curve voor logistische regressie
 <span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>(<span class="at">parameters =</span> lr_best) <span class="sc">|&gt;</span> </span>
 <span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(Retentie, .pred_FALSE)</span>
 <span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add model name and AUC dfModel_results</span></span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>dfModel_results <span class="ot">&lt;-</span> </span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  dfModel_results <span class="sc">|&gt;</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add model name and AUC df_model_results</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>df_model_results <span class="ot">&lt;-</span> </span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  df_model_results <span class="sc">|&gt;</span></span>
 <span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_row</span>(<span class="at">model =</span> <span class="st">"Logistic Regression"</span>, <span class="at">auc =</span> lr_auc_highest<span class="sc">$</span>.estimate)</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
@@ -2290,7 +2290,7 @@ Tabel&nbsp;2.11: Model performance voor random forest
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
 <span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"roc/auc"</span>,</span>
-<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> sCaption</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">caption =</span> caption</span>
 <span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Add theme elements</span></span>
@@ -2528,9 +2528,9 @@ Tabel&nbsp;2.13: Predicties voor random forest
 <span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>(<span class="at">parameters =</span> rf_best) <span class="sc">|&gt;</span> </span>
 <span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(Retentie, .pred_FALSE)</span>
 <span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Add model name and AUC to dfModel_results</span></span>
-<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>dfModel_results <span class="ot">&lt;-</span> </span>
-<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>  dfModel_results <span class="sc">|&gt;</span></span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Add model name and AUC to df_model_results</span></span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a>df_model_results <span class="ot">&lt;-</span> </span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>  df_model_results <span class="sc">|&gt;</span></span>
 <span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_row</span>(<span class="at">model =</span> <span class="st">"Random Forest"</span>, </span>
 <span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a>          <span class="at">auc =</span> rf_auc_highest<span class="sc">$</span>.estimate)</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
@@ -2582,14 +2582,14 @@ Figuur&nbsp;2.7: Gecombineerde ROC curves
 <details class="code-fold">
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Determine which of the models is best based on highest AUC/ROC</span></span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>dfModel_results <span class="ot">&lt;-</span> dfModel_results <span class="sc">|&gt;</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>df_model_results <span class="ot">&lt;-</span> df_model_results <span class="sc">|&gt;</span></span>
 <span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">number =</span> <span class="fu">row_number</span>()) <span class="sc">|&gt;</span> </span>
 <span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">best =</span> <span class="fu">ifelse</span>(auc <span class="sc">==</span> <span class="fu">max</span>(auc), <span class="cn">TRUE</span>, <span class="cn">FALSE</span>)) <span class="sc">|&gt;</span> </span>
 <span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(number)</span>
 <span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Determine the best model</span></span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>sBest_model     <span class="ot">&lt;-</span> dfModel_results<span class="sc">$</span>model[dfModel_results<span class="sc">$</span>best <span class="sc">==</span> <span class="cn">TRUE</span>]</span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>sBest_model_auc <span class="ot">&lt;-</span> <span class="fu">round</span>(dfModel_results<span class="sc">$</span>auc[dfModel_results<span class="sc">$</span>best <span class="sc">==</span> <span class="cn">TRUE</span>], <span class="dv">4</span>)</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>sBest_model     <span class="ot">&lt;-</span> df_model_results<span class="sc">$</span>model[df_model_results<span class="sc">$</span>best <span class="sc">==</span> <span class="cn">TRUE</span>]</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a>sBest_model_auc <span class="ot">&lt;-</span> <span class="fu">round</span>(df_model_results<span class="sc">$</span>auc[df_model_results<span class="sc">$</span>best <span class="sc">==</span> <span class="cn">TRUE</span>], <span class="dv">4</span>)</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Het beste model is het <strong>Random Forest</strong> model met een <strong>AUC/ROC van 0.6965</strong>. Het Logistic Regression model heeft een AUC van 0.679. We ronden de analyse verder af met het Random Forest model op de validatieset.</p>
@@ -2646,7 +2646,7 @@ Figuur&nbsp;2.7: Gecombineerde ROC curves
 <span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>    last_rf_workflow <span class="sc">|&gt;</span> </span>
 <span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">last_fit</span>(splits)</span>
 <span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>lLast_fits <span class="ot">&lt;-</span> <span class="fu">list</span>(last_fit_lr, last_fit_rf) <span class="sc">|&gt;</span> </span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a>last_fits <span class="ot">&lt;-</span> <span class="fu">list</span>(last_fit_lr, last_fit_rf) <span class="sc">|&gt;</span> </span>
 <span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(<span class="fu">c</span>(<span class="st">"Logistic Regression"</span>, <span class="st">"Random Forest"</span>))</span>
 <span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Determine which model is best</span></span>
@@ -2657,14 +2657,14 @@ Figuur&nbsp;2.7: Gecombineerde ROC curves
 <span id="cb54-21"><a href="#cb54-21" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb54-22"><a href="#cb54-22" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb54-23"><a href="#cb54-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Keep results, model results and associated data</span></span>
-<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a>sFittedmodels_outputpath <span class="ot">&lt;-</span> <span class="fu">Get_Model_Outputpath</span>(<span class="at">mode =</span> <span class="st">"last-fits"</span>)</span>
-<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(lLast_fits, <span class="at">file =</span> sFittedmodels_outputpath)</span>
+<span id="cb54-24"><a href="#cb54-24" aria-hidden="true" tabindex="-1"></a>fittedmodels_outputpath <span class="ot">&lt;-</span> <span class="fu">Get_Model_Outputpath</span>(<span class="at">mode =</span> <span class="st">"last-fits"</span>)</span>
+<span id="cb54-25"><a href="#cb54-25" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(last_fits, <span class="at">file =</span> fittedmodels_outputpath)</span>
 <span id="cb54-26"><a href="#cb54-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a>sModelresults_outputpath <span class="ot">&lt;-</span> <span class="fu">Get_Model_Outputpath</span>(<span class="at">mode =</span> <span class="st">"modelresults"</span>)</span>
-<span id="cb54-28"><a href="#cb54-28" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dfModel_results, <span class="at">file =</span> sModelresults_outputpath)</span>
+<span id="cb54-27"><a href="#cb54-27" aria-hidden="true" tabindex="-1"></a>modelresults_outputpath <span class="ot">&lt;-</span> <span class="fu">Get_Model_Outputpath</span>(<span class="at">mode =</span> <span class="st">"modelresults"</span>)</span>
+<span id="cb54-28"><a href="#cb54-28" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(df_model_results, <span class="at">file =</span> modelresults_outputpath)</span>
 <span id="cb54-29"><a href="#cb54-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb54-30"><a href="#cb54-30" aria-hidden="true" tabindex="-1"></a>sData_outputpath <span class="ot">&lt;-</span> <span class="fu">Get_Model_Outputpath</span>(<span class="at">mode =</span> <span class="st">"data"</span>)</span>
-<span id="cb54-31"><a href="#cb54-31" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dfOpleiding_inschrijvingen, <span class="at">file =</span> sData_outputpath)</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb54-30"><a href="#cb54-30" aria-hidden="true" tabindex="-1"></a>data_outputpath <span class="ot">&lt;-</span> <span class="fu">Get_Model_Outputpath</span>(<span class="at">mode =</span> <span class="st">"data"</span>)</span>
+<span id="cb54-31"><a href="#cb54-31" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(df_sp_enrollments, <span class="at">file =</span> data_outputpath)</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="evalueer-het-finale-model-metrieken-en-variable-importance" class="level3" data-number="2.5.5">
@@ -2840,7 +2840,7 @@ Figuur&nbsp;2.10: Confusion matrix in relatie tot BSA
 <span id="cb60-16"><a href="#cb60-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(</span>
 <span id="cb60-17"><a href="#cb60-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> <span class="st">"Werkelijke uitkost"</span>,</span>
 <span id="cb60-18"><a href="#cb60-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> <span class="st">"Voorspelde uitkomst"</span>,</span>
-<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> sCaption</span>
+<span id="cb60-19"><a href="#cb60-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">caption =</span> caption</span>
 <span id="cb60-20"><a href="#cb60-20" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
 <span id="cb60-21"><a href="#cb60-21" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb60-22"><a href="#cb60-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Set_Theme</span>()</span>
@@ -2903,7 +2903,7 @@ Van der Laan, M. J. (2006). Statistical inference for variable importance. <em>T
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
+window.document.addEventListener("DOMContentLoaded", function(event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
     const bodyEl = window.document.querySelector("body");
@@ -3250,11 +3250,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     let throttle = false;
     let timer;
       return (...args) => {
-        if(!throttle) { // first call gets through
+        if (!throttle) { // first call gets through
             fn.apply(this, args);
             throttle = true;
         } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
+            if (timer) clearTimeout(timer); // cancel #2
             timer = setTimeout(() => {
               fn.apply(this, args);
               timer = throttle = false;

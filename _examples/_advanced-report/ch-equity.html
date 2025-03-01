@@ -128,7 +128,7 @@ div.csl-indent {
 <style>html{ scroll-behavior: smooth; }</style>
 <script async="" src="https://hypothes.is/embed.js"></script>
 <script>
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
+  window.document.addEventListener("DOMContentLoaded", function(_event) {
     document.body.classList.add('hypothesis-enabled');
   });
 </script>
@@ -138,7 +138,7 @@ div.csl-indent {
 <link rel="icon" type="image/x-icon" href="brand/favicon/favicon.ico">
 
   <script>window.backupDefine = window.define; window.define = undefined;</script><script src="https://cdn.jsdelivr.net/npm/katex@latest/dist/katex.min.js"></script>
-  <script>document.addEventListener("DOMContentLoaded", function () {
+  <script>document.addEventListener("DOMContentLoaded", function() {
  var mathElements = document.getElementsByClassName("math");
  var macros = [];
  for (var i = 0; i < mathElements.length; i++) {
@@ -375,9 +375,9 @@ window.Quarto = {
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>lDfPersona <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Walk over the variables</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>lDfPersona <span class="ot">&lt;-</span> <span class="fu">map</span>(lSensitive_labels,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>lDfPersona <span class="ot">&lt;-</span> <span class="fu">map</span>(sensitive_labels,</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                  <span class="sc">~</span> <span class="fu">Get_dfPersona_Recursive</span>(.x)) <span class="sc">|&gt;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(lSensitive_labels)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(sensitive_labels)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>dfPersona_per_group <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(lDfPersona) </span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
@@ -399,8 +399,8 @@ window.Quarto = {
 <details class="code-fold">
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the best model</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sBest_model <span class="ot">&lt;-</span> dfModel_results<span class="sc">$</span>model[dfModel_results<span class="sc">$</span>best <span class="sc">==</span> <span class="cn">TRUE</span>]</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>last_fit    <span class="ot">&lt;-</span> lLast_fits[[sBest_model]]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sBest_model <span class="ot">&lt;-</span> df_model_results<span class="sc">$</span>model[df_model_results<span class="sc">$</span>best <span class="sc">==</span> <span class="cn">TRUE</span>]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>last_fit    <span class="ot">&lt;-</span> last_fits[[sBest_model]]</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>fitted_model <span class="ot">&lt;-</span> last_fit <span class="sc">|&gt;</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_parsnip</span>()</span>
@@ -433,8 +433,8 @@ window.Quarto = {
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an explainer</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>explain_lf <span class="ot">&lt;-</span> DALEX<span class="sc">::</span><span class="fu">explain</span>(</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> workflow,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dfOpleiding_inschrijvingen <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>Retentie),</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> dfOpleiding_inschrijvingen<span class="sc">$</span>Retentie,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_sp_enrollments <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>Retentie),</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> df_sp_enrollments<span class="sc">$</span>Retentie,</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">colorize =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">label =</span> sBest_model)</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -667,8 +667,8 @@ Ter illustratie
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a table with numbers and percentages for the 3 sensitive </span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>tbl_summary <span class="ot">&lt;-</span> dfOpleiding_inschrijvingen <span class="sc">|&gt;</span> </span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Retentie, <span class="fu">all_of</span>(lSensitive_labels)) <span class="sc">|&gt;</span> </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>tbl_summary <span class="ot">&lt;-</span> df_sp_enrollments <span class="sc">|&gt;</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Retentie, <span class="fu">all_of</span>(sensitive_labels)) <span class="sc">|&gt;</span> </span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Retentie =</span> <span class="fu">ifelse</span>(Retentie <span class="sc">==</span> <span class="dv">1</span>, <span class="st">"Ja"</span>, <span class="st">"Nee"</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tbl_summary</span>(<span class="at">by =</span> Retentie) <span class="sc">|&gt;</span> </span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>(<span class="at">pvalue_fun =</span> <span class="sc">~</span> <span class="fu">style_pvalue</span>(.x, <span class="at">digits =</span> <span class="dv">2</span>),</span>
@@ -719,13 +719,13 @@ Tabel&nbsp;4.1: Aantallen en percentages naar geslacht, aansluiting en vooroplei
 <details class="code-fold">
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a fairness analysis</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(group <span class="cf">in</span> <span class="fu">c</span>(lSensitive_labels)) {</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(group <span class="cf">in</span> <span class="fu">c</span>(sensitive_labels)) {</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Group</span></span>
 <span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Knit_Header</span>(group, <span class="dv">4</span>)</span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Determine the most common subgroup = Privileged</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  sPrivileged <span class="ot">&lt;-</span> <span class="fu">Get_Privileged</span>(dfOpleiding_inschrijvingen, group)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  sPrivileged <span class="ot">&lt;-</span> <span class="fu">Get_Privileged</span>(df_sp_enrollments, group)</span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a fairness object</span></span>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  fobject <span class="ot">&lt;-</span> <span class="fu">Get_objFairness</span>(explain_lf, group, sPrivileged)</span>
@@ -751,7 +751,7 @@ Tabel&nbsp;4.1: Aantallen en percentages naar geslacht, aansluiting en vooroplei
 <span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>        ))</span>
 <span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Show the existing plot</span></span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>  sPlot <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">"![Verdeling en dichtheid van {tolower(lResearch_settings[['sSucces_label']])} naar  {tolower(group)}]({sPlotPath}){{#fig-fairness-check-{tolower(group)}}}"</span>)</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>  sPlot <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">"![Verdeling en dichtheid van {tolower(research_settings[['succes_label']])} naar  {tolower(group)}]({sPlotPath}) {{#fig-fairness-check-{tolower(group)}}}"</span>)</span>
 <span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Knit_Print_Rule</span>(sPlot)</span>
 <span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -826,13 +826,13 @@ Nota Bene
 <details class="code-fold">
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a fairness analysis</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(group <span class="cf">in</span> <span class="fu">c</span>(lSensitive_labels)) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(group <span class="cf">in</span> <span class="fu">c</span>(sensitive_labels)) {</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Group</span></span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Knit_Header</span>(group, <span class="dv">4</span>)</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Determine the most common subgroup = Privileged</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  sPrivileged <span class="ot">&lt;-</span> <span class="fu">Get_Privileged</span>(dfOpleiding_inschrijvingen, group)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  sPrivileged <span class="ot">&lt;-</span> <span class="fu">Get_Privileged</span>(df_sp_enrollments, group)</span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a fairness object</span></span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  fobject <span class="ot">&lt;-</span> <span class="fu">Get_objFairness</span>(explain_lf, group, sPrivileged)</span>
@@ -841,7 +841,7 @@ Nota Bene
 <span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  dfFairness_totaal <span class="ot">&lt;-</span> <span class="fu">Get_dfFairness_Total</span>(fobject)</span>
 <span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Check for bias</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Print_Fairness_Object_LTA</span>(fobject)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print_fairness_object_lta</span>(fobject)</span>
 <span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a plot of the fairness analysis</span></span>
 <span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  fairness_plot <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(</span>
@@ -865,7 +865,7 @@ Nota Bene
 <span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>        ))</span>
 <span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Show the existing plot</span></span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  sPlot <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">"![Fairness check naar {tolower(group)}]({sPlotPath}){{#fig-fairness-check-{tolower(group)}}}"</span>)</span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  sPlot <span class="ot">&lt;-</span> <span class="fu">glue</span>(<span class="st">"![Fairness check naar {tolower(group)}]({sPlotPath}) {{#fig-fairness-check-{tolower(group)}}}"</span>)</span>
 <span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Knit_Print_Rule</span>(sPlot)</span>
 <span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Keep the fairness check data</span></span>
@@ -927,7 +927,7 @@ Figuur&nbsp;4.7: Fairness check naar vooropleiding
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>lDfFairness <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Walk over the variables</span></span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">c</span>(lSensitive_labels)) {</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> <span class="fu">c</span>(sensitive_labels)) {</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  sFairness_outputpath  <span class="ot">&lt;-</span> <span class="fu">Get_Model_Outputpath</span>(<span class="at">mode =</span> <span class="st">"fairness"</span>, <span class="at">group =</span> i)</span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  lDfFairness[[i]]      <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(sFairness_outputpath) <span class="sc">|&gt;</span></span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">FRN_Bias =</span> <span class="fu">case_when</span>(FRN_Score <span class="sc">&lt;</span> <span class="fl">0.8</span> <span class="sc">~</span> <span class="st">"Negatieve Bias"</span>,</span>
@@ -938,19 +938,19 @@ Figuur&nbsp;4.7: Fairness check naar vooropleiding
 <span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a table from the fairness analysis</span></span>
 <span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>dfFairness_wide  <span class="ot">&lt;-</span> <span class="fu">Get_dfFairness_Wide</span>(lDfFairness)</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<p>De uitkomsten van de kansengelijkheidsanalyse is:</p>
+<p>De uitkomsten van de kansengelijkheidanalysis is:</p>
 <!-- Tekstuele samenvatting -->
 <details class="code-fold">
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Now create a text per variable from the table</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>lConclusies <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> lSensitive_labels) {</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(i <span class="cf">in</span> sensitive_labels) {</span>
 <span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  lConclusies[[i]] <span class="ot">&lt;-</span> <span class="fu">Get_Fairness_Conclusies</span>(dfFairness_wide, i)</span>
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Dynamically generate the conclusions in text</span></span>
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>j <span class="ot">&lt;-</span> <span class="dv">1</span></span>
-<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> lSensitive_labels) {</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> sensitive_labels) {</span>
 <span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="fu">glue</span>(<span class="st">"{j}.  **{i}**: {lConclusies[[i]]} </span><span class="sc">\n\n</span><span class="st">"</span>))</span>
 <span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  j <span class="ot">&lt;-</span> j <span class="sc">+</span> <span class="dv">1</span></span>
 <span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1009,7 +1009,7 @@ Barocas, S., Hardt, M., &amp; Narayanan, A. (2023). <em><span>Fairness and Machi
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
+window.document.addEventListener("DOMContentLoaded", function(event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
     const bodyEl = window.document.querySelector("body");
@@ -1356,11 +1356,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     let throttle = false;
     let timer;
       return (...args) => {
-        if(!throttle) { // first call gets through
+        if (!throttle) { // first call gets through
             fn.apply(this, args);
             throttle = true;
         } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
+            if (timer) clearTimeout(timer); // cancel #2
             timer = setTimeout(() => {
               fn.apply(this, args);
               timer = throttle = false;

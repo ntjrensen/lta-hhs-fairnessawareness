@@ -90,7 +90,7 @@ div.csl-indent {
 <style>html{ scroll-behavior: smooth; }</style>
 <script async="" src="https://hypothes.is/embed.js"></script>
 <script>
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
+  window.document.addEventListener("DOMContentLoaded", function(_event) {
     document.body.classList.add('hypothesis-enabled');
   });
 </script>
@@ -247,7 +247,7 @@ of Applied Sciences. <a href="https://doi.org/10.5281/zenodo.14204674">https://d
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
+window.document.addEventListener("DOMContentLoaded", function(event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
     const bodyEl = window.document.querySelector("body");
@@ -594,11 +594,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     let throttle = false;
     let timer;
       return (...args) => {
-        if(!throttle) { // first call gets through
+        if (!throttle) { // first call gets through
             fn.apply(this, args);
             throttle = true;
         } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
+            if (timer) clearTimeout(timer); // cancel #2
             timer = setTimeout(() => {
               fn.apply(this, args);
               timer = throttle = false;

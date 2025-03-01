@@ -9,12 +9,12 @@ params:
   versie: "1.0"
   succes: "Retentie na 1 jaar"
   model: "Retentie na 1 jaar"
-  propedeusediploma: "Nvt"
+  pd: "Nvt"
   use_synthetic_data: true
   recreateplots: false
-  instroomselectie: false
-  opleiding: "CMD"
-  opleidingsvorm_afkorting: "VT"
+  enrollment_selection: false
+  sp: "CMD"
+  sp_form_abbreviation: "VT"
   
 # Content
 includes:
@@ -39,7 +39,7 @@ includes:
 #| include: false
 
 # Current file
-sCurrent_file <- "ch3-factors.qmd"
+current_file <- "ch3-factors.qmd"
 
 ## Include the _Setup.R file
 source("_Setup.R")
@@ -86,7 +86,7 @@ Deze verdiepende factoranalyse heeft 6 stappen:
 
 We laden de bewerkte data en prognosemodellen in voor:
 
-**Opleiding**: `r params$faculteit` \| `r Get_Opleidingsnaam_Synth(params$opleidingsnaam)` (`r params$opleiding`), `r params$opleidingsvorm`, eerstejaars - **`r sSucces_model`**
+**Opleiding**: `r params$faculty` \| `r get_sp_name_syn(params$study_programmesnaam)` (`r params$sp`), `r params$study_programmesvorm`, eerstejaars - **`r succes_model`**
 
 <!-- Include load-dfpersona -->
 ```{r}
@@ -146,22 +146,22 @@ De meeste voorspellende factoren en hun RMSE zijn:
 #| label: fig-lf-model-parts
 #| fig-cap: "Meest voorspellende factoren - RMSE"
 
-sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_model_parts_rmse", 
+sPlotPath <- file.path(get_plot_outputpath(plotname = "lf_model_parts_rmse", 
                                            bestmodel = sBest_model))
 
 # If the plot does not exist or if recreateplots - T, create a new plot
-if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
+if (!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
   # Calculate the model parts based on the RMSE; remove ID
   mp_rmse <- model_parts(explain_lf, loss_function = loss_root_mean_square) |> 
     filter(variable != "ID")
   
   # Create a plot of the RMSE
-  mp_rmse_plot <- Get_RMSE_Plot(mp_rmse)
+  mp_rmse_plot <- get_rmse_plot(mp_rmse)
   
   # Save the plot
   suppressWarnings(
-    Finalize_Plot(
+    finalize_plot(
       plot_name = mp_rmse_plot,
       save_filepath = sPlotPath,
       height_pixels = 50 + (15 * length(unique(mp_rmse$variable)))
@@ -190,7 +190,7 @@ Het valt op dat de meest voorspellende variabelen ook een hoge RMSE hebben. Dit 
 
 Een volgende analyse gaat in op de variabelen met de meeste invloed. Doordat deze analyse rekening houdt met interactie effecten, niet lineaire effecten en collineariteit, kan de volgorde van variabelen wat verschillen van die van een op RMSE gebaseerde analyse. 
 
-Deze analyse passen we toe op de meest voorkomende student. We onderzoeken eerst de meest voorkomende student in de gehele populatie van deze opleiding. Vervolgens analyseren we de meest voorkomende student in meerdere groepen: naar `r Concatenate_List(lSensitive_labels, extend = F, tolower = T)`, etc. We gebruiken hiervoor bij numerieke variabelen de mediaan en van categorische variabelen de meest frequente categorie. 
+Deze analyse passen we toe op de meest voorkomende student. We onderzoeken eerst de meest voorkomende student in de gehele populatie van deze sp. Vervolgens analyseren we de meest voorkomende student in meerdere groepen: naar `r concatenate_list(sensitive_labels, extend = F, tolower = T)`, etc. We gebruiken hiervoor bij numerieke variabelen de mediaan en van categorische variabelen de meest frequente categorie. 
 
 ::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
 Stel dat we een onderscheid maken tussen mannen en vrouwen, dan zullen zij verschillen in bijvoorbeeld de meest voorkomende leeftijd, het meest voorkomende studiekeuzeprofiel, etc. Zo ontstaat er per groep een unieke selectie van variabelen en waarden. De volgorde in belangrijkheid kan ook per groep verschillen. 
@@ -214,45 +214,45 @@ nIntercept <- breakdown_lf_all |>
   pull(cumulative) * 100 |> 
   round(1) 
 
-sIntercept <- Change_Number_Marks(nIntercept, digits = 1)
+sIntercept <- change_number_marks(nIntercept, digits = 1)
 
 ```
 
-#### Toelichting op de opbouw van de `r tolower(lResearch_settings$sSucces_label)`
+#### Toelichting op de opbouw van de `r tolower(research_settings$succes_label)`
 
-De opbouw van het model bestaat uit een *intercept*, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de **basis`r tolower(lResearch_settings$sSucces_label)`** voor alle studenten. Deze kans is voor de `r params$opleidingsnaam` (`r params$opleiding`) `r params$opleidingsvorm` **`r sIntercept`%**. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de `r tolower(lResearch_settings$sSucces_label)` verhoogt, een negatieve bijdrage betekent dat het de `r tolower(lResearch_settings$sSucces_label)` verlaagt.
+De opbouw van het model bestaat uit een *intercept*, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de **basis`r tolower(research_settings$succes_label)`** voor alle studenten. Deze kans is voor de `r params$study_programmesnaam` (`r params$sp`) `r params$study_programmesvorm` **`r sIntercept`%**. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de `r tolower(research_settings$succes_label)` verhoogt, een negatieve bijdrage betekent dat het de `r tolower(research_settings$succes_label)` verlaagt.
 
 Het kan zijn dat nieuwe variabelen geen invloed meer hebben op de kans. Dit betekent niet per se dat ze niet belangrijk zijn. Het kan zijn dat de invloed die ze hebben op de kans al is 'afgevangen' door variabelen die eerder in het model zijn opgenomen.
 
 ::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
-De variabele `Cijfer_CE_VO_missing = Ja` betekent dat een student geen VO cijfers heeft voor het centraal schriftelijk examen. Dit geldt voor vrijwel alle MBO studenten. Doordat de variabele `Cijfer_CE_VO_missing` de `r tolower(lResearch_settings$sSucces_label)` net wat sterker beïnvloedt, komt `Vooropleiding = MBO` niet meer voor als invloedrijke variabele, maar is dit wel de achterliggende reden dat het cijfer ontbreekt.
+De variabele `Cijfer_CE_VO_missing = Ja` betekent dat een student geen VO cijfers heeft voor het centraal schriftelijk examen. Dit geldt voor vrijwel alle MBO studenten. Doordat de variabele `Cijfer_CE_VO_missing` de `r tolower(research_settings$succes_label)` net wat sterker beïnvloedt, komt `Vooropleiding = MBO` niet meer voor als invloedrijke variabele, maar is dit wel de achterliggende reden dat het cijfer ontbreekt.
 :::
 
 Uiteindelijk tellen alle verklarende variabelen op tot een definitieve voorspelling die per persoon verschilt, afhankelijk van hun persoonlijke verschillen per variabele.
 
 #### De meest voorkomende student (totaal)
 
-We onderzoeken eerst de meest voorkomende student in de opleiding. We analyseren de `r tolower(lResearch_settings$sSucces_label)` voor deze *fictieve* student en de bijdrage van de variabelen aan die kans. Daarbij tonen we de verdeling van de voorspellingen voor deze student voor alle variabelen en per variabele. Dit laat zien welke variabelen belangrijk zijn, naar welke kant de verdeling neigt en welke spreiding de kansverdeling heeft.
+We onderzoeken eerst de meest voorkomende student in de sp. We analyseren de `r tolower(research_settings$succes_label)` voor deze *fictieve* student en de bijdrage van de variabelen aan die kans. Daarbij tonen we de verdeling van de voorspellingen voor deze student voor alle variabelen en per variabele. Dit laat zien welke variabelen belangrijk zijn, naar welke kant de verdeling neigt en welke spreiding de kansverdeling heeft.
 
 **Toelichting**
 
--   **All data** - De eerste variabele `all data` is eigenlijk geen variabele, maar geeft aan wat alle data samen aan `r tolower(lResearch_settings$sSucces_label)` voorspellen. Variabelen die daarna bovenaan staan, wegen het zwaarst in de voorspelling van de kans.
--   **Richting** - Als de verdeling van de kansen naar de linkerkant van de x-as gaat, draagt deze variabele meer bij aan een toename op de `r tolower(lResearch_settings$sSucces_label)`; als deze naar de rechterkant beweegt, draagt deze variabele juist bij aan een afname op de `r tolower(lResearch_settings$sSucces_label)`
--   **Spreiding** - Als de spreiding breed is, geeft dit aan dat er binnen deze variabele veel variatie is in de `r tolower(lResearch_settings$sSucces_label)` en er voorzichtig mee omgegaan moet worden. Als de spreiding heel smal is, betekent dit dat de variabele weinig of geen invloed heeft op de `r tolower(lResearch_settings$sSucces_label)`. Deze variabelen bevinden zich op de intercept.
--   **Vorm** - De vorm achter de variabele (een viool) geeft de verdeling van de `r tolower(lResearch_settings$sSucces_label)` weer. Hoe breder de viool-vorm, hoe meer studenten op die locatie een `r tolower(lResearch_settings$sSucces_label)` hebben.
+-   **All data** - De eerste variabele `all data` is eigenlijk geen variabele, maar geeft aan wat alle data samen aan `r tolower(research_settings$succes_label)` voorspellen. Variabelen die daarna bovenaan staan, wegen het zwaarst in de voorspelling van de kans.
+-   **Richting** - Als de verdeling van de kansen naar de linkerkant van de x-as gaat, draagt deze variabele meer bij aan een toename op de `r tolower(research_settings$succes_label)`; als deze naar de rechterkant beweegt, draagt deze variabele juist bij aan een afname op de `r tolower(research_settings$succes_label)`
+-   **Spreiding** - Als de spreiding breed is, geeft dit aan dat er binnen deze variabele veel variatie is in de `r tolower(research_settings$succes_label)` en er voorzichtig mee omgegaan moet worden. Als de spreiding heel smal is, betekent dit dat de variabele weinig of geen invloed heeft op de `r tolower(research_settings$succes_label)`. Deze variabelen bevinden zich op de intercept.
+-   **Vorm** - De vorm achter de variabele (een viool) geeft de verdeling van de `r tolower(research_settings$succes_label)` weer. Hoe breder de viool-vorm, hoe meer studenten op die locatie een `r tolower(research_settings$succes_label)` hebben.
 
 ```{r}
 #| label: fig-lf-break-down-distribution-all
-#| fig-cap: !expr 'glue("Opbouw van de {tolower(lResearch_settings$sSucces_label)}")'
+#| fig-cap: !expr 'glue("Opbouw van de {tolower(research_settings$succes_label)}")'
 #| echo: false
 #| results: asis
 
 # Define the plot
-sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_break_down_distribution_all",
+sPlotPath <- file.path(get_plot_outputpath(plotname = "lf_break_down_distribution_all",
                                            bestmodel = sBest_model))
 
 # If the plot does not exist or if recreateplots - T, create a new plot
-if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
+if (!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
   # Define the overall persona and breakdown (with distribution)
   breakdown_lf_all <- predict_parts(explainer = explain_lf,
@@ -261,20 +261,20 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
                                     keep_distributions = TRUE)
   
   # Determine the data frame for the breakdown
-  dfBreakdown_lf_all <- Get_dfBreakdown_Lf(breakdown_lf_all)
+  dfBreakdown_lf_all <- get_df_breakdown_lf(breakdown_lf_all)
   
   # Define the titles
-  lTitles <- Get_Breakdown_Titles(breakdown_lf_all, dfPersona_all, 1, 
+  titles_list <- get_breakdown_titles(breakdown_lf_all, dfPersona_all, 1, 
                                   "Alle studenten", "Alle studenten",
                                   mode = "all")
   
   # Build the plot
-  breakdown_plot <- Get_Breakdown_Plot_All(breakdown_lf_all, 
-                                           lTitles)
+  breakdown_plot <- get_breakdown_plot_all(breakdown_lf_all, 
+                                           titles_list)
     
   # Save the plot
   suppressWarnings(
-    Finalize_Plot(
+    finalize_plot(
           plot_name = breakdown_plot,
           save_filepath = sPlotPath,
           height_pixels = 50 + (20 * length(breakdown_lf_all$variable))
@@ -296,7 +296,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 #### De meest voorkomende student (per groep)
 
-Nu de algemene opbouw van de `r tolower(lResearch_settings$sSucces_label)` bekend is voor de meest voorkomende student, gaan we verder met een analyse van de meest voorkomende studenten *per groep*.
+Nu de algemene opbouw van de `r tolower(research_settings$succes_label)` bekend is voor de meest voorkomende student, gaan we verder met een analyse van de meest voorkomende studenten *per groep*.
 
 De volgorde van de variabelen is zo gesorteerd dat per groep de meest voorspellende variabelen bovenaan staat. De volgorde verschilt per groep en geeft inzicht in wat er per groep speelt. De variabelen zijn vaak proxies voor onderliggende verschillen.
 
@@ -306,25 +306,25 @@ De volgorde van de variabelen is zo gesorteerd dat per groep de meest voorspelle
 #| results: asis
 
 # Walk the personas
-for(group in names(lDfPersona)) {
+for (group in names(lDfPersona)) {
   
   # Load the dataset for the current persona
-  dfPersona <- lDfPersona[[group]]
+  df_persona <- lDfPersona[[group]]
   
   # Print the name of lDfPersona as a header
-  Knit_Header(glue("Naar {tolower(group)}"), 5)
+  knit_header(glue("Naar {tolower(group)}"), 5)
   
   # Determine if there is a group in the dataset with fewer than 21 students;
   # If so, leave those out and report this
-  if (any(dfPersona$Subtotaal < 21)) {
+  if (any(df_persona$Subtotaal < 21)) {
     
     # Determine categories with fewer than 21 students
-    lCategorie_te_laag <- dfPersona |>
+    lCategorie_te_laag <- df_persona |>
       filter(Subtotaal < 21) |>
       pull(Categorie) 
     
     # Define the text for the notification
-    if(length(lCategorie_te_laag) > 1) {
+    if (length(lCategorie_te_laag) > 1) {
       .categorieen  <- paste0(head(lCategorie_te_laag, 
                                    length(lCategorie_te_laag) - 1), " en ", 
                               tail(lCategorie_te_laag, 1))
@@ -337,85 +337,85 @@ for(group in names(lDfPersona)) {
     }
     
     # Print the notification
-    Knit_Print_Rule(glue("{(.subtotalen)} {(.categorieen)} {(.persoonsvorm)} te laag voor een betrouwbare analyse."))
+    knit_print_rule(glue("{(.subtotalen)} {(.categorieen)} {(.persoonsvorm)} te laag voor een betrouwbare analyse."))
   }
   
   # Open a panel tabset
-  Knit_Print_Rule(glue("::: {.panel-tabset}", 
+  knit_print_rule(glue("::: {.panel-tabset}", 
                        .open = "{{", 
                        .close = "}}"))
   
   # Determine the sort order of the variables
-  lArrange <- lLevels[[group]]
+  lArrange <- levels[[group]]
   
   # Sort the persona based on the levels of the category
-  dfPersona <- dfPersona |> 
+  df_persona <- df_persona |> 
     arrange(match(Categorie, lArrange))
   
   # Walk the personas
-  for(j in 1:nrow(dfPersona)) {
+  for (j in 1:nrow(df_persona)) {
     
     # Determine the current student
-    student_current   <- dfPersona[j, ]
-    student_groep     <- student_current$Groep
-    student_categorie <- dfPersona[j, ]$Categorie # levels(student_current[[student_groep]])[j]
+    student_current   <- df_persona[j, ]
+    student_group     <- student_current$Groep
+    student_category <- df_persona[j, ]$Categorie # levels(student_current[[student_group]])[j]
     
     # Determine the plot name
-    sPlotPath <- Get_Breakdown_Plotpath(student_groep, student_categorie, bestmodel = sBest_model)
+    sPlotPath <- get_breakdown_plotpath(student_group, student_category, bestmodel = sBest_model)
     
     # If the subtotal < 21, proceed to the next item
-    if (as.numeric(dfPersona[j, 'Subtotaal']) < 21) {
+    if (as.numeric(df_persona[j, 'Subtotaal']) < 21) {
       next
     }
     
     # If the plot does not exist or if recreateplots - T, create a new plot
-    if(!file.exists(sPlotPath) | params$recreateplots) {
+    if (!file.exists(sPlotPath) | params$recreateplots) {
       
       # Determine the breakdown for the current student
       breakdown_lf <- predict_parts(explainer = explain_lf,
                                     new_observation = student_current,
                                     type = "break_down")
       
-      dfBreakdown_lf <- Get_dfBreakdown_Lf(breakdown_lf)
+      df_breakdown_lf <- get_df_breakdown_lf(breakdown_lf)
       
       # Show the header
-      Knit_Header(student_categorie, 5)
+      knit_header(student_category, 5)
       
       # Get a list of titles
-      lTitles <- Get_Breakdown_Titles(breakdown_lf, dfPersona, j, 
-                                      student_groep, student_categorie)
+      titles_list <- get_breakdown_titles(breakdown_lf, df_persona, j, 
+                                      student_group, student_category)
       
       # Create a waterfall plot
-      plot <- Get_Breakdown_Plot(dfBreakdown_lf, lTitles)
+      plot <- get_breakdown_plot(df_breakdown_lf, titles_list)
       
       # Save the plot
       suppressWarnings(
-        Finalize_Plot(
+        finalize_plot(
           plot_name = plot,
           save_filepath = sPlotPath,
           height_pixels = 50 + (20 * length(breakdown_lf$variable))
         ))
       
       # Show the existing plot
-      sPlot <- glue("![Breakdown naar {tolower(student_groep)}: {student_categorie}]({sPlotPath}){{#fig-breakdown-{gsub(' ', '-', tolower(student_groep))}-{gsub(' ', '-', tolower(student_categorie))}}}")
-      Knit_Print_Rule(sPlot)
+      sPlot <- glue("![Breakdown naar {tolower(student_group)}: {student_category}]({sPlotPath}) {{#fig-breakdown-{gsub(' ', '-', tolower(student_group))}-{gsub(' ', '-', tolower(student_category))}}}")
+      knit_print_rule(sPlot)
       
       
     } else {
       
       # Show the header
-      Knit_Header(student_categorie, 5)
+      knit_header(student_category, 5)
       
       # Show the existing plot
-      sPlot <- glue("![Breakdown naar {tolower(student_groep)}: {student_categorie}]({sPlotPath}){{#fig-breakdown-{gsub(' ', '-', tolower(student_groep))}-{gsub(' ', '-', tolower(student_categorie))}}}")
-      Knit_Print_Rule(sPlot)
+      sPlot <- glue("![Breakdown naar {tolower(student_group)}: {student_category}]({sPlotPath}) {{#fig-breakdown-{gsub(' ', '-', tolower(student_group))}-{gsub(' ', '-', tolower(student_category))}}}")
+      knit_print_rule(sPlot)
       
     }
     
   }
   
   # Close the panel tabset
-  Knit_Print_Rule(":::")
+  knit_print_rule(":::")
   
 }
 
@@ -437,11 +437,11 @@ De volgorde van de variabelen in deze Shapley analyse is gelijk aan die van @fig
 #| fig-cap: "Shapley values"
 
 # Save the plot
-sPlotPath <- file.path(Get_Plot_Outputpath(plotname = "lf_shapley", 
+sPlotPath <- file.path(get_plot_outputpath(plotname = "lf_shapley", 
                                            bestmodel = sBest_model))
 
 # If the plot does not exist or if recreateplots - T, create a new plot
-if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
+if (!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
   # Determine the Shapley values
   lf_shapley <- 
@@ -453,17 +453,17 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
     )
 
   # Convert these to a data frame
-  dfShapley <- Get_dfShapley(lf_shapley)
+  df_shapley <- get_df_shapley(lf_shapley)
 
   # Build the plot
-  shapley_plot <- Get_Shapley_Plot(dfShapley)
+  shapley_plot <- get_shapley_plot(df_shapley)
   
   # Save the plot
   suppressWarnings(
-    Finalize_Plot(
+    finalize_plot(
       plot_name = shapley_plot,
       save_filepath = sPlotPath,
-      height_pixels = 50 + (25 * length(unique(dfShapley$variable_name)))
+      height_pixels = 50 + (25 * length(unique(df_shapley$variable_name)))
     ))
   
   # Print the existing plot
@@ -480,7 +480,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 **Toelichting:**
 
--   De variabelen met blauwe balken *verhogen* de `r tolower(lResearch_settings$sSucces_label)`, de variabelen met rode balken *verlagen* de `r tolower(lResearch_settings$sSucces_label)`
+-   De variabelen met blauwe balken *verhogen* de `r tolower(research_settings$succes_label)`, de variabelen met rode balken *verlagen* de `r tolower(research_settings$succes_label)`
 -   De boxplot in iedere balk geeft de spreiding van de bijdrage van de variabelen aan de voorspelling weer. Hoe breder de boxplot, des te meer variatie in de bijdrage van de variabele aan de voorspelling.
 -   De positie van de variabele geeft het belang van de variabele aan in de voorspelling. Hoe hoger de variabele, des te belangrijker de variabele is in de voorspelling.
 
@@ -488,7 +488,7 @@ if(!file.exists(sPlotPath) | params$recreateplots == TRUE) {
 
 ### What-if: een Ceteris Paribus analyse
 
-Vervolgens analyseren we een aantal scenario's (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de `r tolower(lResearch_settings$sSucces_label)` eruit zou zien als telkens een van de variabelen net wat anders was geweest.
+Vervolgens analyseren we een aantal scenario's (wat als...). We nemen opnieuw de meest voorkomende studenten, maar beelden nu af hoe de `r tolower(research_settings$succes_label)` eruit zou zien als telkens een van de variabelen net wat anders was geweest.
 
 ::: {.callout-warning appearance="default" icon="true"}
 ### Let op!
@@ -496,13 +496,13 @@ Vervolgens analyseren we een aantal scenario's (wat als...). We nemen opnieuw de
 Dit is de invloed van de variabelen bij de unieke combinatie van deze meest voorkomende student per categorie. Zie voor de invloed van een variabelen ongeacht deze unieke combinatie de analyse van Partial Dependence Profielen in de volgende paragraaf.
 :::
 
-Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde `r tolower(lResearch_settings$sSucces_label)`. Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
+Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde `r tolower(research_settings$succes_label)`. Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
 
 ::: {.callout-note appearance="simple" icon="false" title="Ter illustratie"}
-Stel dat de student in dit model net een wat hoger eindexamencijfer zou hebben gehad op de middelbare school, wat zou dan de `r tolower(lResearch_settings$sSucces_label)` zijn geweest? Het is waarschijnlijk dat de `r tolower(lResearch_settings$sSucces_label)` dan hoger zou zijn geweest. Bij hbo-opleidingen die goed aansluiten hebben met een opleiding aan een universiteit, zou de `r tolower(lResearch_settings$sSucces_label)` juist lager zijn geweest omdat studenten dan na een hbo-diploma vaak doorstromen naar een universiteit.
+Stel dat de student in dit model net een wat hoger eindexamencijfer zou hebben gehad op de middelbare school, wat zou dan de `r tolower(research_settings$succes_label)` zijn geweest? Het is waarschijnlijk dat de `r tolower(research_settings$succes_label)` dan hoger zou zijn geweest. Bij hbo-opleidingen die goed aansluiten hebben met een sp aan een universiteit, zou de `r tolower(research_settings$succes_label)` juist lager zijn geweest omdat studenten dan na een hbo-diploma vaak doorstromen naar een universiteit.
 :::
 
-Opnieuw kijken we naar `r Concatenate_List(lSensitive_labels, tolower = T)`. N.B. Het kan zijn dat een van de categorieën niet zichtbaar is, dit komt doordat deze dan over elkaar heen vallen.
+Opnieuw kijken we naar `r concatenate_list(sensitive_labels, tolower = T)`. N.B. Het kan zijn dat een van de categorieën niet zichtbaar is, dit komt doordat deze dan over elkaar heen vallen.
 
 ```{r}
 #| label: lf-cp-all
@@ -522,39 +522,39 @@ student_vwo  <- dfPersona_tmp[5, ]
 # Create variables splits for each continuous variable
 variable_splits = list(
   Leeftijd = seq(
-    min(dfOpleiding_inschrijvingen$Leeftijd),
-    max(dfOpleiding_inschrijvingen$Leeftijd),
+    min(df_sp_enrollments$Leeftijd),
+    max(df_sp_enrollments$Leeftijd),
     1
   ),
   Cijfer_CE_VO = seq(0, 10, 0.5),
   Cijfer_CE_Wiskunde = seq(0, 10, 0.5),
   SES_Totaal = seq(
-    min(dfOpleiding_inschrijvingen$SES_Totaal),
-    max(dfOpleiding_inschrijvingen$SES_Totaal),
+    min(df_sp_enrollments$SES_Totaal),
+    max(df_sp_enrollments$SES_Totaal),
     0.1
   ),
   Aanmelding = seq(
-    min(dfOpleiding_inschrijvingen$Aanmelding),
-    max(dfOpleiding_inschrijvingen$Aanmelding),
+    min(df_sp_enrollments$Aanmelding),
+    max(df_sp_enrollments$Aanmelding),
     1
   )
 )
 
-for (group in lSensitive_labels) {
+for (group in sensitive_labels) {
   
   # Save the plot
-  sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_cp_", tolower(group)),
+  sPlotPath <- file.path(get_plot_outputpath(plotname = paste0("lf_cp_", tolower(group)),
                                                bestmodel = sBest_model))
     
   # If sPlotPath does not exists or recreateplots == T, create a new plot
-  if(!file.exists(sPlotPath) | params$recreateplots) {
+  if (!file.exists(sPlotPath) | params$recreateplots) {
   
-    Knit_Header(group, 4)
+    knit_header(group, 4)
   
     # Create a breakdown of the most common student per group
     .new_observation <- dfPersona_tmp |>
         filter(Groep == group) |> 
-        arrange(match(group, lSensitive_levels_breakdown[[group]]))
+        arrange(match(group, sensitive_levels_breakdown[[group]]))
     
     # Make a Ceteris Paribus analysis
     cp_lf_all <- predict_profile(
@@ -564,23 +564,23 @@ for (group in lSensitive_labels) {
     )
 
     # Create a Ceteris Paribus plot
-    cp_plot <- Get_Ceteris_Paribus_Plot(cp_lf_all, group)
+    cp_plot <- get_ceteris_paribus_plot(cp_lf_all, group)
 
     suppressWarnings(
-          Finalize_Plot(
+          finalize_plot(
             plot_name = cp_plot,
             save_filepath = sPlotPath
           ))
 
     # Print the existing plot
-    sPlot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({sPlotPath}){{#fig-cp-{tolower(group)}}}")
-    Knit_Print_Rule(sPlot)
+    sPlot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({sPlotPath}) {{#fig-cp-{tolower(group)}}}")
+    knit_print_rule(sPlot)
     
     } else {
       
       # Print the existing plot
-      sPlot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({sPlotPath}){{#fig-cp-{tolower(group)}}}")
-      Knit_Print_Rule(sPlot)
+      sPlot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({sPlotPath}) {{#fig-cp-{tolower(group)}}}")
+      knit_print_rule(sPlot)
   
   } 
 }
@@ -591,14 +591,14 @@ for (group in lSensitive_labels) {
 
 ### Partial Dependence analyse
 
-Tot slot analyseren we *Partial Dependence*. Hierbij onderzoeken we de invloed van individuele variabelen op de `r tolower(lResearch_settings$sSucces_label)`, ongeacht de combinatie van de meest voorkomende studenten. Per (numerieke) variabele analyseren we de variantie binnen de kansen op retentie. We gebruiken hiervoor het gemiddelde van alle Ceteris Paribus profielen. Vandaar dat we ook wel spreken over Partial Dependence profielen (PDP's). 
+Tot slot analyseren we *Partial Dependence*. Hierbij onderzoeken we de invloed van individuele variabelen op de `r tolower(research_settings$succes_label)`, ongeacht de combinatie van de meest voorkomende studenten. Per (numerieke) variabele analyseren we de variantie binnen de kansen op retentie. We gebruiken hiervoor het gemiddelde van alle Ceteris Paribus profielen. Vandaar dat we ook wel spreken over Partial Dependence profielen (PDP's). 
 
-We analyseren eerst de variabelen voor alle studenten. We tonen niet alleen de gemiddelde lijn, maar ook de lijnen van individuele CP-profielen. Vervolgens analyseren op dezelfde manier de variabelen per groep: `r Concatenate_List(lSensitive_labels, tolower = T)`.
+We analyseren eerst de variabelen voor alle studenten. We tonen niet alleen de gemiddelde lijn, maar ook de lijnen van individuele CP-profielen. Vervolgens analyseren op dezelfde manier de variabelen per groep: `r concatenate_list(sensitive_labels, tolower = T)`.
 
 **Toelichting**
 
--   De *gemiddelde lijn* geeft de gemiddelde `r tolower(lResearch_settings$sSucces_label)` weer voor alle studenten in de dataset voor alle waarden per variabele.
--   De *individuele lijnen* geven de `r tolower(lResearch_settings$sSucces_label)` weer voor individuele studenten in de dataset voor alle waarden per variabele. De bandbreedte van de individuele lijnen geeft de spreiding van de `r tolower(lResearch_settings$sSucces_label)` weer binnen de variabele. Het toont dat de `r tolower(lResearch_settings$sSucces_label)` per student kan verschillen, zelfs als de variabele gelijk is; de richting van het verband is wel gelijk.
+-   De *gemiddelde lijn* geeft de gemiddelde `r tolower(research_settings$succes_label)` weer voor alle studenten in de dataset voor alle waarden per variabele.
+-   De *individuele lijnen* geven de `r tolower(research_settings$succes_label)` weer voor individuele studenten in de dataset voor alle waarden per variabele. De bandbreedte van de individuele lijnen geeft de spreiding van de `r tolower(research_settings$succes_label)` weer binnen de variabele. Het toont dat de `r tolower(research_settings$succes_label)` per student kan verschillen, zelfs als de variabele gelijk is; de richting van het verband is wel gelijk.
 -   Standaard worden 100 willekeurige profielen gekozen om deze afbeeldingen op te bouwen; door deze selectie kan het zijn dat sommige categorieën met weinig observaties in de populatie niet afgebeeld worden.
 -   Doordat lijnen kunnen overlappen kan het zijn dat sommige lijnen niet zichtbaar zijn. De legenda geeft aan welke mogelijke categorieën voorkomen in de analyse.
 
@@ -610,27 +610,27 @@ We analyseren eerst de variabelen voor alle studenten. We tonen niet alleen de g
 set.seed(1134)
 
 # Create a PDP for all variables. Use the variable_splits we created earlier
-for (group in c("Alle studenten", lSensitive_labels)) {
+for (group in c("Alle studenten", sensitive_labels)) {
   
   # Save the plot
-  sPlotPath <- file.path(Get_Plot_Outputpath(plotname = paste0("lf_pdp_",
+  sPlotPath <- file.path(get_plot_outputpath(plotname = paste0("lf_pdp_",
                                                                  tolower(group)),
                                                bestmodel = sBest_model))
   
   # If sPlotPath does not exists or recreateplots == T, create a new plot
-  if(!file.exists(sPlotPath) | params$recreateplots) {
+  if (!file.exists(sPlotPath) | params$recreateplots) {
   
     # Create a header
-    Knit_Header(group, 4)
+    knit_header(group, 4)
 
-    if(group == "Alle studenten") {
+    if (group == "Alle studenten") {
       
       # Create the model profile
       pdp_lf <- model_profile(explainer = explain_lf,
                               variable_splits = variable_splits)
 
       # Create a Partial Dependence plot
-      pdp_plot <- Get_Partial_Dependence_Plot(pdp_lf, "all")
+      pdp_plot <- get_partial_dependence_plot(pdp_lf, "all")
       
       
     } else {
@@ -641,29 +641,29 @@ for (group in c("Alle studenten", lSensitive_labels)) {
                               groups = group)
       
       # Create a Partial Dependence plot by group
-      pdp_plot <- Get_Partial_Dependence_Plot(pdp_lf, group)
+      pdp_plot <- get_partial_dependence_plot(pdp_lf, group)
       
     }
     
     # Save the plot
     suppressWarnings(
-          Finalize_Plot(
+          finalize_plot(
             plot_name = pdp_plot,
             save_filepath = sPlotPath
           ))
 
     # Print the existing plot
-    sPlot <- glue("![Partial Dependence profiel naar {tolower(group)}]({sPlotPath}){{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
-    Knit_Print_Rule(sPlot)
+    sPlot <- glue("![Partial Dependence profiel naar {tolower(group)}]({sPlotPath}) {{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
+    knit_print_rule(sPlot)
     
     } else {
       
       # Create a header
-      Knit_Header(group, 4)
+      knit_header(group, 4)
       
       # Print the existing plot
-      sPlot <- glue("![Partial Dependence profiel naar {tolower(group)}]({sPlotPath}){{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
-      Knit_Print_Rule(sPlot)
+      sPlot <- glue("![Partial Dependence profiel naar {tolower(group)}]({sPlotPath}) {{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
+      knit_print_rule(sPlot)
       
     }
   }

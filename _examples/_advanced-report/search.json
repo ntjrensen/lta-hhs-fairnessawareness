@@ -177,7 +177,7 @@
     "href": "ch-factors.html#voorbereidingen",
     "title": "3  Analyse van factoren",
     "section": "3.2 Voorbereidingen",
-    "text": "3.2 Voorbereidingen\n\n3.2.1 Laad de data\nWe laden de bewerkte data en prognosemodellen in voor:\nOpleiding: | (Synth) (CMD), VT, eerstejaars - Retentie na 1 jaar\n\n\n\nToon code\n## Create a list of dfPersonas\nlDfPersona &lt;- list()\n\n## Walk over the variables\nlDfPersona &lt;- map(lSensitive_labels,\n                  ~ Get_dfPersona_Recursive(.x)) |&gt;\n  set_names(lSensitive_labels)\n\ndfPersona_per_group &lt;- bind_rows(lDfPersona) \n\n## Save this file as an Excel spreadsheet\nsOutputPath &lt;- file.path(\"R/data\", \"dfPersona_per_group.xlsx\")\nwritexl::write_xlsx(dfPersona_per_group, sOutputPath)\n\n## Load the personas\ndfPersona_all &lt;- Get_dfPersona_Recursive()",
+    "text": "3.2 Voorbereidingen\n\n3.2.1 Laad de data\nWe laden de bewerkte data en prognosemodellen in voor:\nOpleiding: | (Synth) (CMD), VT, eerstejaars - Retentie na 1 jaar\n\n\n\nToon code\n## Create a list of dfPersonas\nlDfPersona &lt;- list()\n\n## Walk over the variables\nlDfPersona &lt;- map(sensitive_labels,\n                  ~ Get_dfPersona_Recursive(.x)) |&gt;\n  set_names(sensitive_labels)\n\ndfPersona_per_group &lt;- bind_rows(lDfPersona) \n\n## Save this file as an Excel spreadsheet\nsOutputPath &lt;- file.path(\"R/data\", \"dfPersona_per_group.xlsx\")\nwritexl::write_xlsx(dfPersona_per_group, sOutputPath)\n\n## Load the personas\ndfPersona_all &lt;- Get_dfPersona_Recursive()",
     "crumbs": [
       "Analyse",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>Analyse van factoren</span>"

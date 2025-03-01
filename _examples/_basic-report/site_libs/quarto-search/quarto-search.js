@@ -417,11 +417,11 @@ window.document.addEventListener("DOMContentLoaded", function (_event) {
 
   function throttle(func, wait) {
     let waiting = false;
-    return function () {
+    return function() {
       if (!waiting) {
         func.apply(this, arguments);
         waiting = true;
-        setTimeout(function () {
+        setTimeout(function() {
           waiting = false;
         }, wait);
       }
@@ -653,7 +653,7 @@ function showCopyLink(query, options) {
         // flash "checked"
         icon.classList.add(checkIcon);
         icon.classList.remove(linkIcon);
-        setTimeout(function () {
+        setTimeout(function() {
           icon.classList.remove(checkIcon);
           icon.classList.add(linkIcon);
         }, 1000);

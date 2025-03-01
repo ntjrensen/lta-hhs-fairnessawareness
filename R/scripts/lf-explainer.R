@@ -9,13 +9,13 @@ workflow <- last_fit |>
 # Create an explainer
 explain_lf <- DALEX::explain(
   model = workflow,
-  data = dfOpleiding_inschrijvingen |> select(-Retentie),
-  y = dfOpleiding_inschrijvingen$Retentie,
+  data = df_sp_enrollments |> select(-Retentie),
+  y = df_sp_enrollments$Retentie,
   colorize = TRUE,
   verbose = TRUE,
   label = sBest_model)
 
-if(is.null(explain_lf$y_hat) || is.null(explain_lf$residuals)) {
+if (is.null(explain_lf$y_hat) || is.null(explain_lf$residuals)) {
   cli::cli_alert_danger(glue::glue(
     "The explainer does not contain the correct results. ",
     "Check the installation of model packages: {glue::glue_collapse(explain_lf$model_info$package, sep = ', ')}"

@@ -9,7 +9,7 @@ PANDOC_VERSION:must_be_at_least {2,19,1}
 local List = require 'pandoc.List'
 local utils = require 'pandoc.utils'
 local citeproc, sha1, stringify = utils.citeproc, utils.sha1, utils.stringify
-local make_sections = function (doc, opts)
+local make_sections = function(doc, opts)
   return utils.make_sections(opts.number_sections, nil, doc.blocks)
 end
 if PANDOC_VERSION >= '3.0' then
@@ -62,14 +62,14 @@ local function adjust_refs_components (div)
 
   return div:walk {
     traverse = 'topdown',
-    Header = function (h)
+    Header = function(h)
       if h.identifier == 'bibliography' then
         h.identifier = 'bibliography' .. suffix
         h.level = header.level + 1
         return h
       end
     end,
-    Div = function (d)
+    Div = function(d)
       if d.identifier == 'refs' then
         d.identifier = 'refs' .. suffix
         return d
@@ -93,8 +93,8 @@ local function deepcopy (tbl)
 end
 
 -- negate a property
-local negate = function (property)
-  return function (x) return not property(x) end
+local negate = function(property)
+  return function(x) return not property(x) end
 end
 
 --- Create a bibliography for a given section. This acts on all
@@ -119,14 +119,14 @@ local function create_section_bibliography (meta, opts)
 
   local function section_citeproc(section, suffix)
     section = pandoc.Blocks(section):walk{
-      Cite = function (cite)
+      Cite = function(cite)
         cite.citations = cite.citations:map(function(c)
             c.id = c.id .. suffix
             return c
         end)
         return cite
       end,
-      Div = function (div)
+      Div = function(div)
         if div.classes:includes 'sectionrefs' then
           div.identifier = 'refs'
           return div
@@ -141,7 +141,7 @@ local function create_section_bibliography (meta, opts)
   end
 
   local process_div
-  process_div = function (div)
+  process_div = function(div)
     local header, suffix = section_header(div)
     if not header or not suffix or opts.level < header.level then
       -- Don't do anything for deeply-nested sections.
@@ -157,7 +157,7 @@ local function create_section_bibliography (meta, opts)
       -- Replace subsections, which we don't want to process, with
       -- placeholder blocks.
       local subsections = {}
-      local subsection_to_placeholder = function (blk, i)
+      local subsection_to_placeholder = function(blk, i)
         local subh = section_header(blk)
         if subh and not subh.classes:includes 'sectionbibliography' then
           subsections[i] = blk
@@ -166,7 +166,7 @@ local function create_section_bibliography (meta, opts)
         return blk
       end
       -- replace placeholders with processed subsections
-      local restore_from_placeholder = function (blk)
+      local restore_from_placeholder = function(blk)
         if blk.t == 'RawBlock' and blk.format == 'placeholder' then
           return process_div(subsections[tonumber(blk.text)])
         end
@@ -185,12 +185,12 @@ end
 --- Filter to the references div and bibliography header added by
 --- pandoc-citeproc.
 local remove_pandoc_citeproc_results = {
-  Header = function (header)
+  Header = function(header)
     return header.identifier == 'bibliography'
       and {}
       or nil
   end,
-  Div = function (div)
+  Div = function(div)
     return div.identifier == 'refs'
       and {}
       or nil
@@ -222,7 +222,7 @@ end
 
 return {
   {
-    Pandoc = function (doc)
+    Pandoc = function(doc)
       local opts = get_options(doc.meta)
       if opts['cleanup-first'] then
         -- clear results of a previous citeproc run

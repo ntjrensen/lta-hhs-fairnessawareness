@@ -6,12 +6,12 @@ params:
   versie: "1.0"
   succes: "Retentie na 1 jaar"
   model: "Retentie na 1 jaar"
-  propedeusediploma: "Nvt"
+  pd: "Nvt"
   use_synthetic_data: true
   recreateplots: false
-  opleiding: "CMD"
-  opleidingsvorm_afkorting: "VT"
-  instroomselectie: false
+  sp: "CMD"
+  sp_form_abbreviation: "VT"
+  enrollment_selection: false
   
 # Content
 includes:
@@ -34,7 +34,7 @@ includes:
 #| include: false
 
 # Current file
-sCurrent_file <- "index.qmd"
+current_file <- "index.qmd"
 
 # Include the _Setup.R file
 source("_Setup.R")

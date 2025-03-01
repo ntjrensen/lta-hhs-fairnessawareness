@@ -108,7 +108,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <style>html{ scroll-behavior: smooth; }</style>
 <script async="" src="https://hypothes.is/embed.js"></script>
 <script>
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
+  window.document.addEventListener("DOMContentLoaded", function(_event) {
     document.body.classList.add('hypothesis-enabled');
   });
 </script>
@@ -321,9 +321,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>lDfPersona <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Walk over the variables</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>lDfPersona <span class="ot">&lt;-</span> <span class="fu">map</span>(lSensitive_labels,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>lDfPersona <span class="ot">&lt;-</span> <span class="fu">map</span>(sensitive_labels,</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                  <span class="sc">~</span> <span class="fu">Get_dfPersona_Recursive</span>(.x)) <span class="sc">|&gt;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(lSensitive_labels)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(sensitive_labels)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>dfPersona_per_group <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(lDfPersona) </span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
@@ -348,8 +348,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details class="code-fold">
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the best model</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sBest_model <span class="ot">&lt;-</span> dfModel_results<span class="sc">$</span>model[dfModel_results<span class="sc">$</span>best <span class="sc">==</span> <span class="cn">TRUE</span>]</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>last_fit    <span class="ot">&lt;-</span> lLast_fits[[sBest_model]]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sBest_model <span class="ot">&lt;-</span> df_model_results<span class="sc">$</span>model[df_model_results<span class="sc">$</span>best <span class="sc">==</span> <span class="cn">TRUE</span>]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>last_fit    <span class="ot">&lt;-</span> last_fits[[sBest_model]]</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>fitted_model <span class="ot">&lt;-</span> last_fit <span class="sc">|&gt;</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_parsnip</span>()</span>
@@ -382,8 +382,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an explainer</span></span>
 <span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>explain_lf <span class="ot">&lt;-</span> DALEX<span class="sc">::</span><span class="fu">explain</span>(</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> workflow,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dfOpleiding_inschrijvingen <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>Retentie),</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> dfOpleiding_inschrijvingen<span class="sc">$</span>Retentie,</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> df_sp_enrollments <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>Retentie),</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> df_sp_enrollments<span class="sc">$</span>Retentie,</span>
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">colorize =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">label =</span> sBest_model)</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -919,7 +919,7 @@ Figuur&nbsp;3.22: Partial Dependence profiel naar vooropleiding
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
+window.document.addEventListener("DOMContentLoaded", function(event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
     const bodyEl = window.document.querySelector("body");
@@ -1266,11 +1266,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     let throttle = false;
     let timer;
       return (...args) => {
-        if(!throttle) { // first call gets through
+        if (!throttle) { // first call gets through
             fn.apply(this, args);
             throttle = true;
         } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
+            if (timer) clearTimeout(timer); // cancel #2
             timer = setTimeout(() => {
               fn.apply(this, args);
               timer = throttle = false;

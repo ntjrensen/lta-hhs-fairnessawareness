@@ -24,8 +24,8 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Install renv, cli, glue, knitr, and markdown if not yet installed and load the library
-for(package in c("renv", "cli", "glue", "knitr", "markdown")) {
-  if(!requireNamespace(package, quietly = TRUE)) {
+for (package in c("renv", "cli", "glue", "knitr", "markdown")) {
+  if (!requireNamespace(package, quietly = TRUE)) {
     install.packages(package)
   }
 }
@@ -42,12 +42,11 @@ cli_h1("0. ON START")
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 0.1 Restore renv ####
 
-if (!exists("bRenv_restored") || bRenv_restored == FALSE) {
+if (!exists("renv_restored") || renv_restored == FALSE) {
   if (!renv::status()$synchronized) {
     renv::restore()
-  } 
-  bRenv_restored <- TRUE  
-  
+  }
+  renv_restored <- TRUE
 }
 
 cli_h1("Installing packages")
@@ -64,44 +63,44 @@ cli_alert_success("Configuration has been loaded.")
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 0.3 Set environment profile #### 
 
-if(!is.null(rmarkdown::metadata$config$environment)) {
-  sEnvironment <- rmarkdown::metadata$config$environment
+if (!is.null(rmarkdown::metadata$config$environment)) {
+  environment <- rmarkdown::metadata$config$environment
 } else {
-  sEnvironment <- "ceda"
+  environment <- "ceda"
 }
 
 cli_h1("Setting environment")
-cli_alert_success(glue("Environment is {col_red(sEnvironment)}"))
+cli_alert_success(glue("Environment is {col_red(environment)}"))
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 0.4 Determine the current file name ####
 
-if(!exists("sCurrent_file")) {
-  sCurrent_file <- "unknown"
+if (!exists("current_file")) {
+  current_file <- "unknown"
 }
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 0.5 Reset Setup ####
 
 # Set this variable to T to reset this page or restart the session
-bReset_Setup <- F
+current_file <- FALSE
 
 # The setup has not yet been performed, please perform it unless there is a reset
-if(!exists("bSetup_executed") || bReset_Setup){
-  bSetup_executed <- F
+if (!exists("setup_executed") || current_file) {
+  setup_executed <- FALSE
 }
 
 # Based on the setup, do or do not run the rest of this document
-if(bSetup_executed == F) {
+if (setup_executed == FALSE) {
 
   # . ####
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1. PACKAGES & FUNCTIONS ####
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   
   cli_h1("1. PACKAGES & FUNCTIES")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.2 Base and fairness functions ####
   
   source("R/functions/base.helpers.R")
@@ -110,15 +109,15 @@ if(bSetup_executed == F) {
   cli_h1("Load functions")
   cli_alert_success("Functions have been loaded: basis and fairness")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.3 Default datasets ####
   
   cli_h1("Load standard datasets")
   
-  # Load the default datasets: dfOpleidigen, sectors, studytypes, studyforms
-  Load_Datasets(message = TRUE)
+  # Load the default datasets: df_studyprogrammes, df_sectors, df_studytypes, df_studyforms
+  load_datasets(message = TRUE)
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.4 Load libraries ####
   
   library(conflicted)   # to solve conflicts
@@ -173,7 +172,7 @@ if(bSetup_executed == F) {
   cli_h1("Load libraries")
   cli_alert_success("Libraries have been loaded.")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.5 Brand #### 
   
   # Load the brand settings
@@ -182,7 +181,7 @@ if(bSetup_executed == F) {
   cli_h1("Load brand setting")
   cli_alert_success("Brand settings have been loaded.")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.6 Fonts ####
   
   # Load fonts
@@ -191,7 +190,7 @@ if(bSetup_executed == F) {
   cli_h1("Load fonts")
   cli_alert_success("Fonts have been loaded.")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.7 Load additional features ####
 
   source("R/functions/report.helpers.R")
@@ -199,7 +198,7 @@ if(bSetup_executed == F) {
   cli_h1("Load functions")
   cli_alert_success("Functions are loaded: report")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.8 Colors ####
   
   source("brand/colors/colors.R")
@@ -207,15 +206,15 @@ if(bSetup_executed == F) {
   cli_h1("Load colors")
   cli_alert_success("Colors have been loaded.")
 
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.9 Determine preferred themes ####
 
-  Set_Theme()
+  set_theme()
   
   cli_h1("Load theme")
   cli_alert_success("Theme has been loaded")
 
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.10 Tidymodels preferences ####
 
   # When conflicts arise, give preference to the tidymodels package
@@ -225,32 +224,32 @@ if(bSetup_executed == F) {
   cli_alert_success("Tidymodels preference set")
 
   # . ####
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2. GENERAL SETTINGS ####
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   cli_h1("2. GENERAL SETTINGS")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.1 Network paths ####
   
   # Define the network directory
-  Network_directory <- "R/data"
+  network_directory <- "R/data"
   
   cli_h1("Set network path")
-  cli_alert_success(glue("Network path is set: {Network_directory}."))
+  cli_alert_success(glue("Network path is set: {network_directory}."))
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.2 Debug ####
   
   # Set debug options: icecream package settings
-  Set_Icecream_Options()
+  set_icecream_options()
   icecream::ic_disable()
   
   cli_h1("Debug settings")
   cli_alert_success("Debug is set.")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.3 Gtsummary ####
   
   # Define the default settings of gtsummary
@@ -262,125 +261,129 @@ if(bSetup_executed == F) {
   cli_h1("Gtsummary settings")
   cli_alert_success("Gtsummary preferences set.")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.4 Succes model ####
   
-  sSucces_model                     <- params$succes
-  sPropedeusediploma                <- params$propedeusediploma
-  sSucces_model_text                <- Get_Succes_Model_Text(sPropedeusediploma, 
-                                                             sSucces_model)
+  succes_model                     <- params$succes
+  pd              <- params$pd
+  succes_model_text                <- get_succes_model_text(pd, 
+                                                            succes_model)
   
   cli_h1("Succes model settings")
   cli_alert_success("Model settings set")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.5  Educational programme information ####
   
   cli_h1("Current study programme")
   cli_alert_success("Current study programme set")
   
-  # Create the variables for the current study programme based on the programme name and type of education
-  current_opleiding <- Get_Current_Opleiding(
-    opleiding = params$opleiding,
-    opleidingsvorm = params$opleidingsvorm_afkorting
+  # Create the variables for the current study programme based on the programme name and type 
+  # of education
+  current_sp <- get_get_sp(
+    sp = params$sp,
+    sp_form = params$sp_abbreviation
   )
   
   # Based on this, determine derived variables
-  Set_Current_Opleiding_Vars(current_opleiding, debug = T)
+  set_get_sp_vars(current_sp, debug = TRUE)
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.6 Enrollment data  ####
   
-  dfOpleiding_inschrijvingen_base <- Get_dfOpleiding_inschrijvingen_base_syn()
+  df_sp_enrollments <- get_sp_enrollments_base_syn()
   
   cli_h1("Enrollments")
   cli_alert_success("Enrollments loaded")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.7 Metadata & research settings ####
   
-  lMetadata <- Get_Metadata()
+  metadata <- get_metadata()
   
-  if(is.null(lResearch_settings)) {
-    cli_alert_warning("lResearch_settings is not defined. Please define it in the _Setup_config.R file.")
+  if (is.null(research_settings)) {
+    cli_alert_warning(glue("research_settings is not defined. ",
+                           "Please define it in the _Setup_config.R file."))
   }
   
-  lResearch_settings[["sDataset"]]       <- Get_sDataset(dfOpleiding_inschrijvingen_base)
-  lResearch_settings[["sOpleiding"]]     <- Get_sOpleiding()
+  research_settings[["dataset"]]       <- get_dataset(df_sp_enrollments)
+  research_settings[["sp"]]     <- get_sp()
   
   cli_h1("Metadata & research settings")
   cli_alert_success("Metadata & research settings loaded")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.8 Plot information ####
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.8.1 Caption
   
-  sCaption <- Get_sCaption()
+  caption <- get_caption()
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.8.2 Plot height and width ####
   
   # Determine the height and width of images
-  nPlotWidth  <- 640
-  nPlotHeight <- 550
+  plot_width  <- 640
+  plot_height <- 550
   
   cli_h1("Plot settings")
   cli_alert_success("Plot caption, width and height set")
   
   # . ####
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3. CONTENT ####
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   
   cli_h1("3. CONTENT")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.1 Names of the study programme and type of education ####
   
   # Determine the long name of the type of education and faculty
-  sOpleidingsvorm_lang        <- Get_Opleidingsvorm_Lang(params$opleidingsvorm_afkorting)
-  sFaculteit_lang             <- Get_Faculteitsnaam_Lang(current_opleiding$INS_Faculteit)
+  studyprogramme_form_long  <- get_sp_form_long(params$sp_abbreviation)
+  faculty_long              <- get_faculty_name_long(current_sp$INS_Faculteit)
   
   cli_h1("Long names")
   cli_alert_success("Long names of study programme and faculty set.")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.2 Variables and levels ####
   
-  dfVariables                 <- Get_dfVariables()
-  dfLevels                    <- Get_dfLevels()
-  lLevels                     <- Get_lLevels(dfLevels)
-  lLevels_formal              <- Get_lLevels(dfLevels, formal = TRUE)
+  df_variables              <- get_df_variables()
+  df_levels                 <- get_df_levels()
+  levels                    <- get_levels(df_levels)
+  levels_formal             <- get_levels(df_levels, formal = TRUE)
   
   cli_h1("Variables and levels")
   cli_alert_success("Variables and levels set")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.3 Sensitive variables and labels ####
   
-  lSentitive_formal_variables <- Get_lSensitive(dfVariables, var = "VAR_Formal_variable")
-  lSentitive_variables        <- Get_lSensitive(dfVariables, var = "VAR_Simple_variable")
-  lSensitive_labels           <- Get_lSensitive(dfVariables, var = "VAR_Variable_label")
-  lSensitive_levels_breakdown <- Get_lSensitive_Levels_Breakdown(dfLevels, lSentitive_formal_variables)
+  sensitive_formal_variables <- get_list_sensitive(df_variables, var = "VAR_Formal_variable")
+  sensitive_variables        <- get_list_sensitive(df_variables, var = "VAR_Simple_variable")
+  sensitive_labels           <- get_list_sensitive(df_variables, var = "VAR_Variable_label")
+  sensitive_levels_breakdown <- get_sensitive_levels_breakdown(df_levels, 
+                                                               sensitive_formal_variables)
   
   cli_h1("Sensitive variables and labels")
-  cli_alert_success(glue("Sensitive variables set: {paste(unlist(lSentitive_variables), collapse = ', ')}"))
+  cli_alert_success(glue("Sensitive variables set: ",
+                         "{paste(unlist(sensitive_variables), collapse = ', ')}"))
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.4 Paths for data, last fits and model results ####
   
   # Define the paths
-  sData_outputpath            <- Get_Model_Outputpath(mode = "data")
-  sFittedmodels_outputpath    <- Get_Model_Outputpath(mode = "last-fits")
-  sModelresults_outputpath    <- Get_Model_Outputpath(mode = "modelresults")
+  data_outputpath            <- get_model_outputpath(mode = "data")
+  fittedmodels_outputpath    <- get_model_outputpath(mode = "last-fits")
+  modelresults_outputpath    <- get_model_outputpath(mode = "modelresults")
   
   # If these folders don't exist yet, create them
-  for (i in c(sData_outputpath, 
-              sFittedmodels_outputpath, 
-              sModelresults_outputpath)) {
-    if(!dir.exists(dirname(i))) {
+  for (i in c(data_outputpath, 
+              fittedmodels_outputpath, 
+              modelresults_outputpath)) {
+    if (!dir.exists(dirname(i))) {
       dir.create(dirname(i), recursive = TRUE)
     }
   }
@@ -388,25 +391,26 @@ if(bSetup_executed == F) {
   cli_h1("Paths for data, last fits and model results")
   cli_alert_success("Paths for data, last fits and model results set.")
   
-  # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.5 Data for training, last fits and results ####
   
   # Check if we need to check the data
-  if(sCurrent_file != "ch4-models.qmd") {
-    bCheck_data <- TRUE
+  if (current_file != "ch4-models.qmd") {
+    check_data <- TRUE
   } else {
-    bCheck_data <- FALSE
+    check_data <- FALSE
   }
   
   # If one of these files does not exist and we are not in ch4-models.qmd, 
   # give a cli warning
-  if((
-    !file.exists(sData_outputpath) ||
-    !file.exists(sFittedmodels_outputpath) ||
-    !file.exists(sModelresults_outputpath)
-  ) ) {
+  if ((
+    !file.exists(data_outputpath) ||
+      !file.exists(fittedmodels_outputpath) ||
+      !file.exists(modelresults_outputpath)
+  )) {
     
-    if(bCheck_data) {
+    
+    if (bCheck_data) {
       
       cli_h1("Data and model files.")
       cli_alert_warning(
@@ -422,14 +426,14 @@ if(bSetup_executed == F) {
     
     cli_h1("Data and model files.")
     # Data - adjust the Retention variable to numeric (0/1),
-    dfOpleiding_inschrijvingen <- rio::import(sData_outputpath, trust = TRUE) |> 
-      mutate(across(all_of(names(lLevels)), ~ factor(.x, 
-                                                     levels = lLevels[[cur_column()]]))) |> 
+    df_sp_enrollments <- rio::import(data_outputpath, trust = TRUE) |> 
+      mutate(across(all_of(names(levels)), ~ factor(.x, 
+                                                    levels = levels[[cur_column()]]))) |> 
       mutate(Retentie = as.numeric(Retentie) - 1)
     
     ## Last fits and model results
-    lLast_fits                 <- rio::import(sFittedmodels_outputpath, trust = TRUE)
-    dfModel_results            <- rio::import(sModelresults_outputpath, trust = TRUE)
+    last_fits         <- rio::import(fittedmodels_outputpath, trust = TRUE)
+    df_model_results  <- rio::import(modelresults_outputpath, trust = TRUE)
     
     cli_alert_success(
       glue(
@@ -439,8 +443,4 @@ if(bSetup_executed == F) {
     
     
   } 
-  
-  
 }
-
-

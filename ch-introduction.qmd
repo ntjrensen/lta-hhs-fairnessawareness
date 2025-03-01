@@ -9,12 +9,12 @@ params:
   versie: "1.0"
   succes: "Retentie na 1 jaar"
   model: "Retentie na 1 jaar"
-  propedeusediploma: "Nvt"
+  pd: "Nvt"
   use_synthetic_data: true
   recreateplots: false
-  instroomselectie: false
-  opleiding: "CMD"
-  opleidingsvorm_afkorting: "VT"
+  enrollment_selection: false
+  sp: "CMD"
+  sp_form_abbreviation: "VT"
   
 # Content
 includes:
@@ -39,7 +39,7 @@ includes:
 #| include: false
 
 # Current file
-sCurrent_file <- "ch1-introduction.qmd"
+current_file <- "ch1-introduction.qmd"
 
 # Include the _Setup.R file
 source("_Setup.R")
@@ -65,7 +65,7 @@ Over deze methode heeft de lector, Dr. Theo Bakker, zijn intreerede uitgesproken
 
 ## Het nut van prognosemodellen
 
-Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de **retentie** van studenten. Met deze inzichten kan een opleiding interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen. Denk aan een betere voorlichting, onboarding, begeleiding of ontwikkeling van het onderwijs. 
+Prognosemodellen kunnen inzicht bieden in de factoren die gecorreleerd zijn aan de uitval of - als tegenhanger - de **retentie** van studenten. Met deze inzichten kan een sp interventies ontwikkelen om uitval te verminderen of te voorkomen en retentie te bevorderen. Denk aan een betere voorlichting, onboarding, begeleiding of ontwikkeling van het onderwijs. 
 
 ::: {.content-visible when-profile="advanced-report"}
 Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te sporen is retentie beter te volgen dan uitval. Vandaar dat we in deze analyse ``r tolower(params$succes)`` als uitkomstvariabele nemen.
@@ -74,7 +74,7 @@ Voor de uitleg van de toepassing van deze methode om kansengelijkheid op te spor
 ::: {.callout-warning appearance="default" icon="true"}
 ## Disclaimer
 
-De prognosemodellen die we in deze analyses ontwikkelen zijn bedoeld om de dynamiek in het studiesucces van studenten een opleiding beter te begrijpen om kansengelijkheid te bevorderen.
+De prognosemodellen die we in deze analyses ontwikkelen zijn bedoeld om de dynamiek in het studiesucces van studenten een sp beter te begrijpen om kansengelijkheid te bevorderen.
 
 **Deze modellen mogen op geen enkele wijze gebruikt worden om individuele studenten te beoordelen of hun succes te voorspellen.**
 :::

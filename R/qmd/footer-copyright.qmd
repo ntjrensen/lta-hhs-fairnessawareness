@@ -9,12 +9,12 @@
 #| results: asis
 #| echo: false
 
-if (sEnvironment == "ceda") {
+if (environment == "ceda") {
   sCopyright_license_text <- "**Creative Commons Licentie**\n\nDe licentie voor dit template is de [Creative Commons Attribution Share Alike 4.0 Internationaal](https://creativecommons.org/licenses/by-sa/4.0/)."
 } else {
   sCopyright_license_text <- paste0(
     "**Creative Commons Licentie**\n\n© ",
-    lMetadata$sAnalyse,
+    metadata$analysis,
     ", ",
     as.numeric(format(Sys.Date(), '%Y')),
     ". Alle rechten voorbehouden."

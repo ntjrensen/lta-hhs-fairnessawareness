@@ -1,6 +1,6 @@
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-## quarto-render-advanced-report.R ####
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# quarto-render-advanced-report.R ####
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # R code of the Learning Technology & Analytics Research Group of THUAS
 # Copyright 2025 THUAS
 # Web Page: http://www.thuas.com
@@ -9,20 +9,20 @@
 #
 # Purpose: Rendering quarto profile: advanced-report
 #
-## +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+# +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Set minimal libraries
 library(quarto)
 library(here)
 
 # Define the parameters for the quarto file
-lExecute_params <- list(
-  opleiding                 = "CMD", # CMD or VD
-  opleidingsvorm_afkorting  = "VT"
+execute_params_list <- list(
+  sp                    = "CMD", # CMD or VD
+  sp_form_abbreviation  = "VT"
 )
 
 # Render an advanced report
 withr::with_envvar(new = c("QUARTO_PROFILE" = "advanced-report"), {
-  quarto::quarto_render(execute_params = lExecute_params,
+  quarto::quarto_render(execute_params = execute_params_list,
                         as_job = FALSE)
 })
