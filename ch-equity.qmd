@@ -142,14 +142,14 @@ tbl_summary <- df_sp_enrollments |>
   mutate(Retentie = ifelse(Retentie == 1, "Ja", "Nee")) |>
   tbl_summary(by = Retentie) |> 
   add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
-          test.args = list(
-            all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
-            all_tests("wilcox.test") ~ list(exact = FALSE)
-          )) |> 
-    add_significance_stars(
-      hide_p = FALSE,
-      pattern = "{p.value}{stars}"
-    ) |>
+        test.args = list(
+          all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
+          all_tests("wilcox.test") ~ list(exact = FALSE)
+        )) |> 
+  add_significance_stars(
+    hide_p = FALSE,
+    pattern = "{p.value}{stars}"
+  ) |>
   add_overall(col_label = "**Totaal**  \nN = {style_number(N)}") |>
   add_n() |>
   modify_header(label ~ "**Variabele**") |> 
@@ -204,20 +204,20 @@ for (group in c(sensitive_labels)) {
   ) 
 
   # Save the plot
-  sPlotname <- glue("density_plot_{tolower(group)}")
-  sPlotPath <- get_plot_outputpath(sPlotname, mode = "plot", 
+  plot_name <- glue("density_plot_{tolower(group)}")
+  plot_path <- get_plot_outputpath(plot_name, mode = "plot", 
                                    bestmodel = sBest_model)
 
-  suppressWarnings(
-        finalize_plot(
-          plot_name = density_plot,
-          save_filepath = sPlotPath,
-          height_pixels = 250 + (50 * length(unique(df_fairness_total$Categorie)))
-        ))
+  suppressWarnings(finalize_plot(
+    plot_name = density_plot,
+    save_filepath = plot_path,
+    height_pixels = 250 + (50 * length(unique(df_fairness_total$Categorie)))
+  ))
 
   # Show the existing plot
-  sPlot <- glue("![Verdeling en dichtheid van {tolower(research_settings[['succes_label']])} naar  {tolower(group)}]({sPlotPath}) {{#fig-fairness-check-{tolower(group)}}}")
-  knit_print_rule(sPlot)
+  plot <- glue("![Verdeling en dichtheid van {tolower(research_settings[['succes_label']])} ",
+               "naar {tolower(group)}]({plot_path}) {{#fig-fairness-check-{tolower(group)}}}")
+  knit_print_rule(plot)
 
 }
 
@@ -282,24 +282,25 @@ for (group in c(sensitive_labels)) {
   )
 
   # Save the plot
-  sPlotname <- glue("fairness_plot_{tolower(group)}")
-  sPlotPath <- get_plot_outputpath(sPlotname, mode = "plot", bestmodel = sBest_model)
+  plot_name <- glue("fairness_plot_{tolower(group)}")
+  plot_path <- get_plot_outputpath(plot_name, mode = "plot", bestmodel = sBest_model)
 
-  suppressWarnings(
-        finalize_plot(
-          plot_name = fairness_plot,
-          save_filepath = sPlotPath,
-          height_pixels = 250 + (50 * length(unique(df_fairness_total$Categorie)))
-        ))
+  suppressWarnings(finalize_plot(
+    plot_name = fairness_plot,
+    save_filepath = plot_path,
+    height_pixels = 250 + (50 * length(unique(df_fairness_total$Categorie)))
+  ))
 
   # Show the existing plot
-  sPlot <- glue("![Fairness check naar {tolower(group)}]({sPlotPath}) {{#fig-fairness-check-{tolower(group)}}}")
-  knit_print_rule(sPlot)
+  plot <- glue("![Fairness check naar {tolower(group)}]({plot_path})",
+               " {{#fig-fairness-check-{tolower(group)}}}")
+  knit_print_rule(plot)
   
   # Keep the fairness check data
-  sFairness_outputpath  <- get_model_outputpath(mode = "fairness", group = group)
-  dfFairness_check_data <- get_df_fairness_check_data(fairness_object[["fairness_check_data"]], group = group)
-  saveRDS(dfFairness_check_data, file = sFairness_outputpath)
+  fairness_output_path  <- get_model_outputpath(mode = "fairness", group = group)
+  df_fairness_check_data <- get_df_fairness_check_data(fairness_object[["fairness_check_data"]],
+                                                       group = group)
+  saveRDS(df_fairness_check_data, file = fairness_output_path)
   
 }
 
@@ -336,5 +337,4 @@ for (group in c(sensitive_labels)) {
 
 # Collect garbage
 invisible(gc())
-  
 ```

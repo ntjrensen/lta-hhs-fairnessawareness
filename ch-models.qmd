@@ -42,11 +42,11 @@ current_file <- "ch4-models.qmd"
 # Include the _Setup.R file
 source("_Setup.R") 
 
-bInclude_Model_LR    <- rmarkdown::metadata$includes$model_lr    # Penalized Logistic Regression
-bInclude_Model_RF    <- rmarkdown::metadata$includes$model_rf    # Random Forest
-bInclude_Model_SVM   <- rmarkdown::metadata$includes$model_svm   # Support Vector Machine
-bInclude_Final_fit   <- rmarkdown::metadata$includes$final_fit   # Final Fit
-bInclude_Conclusies  <- rmarkdown::metadata$includes$conclusions # Conclusies
+include_model_lr     <- rmarkdown::metadata$includes$model_lr    # Penalized Logistic Regression
+include_model_rf     <- rmarkdown::metadata$includes$model_rf    # Random Forest
+include_model_svm    <- rmarkdown::metadata$includes$model_svm   # Support Vector Machine
+include_final_fit    <- rmarkdown::metadata$includes$final_fit   # Final Fit
+include_conclusions  <- rmarkdown::metadata$includes$conclusions # Conclusies
 
 df_model_results <- data.frame(
   model = character(),
@@ -1409,7 +1409,7 @@ rm(
   )
 
 # Logistic regression
-if (bInclude_Model_LR) {
+if (include_model_lr) {
   rm(
     lr_auc,
     lr_auc_highest,
@@ -1427,7 +1427,7 @@ if (bInclude_Model_LR) {
 }
 
 # Random Forest
-if (bInclude_Model_RF) {
+if (include_model_rf) {
   rm(
     rf_auc,
     rf_auc_highest,
@@ -1446,14 +1446,14 @@ if (bInclude_Model_RF) {
 }
 
 # Final Fit
-if (bInclude_Final_fit) {
+if (include_final_fit) {
   rm(
     last_fit
   )
 }
 
 # Conclusions
-if (bInclude_Conclusies) {
+if (include_conclusions) {
   rm(
     top_models,
     dfTop_vi,

@@ -29,9 +29,17 @@ includes:
   copyright:      true
 ---
 
+
+
+
+
 <!-- Title -->
 
 # Analyse van factoren {#sec-factoranalyse}
+
+
+
+
 
 ```{r setup}
 #| label: setup
@@ -46,10 +54,30 @@ source("_Setup.R")
 
 ```
 
+
+
+
+
 <!-- HEADER -->
 
 <!-- Studyprogram short -->
-{{< include R/qmd/header-studyprogram.qmd >}}
+
+
+
+
+---
+# No title for this page
+
+---
+
+
+
+**`r current_sp$INS_Opleidingsnaam`** (`r current_sp$INS_Opleiding`), `r studyprogramme_form_long`, eerstejaars, Faculteit `r get_faculty_name_long(current_sp$INS_Faculteit)` (`r current_sp$INS_Faculteit`).
+
+ 
+
+
+
 
 <!-- Introduction -->
 
@@ -89,11 +117,19 @@ We laden de bewerkte data en prognosemodellen in voor:
 **Opleiding**: `r params$faculty` \| `r get_sp_name_syn(params$study_programmesnaam)` (`r params$sp`), `r params$study_programmesvorm`, eerstejaars - **`r succes_model`**
 
 <!-- Include load-dfpersona -->
+
+
+
+
 ```{r}
 #| label: load-dfpersona
 #| eval: true
 #| file: R/scripts/load-dfpersona.R
 ```
+
+
+
+
 
 ## Verdiepende analyse van het model
 
@@ -104,18 +140,34 @@ We weten van de factoren nog niet hoe en in welke richting ze retentie verklaren
 We gaan nu een stap verder met behulp van het `DALEX` package. Op basis van het tidymodels model (zie hoofdstuk 3) extraheren we de informatie voor de explainer van Dalex.
 
 <!-- Include the fitted model -->
+
+
+
+
 ```{r}
 #| label: fitted-model
 #| eval: true
 #| file: R/scripts/fitted-model.R
 ```
 
+
+
+
+
 <!-- Include the last fit explainer -->
+
+
+
+
 ```{r}
 #| label: lf-explainer
 #| eval: true
 #| file: R/scripts/lf-explainer.R
 ```
+
+
+
+
 
 :::
 
@@ -140,6 +192,10 @@ De eerste analyse is de Root Mean Square Error (RMSE) na permutaties.
 
 De meeste voorspellende factoren en hun RMSE zijn:
 :::
+
+
+
+
 
 
 ```{r}
@@ -177,6 +233,10 @@ if (!file.exists(plot_path) || params$recreateplots == TRUE) {
 }
 ```
 
+
+
+
+
 ::: {.content-visible when-profile="basic-report"}
 De meest voorspellende variabelen hebben een grote invloed hebben op de voorspelling van het model, maar kunnen per toepassing op een individuele student uit het verleden ook sterk  variëren.
 :::
@@ -197,6 +257,10 @@ Stel dat we een onderscheid maken tussen mannen en vrouwen, dan zullen zij versc
 
 We onderzoeken zo de voorspelling van het model per groep en de bijdrage van de verklarende variabelen aan die specifieke voorspelling. Dit geeft een verder inzicht in de werking van het model. Een categorie met 20 studenten of minder laten we buiten beschouwing. 
 
+
+
+
+
 ```{r}
 #| label: lf-break-down-all
 #| echo: false
@@ -216,6 +280,10 @@ intercept <- breakdown_lf_all |>
 intercept <- change_number_marks(intercept, digits = 1)
 
 ```
+
+
+
+
 
 #### Toelichting op de opbouw van de `r tolower(research_settings$succes_label)`
 
@@ -239,6 +307,10 @@ We onderzoeken eerst de meest voorkomende student in de sp. We analyseren de `r 
 -   **Richting** - Als de verdeling van de kansen naar de linkerkant van de x-as gaat, draagt deze variabele meer bij aan een toename op de `r tolower(research_settings$succes_label)`; als deze naar de rechterkant beweegt, draagt deze variabele juist bij aan een afname op de `r tolower(research_settings$succes_label)`
 -   **Spreiding** - Als de spreiding breed is, geeft dit aan dat er binnen deze variabele veel variatie is in de `r tolower(research_settings$succes_label)` en er voorzichtig mee omgegaan moet worden. Als de spreiding heel smal is, betekent dit dat de variabele weinig of geen invloed heeft op de `r tolower(research_settings$succes_label)`. Deze variabelen bevinden zich op de intercept.
 -   **Vorm** - De vorm achter de variabele (een viool) geeft de verdeling van de `r tolower(research_settings$succes_label)` weer. Hoe breder de viool-vorm, hoe meer studenten op die locatie een `r tolower(research_settings$succes_label)` hebben.
+
+
+
+
 
 ```{r}
 #| label: fig-lf-break-down-distribution-all
@@ -291,11 +363,19 @@ if (!file.exists(plot_path) || params$recreateplots == TRUE) {
 
 ```
 
+
+
+
+
 #### De meest voorkomende student (per groep)
 
 Nu de algemene opbouw van de `r tolower(research_settings$succes_label)` bekend is voor de meest voorkomende student, gaan we verder met een analyse van de meest voorkomende studenten *per groep*.
 
 De volgorde van de variabelen is zo gesorteerd dat per groep de meest voorspellende variabelen bovenaan staat. De volgorde verschilt per groep en geeft inzicht in wat er per groep speelt. De variabelen zijn vaak proxies voor onderliggende verschillen.
+
+
+
+
 
 ```{r}
 #| label: lf-break-down
@@ -422,6 +502,10 @@ for (group in names(lDfPersona)) {
 
 ```
 
+
+
+
+
 ### Shapley
 
 Na deze factorentanalyse kijken we naar de stabiliteit van de invloed van de verklarende variabelen. We gebruiken hiervoor *Shapley* waarden. 
@@ -432,6 +516,10 @@ Een Shapley analyse houdt rekening met een andere volgorde van de variabelen. De
 De volgorde van de variabelen in deze Shapley analyse is gelijk aan die van @fig-lf-break-down-distribution-all. 
 
 :::
+
+
+
+
 
 ```{r}
 #| label: fig-lf-shapley
@@ -478,6 +566,10 @@ if (!file.exists(plot_path) || params$recreateplots == TRUE) {
 
 ```
 
+
+
+
+
 **Toelichting:**
 
 -   De variabelen met blauwe balken *verhogen* de `r tolower(research_settings$succes_label)`, de variabelen met rode balken *verlagen* de `r tolower(research_settings$succes_label)`
@@ -503,6 +595,10 @@ Stel dat de student in dit model net een wat hoger eindexamencijfer zou hebben g
 :::
 
 Opnieuw kijken we naar `r concatenate_list(sensitive_labels, tolower = T)`. N.B. Het kan zijn dat een van de categorieën niet zichtbaar is, dit komt doordat deze dan over elkaar heen vallen.
+
+
+
+
 
 ```{r}
 #| label: lf-cp-all
@@ -566,27 +662,30 @@ for (group in sensitive_labels) {
     # Create a Ceteris Paribus plot
     cp_plot <- get_ceteris_paribus_plot(cp_lf_all, group)
 
-    suppressWarnings(finalize_plot(
-      plot_name = cp_plot,
-      save_filepath = plot_path
-    ))
+    suppressWarnings(
+          finalize_plot(
+            plot_name = cp_plot,
+            save_filepath = plot_path
+          ))
 
     # Print the existing plot
-    plot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({plot_path})",
-                 " {{#fig-cp-{tolower(group)}}}")
+    plot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({plot_path}) {{#fig-cp-{tolower(group)}}}")
     knit_print_rule(plot)
     
-  } else {
+    } else {
       
-    # Print the existing plot
-    plot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({plot_path})",
-                 " {{#fig-cp-{tolower(group)}}}")
-    knit_print_rule(plot)
+      # Print the existing plot
+      plot <- glue("![Ceteris-paribus profiel naar {tolower(group)}]({plot_path}) {{#fig-cp-{tolower(group)}}}")
+      knit_print_rule(plot)
   
   } 
 }
 
 ```
+
+
+
+
 
 <!-- Partial Dependence -->
 
@@ -603,6 +702,10 @@ We analyseren eerst de variabelen voor alle studenten. We tonen niet alleen de g
 -   Standaard worden 100 willekeurige profielen gekozen om deze afbeeldingen op te bouwen; door deze selectie kan het zijn dat sommige categorieën met weinig observaties in de populatie niet afgebeeld worden.
 -   Doordat lijnen kunnen overlappen kan het zijn dat sommige lijnen niet zichtbaar zijn. De legenda geeft aan welke mogelijke categorieën voorkomen in de analyse.
 
+
+
+
+
 ```{r}
 #| label: lf-pdp-all
 #| echo: false
@@ -615,8 +718,8 @@ for (group in c("Alle studenten", sensitive_labels)) {
   
   # Save the plot
   plot_path <- file.path(get_plot_outputpath(plotname = paste0("lf_pdp_",
-                                                               tolower(group)),
-                                             bestmodel = sBest_model))
+                                                                 tolower(group)),
+                                               bestmodel = sBest_model))
   
   # If plot_path does not exists or recreateplots == T, create a new plot
   if (!file.exists(plot_path) || params$recreateplots) {
@@ -647,47 +750,104 @@ for (group in c("Alle studenten", sensitive_labels)) {
     }
     
     # Save the plot
-    suppressWarnings(finalize_plot(
-      plot_name = pdp_plot,
-      save_filepath = plot_path
-    ))
+    suppressWarnings(
+          finalize_plot(
+            plot_name = pdp_plot,
+            save_filepath = plot_path
+          ))
 
     # Print the existing plot
-    plot <- glue("![Partial Dependence profiel naar {tolower(group)}]({plot_path})",
-                 " {{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
+    plot <- glue("![Partial Dependence profiel naar {tolower(group)}]({plot_path}) {{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
     knit_print_rule(plot)
     
-  } else {
+    } else {
       
-    # Create a header
-    knit_header(group, 4)
-    
-    # Print the existing plot
-    plot <- glue("![Partial Dependence profiel naar {tolower(group)}]({plot_path})",
-                 " {{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
-    knit_print_rule(plot)
+      # Create a header
+      knit_header(group, 4)
       
+      # Print the existing plot
+      plot <- glue("![Partial Dependence profiel naar {tolower(group)}]({plot_path}) {{#fig-pdp-{gsub(' ', '-', tolower(group))}}}")
+      knit_print_rule(plot)
+      
+    }
   }
-}
 
 ```
+
+
+
+
 
 <!-- FOOTER -->
 
 <!-- Justification -->
 
 ::: {.content-hidden unless-meta="includes.justification"}
-{{< include R/qmd/footer-justification.qmd >}}
+
+
+
+
+---
+# No title for this page
+
+---
+
+
+
+ 
+
+**Verantwoording**
+  
+  Deze analyse maakt deel uit van het onderzoek naar kansengelijkheid van het lectoraat Learning Technology & Analytics van De Haagse Hogeschool: [No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness) \| Het rapport is door het lectoraat ontwikkeld in [Quarto](https://quarto.org/) `r quarto::quarto_version()`.
+
+
 :::
 
 <!-- Copyright -->
 
 ::: {.content-hidden unless-meta="includes.copyright"}
-{{< include R/qmd/footer-copyright.qmd >}}
+
+
+
+
+---
+# No title for this page
+
+---
+
+```{r}
+#| label: footer-copyright-license
+#| results: asis
+#| echo: false
+
+if (environment == "ceda") {
+  sCopyright_license_text <- "**Creative Commons Licentie**\n\nDe licentie voor dit template is de [Creative Commons Attribution Share Alike 4.0 Internationaal](https://creativecommons.org/licenses/by-sa/4.0/)."
+} else {
+  sCopyright_license_text <- paste0(
+    "**Creative Commons Licentie**\n\n© ",
+    metadata$analysis,
+    ", ",
+    as.numeric(format(Sys.Date(), '%Y')),
+    ". Alle rechten voorbehouden."
+  )
+} 
+
+knitr::asis_output(sCopyright_license_text)
+
+```
+
+
+
+
+
 :::
 
 
 <!-- Cleaning up -->
+
+
+
+
 
 ```{r}
 #| label: cleanup
@@ -695,4 +855,6 @@ for (group in c("Alle studenten", sensitive_labels)) {
 
 # Collect garbage
 invisible(gc())
+  
 ```
+
