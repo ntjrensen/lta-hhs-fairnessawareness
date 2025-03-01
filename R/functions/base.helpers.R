@@ -257,19 +257,19 @@ install_packages <- function(packages, message = FALSE) {
     if (message) {
       cli::cli_alert_warning(
         c(
-          "De volgende packages zijn nog niet geïnstalleerd: {.var {new_packages}} \n",
-          "Deze worden nu alsnog geïnstalleerd"
+          "The following packages are not yet installed: {.var {new_packages}} \n",
+          "These are now being installed as yet"
         )
       )
     }
     install.packages(new_packages, repos = "http://cran.us.r-project.org", quiet = TRUE)
   } else {
     if (message) {
-      cli::cli_alert_success("Alle packages zijn al geïnstalleerd")
+      cli::cli_alert_success("All packages are already installed")
     }
   }
   if (!all(packages %in% installed.packages())) {
-    cli::cli_alert_warning("Packages zijn NIET geïnstalleerd")
+    cli::cli_alert_warning("Packages are NOT installed")
   }
 }
 
@@ -290,14 +290,14 @@ load_packages <- function(packages,
     if (message) {
       cli::cli_alert_warning(
         c(
-          "Niet alle packages zijn ingeladen; ",
-          "De volgende packages zijn niet ingeladen: {.var {missing_packages}}"
+          "Not all packages are loaded; ",
+          "The following packages are not loaded: {.var {missing_packages}}"
         )
       )
     }
   } else {
     if (message) {
-      cli::cli_alert_success("Alle packages zijn ingeladen: {.var {packages}}")
+      cli::cli_alert_success("All packages are loaded: {.var {packages}}")
     }
   }
 }
@@ -357,21 +357,21 @@ set_variables_from_list <- function(list) {
 
 get_df_documentation <- function() {
   
-  df <- rio::import("R/data/Documentatie_HHs_LTA.xlsx")
+  df <- rio::import("R/data/documentation_hhs_lta.xlsx")
   
   df
 }
 
 get_df_studyprogrammes <- function() {
   
-  df <- rio::import("R/data/df_studyprogrammes.rda", trust = TRUE)
+  df <- rio::import("R/data/studyprogrammes.rda", trust = TRUE)
   
   df
 }
 
 get_df_institutions <- function() {
   
-  df <- rio::import("R/data/df_institutions.rda", trust = TRUE)
+  df <- rio::import("R/data/institutions.rda", trust = TRUE)
   
   df
 }
@@ -399,7 +399,7 @@ get_df_studytypes <- function() {
 
 get_sp_enrollments_base_syn <- function() {
   
-  df_sp_enrollments <- rio::import("R/data/syn/dfOpleiding_inschrijvingen_syn.rds", trust = TRUE)
+  df_sp_enrollments <- rio::import("R/data/syn/studyprogrammes_enrollments_syn.rds", trust = TRUE)
   df_sp_enrollments <- df_sp_enrollments |>
     filter(INS_Faculteit == current_sp$INS_Faculteit,
            INS_Opleidingsnaam_huidig == current_sp$INS_Opleidingsnaam_huidig,

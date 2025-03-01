@@ -90,7 +90,7 @@ set_current_sp_vars <- function(current_sp, debug = FALSE) {
   hhs_location     <<- tolower(current_sp$INS_Vestiging_HHs_LTA)
   vh_sector        <<- current_sp$INS_Sector_VH_LTA
   vh_sector_long   <<- current_sp$INS_Sector_VH_lang
-  sp_cleanname     <<- get_sp_dir(faculty, sp_name_current, sp, sp_form)
+  sp_clean_name    <<- get_sp_dir(faculty, sp_name_current, sp, sp_form)
   
   if (debug) {
     show_current_sp_vars()
@@ -117,7 +117,7 @@ show_current_sp_vars <- function() {
     "*" = paste0("HHS location: ",              hhs_location),
     "*" = paste0("VH sector lowercase: ",       vh_sector),
     "*" = paste0("VH sector long name: ",       vh_sector_long),
-    "*" = paste0("Studyprogramme clean name: ", opleidingcleanname)
+    "*" = paste0("Studyprogramme clean name: ", sp_clean_name)
   ))
 }
 
@@ -356,7 +356,7 @@ get_sp_enrollments_syn <- function(sp, sp_form) {
   
   input_path <- "R/data/syn"
   
-  df <- readRDS(file.path(input_path, "dfOpleiding_inschrijvingen_syn.rds")) |> 
+  df <- readRDS(file.path(input_path, "studyprogrammes_enrollments_syn.rds")) |> 
     filter(INS_Opleiding == sp,
            INS_Opleidingsvorm == sp_form)
   
@@ -495,7 +495,7 @@ mutate_grade_preeducation <- function(df) {
 # Function to get the variables
 get_df_variables <- function() {
   
-  df_variables <- rio::import(file.path("R/data/", "df_variables.xlsx"), sheet = "Variables")
+  df_variables <- rio::import(file.path("R/data", "variables.xlsx"), sheet = "Variables")
   df_variables
   
 }
@@ -514,7 +514,7 @@ get_list_select <- function(df, var) {
 # Function to get the levels of the variables
 get_df_levels <- function() {
   
-  df_levels <- rio::import(file.path("R/data/", "df_variables.xlsx"), sheet = "Levels") |>
+  df_levels <- rio::import(file.path("R/data", "variables.xlsx"), sheet = "Levels") |>
     group_by(VAR_Formal_variable) |>
     arrange(VAR_Level_order, .by_group = TRUE) |>
     ungroup()
@@ -564,7 +564,7 @@ get_sensitive_levels_breakdown <- function(df, list) {
       pull()
   }
   
-  lSenstive_levels_breakdown
+  sensitive_levels_breakdown
 }
 
 # Function to determine the levels of a variable

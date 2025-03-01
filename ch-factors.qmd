@@ -395,8 +395,10 @@ for (group in names(df_persona_list)) {
       
       # Show the existing plot
       plot <- glue("![Breakdown naar {tolower(student_group)}: {student_category}]({plot_path})",
-                   " {{#fig-breakdown-{gsub(' ', '-', tolower(student_group))}-",
-                   "{gsub(' ', '-', tolower(student_category))}}}")
+                   " {{#fig-breakdown-",
+                   "{gsub(' ', '-', tolower(student_group))}-",
+                   "{gsub(' ', '-', tolower(student_category))}",
+                   "}}")
       knit_print_rule(plot)
       
       
@@ -407,8 +409,10 @@ for (group in names(df_persona_list)) {
       
       # Show the existing plot
       plot <- glue("![Breakdown naar {tolower(student_group)}: {student_category}]({plot_path})",
-                   " {{#fig-breakdown-{gsub(' ', '-', tolower(student_group))}-",
-                   "{gsub(' ', '-', tolower(student_category))}}}")
+                   " {{#fig-breakdown-",
+                   "{gsub(' ', '-', tolower(student_group))}-",
+                   "{gsub(' ', '-', tolower(student_category))}",
+                   "}}")
       knit_print_rule(plot)
       
     }

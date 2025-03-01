@@ -98,7 +98,7 @@ if (setup_executed == FALSE) {
   # 1. PACKAGES & FUNCTIONS ####
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   
-  cli_h1("1. PACKAGES & FUNCTIES")
+  cli_h1("1. PACKAGES & FUNCTIONS")
   
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 1.2 Base and fairness functions ####
@@ -264,10 +264,9 @@ if (setup_executed == FALSE) {
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.4 Succes model ####
   
-  succes_model                     <- params$succes
-  pd              <- params$pd
-  succes_model_text                <- get_succes_model_text(pd, 
-                                                            succes_model)
+  succes_model      <- params$succes
+  pd                <- params$pd
+  succes_model_text <- get_succes_model_text(pd, succes_model)
   
   cli_h1("Succes model settings")
   cli_alert_success("Model settings set")
@@ -280,13 +279,13 @@ if (setup_executed == FALSE) {
   
   # Create the variables for the current study programme based on the programme name and type 
   # of education
-  current_sp <- get_get_sp(
+  current_sp <- get_current_sp(
     sp = params$sp,
     sp_form = params$sp_abbreviation
   )
   
   # Based on this, determine derived variables
-  set_get_sp_vars(current_sp, debug = TRUE)
+  set_current_sp_vars(current_sp, debug = TRUE)
   
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 2.6 Enrollment data  ####
@@ -306,8 +305,8 @@ if (setup_executed == FALSE) {
                            "Please define it in the _Setup_config.R file."))
   }
   
-  research_settings[["dataset"]]       <- get_dataset(df_sp_enrollments)
-  research_settings[["sp"]]     <- get_sp()
+  research_settings[["dataset"]] <- get_dataset(df_sp_enrollments)
+  research_settings[["sp"]]      <- get_sp()
   
   cli_h1("Metadata & research settings")
   cli_alert_success("Metadata & research settings loaded")
@@ -350,11 +349,11 @@ if (setup_executed == FALSE) {
   # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   # 3.2 Variables and levels ####
   
-  df_variables              <- get_df_variables()
-  df_levels                 <- get_df_levels()
-  levels                    <- get_levels(df_levels)
-  levels_formal             <- get_levels(df_levels, formal = TRUE)
-  
+  df_variables   <- get_df_variables()
+  df_levels      <- get_df_levels()
+  levels         <- get_levels(df_levels)
+  levels_formal  <- get_levels(df_levels, formal = TRUE)
+   
   cli_h1("Variables and levels")
   cli_alert_success("Variables and levels set")
   
@@ -395,7 +394,7 @@ if (setup_executed == FALSE) {
   # 3.5 Data for training, last fits and results ####
   
   # Check if we need to check the data
-  if (current_file != "ch4-models.qmd") {
+  if (current_file != "ch-models.qmd") {
     check_data <- TRUE
   } else {
     check_data <- FALSE
@@ -410,7 +409,7 @@ if (setup_executed == FALSE) {
   )) {
     
     
-    if (bCheck_data) {
+    if (check_data) {
       
       cli_h1("Data and model files.")
       cli_alert_warning(

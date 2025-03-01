@@ -93,9 +93,8 @@ colors_default <- c(
 
 color_list <- list()
 
-color_list[["gender"]] <- c(
-  "M"                       = "#1170AA",
-  "V"                       = "#FC7D0B")
+color_list[["gender"]] <- c("M" = "#1170AA",
+                            "V" = "#FC7D0B")
 
 color_list[["pre_education"]] <- c(
   "MBO"                     = "#1170AA",
