@@ -392,13 +392,13 @@ if(bSetup_executed == F) {
   # 3.5 Data for training, last fits and results ####
   
   # Check if we need to check the data
-  if(sCurrent_file != "ch4-models.qmd") {
+  if(sCurrent_file != "ch-models.qmd") {
     bCheck_data <- TRUE
   } else {
     bCheck_data <- FALSE
   }
   
-  # If one of these files does not exist and we are not in ch4-models.qmd, 
+  # If one of these files does not exist and we are not in ch-models.qmd, 
   # give a cli warning
   if((
     !file.exists(sData_outputpath) ||
