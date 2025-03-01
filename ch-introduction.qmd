@@ -39,7 +39,7 @@ includes:
 #| include: false
 
 # Current file
-sCurrent_file <- "ch1-introduction.qmd"
+sCurrent_file <- "ch-introduction.qmd"
 
 # Include the _Setup.R file
 source("_Setup.R")

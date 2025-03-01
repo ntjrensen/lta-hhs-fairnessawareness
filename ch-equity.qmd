@@ -38,7 +38,7 @@ includes:
 #| echo: false
 
 # Current file
-sCurrent_file <- "ch2-equity.qmd"
+sCurrent_file <- "ch-equity.qmd"
 
 # Include the _Setup.R file
 source("_Setup.R")

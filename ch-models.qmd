@@ -37,7 +37,7 @@ includes:
 prognose_titel <- paste("Prognosemodel", tolower(params$model)) ## Set the title
 
 # Current file
-sCurrent_file <- "ch4-models.qmd"
+sCurrent_file <- "ch-models.qmd"
 
 # Include the _Setup.R file
 source("_Setup.R") 
