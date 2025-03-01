@@ -17,7 +17,6 @@ order: 1
 
 # Include the badger library
 library(badger)
-
 ```
 
 <!-- badges: begin -->

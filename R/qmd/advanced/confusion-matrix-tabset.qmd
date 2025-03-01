@@ -12,7 +12,6 @@ Voor elke groep onderzoeken we **5 ratio's**, ook wel maatstaven of metrieken ge
 #| fig-cap: "Confusion matrix in relatie tot BSA"
 
 knitr::include_graphics(here::here("R/images", "confusion-matrix-fairness-lta-hhs.png"))
-
 ```
 
 :::::::: panel-tabset

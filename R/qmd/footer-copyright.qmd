@@ -10,17 +10,20 @@
 #| echo: false
 
 if (environment == "ceda") {
-  sCopyright_license_text <- "**Creative Commons Licentie**\n\nDe licentie voor dit template is de [Creative Commons Attribution Share Alike 4.0 Internationaal](https://creativecommons.org/licenses/by-sa/4.0/)."
+  copyright_license_text <- glue("**Creative Commons Licentie**\n\n",
+                                 "De licentie voor dit template is de ",
+                                 "[Creative Commons Attribution Share Alike 4.0",
+                                 "Internationaal](https://creativecommons.org/",
+                                 "licenses/by-sa/4.0/).")
 } else {
-  sCopyright_license_text <- paste0(
+  copyright_license_text <- paste0(
     "**Creative Commons Licentie**\n\n© ",
     metadata$analysis,
     ", ",
-    as.numeric(format(Sys.Date(), '%Y')),
+    as.numeric(format(Sys.Date(), "%Y")),
     ". Alle rechten voorbehouden."
   )
 } 
 
-knitr::asis_output(sCopyright_license_text)
-
+knitr::asis_output(copyright_license_text)
 ```

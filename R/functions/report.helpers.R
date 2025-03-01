@@ -338,7 +338,7 @@ get_tbl_data_dictionary <- function(df) {
     flextable() |> 
     theme_vanilla() |>  
     set_table_properties(width = 1, layout = "autofit") |>  
-    bg(i = ~ seq_len(nrow(dfData_dictionary)) %% 2 == 0, bg = "gray95") |>  
+    bg(i = ~ seq_len(nrow(df_data_dictionary)) %% 2 == 0, bg = "gray95") |>  
     align(align = "left", part = "all") |>  
     border_remove() |>  
     border_inner_h(border = fp_border(color = "gray", width = 0.5)) |>  

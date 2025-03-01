@@ -147,7 +147,7 @@ De meeste voorspellende factoren en hun RMSE zijn:
 #| fig-cap: "Meest voorspellende factoren - RMSE"
 
 plot_path <- file.path(get_plot_outputpath(plotname = "lf_model_parts_rmse", 
-                                           bestmodel = sBest_model))
+                                           bestmodel = best_model))
 
 # If the plot does not exist or if recreateplots - T, create a new plot
 if (!file.exists(plot_path) || params$recreateplots == TRUE) {
@@ -248,7 +248,7 @@ We onderzoeken eerst de meest voorkomende student in de sp. We analyseren de `r 
 
 # Define the plot
 plot_path <- file.path(get_plot_outputpath(plotname = "lf_break_down_distribution_all",
-                                           bestmodel = sBest_model))
+                                           bestmodel = best_model))
 
 # If the plot does not exist or if recreateplots - T, create a new plot
 if (!file.exists(plot_path) || params$recreateplots == TRUE) {
@@ -303,12 +303,12 @@ De volgorde van de variabelen is zo gesorteerd dat per groep de meest voorspelle
 #| results: asis
 
 # Walk the personas
-for (group in names(lDfPersona)) {
+for (group in names(df_persona_list)) {
   
   # Load the dataset for the current persona
-  df_persona <- lDfPersona[[group]]
+  df_persona <- df_persona_list[[group]]
   
-  # Print the name of lDfPersona as a header
+  # Print the name of df_persona_list as a header
   knit_header(glue("Naar {tolower(group)}"), 5)
   
   # Determine if there is a group in the dataset with fewer than 21 students;
@@ -359,7 +359,7 @@ for (group in names(lDfPersona)) {
     student_category <- df_persona[j, ]$Categorie 
     
     # Determine the plot name
-    plot_path <- get_breakdown_plotpath(student_group, student_category, bestmodel = sBest_model)
+    plot_path <- get_breakdown_plotpath(student_group, student_category, bestmodel = best_model)
     
     # If the subtotal < 21, proceed to the next item
     if (as.numeric(df_persona[j, "Subtotaal"]) < 21) {
@@ -439,7 +439,7 @@ De volgorde van de variabelen in deze Shapley analyse is gelijk aan die van @fig
 
 # Save the plot
 plot_path <- file.path(get_plot_outputpath(plotname = "lf_shapley", 
-                                           bestmodel = sBest_model))
+                                           bestmodel = best_model))
 
 # If the plot does not exist or if recreateplots - T, create a new plot
 if (!file.exists(plot_path) || params$recreateplots == TRUE) {
@@ -512,7 +512,7 @@ Opnieuw kijken we naar `r concatenate_list(sensitive_labels, tolower = T)`. N.B.
 # Determine the most common students
 student_all <- df_persona_all[1, ] |> as.data.frame()
 
-df_persona_tmp <- bind_rows(lDfPersona)
+df_persona_tmp <- bind_rows(df_persona_list)
 student_m    <- df_persona_tmp[1, ]
 student_v    <- df_persona_tmp[2, ]
 student_mbo  <- df_persona_tmp[3, ]
@@ -544,7 +544,7 @@ for (group in sensitive_labels) {
   
   # Save the plot
   plot_path <- file.path(get_plot_outputpath(plotname = paste0("lf_cp_", tolower(group)),
-                                             bestmodel = sBest_model))
+                                             bestmodel = best_model))
     
   # If plot_path does not exists or recreateplots == T, create a new plot
   if (!file.exists(plot_path) || params$recreateplots) {
@@ -616,7 +616,7 @@ for (group in c("Alle studenten", sensitive_labels)) {
   # Save the plot
   plot_path <- file.path(get_plot_outputpath(plotname = paste0("lf_pdp_",
                                                                tolower(group)),
-                                             bestmodel = sBest_model))
+                                             bestmodel = best_model))
   
   # If plot_path does not exists or recreateplots == T, create a new plot
   if (!file.exists(plot_path) || params$recreateplots) {

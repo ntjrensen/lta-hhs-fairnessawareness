@@ -206,7 +206,7 @@ for (group in c(sensitive_labels)) {
   # Save the plot
   plot_name <- glue("density_plot_{tolower(group)}")
   plot_path <- get_plot_outputpath(plot_name, mode = "plot", 
-                                   bestmodel = sBest_model)
+                                   bestmodel = best_model)
 
   suppressWarnings(finalize_plot(
     plot_name = density_plot,
@@ -283,7 +283,7 @@ for (group in c(sensitive_labels)) {
 
   # Save the plot
   plot_name <- glue("fairness_plot_{tolower(group)}")
-  plot_path <- get_plot_outputpath(plot_name, mode = "plot", bestmodel = sBest_model)
+  plot_path <- get_plot_outputpath(plot_name, mode = "plot", bestmodel = best_model)
 
   suppressWarnings(finalize_plot(
     plot_name = fairness_plot,

@@ -54,10 +54,24 @@ df_model_results <- data.frame(
 )
 ```
 
+
+
 <!-- HEADER -->
 
 <!-- Studyprogram short -->
-{{< include R/qmd/header-studyprogram.qmd >}}
+
+
+---
+# No title for this page
+
+---
+
+**`r current_sp$INS_Opleidingsnaam`** (`r current_sp$INS_Opleiding`), `r studyprogramme_form_long`, eerstejaars, Faculteit `r get_faculty_name_long(current_sp$INS_Faculteit)` (`r current_sp$INS_Faculteit`).
+
+ 
+
+
+
 
 <!-- Methods -->
 
@@ -77,6 +91,8 @@ De basis voor deze analyse is studiedata van De Haagse Hogeschool (De HHs), verr
 
 De variabelen die we hebben geselecteerd voor analyse is op basis van standaardgegevens van een popoluatie (leeftijd en geslacht), eerdere analsyes op voorspelkracht voor `r tolower(params$succes)` [@Bakker.2022], of omdat een kenmerk volgens Europese normen geldt als een sensitief kenmerk voor discriminatie [@handboek.2018].
 
+
+
 ```{r}
 #| label: tbl-data-dictionary
 #| tbl-cap: "Variabelen en mogelijke waarden"
@@ -89,6 +105,8 @@ get_tbl_data_dictionary(df_data_dictionary)
   
 
 ```
+
+
 
 ### Toelichting op de analyse
 
@@ -108,13 +126,16 @@ We laden een subset in van historische data specifiek voor:
 
 **Opleiding**: `r current_sp$INS_Faculteit` \| `r get_sp_name_syn(current_sp$INS_Opleidingsnaam_huidig)` (`r current_sp$INS_Opleiding`), `r current_sp$INS_Opleidingsvorm`, eerstejaars - **`r succes_model`**
 
+
+
 ```{r}
 #| label: load-data
 
 # Read the data for this study programme
 if (params$use_synthetic_data) {
-  df_sp_enrollments <- get_sp_enrollments_syn(sp = params$sp,
-                                              sp_form = toupper(params$sp_abbreviation)) |> 
+  df_sp_enrollments <- get_sp_enrollments_syn(
+    sp = params$sp,
+    sp_form = toupper(params$sp_abbreviation)) |> 
     mutate(
       ID = as.character(ID),
       INS_Opleiding = as.character(INS_Opleiding),
@@ -125,22 +146,21 @@ if (params$use_synthetic_data) {
       INS_Opleidingsnaam_huidig = paste(INS_Opleidingsnaam_huidig, "(Synth.)", sep = " ")
     )
 } else {
-  df_sp_enrollments <- 
-    get_lta_studyprogram_enrollments_pin(board = "HHs/Inschrijvingen",
-                                         faculty = params$faculty,
-                                         studyprogram = params$study_programmesnaam,
-                                         sp = params$sp,
-                                         sp_form = toupper(params$study_programmesvorm),
-                                         range = "eerstejaars")
+  df_sp_enrollments <- get_lta_studyprogram_enrollments_pin(
+    board = "HHs/Inschrijvingen",
+    faculty = params$faculty,
+    studyprogram = params$study_programmesnaam,
+    sp = params$sp,
+    sp_form = toupper(params$study_programmesvorm),
+    range = "eerstejaars")
 }
 
 # Adjust df_sp_enrollments
 df_sp_enrollments <- df_sp_enrollments |> 
   
   # Rearrange the levels
-  mutate(across(all_of(names(levels_formal)), 
-                ~ factor(.x,
-                         levels = levels_formal[[cur_column()]]))) |> 
+  mutate(across(all_of(names(levels_formal)), ~ factor(.x, 
+                                                   levels = levels_formal[[cur_column()]]))) |> 
 
   # Create a simple success variable
   mutate_retention(succes_model) |>
@@ -174,9 +194,13 @@ if (sp == "HDT") {
 
 ```
 
+
+
 ### Selecteer en inspecteer de data
 
 We selecteren eerst de relevante variabelen. We verwijderen daarbij variabelen die maar één waarde hebben, omdat die geen voorspellende waarde kunnen hebben. 
+
+
 
 ```{r}
 #| label: select-inspect-data
@@ -217,7 +241,11 @@ df_sp_enrollments <- df_sp_enrollments |>
 
 ```
 
+
+
 We inspecteren de variabelen in een samenvatting in relatie tot retentie en corrigeren daarbij voor multiple testing; de gecorrigeerde significantie-waarden staan vermeld als *q-value*. 
+
+
 
 ```{r}
 #| label: tbl-summary-data
@@ -249,7 +277,11 @@ tbl_summary
   
 ```
 
+
+
 Daarnaast inspecteren we de kwaliteit van de data op missende waarden.
+
+
 
 ```{r}
 #| label: tbl-summarizy-missing-before
@@ -275,6 +307,8 @@ detach("package:dlookr", unload = TRUE)
 
 ```
 
+
+
 ### Bewerk de data
 
 -   Uit de eerste diagnose blijkt dat niet alle variabelen goed genoeg zijn voor het bouwen van een prognosemodel: er zijn missende waarden en niet alle veldtypes zijn geschikt.
@@ -282,6 +316,8 @@ detach("package:dlookr", unload = TRUE)
 -   We passen het type van sommige variabelen aan, zodat ze in het model gebruikt kunnen worden: tekstvelden zetten we om naar factor (een categorische variabele); logische variabelen (Ja/Nee) zetten we om naar een numerieke variabele (1/0).
 -   De uitkomstvariabele, `Retentie`, leiden we af van de variabele `SUC_Uitval_aantal_jaar_LTA`. Als de waarde daar 1 is, is de student na 1 jaar uitgevallen, 2 na 2 jaar, etc. Zolang de waarde daar 0 is, is de student niet uitgevallen.
 -   Een fictief studentnummer (`INS_Student_UUID_opleiding_vorm`) gebruiken we, zodat we -- als er afwijkende resultaten zijn -- de dataset gericht kunnen onderzoeken als dat nodig is.
+
+
 
 ```{r}
 #| label: tbl-summarizy-missing-after
@@ -330,6 +366,8 @@ detach("package:dlookr", unload = TRUE)
 
 ```
 
+
+
 ### Inspecteer de onderlinge correlaties
 
 Het is verstandig om voorafgaand aan het bouwen van een model te kijken naar de onderlinge correlaties tussen numerieke variabelen. Dit geeft inzicht in de data en kan helpen bij het maken van keuzes voor het model of de duiding van de uitkomsten.
@@ -341,6 +379,8 @@ Clusters in correlaties kunnen per sp verschillen. Onderzoek in de correlaties h
 -   Cijfers: Een correlatie tussen Cijfer SO en Cijfer VO: dit geeft aan dat het schoolexamen hetzelfde meet als het centraal examen. Exacte vakken en talen kunnen met elkaar correleren.
 -   Reistijd en SES: Deze zijn gecorreleerd aangezien SES scores zijn afgeleid van wijken. Wijken hebben een specifieke reistijd en positionering ten opzichte van de vestigingslocaties van De HHs kennen.
 -   Leeftijd is vaak niet gecorreleerd met andere variabelen.
+
+
 
 ```{r}
 #| label: fig-corplot-data
@@ -381,6 +421,8 @@ df_clusters <- cutree(hclust, k = 4)
 
 ```
 
+
+
 ### Bouw de trainingset, validatieset en testset
 
 -   De data is nu geschikt om een prognosemodel mee te bouwen.
@@ -392,13 +434,14 @@ df_clusters <- cutree(hclust, k = 4)
 
 We ontwikkelen in de verdere analyse eerst een aantal modellen en testen de prestaties daarvan op de trainingset en validiatieset. Vervolgens bepalen we welk model het beste presteert en passen dat model dan toe op de testset (de uiteindelijke fit). Vandaar dat het toetsen van de prestaties van de modellen meerdere keren behandeld wordt.
 
+
+
 ```{r}
 #| label: fig-dataset-split
 #| fig-cap: "Splitsing van de dataset in trainingset, validatieset en testset"
 #| out-width: 80%
 knitr::include_graphics(here::here("R/images", "prognosemodel-dataset-lta-hhs.png"))
 ```
-
 
 ```{r}
 #| label: split-data
@@ -445,6 +488,8 @@ bind_rows(df_retention_train_prop,
 
 ```
 
+
+
 <!-- MODEL I: Penalized Logistic Regression -->
 
 ::: {.content-hidden unless-meta="includes.model_lr"}
@@ -457,6 +502,8 @@ bind_rows(df_retention_train_prop,
 
 Eerst bouwen we het model.
 
+
+
 ```{r}
 #| label: lr-mod
 #| code-fold: false
@@ -466,6 +513,8 @@ lr_mod <-
   logistic_reg(penalty = tune(), mixture = 1) |> 
   set_engine("glmnet")
 ```
+
+
 
 ### Maak de recipe
 
@@ -477,6 +526,8 @@ Vervolgens zetten we meerdere stappen in een 'recipe':
 -   We verwijderen variabelen die geen waarde toevoegen: variabelen met uitsluitend nullen.
 -   We normaliseren numerieke variabelen om ze met elkaar te kunnen vergelijken door ze te centreren en schalen: het transformeert numerieke gegevens zodat ze een standaard deviatie van één en een gemiddelde van nul hebben.
 -   Sterk gecorreleerde waarden verwijderen we nu niet, omdat we later in de analyse de eventuele samenhang met andere variabelen in een prognosemodel nog willen kunnen visualiseren.
+
+
 
 ```{r}
 #| label: lr-recipe
@@ -509,7 +560,11 @@ tidy(lr_recipe) |>
                              "ID"))
 ```
 
+
+
 De variabelen die nu nog overblijven zijn:
+
+
 
 ```{r}
 #| label: tbl-lr-recipe-final
@@ -533,9 +588,13 @@ knitr::kable(model_vars_matrix)
 
 ```
 
+
+
 ### Maak de workflow
 
 Voor de uitvoering bouwen we een workflow. Daaraan voegen we het model en de bewerkingen in de recipe toe.
+
+
 
 ```{r}
 #| label: lr-workflow
@@ -551,9 +610,13 @@ lr_workflow <-
 lr_workflow
 ```
 
+
+
 ### Tune en train het model
 
 Het model moet getuned worden. Dit houdt in dat we de beste parameters voor het model moeten vinden. We maken een grid met verschillende penalty waarden. Daarmee kunnen we vervolgens het beste model selecteren met de hoogste ROC/AUC. We plotten de resultaten van de tuning, zodat we hieruit het beste model kunnen kiezen.
+
+
 
 ```{r}
 #| label: lr-reg-grid
@@ -597,8 +660,8 @@ lr_plot <-
     y = "Penalty"
   )
   
-# Add theme elements
-lr_plot <- add_theme_elements(lr_plot, title_subtitle = FALSE)
+  # Add theme elements
+  lr_plot <- add_theme_elements(lr_plot, title_subtitle = FALSE)
   
 # Find the penalty value with the max AUC
 max_auc_penalty <- lr_res |> 
@@ -621,11 +684,15 @@ lr_plot_plus
 
 ```
 
+
+
 ### Kies het beste model
 
 De prestaties van een model gevisualiseerd met behulp van een ROC curve. De sensitiviteit (True Positive Rate) en specificiteit (True Negative Rate) worden hierin tegenover elkaar uitgezet. De Area under the ROC Curve (AUC/ROC) geeft de prestaties van het model weer. Het model scoort beter naarmate de AUC/ROC dichter bij de 1 ligt, de linker bovenhoek. De linker bovenhoek houdt in dat alle prognoses exact overeenstemmen met de werkelijkheid. Een AUC/ROC van 0,5 betekent dat het model niet beter presteert dan een willekeurige voorspelling.
 
 We gebruiken modellen met een zo hoog mogelijke Area under the ROC Curve (AUC/ROC) en een zo laag mogelijke penalty. Zo kunnen we uit de resultaten het beste model kiezen en visualiseren.
+
+
 
 ```{r}
 #| label: lr-top-models
@@ -693,6 +760,7 @@ lr_auc <-
   roc_curve(Retentie, .pred_FALSE) |> 
   mutate(model = "Logistisch Regressie")
 ```
+
 ```{r}
 #| label: fig-lrauc
 #| fig-cap: "ROC curve voor logistische regressie"
@@ -716,6 +784,8 @@ df_model_results <-
   add_row(model = "Logistic Regression", auc = lr_auc_highest$.estimate)
 
 ```
+
+
 :::
 
 <!-- MODEL II: Random Forest -->
@@ -730,6 +800,8 @@ df_model_results <-
 
 Omdat een random forest model veel berekeningen vereist, willen we daarvoor alle computerkracht gebruiken die beschikbaar is. Het aantal CPU's (*cores*), wat verschilt per computer, bepaalt hoe snel het model getraind kan worden. We bepalen het aantal cores en gebruiken dat bij het bouwen van het model.
 
+
+
 ```{r}
 #| label: cores
 
@@ -738,9 +810,13 @@ cores <- parallel::detectCores()
 
 ```
 
+
+
 ### Maak het model
 
 We bouwen eerst het model. We gebruiken de `rand_forest` functie om het model te bouwen. We tunen de `mtry` en `min_n` parameters. De `mtry` parameter bepaalt het aantal variabelen dat per boom wordt gebruikt. De `min_n` parameter bepaalt het minimum aantal observaties dat in een blad van de boom moet zitten. De functie `tune()` is hier nog een *placeholder* om de beste waarden voor deze parameters - die we later bepalen - in te kunnen stellen. We gebruiken 1.000 bomen c.q. versies van het model.
+
+
 
 ```{r}
 #| label: rf-mod
@@ -754,9 +830,13 @@ rf_mod <-
   set_mode("classification")
 ```
 
+
+
 ### Maak de recipe
 
 We maken een recipe voor het random forest model. We verwijderen de student ID en het collegejaar uit de data, omdat deze niet moet worden gebruikt in het model. Overige stappen zijn bij een random forest minder relevant in tegenstelling tot een regressiemodel.
+
+
 
 ```{r}
 #| label: rf-recipe
@@ -784,9 +864,13 @@ tidy(rf_recipe) |>
                              "ID"))
 ```
 
+
+
 ### Maak de workflow
 
 We voegen het model en de recipe toe aan de workflow voor dit model.
+
+
 
 ```{r}
 #| label: rf-workflow
@@ -802,9 +886,13 @@ rf_workflow <-
 rf_workflow
 ```
 
+
+
 ### Tune en train het model
 
 We trainen en tunen het model in de workflow. We maken een grid met verschillende waarden voor de parameters `mtry` en `min_n`. We gebruiken de Area under the ROC Curve (AUC/ROC) als performance metric. Met de resultaten van de tuning kiezen we het beste model.
+
+
 
 ```{r}
 #| label: rf-tune
@@ -828,9 +916,13 @@ rf_res <-
             metrics = metric_set(roc_auc))
 ```
 
+
+
 ### Kies het beste model
 
 We evalueren de beste modellen en maken een ROC curve om de performance van het model te visualiseren. Vervolgens vergelijken we de prestaties van de modellen en kiezen daaruit het beste model.
+
+
 
 ```{r}
 #| label: tbl-rf-results
@@ -851,6 +943,7 @@ rf_res |>
                              "Configuratie"))
 
 ```
+
 ```{r}
 #| label: fig-rf-results
 #| fig-cap: "Model performance random forest"
@@ -863,10 +956,10 @@ autoplot <- autoplot(rf_res) +
     caption = caption
   )
   
-# Add theme elements
-autoplot <- add_theme_elements(autoplot, title_subtitle = FALSE)
-
-print(autoplot)
+  # Add theme elements
+  autoplot <- add_theme_elements(autoplot, title_subtitle = FALSE)
+  
+  print(autoplot)
 
 ```
 
@@ -939,6 +1032,8 @@ df_model_results <-
           auc = rf_auc_highest$.estimate)
 
 ```
+
+
 :::
 
 <!-- Final Fit -->
@@ -951,6 +1046,8 @@ df_model_results <-
 ### Combineer de AUC/ROC curves en kies het beste model
 
 Eerst combineren we de AUC/ROC curves van de modellen om ze te vergelijken. We kiezen het beste model op basis van de hoogste AUC/ROC.
+
+
 
 ```{r}
 #| label: fig-bind-rows-auc-roc
@@ -996,9 +1093,13 @@ best_model_text <-
 
 ```
 
+
+
 `r best_model_text`
 
 ### Maak het finale model
+
+
 
 ```{r}
 #| label: text-final-model
@@ -1010,21 +1111,25 @@ if (best_model == "Logistisch Regressie") {
   
   # Make the final model
   final_model_text <- glue("We maken het finale model op basis van de beste parameters ",
-                           "die we hebben gevonden. Voor het Logistisch Regressie model ",
-                           "is dit het model met de beste penalty en mixture.")
+                            "die we hebben gevonden. Voor het Logistisch Regressie model ",
+                            "is dit het model met de beste penalty en mixture.")
 
 } else if (best_model == "Random Forest") {
   
   # Make the final model
   final_model_text <- glue("We maken het finale model op basis van de beste parameters ",
-                           "die we hebben gevonden. Door in de engine bij `importance` ",
-                           "de `impurity` op te geven, wordt het beste random forest model ",
-                           "gekozen om de data definitief mee te classificeren.")
+                            "die we hebben gevonden. Door in de engine bij `importance` ",
+                            "de `impurity` op te geven, wordt het beste random forest model ",
+                            "gekozen om de data definitief mee te classificeren.")
 
 }
 ```
 
+
+
 We maken het finale model op basis van de beste parameters die we hebben gevonden. Door in de engine bij `importance` de `impurity` op te geven, wordt het beste random forest model gekozen om de data definitief mee te classificeren.
+
+
 
 ```{r}
 #| label: last-mod
@@ -1035,42 +1140,50 @@ We maken het finale model op basis van de beste parameters die we hebben gevonde
 
 # Build the final models
 last_lr_mod <-
-  logistic_reg(penalty = lr_best$penalty,
-               mixture = 1) |>
-  set_engine("glmnet") |>
-  set_mode("classification")
+    logistic_reg(penalty = lr_best$penalty,
+                 mixture = 1) |>
+    set_engine("glmnet") |>
+    set_mode("classification")
 
 last_rf_mod <-
-  rand_forest(mtry = rf_best$mtry,
-              min_n = rf_best$min_n,
-              trees = 1000) |>
-  set_engine("ranger", num.threads = cores, importance = "impurity") |>
-  set_mode("classification")
+    rand_forest(mtry = rf_best$mtry,
+                min_n = rf_best$min_n,
+                trees = 1000) |>
+    set_engine("ranger", num.threads = cores, importance = "impurity") |>
+    set_mode("classification")
 
 ```
+
+
 
 ### Maak de workflow
 
 We voegen het model toe aan de workflow en updaten de workflow met het finale model.
+
+
 
 ```{r}
 #| label: last-workflow
 #| code-fold: false
 
 # Update the workflows
-last_lr_workflow <- 
-  lr_workflow |> 
-  update_model(last_lr_mod)
+ last_lr_workflow <- 
+    lr_workflow |> 
+    update_model(last_lr_mod)
 
-last_rf_workflow <- 
-  rf_workflow |> 
-  update_model(last_rf_mod)
+ last_rf_workflow <- 
+    rf_workflow |> 
+    update_model(last_rf_mod)
 
 ```
+
+
 
 ### Fit het finale model
 
 We voeren de finale fit uit. De functie `last_fit` past het model toe op de validatieset.
+
+
 
 ```{r}
 #| label: last-fit
@@ -1081,12 +1194,12 @@ set.seed(2904)
 
 # Make a final fit for both models so we can save it for later use
 last_fit_lr <- 
-  last_lr_workflow |> 
-  last_fit(splits)
+    last_lr_workflow |> 
+    last_fit(splits)
 
 last_fit_rf <- 
-  last_rf_workflow |> 
-  last_fit(splits)
+    last_rf_workflow |> 
+    last_fit(splits)
 
 last_fits <- list(last_fit_lr, last_fit_rf) |> 
   set_names(c("Logistic Regression", "Random Forest"))
@@ -1110,9 +1223,13 @@ saveRDS(df_sp_enrollments, file = data_outputpath)
 
 ```
 
+
+
 ### Evalueer het finale model: metrieken en variable importance
 
 We evalueren het finale model nu grondiger op basis van 4 metrieken: 1) accuraatheid, 2) ROC/AUC en 3) de [Brier score](https://en.wikipedia.org/wiki/Brier_score) (de Mean Squared Error). Het is zinvol om accuraatheid, ROC/AUC en de Brier-score pas bij het finale model toe te passen, omdat dit efficiënter is en overfitting voorkomt. Zo combineren we een snelle modelist_selectie met een grondige evaluatie van het uiteindelijke model.
+
+
 
 ```{r}
 #| label: last-fit-metrics-vi
@@ -1129,9 +1246,13 @@ last_fit |>
 
 ```
 
+
+
 ### Plot de ROC curve
 
 Tot slot visualiseren we de prestaties weer met een ROC curve van het beste model.
+
+
 
 ```{r}
 #| label: fig-last-fit-roc
@@ -1148,9 +1269,13 @@ get_roc_plot(auc_lf, position = 3)
 
 ```
 
+
+
 <!-- Conclusions -->
 
 ## Conclusies
+
+
 
 ```{r}
 #| label: conclusions-accuracy
@@ -1158,7 +1283,7 @@ get_roc_plot(auc_lf, position = 3)
 #| echo: false
 
 # Determine model accuracy, average retention rate and base model
-last_fit_accuracy <- last_fit |>
+last_fit_accuracy   <- last_fit |>
   collect_metrics() |>
   filter(.metric == "accuracy") |>
   pull(.estimate) |>
@@ -1168,14 +1293,14 @@ avg_non_retention    <- round(100 - avg_retention, 2)
 
 if (avg_retention < 50) {
   base_model_accuracy <- round(100 - avg_retention, 2)
-  retention_text      <- "die niet doorstudeerde"
+  retention_text <- "die niet doorstudeerde"
 } else {
   base_model_accuracy <- avg_retention
-  retention_text      <- "die doorstudeerde"
+  retention_text <- "die doorstudeerde"
 }
 
 # Now calculate the difference in accuracy
-accuracy_difference_number      <- round(abs(last_fit_accuracy - base_model_accuracy), 2)
+accuracy_difference_number  <- round(abs(last_fit_accuracy - base_model_accuracy), 2)
 accuracy_difference_percentage  <- paste0(accuracy_difference_number, "%") 
 
 # Features
@@ -1223,9 +1348,9 @@ special_paste  <- function(vec) sub(",\\s+([^,]+)$", " en \\1", toString(vec))
 print_variable <- function(variable) paste0("`", variable, "`")
 
 # Determine a number of texts
-accuracy_comparison  <- get_accuracy_comparison(last_fit_accuracy, base_model_accuracy)
+accuracy_comparison <- get_accuracy_comparison(last_fit_accuracy, base_model_accuracy)
 accuracy_level       <- get_accuracy_level(last_fit_accuracy)
-accuracy_difference  <- get_accuracy_difference(accuracy_difference_number)
+accuracy_difference     <- get_accuracy_difference(accuracy_difference_number)
 
 # Determine the top 3 and top 5 variables based on the VI
 df_top_vi   <- last_fit |> 
@@ -1253,7 +1378,7 @@ top45_vi_list <- df_top_vi |>
 conclusion_text <- ""
 
 if (!("Eindcijfer_VO" %in% df_top_vi$Variable[1:3]) 
-    && "Eindcijfer_VO" %in% df_top_vi$Variable[4:5]) {
+   && "Eindcijfer_VO" %in% df_top_vi$Variable[4:5]) {
   conclusion_text <- glue::glue(
     conclusion_text,
     "**Het model toont wel aan dat de herkomst van studenten sterker is gecorreleerd met",
@@ -1265,17 +1390,16 @@ if (!("Eindcijfer_VO" %in% df_top_vi$Variable[1:3])
 } else if ("Eindcijfer_VO" %in% df_top_vi$Variable[1:3]) {
   conclusion_text <- glue::glue(
     conclusion_text,
-    "**Het model toont aan dat eerdere prestaties van studenten sterker zijn gecorreleerd ",
-    "met {tolower(succes_model)} dan herkomst.** ",
-    "De _Variable Importance_ (VI) laat namelijk zien dat de variabelen {top3_vi_list} de ",
-    "3 belangrijkste variabelen zijn voor het voorspellen van {tolower(succes_model)}, ",
-    "gevolgd door {top45_vi_list}."
+    "**Het model toont aan dat eerdere prestaties van studenten sterker zijn gecorreleerd met {tolower(succes_model)} dan herkomst.** ",
+    "De _Variable Importance_ (VI) laat namelijk zien dat de variabelen {top3_vi_list} de 3 belangrijkste variabelen zijn voor het voorspellen van {tolower(succes_model)}, gevolgd door {top45_vi_list}."
   )
 } else {
   conclusion_text <- "**Vooralsnog geen nadere bijzonderheden.**"
 }
 
 ```
+
+
 
 ### Het beste prognosemodel voor deze sp
 
@@ -1288,6 +1412,8 @@ if (!("Eindcijfer_VO" %in% df_top_vi$Variable[1:3])
 Een prognosemodel moet minimaal beter presteren dan een *advanced-report* om waarde op basis van accuraatheid toe te voegen. Het advanced-report neemt als basis de grootste klasse van de gemiddelde `r tolower(succes_model)` van de afgelopen jaren. Stel we zouden tegen alle studenten zeggen dat ze hun studie gaan halen, dan is de mate van accuratesse gelijk aan dit advanced-report. Dit advanced-report is dus altijd hoger dan de 50% lijn van de AUC/ROC curve, tenzij het advanced-report toevallig precies 50% is.
 
 
+
+
 ```{r}
 #| label: fig-basemodel-lift
 #| fig-cap: "Lift afhankelijk van advanced-report en accuraatheid"
@@ -1297,6 +1423,8 @@ knitr::include_graphics(here::here("R/images", "basemodel-lift.png"))
 
 ```
 
+
+
 **De mate van accuraatheid van het prognosemodel is `r accuracy_level` (`r last_fit_accuracy`%).**
 
 -   **advanced-report: `r base_model_accuracy`%** -- Voor deze sp berekenen we het advanced-report als volgt. Van alle studenten studeerde `r avg_retention`% door; 100% - `r avg_retention`% = `r avg_non_retention`% studeerde *niet* door. De grootste klasse van deze twee, `r base_model_accuracy`%, is daarmee de accuratesse van het advanced-report.
@@ -1304,6 +1432,8 @@ knitr::include_graphics(here::here("R/images", "basemodel-lift.png"))
 -   **Lift: `r accuracy_difference_percentage`** -- Het model scoort in de huidige opbouw met een verschil van `r accuracy_difference_percentage` (de *lift*) `r accuracy_difference` `r accuracy_comparison` dan de accuraatheid van het advanced-report.
 
 ### Confusion Matrix
+
+
 
 ```{r}
 #| label: confusion-matrix-calculation
@@ -1318,19 +1448,19 @@ df_confusion_matrix <- as_tibble(confusion_matrix$table) |>
   mutate(Werkelijkheid = ifelse(Werkelijkheid == "TRUE", "Retentie", "Geen retentie"),
          Prediction    = ifelse(Prediction == "TRUE", "Retentie", "Geen retentie"))
 
-tp_percentage  <- change_number_marks((df_confusion_matrix$n[4] / 
-                                         sum(df_confusion_matrix$n) * 100), 1)
-fp_percentage  <- change_number_marks((df_confusion_matrix$n[2] / 
-                                         sum(df_confusion_matrix$n) * 100), 1)
-tn_percentage  <- change_number_marks((df_confusion_matrix$n[1] / 
-                                         sum(df_confusion_matrix$n) * 100), 1)
-fn_percentage  <- change_number_marks((df_confusion_matrix$n[3] / 
-                                         sum(df_confusion_matrix$n) * 100), 1)
+tp_percentage  <- change_number_marks((df_confusion_matrix$n[4] / sum(df_confusion_matrix$n) * 100), 1)
+fp_percentage  <- change_number_marks((df_confusion_matrix$n[2] / sum(df_confusion_matrix$n) * 100), 1)
+tn_percentage  <- change_number_marks((df_confusion_matrix$n[1] / sum(df_confusion_matrix$n) * 100), 1)
+fn_percentage  <- change_number_marks((df_confusion_matrix$n[3] / sum(df_confusion_matrix$n) * 100), 1)
 acc_percentage <- change_number_marks(last_fit_accuracy, 1)
 
 ```
 
+
+
 De prestaties van het model kunnen we verder uitdrukken in een *confusion matrix*. Hierin zien we de voorspellingen van het model en de werkelijke uitkomsten. De matrix geeft inzicht in de mate van correcte en incorrecte voorspellingen. Ter illustratie werken we de matrix uit voor een voorspelling waarop een bindend studieadvies (BSA) gebaseerd zou kunnen zijn.
+
+
 
 ```{r}
 #| label: fig-confusion-matrix-explanation
@@ -1340,40 +1470,48 @@ knitr::include_graphics(here::here("R/images", "confusion-matrix-retention-lta-h
 
 ```
 
+
+
 We passen de confusion matrix nu toe op het model dat als beste naar voren kwam. De **accuraatheid** van dit model is **`r acc_percentage`%**. De accuraatheid van het model berekenen we door de som van de diagonaal te berekenen: het aandeel goed voorspelde uitkomsten, Retentie = Retentie (*True Positive*) en Geen retentie = Geen retentie (*True Negative*), af te zetten tegen het totaal aantal voorspellingen: `r tp_percentage`% + `r tn_percentage`% = `r acc_percentage`%. (NB. De weergave in deze confusion matrix is diagonaal gespiegeld vergeleken met het voorbeeld.)
+
+
 
 ```{r}
 #| label: fig-confusion-matrix-actual
 #| fig-cap: !expr 'paste("Confusion matrix ten opzichte van", params$succes)'
  
-confusion_plot <- plot_confusion_matrix(df_confusion_matrix,
-                                        target_col = "Werkelijkheid",
-                                        prediction_col = "Prediction",
-                                        counts_col = "n",
-                                        palette = "Blues",
-                                        add_sums = TRUE,
-                                        theme_fn = ggplot2::theme_light,
-                                        sums_settings = sum_tile_settings(
-                                          palette = "Greens",
-                                          label = "Totaal",
-                                          tc_tile_border_color = "black"
-                                        )) +
+confusion_plot <- plot_confusion_matrix(
+    df_confusion_matrix,
+    target_col = "Werkelijkheid",
+    prediction_col = "Prediction",
+    counts_col = "n",
+    palette = "Blues",
+    add_sums = TRUE,
+    theme_fn = ggplot2::theme_light,
+    sums_settings = sum_tile_settings(
+      palette = "Greens",
+      label = "Totaal",
+      tc_tile_border_color = "black"
+    )) +
     
-  # Customize the labels
-  labs(
-    x = "Werkelijke uitkost",
-    y = "Voorspelde uitkomst",
-    caption = caption
-  ) +
+    # Customize the labels
+    labs(
+      x = "Werkelijke uitkost",
+      y = "Voorspelde uitkomst",
+      caption = caption
+    ) +
+    
+    set_theme()
   
-  set_theme()
+  # Add theme elements
+  confusion_plot <- add_theme_elements(confusion_plot, 
+                                           title_subtitle = TRUE)
   
-# Add theme elements
-confusion_plot <- add_theme_elements(confusion_plot, title_subtitle = TRUE)
-
-print(confusion_plot)
+  print(confusion_plot)
   
 ```
+
+
 
 ### Uitleggen of verklaren?
 
@@ -1388,16 +1526,60 @@ Ongeacht de mate van accuraatheid, is het voor onderzoek naar kansengelijkheid e
 <!-- Justification -->
 
 ::: {.content-hidden unless-meta="includes.justification"}
-{{< include R/qmd/footer-justification.qmd >}}
+
+
+---
+# No title for this page
+
+---
+
+ 
+
+**Verantwoording**
+  
+  Deze analyse maakt deel uit van het onderzoek naar kansengelijkheid van het lectoraat Learning Technology & Analytics van De Haagse Hogeschool: [No Fairness without Awareness](https://www.dehaagsehogeschool.nl/onderzoek/kenniscentra/no-fairness-without-awareness) \| Het rapport is door het lectoraat ontwikkeld in [Quarto](https://quarto.org/) `r quarto::quarto_version()`.
+
+
 :::
 
 <!-- Copyright -->
 
 ::: {.content-hidden unless-meta="includes.copyright"}
-{{< include R/qmd/footer-copyright.qmd >}}
+
+
+---
+# No title for this page
+
+---
+
+```{r}
+#| label: footer-copyright-license
+#| results: asis
+#| echo: false
+
+if (environment == "ceda") {
+  copyright_license_text <- "**Creative Commons Licentie**\n\nDe licentie voor dit template is de [Creative Commons Attribution Share Alike 4.0 Internationaal](https://creativecommons.org/licenses/by-sa/4.0/)."
+} else {
+  copyright_license_text <- paste0(
+    "**Creative Commons Licentie**\n\n© ",
+    metadata$analysis,
+    ", ",
+    as.numeric(format(Sys.Date(), '%Y')),
+    ". Alle rechten voorbehouden."
+  )
+} 
+
+knitr::asis_output(copyright_license_text)
+
+```
+
+
+
 :::
 
 <!-- Cleaning up -->
+
+
 
 ```{r}
 #| label: cleanup
@@ -1411,7 +1593,7 @@ rm(
   df_retention_train,
   df_retention_validation,
   splits
-)
+  )
 
 # Logistic regression
 if (include_model_lr) {
@@ -1464,9 +1646,10 @@ if (include_conclusions) {
     df_top_vi,
     top3_vi_list,
     top45_vi_list
-  )
+    )
 }
 
 # Collect garbage
 invisible(gc())
 ```
+
