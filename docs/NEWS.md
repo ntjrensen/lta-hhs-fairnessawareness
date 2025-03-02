@@ -1,6 +1,6 @@
 # Fairness Awareness: News
 Theo Bakker, The Hague University of Applied Sciences
-2025-03-01
+2025-03-02
 
 <a name="top"></a>
 
