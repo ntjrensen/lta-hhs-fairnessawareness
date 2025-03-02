@@ -497,7 +497,7 @@ Vervolgens analyseren we een aantal scenario's (wat als...). We nemen opnieuw de
 ::: {.callout-warning appearance="default" icon="true"}
 ### Let op!
 
-Dit is de invloed van de variabelen bij de unieke combinatie van deze meest voorkomende student per categorie. Zie voor de invloed van een variabelen ongeacht deze unieke combinatie de analyse van Partial Dependence Profielen in de volgende paragraaf.
+Deze analyse gaat over de invloed van de variabelen bij de unieke combinatie van de meest voorkomende student per categorie. Zie voor de invloed van een variabele ongeacht deze unieke combinatie de analyse van Partial Dependence Profielen in de volgende paragraaf.
 :::
 
 Hiervoor houden we steeds alle variabelen gelijk, op één na (*ceteris paribus* is Latijn voor 'al het overige gelijk'). Van die ene variabelen passen we de waarden aan en zien dan het effect op de voorspelde `r tolower(research_settings$succes_label)`. Dit geeft beter inzicht in het effect van de individuele variabelen in het model. We voeren deze analyse uit voor numerieke variabelen.
