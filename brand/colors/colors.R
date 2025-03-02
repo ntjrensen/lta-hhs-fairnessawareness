@@ -26,78 +26,77 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 1.1 Standard colors ####
 
-lColors_default <- c(
+colors_default <- c(
   
   # Colors of title, subject, subtitle, caption, background
-  sTitle_color                = "black",
-  sSubject_color              = "#808080",
-  sSubtitle_color             = "black",
-  sSubtitle_prefix_color      = "#808080",
-  sSubtitle_warning_color     = "#C8133B",
-  sCaption_color              = "darkgray",
-  sBackground_color           = "white",
+  title_color                = "black",
+  subject_color              = "#808080",
+  subtitle_color             = "black",
+  subtitle_prefix_color      = "#808080",
+  subtitle_warning_color     = "#C8133B",
+  caption_color              = "darkgray",
+  background_color           = "white",
   
   # Color of text
-  sText_color                 = "black",
-  sText_inside_color          = "white",
+  text_color                 = "black",
+  text_inside_color          = "white",
   
   # Intercept (0) and gridlines
-  sBaseline_color             = "black",
-  sGridline_color             = "#CBCBCB",
-  sDeadline_color             = "black",
-  sBaseline_color_ses         = "darkgray",
-  sBreakdown_intercept_color  = "black",
-  sBreakdown_segment_color    = "darkgray",
+  baseline_color             = "black",
+  gridline_color             = "#CBCBCB",
+  deadline_color             = "black",
+  baseline_color_ses         = "darkgray",
+  breakdown_intercept_color  = "black",
+  breakdown_segment_color    = "darkgray",
   
   # Fill color
-  sFill_color                 = "lightgray",
+  fill_color                 = "lightgray",
   
   # Line color
-  sAverage_line_color         = "#CBCBCB",
+  average_line_color         = "#CBCBCB",
   
   # Text color
-  sAverage_text_color         = "darkgray",
+  average_text_color         = "darkgray",
   
   # Color of annotations
-  sAnnotation_text_color      = "black",
-  sArrow_color                = "darkgray",
+  annotation_text_color      = "black",
+  arrow_color                = "darkgray",
   
   # Color of jitter
-  sJitter_color               = "darkgray",
+  jitter_color               = "darkgray",
   
   # Error band color
-  sSE_color                   = "#CBCBCB",
+  se_color                   = "#CBCBCB",
   
   # Band color
-  sBand_color                 = "grey95",
+  band_color                 = "grey95",
   
   # Positive and negative
-  sPositive_color             = "#466F9D",
-  sNegative_color             = "#C8133B",
+  positive_color             = "#466F9D",
+  negative_color             = "#C8133B",
   
   # Metrics
-  sMetrics_green              = "#287233",
-  sMetrics_red                = "#C8133B",
-  sMetrics_yellow             = "#FFD966",
-  sMetrics_blue               = "#5FA2CE",
+  metrics_green              = "#287233",
+  metrics_red                = "#C8133B",
+  metrics_yellow             = "#FFD966",
+  metrics_blue               = "#5FA2CE",
   
   # Bias colors
-  sColor_Bias_Positive        = "#9DBF9E",
-  sColor_Bias_Negative        = "#A84268",
-  sColor_Bias_Neutral         = "#FCB97D",
-  sColor_Bias_None            = "#E5E5E5"
+  color_bias_positive        = "#9DBF9E",
+  color_bias_negative        = "#A84268",
+  color_bias_neutral         = "#FCB97D",
+  color_bias_none            = "#E5E5E5"
 )
 
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 # 1.2 Specific colors ####
 
-lColors <- list()
+color_list <- list()
 
-lColors[["Geslacht"]] <- c(
-  "M"                       = "#1170AA",
-  "V"                       = "#FC7D0B")
+color_list[["Geslacht"]] <- c("M" = "#1170AA",
+                            "V" = "#FC7D0B")
 
-lColors[["Vooropleiding"]] <- c(
+color_list[["Vooropleiding"]] <- c(
   "MBO"                     = "#1170AA",
   "HAVO"                    = "#FC7D0B",
   "VWO"                     = "#F1CE63",
@@ -108,7 +107,7 @@ lColors[["Vooropleiding"]] <- c(
   "Onbekend"                = "#C8D0D9"
 )
 
-lColors[["Aansluiting"]] <- c(
+color_list[["Aansluiting"]] <- c(
   "Direct"                  = "#FC7D0B",
   "Tussenjaar"              = "#1170AA",
   "Switch intern"           = "#5FA2CE",
@@ -119,16 +118,15 @@ lColors[["Aansluiting"]] <- c(
   "Onbekend"                = "#C8D0D9"
 )
 
-lColors[["ROC_plots"]] <- c(
-                              "#fc7d0b",
-                              "#1170aa",
-                              "#c85200",
-                              "#a3cce9"
-  )
+color_list[["roc_plots"]] <- c(
+  "#fc7d0b",
+  "#1170aa",
+  "#c85200",
+  "#a3cce9"
+)
 
-lColors[["institution"]] <- c(
+color_list[["institution"]] <- c(
   "institution-color-one"   = brand_data$color$palette$`institution-color-one`,  # Green
   "institution-color-two"   = brand_data$color$palette$`institution-color-two`,  # Blue
   "institution-color-three" = brand_data$color$palette$`institution-color-three` # Orange
 )
-

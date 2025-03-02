@@ -1,16 +1,16 @@
 ## Create a list of dfPersonas
-lDfPersona <- list()
+df_persona_list <- list()
 
 ## Walk over the variables
-lDfPersona <- map(lSensitive_labels,
-                  ~ Get_dfPersona_Recursive(.x)) |>
-  set_names(lSensitive_labels)
+df_persona_list <- map(sensitive_labels,
+                       ~ get_df_persona_recursive(.x)) |>
+  set_names(sensitive_labels)
 
-dfPersona_per_group <- bind_rows(lDfPersona) 
+df_persona_per_group <- bind_rows(df_persona_list) 
 
 ## Save this file as an Excel spreadsheet
-sOutputPath <- file.path("R/data", "dfPersona_per_group.xlsx")
-writexl::write_xlsx(dfPersona_per_group, sOutputPath)
+output_path <- file.path("R/data", "df_persona_per_group.xlsx")
+writexl::write_xlsx(df_persona_per_group, output_path)
 
 ## Load the personas
-dfPersona_all <- Get_dfPersona_Recursive()
+df_persona_all <- get_df_persona_recursive()

@@ -281,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- Title -->
 <!-- HEADER -->
 <!-- Studyprogram short -->
-<p><strong>Communication and Multimedia Design</strong> (CMD), voltijd, eerstejaars, Faculteit IT &amp; Design (ITD).</p>
+<p><strong>Voeding &amp; Diëtetiek</strong> (VD), voltijd, eerstejaars, Faculteit Gezondheid, Voeding &amp; Sport (GVS).</p>
 <p>&nbsp;</p>
 <!-- Introduction -->
 <section id="inleiding" class="level2" data-number="3.1">
@@ -312,27 +312,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="laad-de-data" class="level3" data-number="3.2.1">
 <h3 data-number="3.2.1" class="anchored" data-anchor-id="laad-de-data"><span class="header-section-number">3.2.1</span> Laad de data</h3>
 <p>We laden de bewerkte data en prognosemodellen in voor:</p>
-<p><strong>Opleiding</strong>: | (Synth) (CMD), VT, eerstejaars - <strong>Retentie na 1 jaar</strong></p>
+<p><strong>Opleiding</strong>: | VD (Synth) (VD), VT, eerstejaars - <strong>Retentie na 1 jaar</strong></p>
 <!-- Include load-dfpersona -->
 <div class="cell">
 <details class="code-fold">
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Create a list of dfPersonas</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>lDfPersona <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df_persona_list <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Walk over the variables</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>lDfPersona <span class="ot">&lt;-</span> <span class="fu">map</span>(lSensitive_labels,</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                  <span class="sc">~</span> <span class="fu">Get_dfPersona_Recursive</span>(.x)) <span class="sc">|&gt;</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(lSensitive_labels)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>df_persona_list <span class="ot">&lt;-</span> <span class="fu">map</span>(sensitive_labels,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                       <span class="sc">~</span> <span class="fu">get_df_persona_recursive</span>(.x)) <span class="sc">|&gt;</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(sensitive_labels)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>dfPersona_per_group <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(lDfPersona) </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>df_persona_per_group <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(df_persona_list) </span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Save this file as an Excel spreadsheet</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>sOutputPath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"R/data"</span>, <span class="st">"dfPersona_per_group.xlsx"</span>)</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(dfPersona_per_group, sOutputPath)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>output_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="st">"R/data"</span>, <span class="st">"df_persona_per_group.xlsx"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>writexl<span class="sc">::</span><span class="fu">write_xlsx</span>(df_persona_per_group, output_path)</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="do">## Load the personas</span></span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>dfPersona_all <span class="ot">&lt;-</span> <span class="fu">Get_dfPersona_Recursive</span>()</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>df_persona_all <span class="ot">&lt;-</span> <span class="fu">get_df_persona_recursive</span>()</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -348,14 +348,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <details class="code-fold">
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select the best model</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>sBest_model <span class="ot">&lt;-</span> dfModel_results<span class="sc">$</span>model[dfModel_results<span class="sc">$</span>best <span class="sc">==</span> <span class="cn">TRUE</span>]</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>last_fit    <span class="ot">&lt;-</span> lLast_fits[[sBest_model]]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>best_model <span class="ot">&lt;-</span> df_model_results<span class="sc">$</span>model[df_model_results<span class="sc">$</span>best <span class="sc">==</span> <span class="cn">TRUE</span>]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>last_fit    <span class="ot">&lt;-</span> last_fits[[best_model]]</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>fitted_model <span class="ot">&lt;-</span> last_fit <span class="sc">|&gt;</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_parsnip</span>()</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># If the model is logistic regression, check that the coefficients of the model are numerical</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(sBest_model <span class="sc">==</span> <span class="st">"Logistic Regression"</span>) {</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (best_model <span class="sc">==</span> <span class="st">"Logistic Regression"</span>) {</span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  coefs <span class="ot">&lt;-</span> <span class="fu">tidy</span>(fitted_model)<span class="sc">$</span>estimate</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  </span>
@@ -380,36 +380,36 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_workflow</span>()</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Create an explainer</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>explain_lf <span class="ot">&lt;-</span> DALEX<span class="sc">::</span><span class="fu">explain</span>(</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">model =</span> workflow,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dfOpleiding_inschrijvingen <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>Retentie),</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> dfOpleiding_inschrijvingen<span class="sc">$</span>Retentie,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">colorize =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">label =</span> sBest_model)</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>explain_lf <span class="ot">&lt;-</span> DALEX<span class="sc">::</span><span class="fu">explain</span>(<span class="at">model =</span> workflow,</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                             <span class="at">data =</span> df_sp_enrollments <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="sc">-</span>Retentie),</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                             <span class="at">y =</span> df_sp_enrollments<span class="sc">$</span>Retentie,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                             <span class="at">colorize =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                             <span class="at">verbose =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                             <span class="at">label =</span> best_model)</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Preparation of a new explainer is initiated
   -&gt; model label       :  Random Forest 
-  -&gt; data              :  1613  rows  26  cols 
-  -&gt; target variable   :  1613  values 
+  -&gt; data              :  2782  rows  26  cols 
+  -&gt; target variable   :  2782  values 
   -&gt; predict function  :  yhat.workflow  will be used ( [33m default [39m )
   -&gt; predicted values  :  No value for predict function target column. ( [33m default [39m )
   -&gt; model_info        :  package tidymodels , ver. 1.3.0 , task classification ( [33m default [39m ) 
-  -&gt; predicted values  :  numerical, min =  0.1282285 , mean =  0.6176005 , max =  0.9501541  
+  -&gt; predicted values  :  numerical, min =  0.1232624 , mean =  0.5798238 , max =  0.9673013  
   -&gt; residual function :  difference between y and yhat ( [33m default [39m )
-  -&gt; residuals         :  numerical, min =  -0.8617417 , mean =  0.003602241 , max =  0.8065899  
+  -&gt; residuals         :  numerical, min =  -0.8639009 , mean =  0.003928882 , max =  0.7529485  
  [32m A new explainer has been created! [39m </code></pre>
 </div>
 <details class="code-fold">
 <summary>Toon code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="fu">is.null</span>(explain_lf<span class="sc">$</span>y_hat) <span class="sc">||</span> <span class="fu">is.null</span>(explain_lf<span class="sc">$</span>residuals)) {</span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">is.null</span>(explain_lf<span class="sc">$</span>y_hat) <span class="sc">||</span> <span class="fu">is.null</span>(explain_lf<span class="sc">$</span>residuals)) {</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  cli<span class="sc">::</span><span class="fu">cli_alert_danger</span>(glue<span class="sc">::</span><span class="fu">glue</span>(</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"The explainer does not contain the correct results. "</span>,</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Check the installation of model packages: {glue::glue_collapse(explain_lf$model_info$package, sep = ', ')}"</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">"Solve this problem first"</span>)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Check the installation of model packages: "</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"{glue::glue_collapse(explain_lf$model_info$package, sep = ', ')}"</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">"Solve this problem first"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -429,42 +429,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <details class="code-fold">
 <summary>Toon code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sPlotPath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">Get_Plot_Outputpath</span>(<span class="at">plotname =</span> <span class="st">"lf_model_parts_rmse"</span>, </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">bestmodel =</span> sBest_model))</span>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>plot_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">get_plot_outputpath</span>(<span class="at">plot_name =</span> <span class="st">"lf_model_parts_rmse"</span>, </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">best_model =</span> best_model))</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># If the plot does not exist or if recreateplots - T, create a new plot</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(sPlotPath) <span class="sc">|</span> params<span class="sc">$</span>recreateplots <span class="sc">==</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># If the plot does not exist or if recreate_plots - TRUE, create a new plot</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(plot_path) <span class="sc">||</span> params<span class="sc">$</span>recreate_plots <span class="sc">==</span> <span class="cn">TRUE</span>) {</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Calculate the model parts based on the RMSE; remove ID</span></span>
 <span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  mp_rmse <span class="ot">&lt;-</span> <span class="fu">model_parts</span>(explain_lf, <span class="at">loss_function =</span> loss_root_mean_square) <span class="sc">|&gt;</span> </span>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(variable <span class="sc">!=</span> <span class="st">"ID"</span>)</span>
 <span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create a plot of the RMSE</span></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  mp_rmse_plot <span class="ot">&lt;-</span> <span class="fu">Get_RMSE_Plot</span>(mp_rmse)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  mp_rmse_plot <span class="ot">&lt;-</span> <span class="fu">get_rmse_plot</span>(mp_rmse)</span>
 <span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Save the plot</span></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">suppressWarnings</span>(</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Finalize_Plot</span>(</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot_name =</span> mp_rmse_plot,</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">save_filepath =</span> sPlotPath,</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">height_pixels =</span> <span class="dv">50</span> <span class="sc">+</span> (<span class="dv">15</span> <span class="sc">*</span> <span class="fu">length</span>(<span class="fu">unique</span>(mp_rmse<span class="sc">$</span>variable)))</span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    ))</span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Show the existing plot</span></span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">include_graphics</span>(sPlotPath)</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>      </span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Show the existing plot</span></span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">include_graphics</span>(sPlotPath)</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">suppressWarnings</span>(<span class="fu">finalize_plot</span>(</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot_name =</span> mp_rmse_plot,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">save_filepath =</span> plot_path,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">height_pixels =</span> <span class="dv">50</span> <span class="sc">+</span> (<span class="dv">15</span> <span class="sc">*</span> <span class="fu">length</span>(<span class="fu">unique</span>(mp_rmse<span class="sc">$</span>variable)))</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Show the existing plot</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">include_graphics</span>(plot_path)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>      </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Show the existing plot</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">include_graphics</span>(plot_path)</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-lf-model-parts" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-lf-model-parts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_model_parts_rmse_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figuur&nbsp;3.1: Meest voorspellende factoren - RMSE"><img src="_output/itd/b-cmd-vt-synth/plots/lf_model_parts_rmse_random_forest.png" class="img-fluid figure-img" width="1333"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_model_parts_rmse_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figuur&nbsp;3.1: Meest voorspellende factoren - RMSE"><img src="_output/gvs/b-vd-vt-synth/plots/lf_model_parts_rmse_random_forest.png" class="img-fluid figure-img" width="1333"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lf-model-parts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.1: Meest voorspellende factoren - RMSE
@@ -495,7 +494,7 @@ Ter illustratie
 <p>We onderzoeken zo de voorspelling van het model per groep en de bijdrage van de verklarende variabelen aan die specifieke voorspelling. Dit geeft een verder inzicht in de werking van het model. Een categorie met 20 studenten of minder laten we buiten beschouwing.</p>
 <section id="toelichting-op-de-opbouw-van-de-kans-op-retentie" class="level4" data-number="3.3.3.1">
 <h4 data-number="3.3.3.1" class="anchored" data-anchor-id="toelichting-op-de-opbouw-van-de-kans-op-retentie"><span class="header-section-number">3.3.3.1</span> Toelichting op de opbouw van de kans op retentie</h4>
-<p>De opbouw van het model bestaat uit een <em>intercept</em>, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de <strong>basiskans op retentie</strong> voor alle studenten. Deze kans is voor de (CMD) VT <strong>61,8%</strong>. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de kans op retentie verhoogt, een negatieve bijdrage betekent dat het de kans op retentie verlaagt.</p>
+<p>De opbouw van het model bestaat uit een <em>intercept</em>, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de <strong>basiskans op retentie</strong> voor alle studenten. Deze kans is voor de VD (VD) VT <strong>58,0%</strong>. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de kans op retentie verhoogt, een negatieve bijdrage betekent dat het de kans op retentie verlaagt.</p>
 <p>Het kan zijn dat nieuwe variabelen geen invloed meer hebben op de kans. Dit betekent niet per se dat ze niet belangrijk zijn. Het kan zijn dat de invloed die ze hebben op de kans al is ‘afgevangen’ door variabelen die eerder in het model zijn opgenomen.</p>
 <div class="callout callout-style-simple callout-note no-icon callout-titled" title="Ter illustratie">
 <div class="callout-header d-flex align-content-center">
@@ -525,7 +524,7 @@ Ter illustratie
 <div id="fig-lf-break-down-distribution-all" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-lf-break-down-distribution-all-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_distribution_all_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figuur&nbsp;3.2: Opbouw van de kans op retentie"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_distribution_all_random_forest.png" class="img-fluid figure-img" width="1333"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_distribution_all_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figuur&nbsp;3.2: Opbouw van de kans op retentie"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_distribution_all_random_forest.png" class="img-fluid figure-img" width="1333"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lf-break-down-distribution-all-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.2: Opbouw van de kans op retentie
@@ -546,7 +545,7 @@ Figuur&nbsp;3.2: Opbouw van de kans op retentie
 <div id="fig-breakdown-geslacht-m" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-geslacht-m-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_geslacht_m_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figuur&nbsp;3.3: Breakdown naar geslacht: M"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_geslacht_m_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_geslacht_m_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figuur&nbsp;3.3: Breakdown naar geslacht: M"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_geslacht_m_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-geslacht-m-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.3: Breakdown naar geslacht: M
@@ -558,7 +557,7 @@ Figuur&nbsp;3.3: Breakdown naar geslacht: M
 <div id="fig-breakdown-geslacht-v" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-geslacht-v-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_geslacht_v_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figuur&nbsp;3.4: Breakdown naar geslacht: V"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_geslacht_v_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_geslacht_v_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figuur&nbsp;3.4: Breakdown naar geslacht: V"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_geslacht_v_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-geslacht-v-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.4: Breakdown naar geslacht: V
@@ -571,15 +570,14 @@ Figuur&nbsp;3.4: Breakdown naar geslacht: V
 </section>
 <section id="naar-aansluiting" class="level5" data-number="3.3.3.3.2">
 <h5 data-number="3.3.3.3.2" class="anchored" data-anchor-id="naar-aansluiting"><span class="header-section-number">3.3.3.3.2</span> Naar aansluiting</h5>
-<p>De subtotalen voor de categorieën 2e Studie en Na CD zijn te laag voor een betrouwbare analyse.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Direct</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Tussenjaar</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Switch intern</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false">Switch extern</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Direct</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Tussenjaar</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Switch intern</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false">Switch extern</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-5" role="tab" aria-controls="tabset-2-5" aria-selected="false">2e Studie</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-6" role="tab" aria-controls="tabset-2-6" aria-selected="false">Na CD</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div id="fig-breakdown-aansluiting-direct" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-aansluiting-direct-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_direct_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figuur&nbsp;3.5: Breakdown naar aansluiting: Direct"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_direct_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_direct_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figuur&nbsp;3.5: Breakdown naar aansluiting: Direct"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_direct_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-direct-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.5: Breakdown naar aansluiting: Direct
@@ -591,7 +589,7 @@ Figuur&nbsp;3.5: Breakdown naar aansluiting: Direct
 <div id="fig-breakdown-aansluiting-tussenjaar" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-aansluiting-tussenjaar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_tussenjaar_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figuur&nbsp;3.6: Breakdown naar aansluiting: Tussenjaar"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_tussenjaar_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_tussenjaar_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figuur&nbsp;3.6: Breakdown naar aansluiting: Tussenjaar"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_tussenjaar_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-tussenjaar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.6: Breakdown naar aansluiting: Tussenjaar
@@ -603,7 +601,7 @@ Figuur&nbsp;3.6: Breakdown naar aansluiting: Tussenjaar
 <div id="fig-breakdown-aansluiting-switch-intern" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-aansluiting-switch-intern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_switch-intern_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figuur&nbsp;3.7: Breakdown naar aansluiting: Switch intern"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_switch-intern_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_switch-intern_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figuur&nbsp;3.7: Breakdown naar aansluiting: Switch intern"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_switch-intern_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-switch-intern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.7: Breakdown naar aansluiting: Switch intern
@@ -615,10 +613,34 @@ Figuur&nbsp;3.7: Breakdown naar aansluiting: Switch intern
 <div id="fig-breakdown-aansluiting-switch-extern" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-aansluiting-switch-extern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_switch-extern_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figuur&nbsp;3.8: Breakdown naar aansluiting: Switch extern"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_switch-extern_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_switch-extern_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figuur&nbsp;3.8: Breakdown naar aansluiting: Switch extern"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_switch-extern_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-switch-extern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.8: Breakdown naar aansluiting: Switch extern
+</figcaption>
+</figure>
+</div>
+</div>
+<div id="tabset-2-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-5-tab">
+<div id="fig-breakdown-aansluiting-2e-studie" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-breakdown-aansluiting-2e-studie-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_2e-studie_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figuur&nbsp;3.9: Breakdown naar aansluiting: 2e Studie"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_2e-studie_random_forest.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-2e-studie-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figuur&nbsp;3.9: Breakdown naar aansluiting: 2e Studie
+</figcaption>
+</figure>
+</div>
+</div>
+<div id="tabset-2-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-6-tab">
+<div id="fig-breakdown-aansluiting-na-cd" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-breakdown-aansluiting-na-cd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_na-cd_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figuur&nbsp;3.10: Breakdown naar aansluiting: Na CD"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_na-cd_random_forest.png" class="img-fluid figure-img"></a>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-na-cd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figuur&nbsp;3.10: Breakdown naar aansluiting: Na CD
 </figcaption>
 </figure>
 </div>
@@ -635,10 +657,10 @@ Figuur&nbsp;3.8: Breakdown naar aansluiting: Switch extern
 <div id="fig-breakdown-vooropleiding-mbo" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-mbo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_mbo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figuur&nbsp;3.9: Breakdown naar vooropleiding: MBO"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_mbo_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_mbo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Figuur&nbsp;3.11: Breakdown naar vooropleiding: MBO"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_mbo_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-mbo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.9: Breakdown naar vooropleiding: MBO
+Figuur&nbsp;3.11: Breakdown naar vooropleiding: MBO
 </figcaption>
 </figure>
 </div>
@@ -647,10 +669,10 @@ Figuur&nbsp;3.9: Breakdown naar vooropleiding: MBO
 <div id="fig-breakdown-vooropleiding-havo" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-havo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_havo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figuur&nbsp;3.10: Breakdown naar vooropleiding: HAVO"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_havo_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_havo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Figuur&nbsp;3.12: Breakdown naar vooropleiding: HAVO"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_havo_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-havo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.10: Breakdown naar vooropleiding: HAVO
+Figuur&nbsp;3.12: Breakdown naar vooropleiding: HAVO
 </figcaption>
 </figure>
 </div>
@@ -659,10 +681,10 @@ Figuur&nbsp;3.10: Breakdown naar vooropleiding: HAVO
 <div id="fig-breakdown-vooropleiding-vwo" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-vwo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_vwo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Figuur&nbsp;3.11: Breakdown naar vooropleiding: VWO"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_vwo_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_vwo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Figuur&nbsp;3.13: Breakdown naar vooropleiding: VWO"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_vwo_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-vwo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.11: Breakdown naar vooropleiding: VWO
+Figuur&nbsp;3.13: Breakdown naar vooropleiding: VWO
 </figcaption>
 </figure>
 </div>
@@ -671,10 +693,10 @@ Figuur&nbsp;3.11: Breakdown naar vooropleiding: VWO
 <div id="fig-breakdown-vooropleiding-bd" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-bd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_bd_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Figuur&nbsp;3.12: Breakdown naar vooropleiding: BD"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_bd_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_bd_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Figuur&nbsp;3.14: Breakdown naar vooropleiding: BD"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_bd_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-bd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.12: Breakdown naar vooropleiding: BD
+Figuur&nbsp;3.14: Breakdown naar vooropleiding: BD
 </figcaption>
 </figure>
 </div>
@@ -683,10 +705,10 @@ Figuur&nbsp;3.12: Breakdown naar vooropleiding: BD
 <div id="fig-breakdown-vooropleiding-cd" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-cd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_cd_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Figuur&nbsp;3.13: Breakdown naar vooropleiding: CD"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_cd_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_cd_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15" title="Figuur&nbsp;3.15: Breakdown naar vooropleiding: CD"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_cd_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-cd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.13: Breakdown naar vooropleiding: CD
+Figuur&nbsp;3.15: Breakdown naar vooropleiding: CD
 </figcaption>
 </figure>
 </div>
@@ -695,10 +717,10 @@ Figuur&nbsp;3.13: Breakdown naar vooropleiding: CD
 <div id="fig-breakdown-vooropleiding-ho" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-ho-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_ho_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Figuur&nbsp;3.14: Breakdown naar vooropleiding: HO"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_ho_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_ho_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Figuur&nbsp;3.16: Breakdown naar vooropleiding: HO"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_ho_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-ho-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.14: Breakdown naar vooropleiding: HO
+Figuur&nbsp;3.16: Breakdown naar vooropleiding: HO
 </figcaption>
 </figure>
 </div>
@@ -717,53 +739,52 @@ Figuur&nbsp;3.14: Breakdown naar vooropleiding: HO
 <details class="code-fold">
 <summary>Toon code</summary>
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Save the plot</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sPlotPath <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">Get_Plot_Outputpath</span>(<span class="at">plotname =</span> <span class="st">"lf_shapley"</span>, </span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">bestmodel =</span> sBest_model))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>plot_path <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">get_plot_outputpath</span>(<span class="at">plot_name =</span> <span class="st">"lf_shapley"</span>, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                           <span class="at">best_model =</span> best_model))</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># If the plot does not exist or if recreateplots - T, create a new plot</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="fu">file.exists</span>(sPlotPath) <span class="sc">|</span> params<span class="sc">$</span>recreateplots <span class="sc">==</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># If the plot does not exist or if recreate_plots - TRUE, create a new plot</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(plot_path) <span class="sc">||</span> params<span class="sc">$</span>recreate_plots <span class="sc">==</span> <span class="cn">TRUE</span>) {</span>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Determine the Shapley values</span></span>
 <span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  lf_shapley <span class="ot">&lt;-</span> </span>
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict_parts</span>(</span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">explainer =</span> explain_lf,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">new_observation =</span> dfPersona_all[<span class="dv">1</span>, ],</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">new_observation =</span> df_persona_all[<span class="dv">1</span>, ],</span>
 <span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">type =</span> <span class="st">"shap"</span>,</span>
 <span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">B =</span> <span class="dv">20</span></span>
 <span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    )</span>
 <span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Convert these to a data frame</span></span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  dfShapley <span class="ot">&lt;-</span> <span class="fu">Get_dfShapley</span>(lf_shapley)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  df_shapley <span class="ot">&lt;-</span> <span class="fu">get_df_shapley</span>(lf_shapley)</span>
 <span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Build the plot</span></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  shapley_plot <span class="ot">&lt;-</span> <span class="fu">Get_Shapley_Plot</span>(dfShapley)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  shapley_plot <span class="ot">&lt;-</span> <span class="fu">get_shapley_plot</span>(df_shapley)</span>
 <span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>  </span>
 <span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Save the plot</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">suppressWarnings</span>(</span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">Finalize_Plot</span>(</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">plot_name =</span> shapley_plot,</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">save_filepath =</span> sPlotPath,</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>      <span class="at">height_pixels =</span> <span class="dv">50</span> <span class="sc">+</span> (<span class="dv">25</span> <span class="sc">*</span> <span class="fu">length</span>(<span class="fu">unique</span>(dfShapley<span class="sc">$</span>variable_name)))</span>
-<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    ))</span>
-<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Print the existing plot</span></span>
-<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">include_graphics</span>(sPlotPath)</span>
-<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
-<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Print the existing plot</span></span>
-<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">include_graphics</span>(sPlotPath)</span>
-<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">suppressWarnings</span>(<span class="fu">finalize_plot</span>(</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot_name =</span> shapley_plot,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">save_filepath =</span> plot_path,</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">height_pixels =</span> <span class="dv">50</span> <span class="sc">+</span> (<span class="dv">25</span> <span class="sc">*</span> <span class="fu">length</span>(<span class="fu">unique</span>(df_shapley<span class="sc">$</span>variable_name)))</span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Print the existing plot</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">include_graphics</span>(plot_path)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Print the existing plot</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">include_graphics</span>(plot_path)</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Kopieer naar klembord" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div id="fig-lf-shapley" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-lf-shapley-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_shapley_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15" title="Figuur&nbsp;3.15: Shapley values"><img src="_output/itd/b-cmd-vt-synth/plots/lf_shapley_random_forest.png" class="img-fluid figure-img" width="1333"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_shapley_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17" title="Figuur&nbsp;3.17: Shapley values"><img src="_output/gvs/b-vd-vt-synth/plots/lf_shapley_random_forest.png" class="img-fluid figure-img" width="1333"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lf-shapley-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.15: Shapley values
+Figuur&nbsp;3.17: Shapley values
 </figcaption>
 </figure>
 </div>
@@ -808,37 +829,46 @@ Ter illustratie
 </div>
 </div>
 <p>Opnieuw kijken we naar geslacht, aansluiting en vooropleiding. N.B. Het kan zijn dat een van de categorieën niet zichtbaar is, dit komt doordat deze dan over elkaar heen vallen.</p>
+<section id="geslacht" class="level4" data-number="3.3.5.1">
+<h4 data-number="3.3.5.1" class="anchored" data-anchor-id="geslacht"><span class="header-section-number">3.3.5.1</span> Geslacht</h4>
 <div id="fig-cp-geslacht" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cp-geslacht-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_cp_geslacht_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Figuur&nbsp;3.16: Ceteris-paribus profiel naar geslacht"><img src="_output/itd/b-cmd-vt-synth/plots/lf_cp_geslacht_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_cp_geslacht_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18" title="Figuur&nbsp;3.18: Ceteris-paribus profiel naar geslacht"><img src="_output/gvs/b-vd-vt-synth/plots/lf_cp_geslacht_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cp-geslacht-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.16: Ceteris-paribus profiel naar geslacht
+Figuur&nbsp;3.18: Ceteris-paribus profiel naar geslacht
 </figcaption>
 </figure>
 </div>
+</section>
+<section id="aansluiting" class="level4" data-number="3.3.5.2">
+<h4 data-number="3.3.5.2" class="anchored" data-anchor-id="aansluiting"><span class="header-section-number">3.3.5.2</span> Aansluiting</h4>
 <div id="fig-cp-aansluiting" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cp-aansluiting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_cp_aansluiting_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17" title="Figuur&nbsp;3.17: Ceteris-paribus profiel naar aansluiting"><img src="_output/itd/b-cmd-vt-synth/plots/lf_cp_aansluiting_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_cp_aansluiting_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19" title="Figuur&nbsp;3.19: Ceteris-paribus profiel naar aansluiting"><img src="_output/gvs/b-vd-vt-synth/plots/lf_cp_aansluiting_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cp-aansluiting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.17: Ceteris-paribus profiel naar aansluiting
+Figuur&nbsp;3.19: Ceteris-paribus profiel naar aansluiting
 </figcaption>
 </figure>
 </div>
+</section>
+<section id="vooropleiding" class="level4" data-number="3.3.5.3">
+<h4 data-number="3.3.5.3" class="anchored" data-anchor-id="vooropleiding"><span class="header-section-number">3.3.5.3</span> Vooropleiding</h4>
 <div id="fig-cp-vooropleiding" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cp-vooropleiding-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_cp_vooropleiding_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18" title="Figuur&nbsp;3.18: Ceteris-paribus profiel naar vooropleiding"><img src="_output/itd/b-cmd-vt-synth/plots/lf_cp_vooropleiding_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_cp_vooropleiding_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20" title="Figuur&nbsp;3.20: Ceteris-paribus profiel naar vooropleiding"><img src="_output/gvs/b-vd-vt-synth/plots/lf_cp_vooropleiding_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cp-vooropleiding-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.18: Ceteris-paribus profiel naar vooropleiding
+Figuur&nbsp;3.20: Ceteris-paribus profiel naar vooropleiding
 </figcaption>
 </figure>
 </div>
 <!-- Partial Dependence -->
+</section>
 </section>
 <section id="partial-dependence-analyse" class="level3" data-number="3.3.6">
 <h3 data-number="3.3.6" class="anchored" data-anchor-id="partial-dependence-analyse"><span class="header-section-number">3.3.6</span> Partial Dependence analyse</h3>
@@ -856,49 +886,49 @@ Figuur&nbsp;3.18: Ceteris-paribus profiel naar vooropleiding
 <div id="fig-pdp-alle-studenten" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pdp-alle-studenten-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_pdp_alle studenten_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19" title="Figuur&nbsp;3.19: Partial Dependence profiel naar alle studenten"><img src="_output/itd/b-cmd-vt-synth/plots/lf_pdp_alle studenten_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_pdp_alle studenten_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21" title="Figuur&nbsp;3.21: Partial Dependence profiel naar alle studenten"><img src="_output/gvs/b-vd-vt-synth/plots/lf_pdp_alle studenten_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pdp-alle-studenten-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.19: Partial Dependence profiel naar alle studenten
+Figuur&nbsp;3.21: Partial Dependence profiel naar alle studenten
 </figcaption>
 </figure>
 </div>
 </section>
-<section id="geslacht" class="level4" data-number="3.3.6.2">
-<h4 data-number="3.3.6.2" class="anchored" data-anchor-id="geslacht"><span class="header-section-number">3.3.6.2</span> Geslacht</h4>
+<section id="geslacht-1" class="level4" data-number="3.3.6.2">
+<h4 data-number="3.3.6.2" class="anchored" data-anchor-id="geslacht-1"><span class="header-section-number">3.3.6.2</span> Geslacht</h4>
 <div id="fig-pdp-geslacht" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pdp-geslacht-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_pdp_geslacht_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20" title="Figuur&nbsp;3.20: Partial Dependence profiel naar geslacht"><img src="_output/itd/b-cmd-vt-synth/plots/lf_pdp_geslacht_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_pdp_geslacht_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22" title="Figuur&nbsp;3.22: Partial Dependence profiel naar geslacht"><img src="_output/gvs/b-vd-vt-synth/plots/lf_pdp_geslacht_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pdp-geslacht-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.20: Partial Dependence profiel naar geslacht
+Figuur&nbsp;3.22: Partial Dependence profiel naar geslacht
 </figcaption>
 </figure>
 </div>
 </section>
-<section id="aansluiting" class="level4" data-number="3.3.6.3">
-<h4 data-number="3.3.6.3" class="anchored" data-anchor-id="aansluiting"><span class="header-section-number">3.3.6.3</span> Aansluiting</h4>
+<section id="aansluiting-1" class="level4" data-number="3.3.6.3">
+<h4 data-number="3.3.6.3" class="anchored" data-anchor-id="aansluiting-1"><span class="header-section-number">3.3.6.3</span> Aansluiting</h4>
 <div id="fig-pdp-aansluiting" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pdp-aansluiting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_pdp_aansluiting_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21" title="Figuur&nbsp;3.21: Partial Dependence profiel naar aansluiting"><img src="_output/itd/b-cmd-vt-synth/plots/lf_pdp_aansluiting_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_pdp_aansluiting_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-23" title="Figuur&nbsp;3.23: Partial Dependence profiel naar aansluiting"><img src="_output/gvs/b-vd-vt-synth/plots/lf_pdp_aansluiting_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pdp-aansluiting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.21: Partial Dependence profiel naar aansluiting
+Figuur&nbsp;3.23: Partial Dependence profiel naar aansluiting
 </figcaption>
 </figure>
 </div>
 </section>
-<section id="vooropleiding" class="level4" data-number="3.3.6.4">
-<h4 data-number="3.3.6.4" class="anchored" data-anchor-id="vooropleiding"><span class="header-section-number">3.3.6.4</span> Vooropleiding</h4>
+<section id="vooropleiding-1" class="level4" data-number="3.3.6.4">
+<h4 data-number="3.3.6.4" class="anchored" data-anchor-id="vooropleiding-1"><span class="header-section-number">3.3.6.4</span> Vooropleiding</h4>
 <div id="fig-pdp-vooropleiding" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pdp-vooropleiding-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/itd/b-cmd-vt-synth/plots/lf_pdp_vooropleiding_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22" title="Figuur&nbsp;3.22: Partial Dependence profiel naar vooropleiding"><img src="_output/itd/b-cmd-vt-synth/plots/lf_pdp_vooropleiding_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/gvs/b-vd-vt-synth/plots/lf_pdp_vooropleiding_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-24" title="Figuur&nbsp;3.24: Partial Dependence profiel naar vooropleiding"><img src="_output/gvs/b-vd-vt-synth/plots/lf_pdp_vooropleiding_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pdp-vooropleiding-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.22: Partial Dependence profiel naar vooropleiding
+Figuur&nbsp;3.24: Partial Dependence profiel naar vooropleiding
 </figcaption>
 </figure>
 </div>

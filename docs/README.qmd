@@ -17,7 +17,6 @@ order: 1
 
 # Include the badger library
 library(badger)
-
 ```
 
 <!-- badges: begin -->
@@ -64,7 +63,6 @@ You will have the option to build two reports. The _advanced fairness report_ yo
 The _basic fairness report_ you will build, will look like this:
 
 <img src="figures/screenshot-basic-report.png" align="center" height="300" style = "border: 1px solid #999999"/>
-
 
 ## 💡 Why we study fairness, awareness, and equity {#why-we-study-fairness-awareness-and-equity}
 

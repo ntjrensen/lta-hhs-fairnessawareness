@@ -6,43 +6,43 @@
 ```{r}
 #| label: df-txt-fairness-conclusions
 #| results: asis
-#| eval: !expr 'file.exists(Get_Model_Outputpath(mode = "modelresults"))'
+#| eval: !expr 'file.exists(get_model_outputpath(mode = "modelresults"))'
 
-lDfFairness <- list()
+df_fairness_list <- list()
 
 # Walk over the variables
-for(i in c(lSensitive_labels)) {
-  sFairness_outputpath  <- Get_Model_Outputpath(mode = "fairness", group = i)
-  lDfFairness[[i]]      <- readRDS(sFairness_outputpath) |>
+for (i in c(sensitive_labels)) {
+  fairness_output_path       <- get_model_outputpath(mode = "fairness", group = i)
+  df_fairness_list[[i]]      <- readRDS(fairness_output_path) |>
     mutate(FRN_Bias = case_when(FRN_Score < 0.8 ~ "Negatieve Bias",
                                 FRN_Score > 1.25 ~ "Positieve Bias",
                                 .default = "Geen Bias"))
 }
 
 # Create a table from the fairness analysis
-dfFairness_wide  <- Get_dfFairness_Wide(lDfFairness)
+df_fairness_wide  <- get_df_fairness_wide(df_fairness_list)
 
 ```
 
-De uitkomsten van de kansengelijkheidsanalyse is:
+De uitkomsten van de kansengelijkheidanalysis is:
 
 <!-- Tekstuele samenvatting -->
 
 ```{r}
 #| label: txt-fairness-conclusions
 #| results: asis
-#| eval: !expr 'file.exists(Get_Model_Outputpath(mode = "modelresults"))'
+#| eval: !expr 'file.exists(get_model_outputpath(mode = "modelresults"))'
 
 # Now create a text per variable from the table
-lConclusies <- list()
-for(i in lSensitive_labels) {
-  lConclusies[[i]] <- Get_Fairness_Conclusies(dfFairness_wide, i)
+conclusions_list <- list()
+for (i in sensitive_labels) {
+  conclusions_list[[i]] <- get_fairness_conclusions(df_fairness_wide, i)
 }
 
 # Dynamically generate the conclusions in text
 j <- 1
-for (i in lSensitive_labels) {
-  cat(glue("{j}.  **{i}**: {lConclusies[[i]]} \n\n"))
+for (i in sensitive_labels) {
+  cat(glue("{j}.  **{i}**: {conclusions_list[[i]]} \n\n"))
   j <- j + 1
 }
 
@@ -54,22 +54,22 @@ for (i in lSensitive_labels) {
 #| label: tbl-fairness-conclusions
 #| tbl-cap: "Fairness conclusies per groep"
 #| results: asis
-#| eval: !expr 'file.exists(Get_Model_Outputpath(mode = "modelresults"))'
+#| eval: !expr 'file.exists(get_model_outputpath(mode = "modelresults"))'
 
 # Create a flextable
-ftFairness_table <- Get_ftFairness(flextable(dfFairness_wide |>
-                                               select(-c(Groep_label, Text))))
+ft_fairness <- get_ft_fairness(flextable(df_fairness_wide |>
+                                           select(-c(Groep_label, Text))))
 
 # Print the flextable
-ftFairness_table
+ft_fairness
 ```
 
 **Toelichting:**
 
--   `r Get_Colored_Square(color = lColors_default[["sColor_Bias_Negative"]])` Negatieve bias.
--   `r Get_Colored_Square(color = lColors_default[["sColor_Bias_Positive"]])` Positieve bias.
--   `r Get_Colored_Square(color = lColors_default[["sColor_Bias_Neutral"]])` Bias, maar de aantallen studenten zijn te laag om conclusies over een negatieve of positieve bias aan te verbinden. 
--   `r Get_Colored_Square(color = lColors_default[["sColor_Bias_None"]])` De bevoorrechte groep. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
+-   `r get_colored_square(color = colors_default[["color_bias_negative"]])` Negatieve bias.
+-   `r get_colored_square(color = colors_default[["color_bias_positive"]])` Positieve bias.
+-   `r get_colored_square(color = colors_default[["color_bias_neutral"]])` Bias, maar de aantallen studenten zijn te laag om conclusies over een negatieve of positieve bias aan te verbinden. 
+-   `r get_colored_square(color = colors_default[["color_bias_none"]])` De bevoorrechte groep. Hiervan dient een eventuele bias nader bepaald te worden (NTB = Nader te bepalen). Dit is het geval als alle overige groepen binnen een variabelen een bias hebben.
 -   Er zijn vijf aspecten op basis waarvan de mate van bias gescoord wordt; het aantal in de kolommen geeft aan op hoeveel aspecten het oordeel over bias is gebaseerd. Voor een oordeel moet er minimaal op twee aspecten sprake zijn van bias.
 -   We hanteren een minimum van 15 studenten per categorie binnen een variabele om een oordeel te geven.
 

@@ -188,7 +188,7 @@ ul.task-list li input[type="checkbox"] {
 </main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
-window.document.addEventListener("DOMContentLoaded", function (event) {
+window.document.addEventListener("DOMContentLoaded", function(event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
     const bodyEl = window.document.querySelector("body");
@@ -533,11 +533,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     let throttle = false;
     let timer;
       return (...args) => {
-        if(!throttle) { // first call gets through
+        if (!throttle) { // first call gets through
             fn.apply(this, args);
             throttle = true;
         } else { // all the others get throttled
-            if(timer) clearTimeout(timer); // cancel #2
+            if (timer) clearTimeout(timer); // cancel #2
             timer = setTimeout(() => {
               fn.apply(this, args);
               timer = throttle = false;

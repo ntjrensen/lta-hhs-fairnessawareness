@@ -1,6 +1,6 @@
 # Fairness Awareness: News
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-26
+2025-03-01
 
 <a name="top"></a>
 
@@ -10,6 +10,14 @@ Theo Bakker, The Hague University of Applied Sciences
 - To the [tutorial](TUTORIAL.md).
 
 # News
+
+## 0.9.2.9001 *(2025-03-01)*
+
+- Rewritten source code to comply to tidyverse code standards
+
+## 0.9.1.9004 *(2025-02-28)*
+
+- Improved documentation and scripts, based on new test results
 
 ## 0.9.1.9003 *(2025-02-26)*
 

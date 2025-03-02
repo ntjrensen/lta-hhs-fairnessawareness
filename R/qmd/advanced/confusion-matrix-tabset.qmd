@@ -12,13 +12,12 @@ Voor elke groep onderzoeken we **5 ratio's**, ook wel maatstaven of metrieken ge
 #| fig-cap: "Confusion matrix in relatie tot BSA"
 
 knitr::include_graphics(here::here("R/images", "confusion-matrix-fairness-lta-hhs.png"))
-
 ```
 
 :::::::: panel-tabset
 ### 1. Accuracy Equality
 
-`r kableExtra::text_spec("**1. Accuracy Equality Ratio**", color = lColors[["institution"]][["institution-color-two"]])`
+`r kableExtra::text_spec("**1. Accuracy Equality Ratio**", color = color_list[["institution"]][["institution-color-two"]])`
 
 *In welke mate voorspelt het model zowel de positieve als negatieve uitkomsten goed?*
 
@@ -44,7 +43,7 @@ Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspel
 
 ### 2. Equal Opportunity
 
-`r kableExtra::text_spec("**2. Equal Opportunity Ratio**", color = lColors[["institution"]][["institution-color-two"]])`
+`r kableExtra::text_spec("**2. Equal Opportunity Ratio**", color = color_list[["institution"]][["institution-color-two"]])`
 
 *In welke mate zijn de terecht positieve voorspellingen gelijk?*
 
@@ -73,7 +72,7 @@ Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspel
 
 ### 3. Predictive Equality
 
-`r kableExtra::text_spec("**3. Predictive Equality Ratio**", color = lColors[["institution"]][["institution-color-two"]])`
+`r kableExtra::text_spec("**3. Predictive Equality Ratio**", color = color_list[["institution"]][["institution-color-two"]])`
 
 *In welke mate zijn de vals positieve voorspellingen gelijk?*
 
@@ -102,7 +101,7 @@ Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspel
 
 ### 4. Predictive Parity
 
-`r kableExtra::text_spec("**4. Predictive Parity Ratio**", color = lColors[["institution"]][["institution-color-two"]])`
+`r kableExtra::text_spec("**4. Predictive Parity Ratio**", color = color_list[["institution"]][["institution-color-two"]])`
 
 *In welke mate zijn de terecht positieve voorspellingen gelijk?*
 
@@ -129,7 +128,7 @@ Stel dat we retentie voor havisten (bevoorrecht) en mbo-ers (beschermd) voorspel
 
 ### 5. Statistical Parity
 
-`r kableExtra::text_spec("**5. Statistical Parity Ratio**", color = lColors[["institution"]][["institution-color-two"]])`
+`r kableExtra::text_spec("**5. Statistical Parity Ratio**", color = color_list[["institution"]][["institution-color-two"]])`
 
 *In welke mate zijn de positieve voorspellingen gelijk?*
 

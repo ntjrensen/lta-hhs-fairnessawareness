@@ -2,7 +2,7 @@
 # No title for this page
 
 ---
-**`r current_opleiding$INS_Opleidingsnaam`** (`r current_opleiding$INS_Opleiding`), `r sOpleidingsvorm_lang`, eerstejaars, Faculteit `r Get_Faculteitsnaam_Lang(current_opleiding$INS_Faculteit)` (`r current_opleiding$INS_Faculteit`).
+**`r current_sp$INS_Opleidingsnaam`** (`r current_sp$INS_Opleiding`), `r studyprogramme_form_long`, eerstejaars, Faculteit `r get_faculty_name_long(current_sp$INS_Faculteit)` (`r current_sp$INS_Faculteit`).
 
  
 

@@ -24,8 +24,7 @@
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Function to set debug options
-Set_Icecream_Options <- function()
-{
+set_icecream_options <- function() {
   options(
     icecream.enabled = FALSE,
     icecream.peeking.function = head,
@@ -41,8 +40,7 @@ Set_Icecream_Options <- function()
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Function to get the latest version of the documentation
-Get_Documentation <- function (folder = "R/data", file = "Documentatie_HHs_LTA.xlsx")
-{
+get_documentation <- function(folder = "R/data", file = "Documentatie_HHs_LTA.xlsx") {
   documentation <- rio::import(file.path(folder, file)) |>
     select(
       DOC_Categorie,
@@ -57,7 +55,8 @@ Get_Documentation <- function (folder = "R/data", file = "Documentatie_HHs_LTA.x
       DOC_Datum_mutatie_LTA,
       DOC_Commentaar
     )
-  return(documentation)
+  
+  documentation
 }
 
 # . ####
@@ -66,15 +65,16 @@ Get_Documentation <- function (folder = "R/data", file = "Documentatie_HHs_LTA.x
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Function to install and load packages
-Install_and_Load_Packages <- function (base = TRUE,
-                                       plots = TRUE,
-                                       reports = FALSE,
-                                       spatial = FALSE,
-                                       models = TRUE,
-                                       testpackage = FALSE,
-                                       git = FALSE,
-                                       debug = FALSE,
-                                       message = FALSE) {
+install_and_load_packages <- function(base = TRUE,
+                                      plots = TRUE,
+                                      reports = FALSE,
+                                      spatial = FALSE,
+                                      models = TRUE,
+                                      testpackage = FALSE,
+                                      git = FALSE,
+                                      debug = FALSE,
+                                      message = FALSE) {
+  
   lmode <- c()
   if (base)
     lmode <- c(lmode, "base")
@@ -91,15 +91,15 @@ Install_and_Load_Packages <- function (base = TRUE,
   if (git)
     lmode <- c(lmode, "git")
   for (i in lmode) {
-    packages <- Get_Packagelist(i)
+    packages <- get_packagelist(i)
     if (message) {
       cli::cli_h1(paste0("Installeren en laden ", i, "-lijst"))
       cli::cli_alert_info(c(
         "De volgende packages worden geïnstalleerd en geladen: {.var {packages}}"
       ))
     }
-    Install_Packages(packages)
-    Load_Packages(packages, debug = debug, message = message)
+    install_packages(packages)
+    load_packages(packages, debug = debug, message = message)
     rm(packages)
     if (message) {
       cli::cli_alert_success(c(
@@ -134,7 +134,7 @@ Install_and_Load_Packages <- function (base = TRUE,
 
 
 # Function to get the packagelist
-Get_Packagelist <- function (mode = "fairness") {
+get_packagelist <- function(mode = "fairness") {
   stopifnot(mode %in% c(
     "fairness"
   ))
@@ -251,42 +251,38 @@ Get_Packagelist <- function (mode = "fairness") {
 }
 
 # Function to install packages
-Install_Packages <- function (packages, message = FALSE)
-{
-  new.packages <- packages[!(packages %in% installed.packages()[, "Package"])]
-  if (length(new.packages)) {
+install_packages <- function(packages, message = FALSE) {
+  new_packages <- packages[!(packages %in% installed.packages()[, "Package"])]
+  if (length(new_packages)) {
     if (message) {
       cli::cli_alert_warning(
         c(
-          "De volgende packages zijn nog niet geïnstalleerd: {.var {new.packages}} \n",
-          "Deze worden nu alsnog geïnstalleerd"
+          "The following packages are not yet installed: {.var {new_packages}} \n",
+          "These are now being installed as yet"
         )
       )
     }
-    install.packages(new.packages, repos = "http://cran.us.r-project.org", quiet = TRUE)
-  }
-  else {
+    install.packages(new_packages, repos = "http://cran.us.r-project.org", quiet = TRUE)
+  } else {
     if (message) {
-      cli::cli_alert_success("Alle packages zijn al geïnstalleerd")
+      cli::cli_alert_success("All packages are already installed")
     }
   }
   if (!all(packages %in% installed.packages())) {
-    cli::cli_alert_warning("Packages zijn NIET geïnstalleerd")
+    cli::cli_alert_warning("Packages are NOT installed")
   }
 }
 
 # Function to load packages
-Load_Packages <- function (packages,
-                           debug = FALSE,
-                           message = FALSE)
-{
+load_packages <- function(packages,
+                          debug = FALSE,
+                          message = FALSE) {
   load_all_packages <- function(packages) {
     lapply(packages, library, character.only = TRUE)
   }
   if (debug) {
     load_all_packages(packages)
-  }
-  else {
+  } else {
     suppressMessages(invisible(load_all_packages(packages)))
   }
   if (!all(packages %in% .packages())) {
@@ -294,15 +290,14 @@ Load_Packages <- function (packages,
     if (message) {
       cli::cli_alert_warning(
         c(
-          "Niet alle packages zijn ingeladen; ",
-          "De volgende packages zijn niet ingeladen: {.var {missing_packages}}"
+          "Not all packages are loaded; ",
+          "The following packages are not loaded: {.var {missing_packages}}"
         )
       )
     }
-  }
-  else {
+  } else {
     if (message) {
-      cli::cli_alert_success("Alle packages zijn ingeladen: {.var {packages}}")
+      cli::cli_alert_success("All packages are loaded: {.var {packages}}")
     }
   }
 }
@@ -313,15 +308,14 @@ Load_Packages <- function (packages,
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 # Function to get the tableau colors
-Get_Colors_Tableau <- 
-  function () 
-  {
+get_colors_tableau <- 
+  function()  {
     lcolors_tableau <- c("#fc7d0b", "#1170aa", "#a3acb9", "#c85200", 
                          "#a3cce9", "#57606c", "#ffbc79", "#5fa2ce", "#7b848f", 
                          "#f28e2b", "#c8d0d9", "#b6992d", "#f1ce63", "#9467BD", 
                          "#C5B0D5", "#E377C2", "#F7B6D2", "#17BECF", "#9EDAE5", 
                          "#8C564b", "#C49C94", "#2CA02C")
-    return(lcolors_tableau)
+    lcolors_tableau
   }
 
 
@@ -330,7 +324,7 @@ Get_Colors_Tableau <-
 # 4. ADDITIONAL FUNCTIONS ####
 # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-Sort_Distinct <- function(df) {
+sort_distinct <- function(df) {
   if (!is.data.frame(df)) {
     stop("Input is not a data frame")
   }
@@ -338,15 +332,14 @@ Sort_Distinct <- function(df) {
   dplyr::select(dplyr::distinct(df), base::sort(tidyselect::peek_vars()))
 }
 
-Load_Datasets <- function (message = FALSE)
-{
+load_datasets <- function(message = FALSE) {
   datasets <- list(
-    dfDocumentatie = Get_dfDocumentatie(),
-    dfOpleidingen = Get_dfOpleidingen(),
-    dfOnderwijsinstellingen = Get_dfOnderwijsinstellingen(),
-    sectors = Get_sectors(),
-    studytypes = Get_studytypes(),
-    studyforms = Get_studyforms()
+    df_documentation = get_df_documentation(),
+    df_studyprogrammes = get_df_studyprogrammes(),
+    df_institutions = get_df_institutions(),
+    df_sectors = get_df_sectors(),
+    df_studytypes = get_df_studytypes(),
+    df_studyforms = get_df_studyforms()
   )
   set_variables_from_list(datasets)
   if (message == TRUE) {
@@ -358,56 +351,61 @@ Load_Datasets <- function (message = FALSE)
   }
 }  
 
-set_variables_from_list <- function (list) 
-{
+set_variables_from_list <- function(list) {
   list2env(stats::setNames(list, nm = names(list)), envir = .GlobalEnv)
 }
 
-Get_dfDocumentatie <- function() {
+get_df_documentation <- function() {
   
-  df <- rio::import("R/data/Documentatie_HHs_LTA.xlsx")
-  return(df)
+  df <- rio::import("R/data/documentation_hhs_lta.xlsx")
+  
+  df
 }
 
-Get_dfOpleidingen <- function() {
+get_df_studyprogrammes <- function() {
   
-  df <- rio::import("R/data/dfOpleidingen.rda", trust = TRUE)
-  return(df)
+  df <- rio::import("R/data/studyprogrammes.rda", trust = TRUE)
+  
+  df
 }
 
-Get_dfOnderwijsinstellingen <- function() {
+get_df_institutions <- function() {
   
-  df <- rio::import("R/data/dfOnderwijsinstellingen.rda", trust = TRUE)
-  return(df)
+  df <- rio::import("R/data/institutions.rda", trust = TRUE)
+  
+  df
 }
 
-Get_sectors <- function() {
+get_df_sectors <- function() {
   
   df <- rio::import("R/data/sectors.rda", trust = TRUE)
-  return(df)
+  
+  df
 }
 
-Get_studyforms <- function() {
+get_df_studyforms <- function() {
   
   df <- rio::import("R/data/studyforms.rda", trust = TRUE)
-  return(df)
+  
+  df
 }
 
-Get_studytypes <- function() {
+get_df_studytypes <- function() {
   
   df <- rio::import("R/data/studytypes.rda", trust = TRUE)
-  return(df)
+  
+  df
 }
 
-Get_dfOpleiding_inschrijvingen_base_syn <- function() {
+get_sp_enrollments_base_syn <- function() {
   
-  dfOpleiding_inschrijvingen_base <- rio::import("R/data/syn/dfOpleiding_inschrijvingen_syn.rds", trust = TRUE)
-  dfOpleiding_inschrijvingen_base <- dfOpleiding_inschrijvingen_base |>
-    filter(INS_Faculteit == current_opleiding$INS_Faculteit,
-           INS_Opleidingsnaam_huidig == current_opleiding$INS_Opleidingsnaam_huidig,
-           INS_Opleiding == current_opleiding$INS_Opleiding,
-           INS_Opleidingsvorm == toupper(current_opleiding$INS_Opleidingsvorm)) |> 
+  df_sp_enrollments <- rio::import("R/data/syn/studyprogrammes_enrollments_syn.rds", trust = TRUE)
+  df_sp_enrollments <- df_sp_enrollments |>
+    filter(INS_Faculteit == current_sp$INS_Faculteit,
+           INS_Opleidingsnaam_huidig == current_sp$INS_Opleidingsnaam_huidig,
+           INS_Opleiding == current_sp$INS_Opleiding,
+           INS_Opleidingsvorm == toupper(current_sp$INS_Opleidingsvorm)) |> 
     mutate(LTA_Dataset = "ASI-Syn 20240124")
   
-  return(dfOpleiding_inschrijvingen_base)
+  df_sp_enrollments
 }

@@ -9,12 +9,12 @@ params:
   versie: "1.0"
   succes: "Retentie na 1 jaar"
   model: "Retentie na 1 jaar"
-  propedeusediploma: "Nvt"
+  pd: "Nvt"
   use_synthetic_data: true
-  recreateplots: false
-  instroomselectie: false
-  opleiding: "CMD"
-  opleidingsvorm_afkorting: "VT"
+  recreate_plots: false
+  enrollment_selection: false
+  sp: "CMD"
+  sp_form: "VT"
   
 # Content
 includes:
@@ -38,7 +38,7 @@ includes:
 #| echo: false
 
 # Current file
-sCurrent_file <- "ch-equity.qmd"
+current_file <- "ch2-equity.qmd"
 
 # Include the _Setup.R file
 source("_Setup.R")
@@ -61,7 +61,7 @@ De analyse van kansengelijkheid heeft de volgende stappen:
 
 1.  We lezen een bewerkte dataset in en prognosemodellen die we in een basis-analyse hebben gemaakt (zie hoofdstuk 3).
 2.  We maken een *explainer* om de modellen beter te begrijpen en te kunnen uitleggen.
-3.  Vervolgens berekenen we of er *bias* bestaat voor verschillende groepen studenten naar `r Concatenate_List(lSentitive_variables, tolower = TRUE)`. We analyseren daarvoor de verdeling van kansen en mate van fairness in het prognosemodel dat we hebben ontwikkeld.
+3.  Vervolgens berekenen we of er *bias* bestaat voor verschillende groepen studenten naar `r concatenate_list(sensitive_variables, tolower = TRUE)`. We analyseren daarvoor de verdeling van kansen en mate van fairness in het prognosemodel dat we hebben ontwikkeld.
 4.  We trekken er conclusies uit over de mate van bias binnen de opleiding voor `r tolower(params$model)`.
 :::
 
@@ -74,7 +74,7 @@ De analyse van kansengelijkheid heeft de volgende stappen:
 
 We laden de bewerkte data en het beste prognosemodel in voor:
 
-**Opleiding**: `r current_opleiding$INS_Faculteit` \| `r Get_Opleidingsnaam_Synth(current_opleiding$INS_Opleidingsnaam_huidig)` (`r current_opleiding$INS_Opleiding`), `r current_opleiding$INS_Opleidingsvorm`, eerstejaars - **`r sSucces_model`**
+**Opleiding**: `r current_sp$INS_Faculteit` \| `r get_sp_name_syn(current_sp$INS_Opleidingsnaam_huidig)` (`r current_sp$INS_Opleiding`), `r current_sp$INS_Opleidingsvorm`, eerstejaars - **`r succes_model`**
 
 <!-- Include load-dfpersona -->
 ```{r}
@@ -111,7 +111,7 @@ DALEX is onder andere ontwikkeld om uit te kunnen leggen welke verklarende varia
 We onderzoeken kansengelijkheid door bias in de data te onderzoeken. Dit wordt ook wel een *fairness analyse* genoemd. Bias voor verschillende groepen studenten kan een teken zijn van kansenongelijkheid. 
 
 ::: {.content-visible when-profile="advanced-report"}
-Het leidende werk voor fairness analyses is [*Fairness and Machine Learning: Limitations and Opportunities*](https://fairmlbook.org/pdf/fairmlbook.pdf) [@Barocas.2023]. De methode die we in deze analyse hanteren hierop gebaseerd. We maken gebruik van de `DALEX` explainer en onderzoeken de invloed van de variabelen op de `r tolower(lResearch_settings[['sSucces_label']])` voor verschillende groepen studenten naar `r Concatenate_List(lSentitive_variables, tolower = TRUE)`.
+Het leidende werk voor fairness analyses is [*Fairness and Machine Learning: Limitations and Opportunities*](https://fairmlbook.org/pdf/fairmlbook.pdf) [@Barocas.2023]. De methode die we in deze analyse hanteren hierop gebaseerd. We maken gebruik van de `DALEX` explainer en onderzoeken de invloed van de variabelen op de `r tolower(research_settings[['succes_label']])` voor verschillende groepen studenten naar `r concatenate_list(sensitive_variables, tolower = TRUE)`.
 :::
 
 De volgende **definities** zijn van belang:
@@ -128,28 +128,28 @@ De volgende **definities** zijn van belang:
 
 ### Aantallen en percentages per groep
 
-Voor de variabelen `r Concatenate_List(lSentitive_variables, extend = TRUE, backtick = TRUE)` is de verdeling binnen deze opleiding als volgt:
+Voor de variabelen `r concatenate_list(sensitive_variables, extend = TRUE, backtick = TRUE)` is de verdeling binnen deze opleiding als volgt:
 
 ```{r}
 #| label: tbl-amount-and-percentages-per-group
-#| tbl-cap: !expr 'glue("Aantallen en percentages naar {Concatenate_List(lSentitive_variables, tolower = TRUE)} in relatie tot retentie")'
+#| tbl-cap: !expr 'glue("Aantallen en percentages naar {concatenate_list(sensitive_variables, tolower = TRUE)} in relatie tot retentie")'
 #| results: asis
 
 # Create a table with numbers and percentages for the 3 sensitive 
 
-tbl_summary <- dfOpleiding_inschrijvingen |> 
-  select(Retentie, all_of(lSensitive_labels)) |> 
+tbl_summary <- df_sp_enrollments |> 
+  select(Retentie, all_of(sensitive_labels)) |> 
   mutate(Retentie = ifelse(Retentie == 1, "Ja", "Nee")) |>
   tbl_summary(by = Retentie) |> 
   add_p(pvalue_fun = ~ style_pvalue(.x, digits = 2),
-          test.args = list(
-            all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
-            all_tests("wilcox.test") ~ list(exact = FALSE)
-          )) |> 
-    add_significance_stars(
-      hide_p = FALSE,
-      pattern = "{p.value}{stars}"
-    ) |>
+        test.args = list(
+          all_tests("fisher.test") ~ list(simulate.p.value = TRUE),
+          all_tests("wilcox.test") ~ list(exact = FALSE)
+        )) |> 
+  add_significance_stars(
+    hide_p = FALSE,
+    pattern = "{p.value}{stars}"
+  ) |>
   add_overall(col_label = "**Totaal**  \nN = {style_number(N)}") |>
   add_n() |>
   modify_header(label ~ "**Variabele**") |> 
@@ -169,7 +169,7 @@ tbl_summary
 
 ### Verdeling van kansen
 
-Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we de *verdeling van de kansen* op retentie voor verschillende groepen studenten voor `r Concatenate_List(lSentitive_variables)`. De verdeling van deze kansen is uniek per opleiding.
+Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we de *verdeling van de kansen* op retentie voor verschillende groepen studenten voor `r concatenate_list(sensitive_variables)`. De verdeling van deze kansen is uniek per opleiding.
 
 **Toelichting**
 
@@ -184,40 +184,42 @@ Voordat we in meer detail kansengelijkheid gaan analyseren, onderzoeken we de *v
 #| results: asis
 
 # Make a fairness analysis
-for(group in c(lSensitive_labels)) {
+for (group in c(sensitive_labels)) {
 
   # Group
-  Knit_Header(group, 4)
+  knit_header(group, 4)
   
   # Determine the most common subgroup = Privileged
-  sPrivileged <- Get_Privileged(dfOpleiding_inschrijvingen, group)
+  privileged <- get_privileged(df_sp_enrollments, group)
 
   # Create a fairness object
-  fobject <- Get_objFairness(explain_lf, group, sPrivileged)
+  fairness_object <- get_obj_fairness(explain_lf, group, privileged)
   
   # Create a table from the fairness analysis
-  dfFairness_totaal <- Get_dfFairness_Total(fobject)
+  df_fairness_total <- get_df_fairness_total(fairness_object)
   
   # Create a plot of the fairness analysis
   density_plot <- suppressWarnings(
-    Get_Density_Plot(fobject, group = group) 
+    get_density_plot(fairness_object, group = group) 
   ) 
 
   # Save the plot
-  sPlotname <- glue("density_plot_{tolower(group)}")
-  sPlotPath <- Get_Plot_Outputpath(sPlotname, mode = "plot", 
-                                   bestmodel = sBest_model)
+  plot_name <- glue("density_plot_{tolower(group)}")
+  plot_path <- get_plot_outputpath(plot_name, mode = "plot", 
+                                   best_model = best_model)
 
-  suppressWarnings(
-        Finalize_Plot(
-          plot_name = density_plot,
-          save_filepath = sPlotPath,
-          height_pixels = 250 + (50 * length(unique(dfFairness_totaal$Categorie)))
-        ))
+  suppressWarnings(finalize_plot(
+    plot_name = density_plot,
+    save_filepath = plot_path,
+    height_pixels = 250 + (50 * length(unique(df_fairness_total$Categorie)))
+  ))
 
   # Show the existing plot
-  sPlot <- glue("![Verdeling en dichtheid van {tolower(lResearch_settings[['sSucces_label']])} naar  {tolower(group)}]({sPlotPath}){{#fig-fairness-check-{tolower(group)}}}")
-  Knit_Print_Rule(sPlot)
+  plot <- glue("![Verdeling en dichtheid van {tolower(research_settings[['succes_label']])} ",
+               "naar {tolower(group)}]({plot_path})",
+               "{{#fig-fairness-check-{tolower(group)}}",
+               "}")
+  knit_print_rule(plot)
 
 }
 
@@ -226,7 +228,7 @@ for(group in c(lSensitive_labels)) {
 ::: {.content-visible when-profile="advanced-report"}
 ### Fairness checks
 
-Nu we de verdeling van de kansen kennen, maken we een fairness analyse voor `r Concatenate_List(lSentitive_variables)`. Voor elke groep berekenen we de maatstaven die we eerder hebben behandeld.
+Nu we de verdeling van de kansen kennen, maken we een fairness analyse voor `r concatenate_list(sensitive_variables)`. Voor elke groep berekenen we de maatstaven die we eerder hebben behandeld.
 
 We maken een plot van de fairness analyse, waarbij we per variabele één categorie nemen als de bevoorrechte groep; hiervoor hanteren we -- zoals al aangegeven -- per variabele de meest frequente groep. Het is waarschijnlijk dat in een opleiding de voorlichting, begeleiding en onderwijs het meest heeft afgestemd op deze groep. 
 
@@ -254,26 +256,26 @@ Om de robuustheid en betrouwbaarheid in de detectie van bias te waarborgen, moet
 #| results: asis
 
 # Make a fairness analysis
-for(group in c(lSensitive_labels)) {
+for (group in c(sensitive_labels)) {
 
   # Group
-  Knit_Header(group, 4)
+  knit_header(group, 4)
   
   # Determine the most common subgroup = Privileged
-  sPrivileged <- Get_Privileged(dfOpleiding_inschrijvingen, group)
+  privileged <- get_privileged(df_sp_enrollments, group)
 
   # Create a fairness object
-  fobject <- Get_objFairness(explain_lf, group, sPrivileged)
+  fairness_object <- get_obj_fairness(explain_lf, group, privileged)
 
   # Create a table from the fairness analysis
-  dfFairness_totaal <- Get_dfFairness_Total(fobject)
+  df_fairness_total <- get_df_fairness_total(fairness_object)
   
   # Check for bias
-  Print_Fairness_Object_LTA(fobject)
+  print_fairness_object_lta(fairness_object)
 
   # Create a plot of the fairness analysis
   fairness_plot <- suppressWarnings(
-    Get_Fairness_Plot(fobject, group = group, privileged = sPrivileged) +
+    get_fairness_plot(fairness_object, group = group, privileged = privileged) +
       theme(panel.border = element_rect(
         colour = "darkgrey",
         fill = NA,
@@ -282,24 +284,25 @@ for(group in c(lSensitive_labels)) {
   )
 
   # Save the plot
-  sPlotname <- glue("fairness_plot_{tolower(group)}")
-  sPlotPath <- Get_Plot_Outputpath(sPlotname, mode = "plot", bestmodel = sBest_model)
+  plot_name <- glue("fairness_plot_{tolower(group)}")
+  plot_path <- get_plot_outputpath(plot_name, mode = "plot", best_model = best_model)
 
-  suppressWarnings(
-        Finalize_Plot(
-          plot_name = fairness_plot,
-          save_filepath = sPlotPath,
-          height_pixels = 250 + (50 * length(unique(dfFairness_totaal$Categorie)))
-        ))
+  suppressWarnings(finalize_plot(
+    plot_name = fairness_plot,
+    save_filepath = plot_path,
+    height_pixels = 250 + (50 * length(unique(df_fairness_total$Categorie)))
+  ))
 
   # Show the existing plot
-  sPlot <- glue("![Fairness check naar {tolower(group)}]({sPlotPath}){{#fig-fairness-check-{tolower(group)}}}")
-  Knit_Print_Rule(sPlot)
+  plot <- glue("![Fairness check naar {tolower(group)}]({plot_path})",
+               "{{#fig-fairness-check-{tolower(group)}}}")
+  knit_print_rule(plot)
   
   # Keep the fairness check data
-  sFairness_outputpath  <- Get_Model_Outputpath(mode = "fairness", group = group)
-  dfFairness_check_data <- Get_dfFairness_Check_Data(fobject[["fairness_check_data"]], group = group)
-  saveRDS(dfFairness_check_data, file = sFairness_outputpath)
+  fairness_output_path  <- get_model_outputpath(mode = "fairness", group = group)
+  df_fairness_check_data <- get_df_fairness_check_data(fairness_object[["fairness_check_data"]],
+                                                       group = group)
+  saveRDS(df_fairness_check_data, file = fairness_output_path)
   
 }
 
@@ -336,5 +339,4 @@ for(group in c(lSensitive_labels)) {
 
 # Collect garbage
 invisible(gc())
-  
 ```

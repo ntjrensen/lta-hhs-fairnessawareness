@@ -1,6 +1,6 @@
 # Fairness Awareness: Tutorial
 Theo Bakker, The Hague University of Applied Sciences
-2025-02-28
+2025-03-01
 
 <a name="top"></a>
 
@@ -229,16 +229,15 @@ consists of the following components:
       etc.)
     - `model`: the name of the model. The model name can have the same
       name as the success parameter.
-    - `propedeusediploma`: whether to take a propedeutic degree into
-      account or not (false or true)  
+    - `pd`: whether to take a propedeutic degree into account or not
+      (false or true)  
     - `use_synthetic_data`: whether to use synthetic data (false or
       true).
-    - `recreateplots`: whether you want to recreate the plots (false or
+    - `recreate_plots`: whether you want to recreate the plots (false or
       true)
-    - `opleiding`: the code of the study programme
-    - `opleidingsvorm_afkorting`: the type of education abbreviated (VT,
-      DT, DU)
-    - `instroomselectie`: whether the study programme has entry
+    - `sp`: the code of the study programme
+    - `sp_form`: the type of education abbreviated (VT, DT, DU)
+    - `enrollment_selection`: whether the study programme has entry
       selection (false or true). Based on this, variable `Rank` is
       enclosed or not.
   - `includes` with options to show or hide parts of pages
@@ -273,8 +272,8 @@ consists of the following components:
   embedded in each page.
 - This file is executed only once per session; if there is a new version
   while working on your project, restart your R environment for a new
-  session or adjust the `bReset_Setup` variable at the top of the page
-  from `bReset_Setup <- F` once to `T`.
+  session or adjust the `current_file` variable at the top of the page
+  from `current_file <- FALSE` once to `TRUE`.
 - In `_Setup.R`, you will find:
   - A check on the environment: `ceda` or otherwise
   - Settings for packages and functions:
@@ -510,8 +509,8 @@ To render a template with these scripts, follow these steps:
 2.  Open `quarto-render-basic-report` for the *basic-report* report and
     source it. This script will remove the `_freeze` folder. Otherwise,
     the rendering would use existing pages from earlier settings.
-3.  Change the settings in `lExecute_params` to change a programme. The
-    preliminary options are presented after each setting.
+3.  Change the settings in `execute_params_list` to change a programme.
+    The preliminary options are presented after each setting.
 
 ## ✂️ Customizing the template
 
@@ -564,14 +563,14 @@ situated in several additional locations.
   `brand:meta:name`.
 - In `_Setup_config.R`: modify the metadata to determine the source and
   analysis for each image in the caption (footer of the image):
-  - `lResearch_settings[[“sResearch_path”]]`: the name of this project
-    to be used in filepaths
-  - `lResearch_settings[[“sSucces_label”]]`: the name of measure for
+  - `research_settings[[“research_path”]]`: the name of this project to
+    be used in filepaths
+  - `research_settings[[“succes_label”]]`: the name of measure for
     success
-  - `lResearch_settings[[“sInstelling”]]`: the name of your institution
-  - `lResearch_settings[[“sBron”]]`: who provided the dataset you are
-    using
-  - `lResearch_settings[[“sAnalyse”]]`: who performed the analysis
+  - `research_settings[[“institution”]]`: the name of your institution
+  - `research_settings[[“data_provider”]]`: who provided the dataset you
+    are using
+  - `research_settings[[“analysis”]]`: who performed the analysis
 
 ## 🏁 Deployment
 
