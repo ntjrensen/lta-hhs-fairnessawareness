@@ -235,7 +235,7 @@ We onderzoeken eerst de meest voorkomende student in de opleiding. We analyseren
 
 **Toelichting**
 
--   **All data** - De eerste variabele `all data` is eigenlijk geen variabele, maar geeft aan wat alle data samen aan `r tolower(research_settings$succes_label)` voorspellen. Variabelen die daarna bovenaan staan, wegen het zwaarst in de voorspelling van de kans.
+-   **'All data'** - De eerste variabele `all data` is eigenlijk geen variabele, maar geeft aan wat alle data samen aan `r tolower(research_settings$succes_label)` voorspellen. Variabelen die daarna bovenaan staan, wegen het zwaarst in de voorspelling van de kans.
 -   **Richting** - Als de verdeling van de kansen naar de linkerkant van de x-as gaat, draagt deze variabele meer bij aan een toename op de `r tolower(research_settings$succes_label)`; als deze naar de rechterkant beweegt, draagt deze variabele juist bij aan een afname op de `r tolower(research_settings$succes_label)`
 -   **Spreiding** - Als de spreiding breed is, geeft dit aan dat er binnen deze variabele veel variatie is in de `r tolower(research_settings$succes_label)` en er voorzichtig mee omgegaan moet worden. Als de spreiding heel smal is, betekent dit dat de variabele weinig of geen invloed heeft op de `r tolower(research_settings$succes_label)`. Deze variabelen bevinden zich op de intercept.
 -   **Vorm** - De vorm achter de variabele (een viool) geeft de verdeling van de `r tolower(research_settings$succes_label)` weer. Hoe breder de viool-vorm, hoe meer studenten op die locatie een `r tolower(research_settings$succes_label)` hebben.
