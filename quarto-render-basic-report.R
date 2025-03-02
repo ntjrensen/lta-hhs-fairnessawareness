@@ -39,13 +39,13 @@ if (file.exists(here::here("_advanced-report", "ch-models.html"))) {
   
   # Check if the search string is found in the text content
   if (!str_detect(text_content, search_string)) {
-    cli_alert_warning(glue("Voor de opleiding {execute_params_list$sp} ",
-                           "moet eerst het advanced-report worden uitgevoerd."))
+    cli_alert_warning(glue("First, render the advanced-report ",
+                           "for the study programme {execute_params_list$sp}."))
   } else {
     
-    cli_alert_info(glue("Voor de opleiding {execute_params_list$sp} ",
-                        "is het advanced-report uitgevoerd. \n",
-                        "Het basic-report wordt nu uitgevoerd."))
+    cli_alert_info(glue("The advanced-report was rendered for the study programme ",
+                        "{execute_params_list$sp} \n",
+                        "The basic-report is rendered now."))
     
     # Render a basic report
     withr::with_envvar(new = c("QUARTO_PROFILE" = "basic-report"), {
@@ -56,6 +56,6 @@ if (file.exists(here::here("_advanced-report", "ch-models.html"))) {
   }
   
 } else {
-  cli_alert_warning(glue("Voor de opleiding {execute_params_list$sp} ",
-                         "moet eerst het advanced-report worden uitgevoerd."))
+  cli_alert_warning(glue("First, render the advanced-report ",
+                         "for the study programme {execute_params_list$sp}."))
 }

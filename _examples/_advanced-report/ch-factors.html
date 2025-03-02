@@ -281,7 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- Title -->
 <!-- HEADER -->
 <!-- Studyprogram short -->
-<p><strong>Voeding &amp; Diëtetiek</strong> (VD), voltijd, eerstejaars, Faculteit Gezondheid, Voeding &amp; Sport (GVS).</p>
+<p><strong>Communication and Multimedia Design</strong> (CMD), voltijd, eerstejaars, Faculteit IT &amp; Design (ITD).</p>
 <p>&nbsp;</p>
 <!-- Introduction -->
 <section id="inleiding" class="level2" data-number="3.1">
@@ -312,7 +312,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="laad-de-data" class="level3" data-number="3.2.1">
 <h3 data-number="3.2.1" class="anchored" data-anchor-id="laad-de-data"><span class="header-section-number">3.2.1</span> Laad de data</h3>
 <p>We laden de bewerkte data en prognosemodellen in voor:</p>
-<p><strong>Opleiding</strong>: | VD (Synth) (VD), VT, eerstejaars - <strong>Retentie na 1 jaar</strong></p>
+<p><strong>Opleiding</strong>: | CMD (Synth) (CMD), VT, eerstejaars - <strong>Retentie na 1 jaar</strong></p>
 <!-- Include load-dfpersona -->
 <div class="cell">
 <details class="code-fold">
@@ -390,14 +390,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output cell-output-stdout">
 <pre><code>Preparation of a new explainer is initiated
   -&gt; model label       :  Random Forest 
-  -&gt; data              :  2782  rows  26  cols 
-  -&gt; target variable   :  2782  values 
+  -&gt; data              :  1613  rows  26  cols 
+  -&gt; target variable   :  1613  values 
   -&gt; predict function  :  yhat.workflow  will be used ( [33m default [39m )
   -&gt; predicted values  :  No value for predict function target column. ( [33m default [39m )
   -&gt; model_info        :  package tidymodels , ver. 1.3.0 , task classification ( [33m default [39m ) 
-  -&gt; predicted values  :  numerical, min =  0.1232624 , mean =  0.5798238 , max =  0.9673013  
+  -&gt; predicted values  :  numerical, min =  0.1282285 , mean =  0.6176005 , max =  0.9501541  
   -&gt; residual function :  difference between y and yhat ( [33m default [39m )
-  -&gt; residuals         :  numerical, min =  -0.8639009 , mean =  0.003928882 , max =  0.7529485  
+  -&gt; residuals         :  numerical, min =  -0.8617417 , mean =  0.003602241 , max =  0.8065899  
  [32m A new explainer has been created! [39m </code></pre>
 </div>
 <details class="code-fold">
@@ -463,7 +463,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div id="fig-lf-model-parts" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-lf-model-parts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_model_parts_rmse_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figuur&nbsp;3.1: Meest voorspellende factoren - RMSE"><img src="_output/gvs/b-vd-vt-synth/plots/lf_model_parts_rmse_random_forest.png" class="img-fluid figure-img" width="1333"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_model_parts_rmse_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="Figuur&nbsp;3.1: Meest voorspellende factoren - RMSE"><img src="_output/itd/b-cmd-vt-synth/plots/lf_model_parts_rmse_random_forest.png" class="img-fluid figure-img" width="1333"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lf-model-parts-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.1: Meest voorspellende factoren - RMSE
@@ -494,7 +494,7 @@ Ter illustratie
 <p>We onderzoeken zo de voorspelling van het model per groep en de bijdrage van de verklarende variabelen aan die specifieke voorspelling. Dit geeft een verder inzicht in de werking van het model. Een categorie met 20 studenten of minder laten we buiten beschouwing.</p>
 <section id="toelichting-op-de-opbouw-van-de-kans-op-retentie" class="level4" data-number="3.3.3.1">
 <h4 data-number="3.3.3.1" class="anchored" data-anchor-id="toelichting-op-de-opbouw-van-de-kans-op-retentie"><span class="header-section-number">3.3.3.1</span> Toelichting op de opbouw van de kans op retentie</h4>
-<p>De opbouw van het model bestaat uit een <em>intercept</em>, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de <strong>basiskans op retentie</strong> voor alle studenten. Deze kans is voor de VD (VD) VT <strong>58,0%</strong>. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de kans op retentie verhoogt, een negatieve bijdrage betekent dat het de kans op retentie verlaagt.</p>
+<p>De opbouw van het model bestaat uit een <em>intercept</em>, gevolgd door verklarende variabelen die een verschil maken ten opzichte van die intercept. De intercept is de <strong>basiskans op retentie</strong> voor alle studenten. Deze kans is voor de CMD (CMD) VT <strong>61,8%</strong>. De cumulatieve bijdrage van de variabelen aan de voorspelling kan positief of negatief zijn. Een positieve bijdrage betekent dat de variabele de kans op retentie verhoogt, een negatieve bijdrage betekent dat het de kans op retentie verlaagt.</p>
 <p>Het kan zijn dat nieuwe variabelen geen invloed meer hebben op de kans. Dit betekent niet per se dat ze niet belangrijk zijn. Het kan zijn dat de invloed die ze hebben op de kans al is ‘afgevangen’ door variabelen die eerder in het model zijn opgenomen.</p>
 <div class="callout callout-style-simple callout-note no-icon callout-titled" title="Ter illustratie">
 <div class="callout-header d-flex align-content-center">
@@ -524,7 +524,7 @@ Ter illustratie
 <div id="fig-lf-break-down-distribution-all" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-lf-break-down-distribution-all-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_distribution_all_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figuur&nbsp;3.2: Opbouw van de kans op retentie"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_distribution_all_random_forest.png" class="img-fluid figure-img" width="1333"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_distribution_all_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2" title="Figuur&nbsp;3.2: Opbouw van de kans op retentie"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_distribution_all_random_forest.png" class="img-fluid figure-img" width="1333"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lf-break-down-distribution-all-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.2: Opbouw van de kans op retentie
@@ -545,7 +545,7 @@ Figuur&nbsp;3.2: Opbouw van de kans op retentie
 <div id="fig-breakdown-geslacht-m" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-geslacht-m-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_geslacht_m_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figuur&nbsp;3.3: Breakdown naar geslacht: M"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_geslacht_m_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_geslacht_m_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3" title="Figuur&nbsp;3.3: Breakdown naar geslacht: M"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_geslacht_m_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-geslacht-m-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.3: Breakdown naar geslacht: M
@@ -557,7 +557,7 @@ Figuur&nbsp;3.3: Breakdown naar geslacht: M
 <div id="fig-breakdown-geslacht-v" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-geslacht-v-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_geslacht_v_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figuur&nbsp;3.4: Breakdown naar geslacht: V"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_geslacht_v_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_geslacht_v_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4" title="Figuur&nbsp;3.4: Breakdown naar geslacht: V"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_geslacht_v_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-geslacht-v-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.4: Breakdown naar geslacht: V
@@ -570,14 +570,15 @@ Figuur&nbsp;3.4: Breakdown naar geslacht: V
 </section>
 <section id="naar-aansluiting" class="level5" data-number="3.3.3.3.2">
 <h5 data-number="3.3.3.3.2" class="anchored" data-anchor-id="naar-aansluiting"><span class="header-section-number">3.3.3.3.2</span> Naar aansluiting</h5>
+<p>De subtotalen voor de categorieën 2e Studie en Na CD zijn te laag voor een betrouwbare analyse.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
-<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Direct</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Tussenjaar</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Switch intern</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false">Switch extern</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-5" role="tab" aria-controls="tabset-2-5" aria-selected="false">2e Studie</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-6" role="tab" aria-controls="tabset-2-6" aria-selected="false">Na CD</a></li></ul>
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Direct</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Tussenjaar</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Switch intern</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-4" role="tab" aria-controls="tabset-2-4" aria-selected="false">Switch extern</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div id="fig-breakdown-aansluiting-direct" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-aansluiting-direct-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_direct_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figuur&nbsp;3.5: Breakdown naar aansluiting: Direct"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_direct_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_direct_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5" title="Figuur&nbsp;3.5: Breakdown naar aansluiting: Direct"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_direct_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-direct-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.5: Breakdown naar aansluiting: Direct
@@ -589,7 +590,7 @@ Figuur&nbsp;3.5: Breakdown naar aansluiting: Direct
 <div id="fig-breakdown-aansluiting-tussenjaar" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-aansluiting-tussenjaar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_tussenjaar_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figuur&nbsp;3.6: Breakdown naar aansluiting: Tussenjaar"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_tussenjaar_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_tussenjaar_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6" title="Figuur&nbsp;3.6: Breakdown naar aansluiting: Tussenjaar"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_tussenjaar_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-tussenjaar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.6: Breakdown naar aansluiting: Tussenjaar
@@ -601,7 +602,7 @@ Figuur&nbsp;3.6: Breakdown naar aansluiting: Tussenjaar
 <div id="fig-breakdown-aansluiting-switch-intern" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-aansluiting-switch-intern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_switch-intern_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figuur&nbsp;3.7: Breakdown naar aansluiting: Switch intern"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_switch-intern_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_switch-intern_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7" title="Figuur&nbsp;3.7: Breakdown naar aansluiting: Switch intern"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_switch-intern_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-switch-intern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.7: Breakdown naar aansluiting: Switch intern
@@ -613,34 +614,10 @@ Figuur&nbsp;3.7: Breakdown naar aansluiting: Switch intern
 <div id="fig-breakdown-aansluiting-switch-extern" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-aansluiting-switch-extern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_switch-extern_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figuur&nbsp;3.8: Breakdown naar aansluiting: Switch extern"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_switch-extern_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_switch-extern_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8" title="Figuur&nbsp;3.8: Breakdown naar aansluiting: Switch extern"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_aansluiting_switch-extern_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-switch-extern-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figuur&nbsp;3.8: Breakdown naar aansluiting: Switch extern
-</figcaption>
-</figure>
-</div>
-</div>
-<div id="tabset-2-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-5-tab">
-<div id="fig-breakdown-aansluiting-2e-studie" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-breakdown-aansluiting-2e-studie-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_2e-studie_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figuur&nbsp;3.9: Breakdown naar aansluiting: 2e Studie"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_2e-studie_random_forest.png" class="img-fluid figure-img"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-2e-studie-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.9: Breakdown naar aansluiting: 2e Studie
-</figcaption>
-</figure>
-</div>
-</div>
-<div id="tabset-2-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-6-tab">
-<div id="fig-breakdown-aansluiting-na-cd" class="quarto-float quarto-figure quarto-figure-center anchored">
-<figure class="quarto-float quarto-float-fig figure">
-<div aria-describedby="fig-breakdown-aansluiting-na-cd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_na-cd_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figuur&nbsp;3.10: Breakdown naar aansluiting: Na CD"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_aansluiting_na-cd_random_forest.png" class="img-fluid figure-img"></a>
-</div>
-<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-aansluiting-na-cd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.10: Breakdown naar aansluiting: Na CD
 </figcaption>
 </figure>
 </div>
@@ -657,10 +634,10 @@ Figuur&nbsp;3.10: Breakdown naar aansluiting: Na CD
 <div id="fig-breakdown-vooropleiding-mbo" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-mbo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_mbo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Figuur&nbsp;3.11: Breakdown naar vooropleiding: MBO"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_mbo_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_mbo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9" title="Figuur&nbsp;3.9: Breakdown naar vooropleiding: MBO"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_mbo_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-mbo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.11: Breakdown naar vooropleiding: MBO
+Figuur&nbsp;3.9: Breakdown naar vooropleiding: MBO
 </figcaption>
 </figure>
 </div>
@@ -669,10 +646,10 @@ Figuur&nbsp;3.11: Breakdown naar vooropleiding: MBO
 <div id="fig-breakdown-vooropleiding-havo" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-havo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_havo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Figuur&nbsp;3.12: Breakdown naar vooropleiding: HAVO"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_havo_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_havo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10" title="Figuur&nbsp;3.10: Breakdown naar vooropleiding: HAVO"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_havo_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-havo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.12: Breakdown naar vooropleiding: HAVO
+Figuur&nbsp;3.10: Breakdown naar vooropleiding: HAVO
 </figcaption>
 </figure>
 </div>
@@ -681,10 +658,10 @@ Figuur&nbsp;3.12: Breakdown naar vooropleiding: HAVO
 <div id="fig-breakdown-vooropleiding-vwo" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-vwo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_vwo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Figuur&nbsp;3.13: Breakdown naar vooropleiding: VWO"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_vwo_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_vwo_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11" title="Figuur&nbsp;3.11: Breakdown naar vooropleiding: VWO"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_vwo_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-vwo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.13: Breakdown naar vooropleiding: VWO
+Figuur&nbsp;3.11: Breakdown naar vooropleiding: VWO
 </figcaption>
 </figure>
 </div>
@@ -693,10 +670,10 @@ Figuur&nbsp;3.13: Breakdown naar vooropleiding: VWO
 <div id="fig-breakdown-vooropleiding-bd" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-bd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_bd_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Figuur&nbsp;3.14: Breakdown naar vooropleiding: BD"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_bd_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_bd_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12" title="Figuur&nbsp;3.12: Breakdown naar vooropleiding: BD"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_bd_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-bd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.14: Breakdown naar vooropleiding: BD
+Figuur&nbsp;3.12: Breakdown naar vooropleiding: BD
 </figcaption>
 </figure>
 </div>
@@ -705,10 +682,10 @@ Figuur&nbsp;3.14: Breakdown naar vooropleiding: BD
 <div id="fig-breakdown-vooropleiding-cd" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-cd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_cd_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15" title="Figuur&nbsp;3.15: Breakdown naar vooropleiding: CD"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_cd_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_cd_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13" title="Figuur&nbsp;3.13: Breakdown naar vooropleiding: CD"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_cd_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-cd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.15: Breakdown naar vooropleiding: CD
+Figuur&nbsp;3.13: Breakdown naar vooropleiding: CD
 </figcaption>
 </figure>
 </div>
@@ -717,10 +694,10 @@ Figuur&nbsp;3.15: Breakdown naar vooropleiding: CD
 <div id="fig-breakdown-vooropleiding-ho" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-breakdown-vooropleiding-ho-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_ho_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Figuur&nbsp;3.16: Breakdown naar vooropleiding: HO"><img src="_output/gvs/b-vd-vt-synth/plots/lf_break_down_vooropleiding_ho_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_ho_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14" title="Figuur&nbsp;3.14: Breakdown naar vooropleiding: HO"><img src="_output/itd/b-cmd-vt-synth/plots/lf_break_down_vooropleiding_ho_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-breakdown-vooropleiding-ho-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.16: Breakdown naar vooropleiding: HO
+Figuur&nbsp;3.14: Breakdown naar vooropleiding: HO
 </figcaption>
 </figure>
 </div>
@@ -781,10 +758,10 @@ Figuur&nbsp;3.16: Breakdown naar vooropleiding: HO
 <div id="fig-lf-shapley" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-lf-shapley-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_shapley_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17" title="Figuur&nbsp;3.17: Shapley values"><img src="_output/gvs/b-vd-vt-synth/plots/lf_shapley_random_forest.png" class="img-fluid figure-img" width="1333"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_shapley_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15" title="Figuur&nbsp;3.15: Shapley values"><img src="_output/itd/b-cmd-vt-synth/plots/lf_shapley_random_forest.png" class="img-fluid figure-img" width="1333"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-lf-shapley-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.17: Shapley values
+Figuur&nbsp;3.15: Shapley values
 </figcaption>
 </figure>
 </div>
@@ -829,46 +806,37 @@ Ter illustratie
 </div>
 </div>
 <p>Opnieuw kijken we naar geslacht, aansluiting en vooropleiding. N.B. Het kan zijn dat een van de categorieën niet zichtbaar is, dit komt doordat deze dan over elkaar heen vallen.</p>
-<section id="geslacht" class="level4" data-number="3.3.5.1">
-<h4 data-number="3.3.5.1" class="anchored" data-anchor-id="geslacht"><span class="header-section-number">3.3.5.1</span> Geslacht</h4>
 <div id="fig-cp-geslacht" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cp-geslacht-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_cp_geslacht_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18" title="Figuur&nbsp;3.18: Ceteris-paribus profiel naar geslacht"><img src="_output/gvs/b-vd-vt-synth/plots/lf_cp_geslacht_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_cp_geslacht_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16" title="Figuur&nbsp;3.16: Ceteris-paribus profiel naar geslacht"><img src="_output/itd/b-cmd-vt-synth/plots/lf_cp_geslacht_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cp-geslacht-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.18: Ceteris-paribus profiel naar geslacht
+Figuur&nbsp;3.16: Ceteris-paribus profiel naar geslacht
 </figcaption>
 </figure>
 </div>
-</section>
-<section id="aansluiting" class="level4" data-number="3.3.5.2">
-<h4 data-number="3.3.5.2" class="anchored" data-anchor-id="aansluiting"><span class="header-section-number">3.3.5.2</span> Aansluiting</h4>
 <div id="fig-cp-aansluiting" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cp-aansluiting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_cp_aansluiting_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19" title="Figuur&nbsp;3.19: Ceteris-paribus profiel naar aansluiting"><img src="_output/gvs/b-vd-vt-synth/plots/lf_cp_aansluiting_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_cp_aansluiting_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17" title="Figuur&nbsp;3.17: Ceteris-paribus profiel naar aansluiting"><img src="_output/itd/b-cmd-vt-synth/plots/lf_cp_aansluiting_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cp-aansluiting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.19: Ceteris-paribus profiel naar aansluiting
+Figuur&nbsp;3.17: Ceteris-paribus profiel naar aansluiting
 </figcaption>
 </figure>
 </div>
-</section>
-<section id="vooropleiding" class="level4" data-number="3.3.5.3">
-<h4 data-number="3.3.5.3" class="anchored" data-anchor-id="vooropleiding"><span class="header-section-number">3.3.5.3</span> Vooropleiding</h4>
 <div id="fig-cp-vooropleiding" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cp-vooropleiding-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_cp_vooropleiding_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20" title="Figuur&nbsp;3.20: Ceteris-paribus profiel naar vooropleiding"><img src="_output/gvs/b-vd-vt-synth/plots/lf_cp_vooropleiding_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_cp_vooropleiding_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18" title="Figuur&nbsp;3.18: Ceteris-paribus profiel naar vooropleiding"><img src="_output/itd/b-cmd-vt-synth/plots/lf_cp_vooropleiding_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cp-vooropleiding-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.20: Ceteris-paribus profiel naar vooropleiding
+Figuur&nbsp;3.18: Ceteris-paribus profiel naar vooropleiding
 </figcaption>
 </figure>
 </div>
 <!-- Partial Dependence -->
-</section>
 </section>
 <section id="partial-dependence-analyse" class="level3" data-number="3.3.6">
 <h3 data-number="3.3.6" class="anchored" data-anchor-id="partial-dependence-analyse"><span class="header-section-number">3.3.6</span> Partial Dependence analyse</h3>
@@ -886,49 +854,49 @@ Figuur&nbsp;3.20: Ceteris-paribus profiel naar vooropleiding
 <div id="fig-pdp-alle-studenten" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pdp-alle-studenten-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_pdp_alle studenten_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21" title="Figuur&nbsp;3.21: Partial Dependence profiel naar alle studenten"><img src="_output/gvs/b-vd-vt-synth/plots/lf_pdp_alle studenten_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_pdp_alle studenten_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19" title="Figuur&nbsp;3.19: Partial Dependence profiel naar alle studenten"><img src="_output/itd/b-cmd-vt-synth/plots/lf_pdp_alle studenten_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pdp-alle-studenten-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.21: Partial Dependence profiel naar alle studenten
+Figuur&nbsp;3.19: Partial Dependence profiel naar alle studenten
 </figcaption>
 </figure>
 </div>
 </section>
-<section id="geslacht-1" class="level4" data-number="3.3.6.2">
-<h4 data-number="3.3.6.2" class="anchored" data-anchor-id="geslacht-1"><span class="header-section-number">3.3.6.2</span> Geslacht</h4>
+<section id="geslacht" class="level4" data-number="3.3.6.2">
+<h4 data-number="3.3.6.2" class="anchored" data-anchor-id="geslacht"><span class="header-section-number">3.3.6.2</span> Geslacht</h4>
 <div id="fig-pdp-geslacht" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pdp-geslacht-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_pdp_geslacht_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22" title="Figuur&nbsp;3.22: Partial Dependence profiel naar geslacht"><img src="_output/gvs/b-vd-vt-synth/plots/lf_pdp_geslacht_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_pdp_geslacht_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20" title="Figuur&nbsp;3.20: Partial Dependence profiel naar geslacht"><img src="_output/itd/b-cmd-vt-synth/plots/lf_pdp_geslacht_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pdp-geslacht-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.22: Partial Dependence profiel naar geslacht
+Figuur&nbsp;3.20: Partial Dependence profiel naar geslacht
 </figcaption>
 </figure>
 </div>
 </section>
-<section id="aansluiting-1" class="level4" data-number="3.3.6.3">
-<h4 data-number="3.3.6.3" class="anchored" data-anchor-id="aansluiting-1"><span class="header-section-number">3.3.6.3</span> Aansluiting</h4>
+<section id="aansluiting" class="level4" data-number="3.3.6.3">
+<h4 data-number="3.3.6.3" class="anchored" data-anchor-id="aansluiting"><span class="header-section-number">3.3.6.3</span> Aansluiting</h4>
 <div id="fig-pdp-aansluiting" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pdp-aansluiting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_pdp_aansluiting_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-23" title="Figuur&nbsp;3.23: Partial Dependence profiel naar aansluiting"><img src="_output/gvs/b-vd-vt-synth/plots/lf_pdp_aansluiting_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_pdp_aansluiting_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21" title="Figuur&nbsp;3.21: Partial Dependence profiel naar aansluiting"><img src="_output/itd/b-cmd-vt-synth/plots/lf_pdp_aansluiting_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pdp-aansluiting-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.23: Partial Dependence profiel naar aansluiting
+Figuur&nbsp;3.21: Partial Dependence profiel naar aansluiting
 </figcaption>
 </figure>
 </div>
 </section>
-<section id="vooropleiding-1" class="level4" data-number="3.3.6.4">
-<h4 data-number="3.3.6.4" class="anchored" data-anchor-id="vooropleiding-1"><span class="header-section-number">3.3.6.4</span> Vooropleiding</h4>
+<section id="vooropleiding" class="level4" data-number="3.3.6.4">
+<h4 data-number="3.3.6.4" class="anchored" data-anchor-id="vooropleiding"><span class="header-section-number">3.3.6.4</span> Vooropleiding</h4>
 <div id="fig-pdp-vooropleiding" class="quarto-float quarto-figure quarto-figure-center anchored">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pdp-vooropleiding-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<a href="_output/gvs/b-vd-vt-synth/plots/lf_pdp_vooropleiding_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-24" title="Figuur&nbsp;3.24: Partial Dependence profiel naar vooropleiding"><img src="_output/gvs/b-vd-vt-synth/plots/lf_pdp_vooropleiding_random_forest.png" class="img-fluid figure-img"></a>
+<a href="_output/itd/b-cmd-vt-synth/plots/lf_pdp_vooropleiding_random_forest.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22" title="Figuur&nbsp;3.22: Partial Dependence profiel naar vooropleiding"><img src="_output/itd/b-cmd-vt-synth/plots/lf_pdp_vooropleiding_random_forest.png" class="img-fluid figure-img"></a>
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pdp-vooropleiding-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-Figuur&nbsp;3.24: Partial Dependence profiel naar vooropleiding
+Figuur&nbsp;3.22: Partial Dependence profiel naar vooropleiding
 </figcaption>
 </figure>
 </div>
